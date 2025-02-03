@@ -5,6 +5,7 @@
 ## Team Members:
 - Gabriel Miro Granada-Lluch (g.mirogranada.2022@alumnos.urjc.es)
 - Elinee Nathalie Freites Muñoz (en.freites.2022@alumnos.urjc.es)
+- Ronald Sebastian Silvera Llimpe (rs.silvera.2022@alumnos.urjc.es)
 
 
 ## Class Diagram
