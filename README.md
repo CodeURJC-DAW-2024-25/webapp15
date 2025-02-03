@@ -3,29 +3,32 @@
 # Application Name: ---------
 
 ## Team Members:
-- Gabriel (g.mirogranada.2022@alumnos.urjc.es)
+- Gabriel Miro Granada-Lluch (g.mirogranada.2022@alumnos.urjc.es)
+- Elinee Nathalie Freites Muñoz (en.freites.2022@alumnos.urjc.es)
 
 
 ## Class Diagram
 
-Poned aqui la foti 
+![Proyecto_Parte1](https://github.com/user-attachments/assets/97d4b52e-843a-4d1b-bd48-d3ff3de154a0)
+
 
 ## Theme:
 A cinema management platform where users can buy tickets, reserve seats, and review movies.
 
 ## Main Features:
 - User registration and authentication.
-- Viewing the movie schedule.
+- Viewing the film schedule.
 - Ticket purchase and seat reservation.
-- Management of movies, rooms, and sessions by the administrator.
-- Uploading images for movie posters and user avatars.
+- Management of films and theaters by the administrator.
+- Uploading images for movie posters from admin account.
+- Uploading profile images from registered users account.
 - Sales and attendance statistics.
 
 ## Entities:
 1. **User**: Information about registered users (name, email, password, avatar).
-2. **Movie**: Details of movies (title, genre, duration, poster, synopsis).
-3. **Room**: Information about cinema rooms (room number, capacity, room type).
-4. **Session**: Movie sessions (date, time, movie, room, available seats).
+2. **Film**: Details of films (title, genre, duration, poster, synopsis).
+3. **Theater**: Information about cinema rooms (room number, capacity, room type).
+4. **Tickets**: Movie sessions (date, time, movie, room, available seats).
 
 ## User Types and Permissions:
 - **Anonymous User**: Can view the movies and reviews.
@@ -49,18 +52,40 @@ A cinema management platform where users can buy tickets, reserve seats, and rev
 
 ### Entities and Relationships:
 - **User**:
-  - Fields: id, name, email, password, avatar.
-  - Relationships: A user can buy multiple tickets.
-- **Movie**:
-  - Fields: id, title, genre, duration, poster, synopsis.
-  - Relationships: A movie can have multiple sessions.
-- **Room**:
-  - Fields: id, number, capacity, type (2D, 3D, VIP).
-  - Relationships: A room can host multiple sessions.
-- **Session**:
-  - Fields: id, date, time, movie_id, room_id, available_seats.
-  - Relationships: A session belongs to a movie and a room.
-
+  - Fields: name, password, email.
+  - Relationships: An User only can be an Administrator or a RegisteredUser. 
+- **Administrator**:
+  - Fields: name, password, email.
+  - Relationships:
+    - An administrator can add, delete and modify multiple Films.
+- **RegisteredUser**:
+  - Fields: name, password, profilepicture, tickets, email.
+  - Relationships:
+     - A RegisteredUser can buy multiple movie tickets.
+     - A RegisteredUser can post multiple film reviews.
+- **Film**:
+  - Fields: name, category, length, director, premiere, actors, sinapsis, picture.
+  - Relationships:
+    - A Film can be played in multiple Theathers.
+    - A Film have one Category.
+    - A Film can have multiple Reviews.
+- **Theater**:
+  - Fields: id, capacity, film, seats.
+  - Relationships:
+    - A Theater can play one Film.
+    - A Theater can be related to 30 Tickets or none.
+- **Enumeration: Category**:
+  - Relationships: A Category can be related to multiple Films.
+- **Review**:
+  - Fields: stars, comment, user.
+  - Relations:
+    - A review is posted by a RegisteredUser.
+    - A review is related to one Film.
+- **Tiquet**:
+  - Fields: date, filmname, price, seat.
+  - Relationships:
+    - A Tiquet is related to one Theater.
+    - A Tiquet is bought by one RegisteredUser.
 
 
 
