@@ -3,10 +3,12 @@
 # Application Name: Lumiere Royale Cinema
 
 ## Team Members:
-- Gabriel Miro Granada-Lluch (g.mirogranada.2022@alumnos.urjc.es)
-- Elinee Nathalie Freites Muñoz (en.freites.2022@alumnos.urjc.es)
-- Ronald Sebastian Silvera Llimpe (rs.silvera.2022@alumnos.urjc.es)
-
+| Name and surname    | URJC mail      | GitHub user      |
+|:------------: |:------------:| :------------:|
+| Gabriel Miro Granada-Lluch       | g.mirogranada.2022@alumnos.urjc.es       | Gabim23       |
+| Elinee Nathalie Freites Muñoz       | en.freites.2022@alumnos.urjc.es       | ElineeF      |
+| Ronald Sebastian Silvera Llimpe       | rs.silvera.2022@alumnos.urjc.es       | D4ng3r25       |
+| Alexander Matias Pearson Huaycochea       | a.pearson.2022@alumnos.urjc.es       | Pearson33       |
 
 ## Class Diagram
 
@@ -29,7 +31,8 @@ A cinema management platform where users can buy tickets, reserve seats, and rev
 1. **User**: Information about registered users (name, email, password, avatar).
 2. **Film**: Details of films (title, genre, duration, poster, synopsis).
 3. **Theater**: Information about cinema rooms (room number, capacity, room type).
-4. **Tickets**: Movie sessions (date, time, movie, room, available seats).
+4. **Tickets**: Film sessions (date, time, film, room, available seats).
+5. **Review**: User reviews about films (stars, comment, user).
 
 ## User Types and Permissions:
 - **Anonymous User**: Can view the movies and reviews.
@@ -38,17 +41,17 @@ A cinema management platform where users can buy tickets, reserve seats, and rev
 
 ## Images:
 - Users can upload profile picrures.
-- Movies have posters uploaded to the system.
+- films have posters uploaded to the system.
 
 ## Charts:
-- Bar chart to display the most-watched movies.
+- Bar chart to display the most-watched films.
 - Pie chart to show the sales distribution to the admin.
 
 ## Complementary Technology:
 - Users receive an email with a summary of their purchase.
 
 ## Advanced Algorithm or Query:
-- **Recommendation System**: Based on movies watched by the user, recommends other movies of the same genre or director.
+- **Recommendation System**: Based on movies watched by the user, recommends other films of the same genre or director.
 
 
 ### Entities and Relationships:
@@ -62,7 +65,7 @@ A cinema management platform where users can buy tickets, reserve seats, and rev
 - **RegisteredUser**:
   - Fields: name, password, profilepicture, tickets, email.
   - Relationships:
-     - A RegisteredUser can buy multiple movie tickets.
+     - A RegisteredUser can buy multiple film tickets.
      - A RegisteredUser can post multiple film reviews.
 - **Film**:
   - Fields: name, category, length, director, premiere, actors, sinapsis, picture.
@@ -82,7 +85,7 @@ A cinema management platform where users can buy tickets, reserve seats, and rev
   - Relations:
     - A review is posted by a RegisteredUser.
     - A review is related to one Film.
-- **Tiquet**:
+- **Ticket**:
   - Fields: date, filmname, price, seat.
   - Relationships:
     - A Tiquet is related to one Theater.
