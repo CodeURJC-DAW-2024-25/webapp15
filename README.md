@@ -1,6 +1,6 @@
 # WebApp15
 
-# Application Name: ---------
+# Application Name: Lumiere Royale Cinema
 
 ## Team Members:
 - Gabriel Miro Granada-Lluch (g.mirogranada.2022@alumnos.urjc.es)
