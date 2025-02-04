@@ -5,7 +5,7 @@
 ## 👥 Team Members:
 | Name and surname    | URJC mail      | GitHub user      |
 |:------------: |:------------:| :------------:|
-| Gabriel Miro Granada-Lluch       | g.mirogranada.2022@alumnos.urjc.es       | Gabim23       |
+| Gabriel Miro-GranadaLluch       | g.mirogranada.2022@alumnos.urjc.es       | Gabim23       |
 | Elinee Nathalie Freites Muñoz       | en.freites.2022@alumnos.urjc.es       | ElineeF      |
 | Ronald Sebastian Silvera Llimpe       | rs.silvera.2022@alumnos.urjc.es       | D4ng3r25       |
 | Alexander Matias Pearson Huaycochea       | a.pearson.2022@alumnos.urjc.es       | Pearson33       |
@@ -41,8 +41,8 @@ A cinema management platform where users can buy tickets, reserve seats, and rev
 - **Administrator**: Can manage movies, rooms, sessions, and view sales statistics.
 
 ## 🏞 Images:
-- Users can upload profile picrures.
-- films have posters uploaded to the system.
+- Users can upload profile pictures.
+- Films have posters uploaded to the system.
 
 ## 📊 Charts:
 - Bar chart to display the most-watched films.
