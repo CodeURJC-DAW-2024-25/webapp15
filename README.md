@@ -1,8 +1,8 @@
 # WebApp15
 
-# Application Name: Lumiere Royale Cinema
+# Application Name: 🎬 Lumiere Royale Cinema
 
-## Team Members:
+## 👥 Team Members:
 | Name and surname    | URJC mail      | GitHub user      |
 |:------------: |:------------:| :------------:|
 | Gabriel Miro Granada-Lluch       | g.mirogranada.2022@alumnos.urjc.es       | Gabim23       |
@@ -10,15 +10,16 @@
 | Ronald Sebastian Silvera Llimpe       | rs.silvera.2022@alumnos.urjc.es       | D4ng3r25       |
 | Alexander Matias Pearson Huaycochea       | a.pearson.2022@alumnos.urjc.es       | Pearson33       |
 
-## Class Diagram
+## 🖼 Class Diagram
+📌 *Visual representation of the system architecture:* 
 
 ![Proyecto_Parte1](https://github.com/user-attachments/assets/97d4b52e-843a-4d1b-bd48-d3ff3de154a0)
 
 
-## Theme:
+## 🎭 **Theme & Description** 
 A cinema management platform where users can buy tickets, reserve seats, and review movies.
 
-## Main Features:
+## 🚀 **Main Features** 
 - User registration and authentication.
 - Viewing the film schedule.
 - Ticket purchase and seat reservation.
@@ -27,34 +28,34 @@ A cinema management platform where users can buy tickets, reserve seats, and rev
 - Uploading profile images from registered users account.
 - Sales and attendance statistics.
 
-## Entities:
+## 🏗 **Entities**:
 1. **User**: Information about registered users (name, email, password, avatar).
 2. **Film**: Details of films (title, genre, duration, poster, synopsis).
 3. **Theater**: Information about cinema rooms (room number, capacity, room type).
 4. **Tickets**: Film sessions (date, time, film, room, available seats).
 5. **Review**: User reviews about films (stars, comment, user).
 
-## User Types and Permissions:
+## 🛠 User Types and Permissions:
 - **Anonymous User**: Can view the movies and reviews.
 - **Registered User**: Can buy tickets, reserve seats, and view purchase history.
 - **Administrator**: Can manage movies, rooms, sessions, and view sales statistics.
 
-## Images:
+## 🏞 Images:
 - Users can upload profile picrures.
 - films have posters uploaded to the system.
 
-## Charts:
+## 📊 Charts:
 - Bar chart to display the most-watched films.
 - Pie chart to show the sales distribution to the admin.
 
-## Complementary Technology:
+## 💡 Complementary Technology:
 - Users receive an email with a summary of their purchase.
 
-## Advanced Algorithm or Query:
+## ⭐ Advanced Algorithm or Query:
 - **Recommendation System**: Based on movies watched by the user, recommends other films of the same genre or director.
 
 
-### Entities and Relationships:
+### 🔗 Entities and Relationships:
 - **User**:
   - Fields: name, password, email.
   - Relationships: An User only can be an Administrator or a RegisteredUser. 
@@ -91,5 +92,6 @@ A cinema management platform where users can buy tickets, reserve seats, and rev
     - A Tiquet is related to one Theater.
     - A Tiquet is bought by one RegisteredUser.
 
+📌 *For more details, check the repository!* 🚀💻
 
 
