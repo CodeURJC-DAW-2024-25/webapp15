@@ -1557,3 +1557,9 @@ a.text-hover:focus:after {
     opacity: 1 !important;
   }  
 }
+
+.icon-pencil {
+  vertical-align: middle; /* Alinea el ícono verticalmente al medio */
+  display: inline-block; /* Asegura que el SVG se comporte como un bloque en línea */
+  line-height: normal; /* Ajusta la altura de la línea para que no se suba */
+}
