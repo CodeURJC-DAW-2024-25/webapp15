@@ -1,6 +1,6 @@
 # WebApp15
 
-# Application Name: 🎬 Lumiere Royale Cinema
+# Application Name: 👟 StepX
 
 ## 👥 Team Members:
 | Name and surname    | URJC mail      | GitHub user      |
@@ -13,85 +13,52 @@
 ## 🖼 Class Diagram
 📌 *Visual representation of the system architecture:* 
 
-![Proyecto_Parte1](https://github.com/user-attachments/assets/97d4b52e-843a-4d1b-bd48-d3ff3de154a0)
+![parte1](https://github.com/user-attachments/assets/03e8243d-83d6-4b11-9f27-f45836ad6c18)
 
 
 ## 🎭 **Theme & Description** 
-A cinema management platform where users can buy tickets, reserve seats, and review movies.
+A shoe ecommerce website where you can buy shoes, make reviews, ckeck your purchase history and apply coupons.
 
 ## 🚀 **Main Features** 
 - User registration and authentication.
-- Viewing the film schedule.
-- Ticket purchase and seat reservation.
-- Management of films and theaters by the administrator.
-- Uploading images for movie posters from admin account.
+- Viewing the different shoes.
+- Shoe purchase and coupon apply.
+- Purchase history
+- shopping cart
+- Management and creation of products by the administrator.
+- Uploading images for shoes from admin account.
 - Uploading profile images from registered users account.
 - Sales and attendance statistics.
 
 ## 🏗 **Entities**:
-1. **User**: Information about registered users (name, email, password, avatar).
-2. **Film**: Details of films (title, genre, duration, poster, synopsis).
-3. **Theater**: Information about cinema rooms (room number, capacity, room type).
-4. **Tickets**: Film sessions (date, time, film, room, available seats).
-5. **Review**: User reviews about films (stars, comment, user).
+1. **User**: Information about registered users (username, email, password, avatar).
+2. **Product**: Details of the shoes (id, size, genre, category, price, reviews).
+3. **Order**: Information about orders (id, date, products bought).
+4. **Coupon**: Details of the coupons (code, discount).
+5. **Review**: User reviews about shoes (rating, description, user).
+6. **History**: Where orders of every user are stored (orders).
 
 ## 🛠 User Types and Permissions:
-- **Anonymous User**: Can view the movies and reviews.
-- **Registered User**: Can buy tickets, reserve seats, and view purchase history.
+- **Anonymous User**: Can view the shoes.
+- **Registered User**: Can buy shoes, view purchase history.
 - **Administrator**: Can manage movies, rooms, sessions, and view sales statistics.
 
 ## 🏞 Images:
 - Users can upload profile pictures.
-- Films have posters uploaded to the system.
+- Shoes have pictures that are uploaded by the admin
 
 ## 📊 Charts:
-- Bar chart to display the most-watched films.
-- Pie chart to show the sales distribution to the admin.
+- Sales statistics for admin (money)
+- Number of products sold by date
+- Money spent in shoes for registered users
 
 ## 💡 Complementary Technology:
-- Users receive an email with a summary of their purchase.
+- Users receive an email weekly with a coupon they can use in the shop.
+- Users can download a pdf of the order. 
 
 ## ⭐ Advanced Algorithm or Query:
-- **Recommendation System**: Based on movies watched by the user, recommends other films of the same genre or director.
+- **Recommendation System**: Based on past purchases, shoes are recommended to registered users
 
 
-### 🔗 Entities and Relationships:
-- **User**:
-  - Fields: name, password, email.
-  - Relationships: An User only can be an Administrator or a RegisteredUser. 
-- **Administrator**:
-  - Fields: name, password, email.
-  - Relationships:
-    - An administrator can add, delete and modify multiple Films.
-- **RegisteredUser**:
-  - Fields: name, password, profilepicture, tickets, email.
-  - Relationships:
-     - A RegisteredUser can buy multiple film tickets.
-     - A RegisteredUser can post multiple film reviews.
-- **Film**:
-  - Fields: name, category, length, director, premiere, actors, sinapsis, picture.
-  - Relationships:
-    - A Film can be played in multiple Theathers.
-    - A Film have one Category.
-    - A Film can have multiple Reviews.
-- **Theater**:
-  - Fields: id, capacity, film, seats.
-  - Relationships:
-    - A Theater can play one Film.
-    - A Theater can be related to 30 Tickets or none.
-- **Enumeration: Category**:
-  - Relationships: A Category can be related to multiple Films.
-- **Review**:
-  - Fields: stars, comment, user.
-  - Relations:
-    - A review is posted by a RegisteredUser.
-    - A review is related to one Film.
-- **Ticket**:
-  - Fields: date, filmname, price, seat.
-  - Relationships:
-    - A Tiquet is related to one Theater.
-    - A Tiquet is bought by one RegisteredUser.
-
-📌 *For more details, check the repository!* 🚀💻
 
 
