@@ -1,27 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <title>Profile Settings - Stylish Shoes Online Store</title>
+    <title>Stylish - Shoes Online Store HTML Template</title>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="format-detection" content="telephone=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="author" content="TemplatesJungle">
-  <meta name="keywords" content="Online Store, Profile">
-  <meta name="description" content="Profile Settings - Stylish Shoes Online Store">
+  <meta name="keywords" content="Online Store">
+  <meta name="description" content="Stylish - Shoes Online Store HTML Template">
 
   <link rel="stylesheet" href="css/vendor.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
   <link rel="stylesheet" type="text/css" href="style.css">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,900;1,900&family=Source+Sans+Pro:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,900;1,900&family=Source+Sans+Pro:wght@400;600;700;900&display=swap"
+    rel="stylesheet">
 </head>
-
 <body>
     <div class="modal fade" id="modallogin" tabindex="-1" aria-modal="true" role="dialog">
         <div class="modal-dialog modal-fullscreen-md-down modal-md modal-dialog-centered" role="document">
@@ -192,9 +190,6 @@
                   <li class="nav-item">
                     <a class="nav-link me-5" href="#">Sale</a>
                   </li>
-                  <li class="nav-item">
-                    <a class="btn btn-dark rounded-pill" href="https://templatesjungle.gumroad.com/l/stylish-ecommerce-store-template" target="_blank">Get PRO</a>
-                  </li>
                 </ul>
               </div>
             </div>
@@ -300,212 +295,74 @@
         d="M10 18a7.952 7.952 0 0 0 4.897-1.688l4.396 4.396l1.414-1.414l-4.396-4.396A7.952 7.952 0 0 0 18 10c0-4.411-3.589-8-8-8s-8 3.589-8 8s3.589 8 8 8zm0-14c3.309 0 6 2.691 6 6s-2.691 6-6 6s-6-2.691-6-6s2.691-6 6-6z" />
     </symbol>
   </svg>
-  <!-- Loader 4 -->
-  <section class="profile-settings padding-small">
+  <section class="login-detail py-5">
     <div class="container">
       <div class="row">
-        <!-- Profile Sidebar -->
-        <div class="col-lg-3">
-          <div class="profile-sidebar bg-gray p-4 rounded-3">
-            <div class="profile-image text-center mb-4">
-              <div class="image-wrapper mb-3">
-                <img src="images/banner-image4.jpg" alt="Profile Picture" class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
-              </div>
-              <button class="btn btn-outline-dark btn-sm">Change Photo</button>
-            </div>
-            <div class="profile-nav">
-              <ul class="list-unstyled">
-                <li class="mb-2">
-                  <a href="#profile-info" class="d-block p-2 bg-white rounded active">Profile Information</a>
-                </li>
-                <li class="mb-2">
-                  <a href="#purchase-history" class="d-block p-2 text-dark">Purchase History</a>
-                </li>
-                <li class="mb-2">
-                  <a href="#settings" class="d-block p-2 text-dark">Settings</a>
-                </li>
-              </ul>
+        <!-- Image Column -->
+        <div class="col-lg-6 mb-4 mb-lg-0">
+          <div class="product-image-container">
+            <img src="https://images.unsplash.com/photo-1636718282214-0b4162a154f0?q=80&w=1965&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Shoe" class="img-fluid rounded" id="currentProductImage" style="max-width: 100%; height: auto;">
+            <div class="image-preview mt-3" id="imagePreview" style="display: none;">
+              <h4 class="mb-3">New Image Preview</h4>
+              <img id="previewImage" src="#" alt="Preview" style="max-width: 100%; height: auto;" class="rounded">
             </div>
           </div>
         </div>
+  
+        <!-- Form Column -->
+        <div class="col-lg-6">
+          <div class="login-form bg-light p-5">
+            <h2 class="text-center mb-4">Create an account</h2>
+            <form id="edit-product-form">
+              <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" id="username" name="username" class="form-control ps-3 text-input"  required>
+              </div>
+  
+              <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" id="email" name="email" class="form-control ps-3 text-input" required>
+              </div>
 
-        <!-- Profile Content -->
-        <div class="col-lg-9">
-          <!-- Profile Information -->
-          <div id="profile-info" class="profile-section bg-white p-4 rounded-3 mb-4">
-            <h2 class="section-title mb-4">Profile Information</h2>
-            <form class="profile-form">
-              <div class="row">
-                <div class="col-md-6 mb-3">
-                  <label class="form-label">First Name</label>
-                  <input type="text" class="form-control" value="John">
-                </div>
-                <div class="col-md-6 mb-3">
-                  <label class="form-label">Last Name</label>
-                  <input type="text" class="form-control" value="Doe">
-                </div>
-                <div class="col-md-6 mb-3">
-                  <label class="form-label">Username</label>
-                  <input type="text" class="form-control" value="johndoe123">
-                </div>
-                <div class="col-md-6 mb-3">
-                  <label class="form-label">Email</label>
-                  <input type="email" class="form-control" value="john.doe@example.com">
-                </div>
-                <div class="col-12 mb-3">
-                  <label class="form-label">Bio</label>
-                  <textarea class="form-control" rows="3">Shoe enthusiast and fashion lover.</textarea>
-                </div>
-                <div class="col-12">
-                  <button type="submit" class="btn btn-dark hvr-sweep-to-right">Save Changes</button>
-                </div>
+              <div class="mb-3">
+                <label for="email" class="form-label">Repeat email</label>
+                <input type="email" id="email" name="email" class="form-control ps-3 text-input" required>
+              </div>
+  
+              <div class="mb-3">
+                <label for="password">Password</label>
+                <input  type="password" id="password" name="password" class="form-control ps-3 text-input">
+              </div>
+
+              <div class="d-grid gap-2 mt-4">
+                <button type="submit" class="btn btn-success hvr-sweep-to-right dark-sweep">Register account</button>
+                <button type="button" class="btn btn-outline-gray hvr-sweep-to-right dark-sweep">Cancel</button>
               </div>
             </form>
-          </div>
-
-          <!-- Purchase History -->
-          <div id="purchase-history" class="profile-section bg-white p-4 rounded-3">
-            <h2 class="section-title mb-4">Purchase History</h2>
-            <div class="purchase-items">
-              <!-- Purchase Item -->
-              <div class="purchase-item border-bottom pb-4 mb-4">
-                <div class="row align-items-center">
-                  <div class="col-md-2">
-                    <img src="images/card-item1.jpg" alt="Product" class="img-fluid rounded">
-                  </div>
-                  <div class="col-md-6">
-                    <h3 class="fs-6 mb-2">Running Shoes For Men</h3>
-                    <p class="text-muted mb-0">Order #12345</p>
-                    <p class="text-muted mb-0">Date: Jan 15, 2024</p>
-                  </div>
-                  <div class="col-md-2">
-                    <span class="fw-bold">$99.00</span>
-                  </div>
-                  <div class="col-md-2">
-                    <span class="badge bg-success">Delivered</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Purchase Item -->
-              <div class="purchase-item border-bottom pb-4 mb-4">
-                <div class="row align-items-center">
-                  <div class="col-md-2">
-                    <img src="images/card-item2.jpg" alt="Product" class="img-fluid rounded">
-                  </div>
-                  <div class="col-md-6">
-                    <h3 class="fs-6 mb-2">Brand Shoes For Men</h3>
-                    <p class="text-muted mb-0">Order #12346</p>
-                    <p class="text-muted mb-0">Date: Jan 10, 2024</p>
-                  </div>
-                  <div class="col-md-2">
-                    <span class="fw-bold">$99.00</span>
-                  </div>
-                  <div class="col-md-2">
-                    <span class="badge bg-success">Delivered</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Purchase Item -->
-              <div class="purchase-item">
-                <div class="row align-items-center">
-                  <div class="col-md-2">
-                    <img src="images/card-item3.jpg" alt="Product" class="img-fluid rounded">
-                  </div>
-                  <div class="col-md-6">
-                    <h3 class="fs-6 mb-2">Sport Shoes For Men</h3>
-                    <p class="text-muted mb-0">Order #12347</p>
-                    <p class="text-muted mb-0">Date: Jan 5, 2024</p>
-                  </div>
-                  <div class="col-md-2">
-                    <span class="fw-bold">$99.00</span>
-                  </div>
-                  <div class="col-md-2">
-                    <span class="badge bg-success">Delivered</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="chart-container-profile">
-                <h3>Your Shopping History</h3>
-                <canvas id="spendingChart"></canvas>
-              </div>
-              
-
-            <!-- Pagination -->
-            <nav class="mt-4">
-              <ul class="pagination justify-content-center">
-                <li class="page-item disabled">
-                  <a class="page-link" href="#" tabindex="-1">Previous</a>
-                </li>
-                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                  <a class="page-link" href="#">Next</a>
-                </li>
-              </ul>
-            </nav>
           </div>
         </div>
       </div>
     </div>
   </section>
-
-  <!-- Include your footer here -->
-
-  <script src="js/jquery-1.11.0.min.js"></script>
-  <script src="js/plugins.js"></script>
-  <script src="js/script.js"></script>
+  
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Sample data - Replace this with actual user data from your backend
-      const monthlyData = {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-        datasets: [{
-          label: 'Money Spent ($)',
-          data: [150, 220, 180, 290, 200, 340],
-          backgroundColor: 'rgba(54, 162, 235, 0.2)',
-          borderColor: 'rgba(54, 162, 235, 1)',
-          borderWidth: 2,
-          tension: 0.4
-        }]
-      };
-
-      const ctx = document.getElementById('spendingChart').getContext('2d');
-      new Chart(ctx, {
-        type: 'line',
-        data: monthlyData,
-        options: {
-          responsive: true,
-          maintainAspectRatio: false, // Allow the chart to fill the container
-          plugins: {
-            title: {
-              display: true,
-              text: 'Your Shopping History'
-            }
-          },
-          scales: {
-            y: {
-              beginAtZero: true,
-              title: {
-                display: true,
-                text: 'Amount ($)'
-              }
-            },
-            x: {
-              title: {
-                display: true,
-                text: 'Month'
-              }
-            }
-          }
-        }
-      });
-    });
-  </script>
+  function previewImage(input) {
+    const preview = document.getElementById('imagePreview');
+    const previewImg = document.getElementById('previewImage');
     
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      
+      reader.onload = function(e) {
+        previewImg.src = e.target.result;
+        preview.style.display = 'block';
+      }
+      
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+  </script>
+  
 </body>
-
 </html>
+
