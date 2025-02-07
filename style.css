@@ -1563,3 +1563,33 @@ a.text-hover:focus:after {
   display: inline-block; /* Asegura que el SVG se comporte como un bloque en línea */
   line-height: normal; /* Ajusta la altura de la línea para que no se suba */
 }
+
+/* 7.Edit Element Page
+--------------------------------------------------------------*/
+.image-container {
+  width: 500px;
+  height: 500px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: #fff;
+}
+
+.image-container img {
+  max-width: 100%;
+  object-fit: cover;
+}
+
+.image-preview {
+  margin-top: 20px;
+}
+
+.image-preview h4 {
+  text-align: center;
+  margin-bottom: 15px;
+}
