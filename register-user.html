@@ -301,7 +301,7 @@
         <!-- Image Column -->
         <div class="col-lg-6 mb-4 mb-lg-0">
           <div class="product-image-container">
-            <img src="images/card-item2.jpg" alt="Shoe" class="img-fluid rounded" id="currentProductImage" style="max-width: 100%; height: auto;">
+            <img src="https://images.unsplash.com/photo-1636718282214-0b4162a154f0?q=80&w=1965&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Shoe" class="img-fluid rounded" id="currentProductImage" style="max-width: 100%; height: auto;">
             <div class="image-preview mt-3" id="imagePreview" style="display: none;">
               <h4 class="mb-3">New Image Preview</h4>
               <img id="previewImage" src="#" alt="Preview" style="max-width: 100%; height: auto;" class="rounded">
@@ -312,61 +312,30 @@
         <!-- Form Column -->
         <div class="col-lg-6">
           <div class="login-form bg-light p-5">
-            <h2 class="text-center mb-4">Edit Shoe Product</h2>
+            <h2 class="text-center mb-4">Create an account</h2>
             <form id="edit-product-form">
               <div class="mb-3">
-                <label for="name" class="form-label">Name</label>
-                <input type="text" id="name" name="name" class="form-control ps-3 text-input" value="Air Pink"  required>
+                <label for="username" class="form-label">Username</label>
+                <input type="text" id="username" name="username" class="form-control ps-3 text-input"  required>
               </div>
   
               <div class="mb-3">
-                <label for="description" class="form-label">Description</label>
-                <textarea id="description" name="description" class="form-control ps-3 text-input" rows="3"  required>This Shoes is comfortable for wearing for men. imperdiet nulla molestie ac vulputate scelerisque amet.Bibendum adipiscing platea blandit sit sed quam semper rhoncus. Diam ultrices maecenas consequat eu tortor orci.</textarea>
+                <label for="email" class="form-label">Email</label>
+                <input type="email" id="email" name="email" class="form-control ps-3 text-input" required>
+              </div>
+
+              <div class="mb-3">
+                <label for="email" class="form-label">Repeat email</label>
+                <input type="email" id="email" name="email" class="form-control ps-3 text-input" required>
               </div>
   
               <div class="mb-3">
-                <label for="price" class="form-label">Price</label>
-                <input type="number" id="price" name="price" class="form-control ps-3 text-input" step="0.01" value="30" required>
+                <label for="password">Password</label>
+                <input  type="password" id="password" name="password" class="form-control ps-3 text-input">
               </div>
-  
-              <div class="mb-3">
-                <label for="category" class="form-label">Category</label>
-                <select id="category" name="category" class="form-control ps-3 text-input" required>
-                  <option value="">Select a category</option>
-                  <option value="sneakers">Sneakers</option>
-                  <option value="boots">Boots</option>
-                  <option value="sandals">Sandals</option>
-                  <option value="formal">Formal</option>
-                </select>
-              </div>
-  
-              <div class="mb-3">
-                <label for="picture" class="form-label">Update Picture</label>
-                <input type="file" id="picture" name="picture" class="form-control ps-3 text-input" value="" accept="image/*" onchange="previewImage(this)">
-              </div>
-  
-              <div class="mb-3">
-                <label for="class" class="form-label">Class</label>
-                <select id="class" name="class" class="form-control ps-3 text-input" required>
-                  <option value="">Select a class</option>
-                  <option value="premium" selected>Premium</option>
-                  <option value="standard">Standard</option>
-                  <option value="economy">Economy</option>
-                </select>
-              </div>
-  
-              <div class="mb-3">
-                <label for="gender" class="form-label">Gender</label>
-                <select id="gender" name="gender" class="form-control ps-3 text-input" required>
-                  <option value="">Select gender</option>
-                  <option value="men" selected>Men</option>
-                  <option value="women">Women</option>
-                  <option value="unisex">Unisex</option>
-                </select>
-              </div>
-  
+
               <div class="d-grid gap-2 mt-4">
-                <button type="submit" class="btn btn-red hvr-sweep-to-right dark-sweep">Save Changes</button>
+                <button type="submit" class="btn btn-success hvr-sweep-to-right dark-sweep">Register account</button>
                 <button type="button" class="btn btn-outline-gray hvr-sweep-to-right dark-sweep">Cancel</button>
               </div>
             </form>
@@ -396,3 +365,4 @@
   
 </body>
 </html>
+
