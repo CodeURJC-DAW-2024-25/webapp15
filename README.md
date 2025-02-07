@@ -41,7 +41,7 @@ A shoe ecommerce website where you can buy shoes, make reviews, ckeck your purch
 ## 🛠 User Types and Permissions:
 - **Anonymous User**: Can view the shoes.
 - **Registered User**: Can buy shoes, view purchase history, modify profile, make reviews.
-- **Administrator**: Can create shoes, and view sales statistics.
+- **Administrator**: Can create shoes, view sales statistics and delete products and reviews.
 
 ## 🏞 Images:
 - Users can upload profile pictures.
