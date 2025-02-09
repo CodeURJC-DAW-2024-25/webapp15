@@ -5,7 +5,7 @@
 ## 👥 Team Members:
 | Name and surname    | URJC mail      | GitHub user      |
 |:------------: |:------------:| :------------:|
-| Gabriel Miro-GranadaLluch       | g.mirogranada.2022@alumnos.urjc.es       | Gabim23       |
+| Gabriel Miro-Granada Lluch       | g.mirogranada.2022@alumnos.urjc.es       | Gabim23       |
 | Elinee Nathalie Freites Muñoz       | en.freites.2022@alumnos.urjc.es       | ElineeF      |
 | Ronald Sebastian Silvera Llimpe       | rs.silvera.2022@alumnos.urjc.es       | D4ng3r25       |
 | Alexander Matias Pearson Huaycochea       | a.pearson.2022@alumnos.urjc.es       | Pearson33       |
