@@ -379,17 +379,43 @@
 
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="category" class="form-label">Size 1</label>
-                                    <select id="category" name="category" class="form-control ps-3 text-input" required>
-                                        <option value="" selected>Select a category</option>
-                                        <option value="Sport">XL</option>
-                                        <option value="Casual">L</option>
-                                        <option value="Urban">M</option>
-                                        <option value="Urban">S</option>
-                                    </select>
+                                    <label for="category" class="form-label">Sizes</label>
+                                    <div id="category" name="category" class="form-control ps-3 text-input" required>
+                                        <p style="margin: 0px; color: black;">S</p>
+                                    </div>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Stock</label>
+                                    <div class="quantity-price d-flex justify-content-between align-items-center">
+                                        <div class="input-group product-qty" >
+                                            <button type="button"
+                                                class="quantity-left-minus btn btn-light rounded-0 rounded-start btn-number"
+                                                data-type="minus">
+                                                <svg width="16" height="16">
+                                                    <use xlink:href="#minus"></use>
+                                                </svg>
+                                            </button>
+                                            <input type="text" name="quantity"
+                                                class="form-control input-number quantity" value="1">
+                                            <button type="button"
+                                                class="quantity-right-plus btn btn-light rounded-0 rounded-end btn-number"
+                                                data-type="plus">
+                                                <svg width="16" height="16">
+                                                    <use xlink:href="#plus"></use>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <div id="category" name="category" class="form-control ps-3 text-input" required>
+                                      <p style="margin: 0px; color: black;">M</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
                                     <div class="quantity-price d-flex justify-content-between align-items-center">
                                         <div class="input-group product-qty">
                                             <button type="button"
@@ -415,17 +441,11 @@
 
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="category" class="form-label">Size 2</label>
-                                    <select id="category" name="category" class="form-control ps-3 text-input" required>
-                                        <option value="" selected>Select a category</option>
-                                        <option value="Sport">XL</option>
-                                        <option value="Casual">L</option>
-                                        <option value="Urban">M</option>
-                                        <option value="Urban">S</option>
-                                    </select>
+                                    <div id="category" name="category" class="form-control ps-3 text-input" required>
+                                        <p style="margin: 0px; color: black;">L</p>
+                                    </div>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label">Stock</label>
                                     <div class="quantity-price d-flex justify-content-between align-items-center">
                                         <div class="input-group product-qty">
                                             <button type="button"
@@ -451,53 +471,11 @@
 
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="category" class="form-label">Size 3</label>
-                                    <select id="category" name="category" class="form-control ps-3 text-input" required>
-                                        <option value="" selected>Select a category</option>
-                                        <option value="Sport">XL</option>
-                                        <option value="Casual">L</option>
-                                        <option value="Urban">M</option>
-                                        <option value="Urban">S</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Stock</label>
-                                    <div class="quantity-price d-flex justify-content-between align-items-center">
-                                        <div class="input-group product-qty">
-                                            <button type="button"
-                                                class="quantity-left-minus btn btn-light rounded-0 rounded-start btn-number"
-                                                data-type="minus">
-                                                <svg width="16" height="16">
-                                                    <use xlink:href="#minus"></use>
-                                                </svg>
-                                            </button>
-                                            <input type="text" name="quantity"
-                                                class="form-control input-number quantity" value="1">
-                                            <button type="button"
-                                                class="quantity-right-plus btn btn-light rounded-0 rounded-end btn-number"
-                                                data-type="plus">
-                                                <svg width="16" height="16">
-                                                    <use xlink:href="#plus"></use>
-                                                </svg>
-                                            </button>
-                                        </div>
+                                    <div id="category" name="category" class="form-control ps-3 text-input" required>
+                                        <p style="margin: 0px; color: black;">XL</p>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="category" class="form-label">Size 4</label>
-                                    <select id="category" name="category" class="form-control ps-3 text-input" required>
-                                        <option value="" selected>Select a category</option>
-                                        <option value="Sport">XL</option>
-                                        <option value="Casual">L</option>
-                                        <option value="Urban">M</option>
-                                        <option value="Urban">S</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Stock</label>
                                     <div class="quantity-price d-flex justify-content-between align-items-center">
                                         <div class="input-group product-qty">
                                             <button type="button"
@@ -544,7 +522,7 @@
                             </div>
 
                             <div class="d-grid gap-2 mt-4">
-                                <button type="submit" class="btn btn-red hvr-sweep-to-right dark-sweep">Publish
+                                <button type="submit" class="btn btn-red hvr-sweep-to-right dark-sweep">Edit
                                     Shoe</button>
                                 <button type="button"
                                     class="btn btn-outline-gray hvr-sweep-to-right dark-sweep">Cancel</button>
@@ -631,7 +609,7 @@
                 reader.readAsDataURL(file);
             }
         }
-
+//.product-qyt
     </script>
     <script src="js/jquery-1.11.0.min.js"></script>
     <script src="js/plugins.js"></script>
