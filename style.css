@@ -323,6 +323,25 @@ a {
   transition: 0.3s color ease-out;
 }
 
+#deleteReviewButton:hover{
+   color:#8d0414;
+   transition: 0.4s;
+}
+
+
+#deleteReviewButton{
+  border: none;
+  background-color: transparent;
+  margin-bottom: 10px;
+  position: relative;
+  left: 90%;
+  top: -150px;
+}
+
+#registerButton:hover{
+  color:white !important;
+}
+
 a:hover {
   color: var(--dark-color);
 }

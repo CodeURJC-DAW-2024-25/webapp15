@@ -228,6 +228,32 @@
   </div>
   <!-- / quick view -->
 
+  <!-- Modal Delete Confirmation -->
+  <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModalLabel">You are about to delete the following item from the database</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p style="color: black;"><strong>Product Name:</strong> <span id="productNameModal">Nike Air</span></p>
+          <img src="/images/card-large-item1.jpg" alt="Imagen del Producto" id="productImageModal" class="img-fluid">
+          <div class="form-check mt-3">
+            <input class="form-check-input" type="checkbox" id="confirmCheck">
+            <label class="form-check-label" for="confirmCheck">
+              As an administrator, I agree to the deletion of this product and any responsibility will fall on me.
+            </label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-red hvr-sweep-to-right dark-sweep" id="confirmDeleteBtn" disabled>Confirm Product Deletion</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /End of Modal Delete Confirmation -->
+
   <div class="modal fade" id="modallong" tabindex="-1" aria-modal="true" role="dialog">
     <div class="modal-dialog modal-fullscreen-md-down modal-md modal-dialog-centered">
       <div class="modal-content">
@@ -373,8 +399,9 @@
             </div>
             <div class="modal-footer mt-5 d-flex justify-content-center">
               <button type="button" class="btn btn-red hvr-sweep-to-right dark-sweep">Login</button>
-              <button type="button"
-                class="btn btn-outline-gray hvr-sweep-to-right dark-sweep"><a href="register-user.html">Register</a></button>
+              <a href="register-user.html">
+                    <button type="button" class="btn btn-outline-gray hvr-sweep-to-right dark-sweep" id="registerButton"> Register</button>
+                  </a>
             </div>
           </div>
         </div>
@@ -570,6 +597,70 @@
   <div class="shopify-grid py-2 my-2 py-md-5 my-md-5">
     <div class="container-lg">
       <div class="row">
+        <aside class="col-lg-2 col-md-6 col-sm-12">
+          <div class="sidebar">
+            <div class="widget-menu">
+              <div class="widget-search-bar position-relative">
+                <form role="search" method="get" class="d-flex">
+                  <input class="search-field rounded-2" placeholder="Search" type="search">
+                  <div class="search-icon position-absolute end-0">
+                    <a href="#">
+                      <svg class="search">
+                        <use xlink:href="#search"></use>
+                      </svg>
+                    </a>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="widget-product-categories pt-5">
+              <h5 class="widget-title text-decoration-underline">Categories</h5>
+              <ul class="product-categories sidebar-list list-unstyled text-hover">
+                <li class="cat-item">
+                  <a href="shop.html">All</a>
+                </li>
+                <li class="cat-item">
+                  <a href="single-product.html">Men Shoes</a>
+                </li>
+                <li class="cat-item">
+                  <a href="single-product.html">Women Shoes</a>
+                </li>
+                <li class="cat-item">
+                  <a href="single-product.html">Sports Shoes</a>
+                </li>
+                <li class="cat-item">
+                  <a href="single-product.html">Child Shoes</a>
+                </li>
+              </ul>
+            </div>
+            <div class="widget-product-brands pt-3">
+              <h5 class="widget-title text-decoration-underline">Brands</h5>
+              <ul class="product-tags sidebar-list list-unstyled text-hover">
+                <li class="tags-item">
+                  <a href="shop.html">Nike</a>
+                </li>
+                <li class="tags-item">
+                  <a href="shop.html">Bata</a>
+                </li>
+                <li class="tags-item">
+                  <a href="shop.html">Woodland</a>
+                </li>
+                <li class="tags-item">
+                  <a href="shop.html">Puma</a>
+                </li>
+                <li class="tags-item">
+                  <a href="shop.html">Adidas</a>
+                </li>
+                <li class="tags-item">
+                  <a href="shop.html">Reebok</a>
+                </li>
+                <li class="tags-item">
+                  <a href="shop.html">Liberty</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </aside>
         <main class="col-lg-10 col-md-6 col-sm-12">
           <div class="filter-shop d-flex justify-content-between">
             <div class="showing-product">
@@ -596,19 +687,13 @@
                   <img src="images/card-large-item1.jpg" alt="product-item" class="product-image img-fluid">
                   <div class="cart-concern position-absolute d-flex justify-content-center">
                   <div class="cart-button d-flex gap-2 justify-content-center align-items-center">
-                    <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#modallong">
-                      <svg class="shopping-carriage">
-                        <use xlink:href="#shopping-carriage"></use>
-                      </svg>
-                    </button>
-                    <button type="button" class="btn btn-light" data-bs-target="#modaltoggle" data-bs-toggle="modal">
-                      <svg class="quick-view">
-                        <use xlink:href="#quick-view"></use>
-                      </svg>
-                    </button>
-
-                   
-
+                    <!--Delete Buttom-->
+                      <button type="button" class="btn btn-light" data-bs-target="#deleteConfirmationModal" data-bs-toggle="modal">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                          <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                        </svg>
+                      </button>
+                      <!--Edit Buttom-->
                     <a href="/edit-product.html">
                       <button type="button" class="btn btn-light" data-bs-target="#modaltoggle" data-bs-toggle="modal">
                         <svg class="icon-pencil">
@@ -616,8 +701,7 @@
                         </svg>
                       </button>
                     </a>
-                    
-                    
+
                   </div>
                 </div>
                   <!-- cart-concern -->
@@ -636,16 +720,20 @@
                   <img src="images/card-large-item2.jpg" alt="product-item" class="product-image img-fluid">
                   <div class="cart-concern position-absolute d-flex justify-content-center">
                   <div class="cart-button d-flex gap-2 justify-content-center align-items-center">
+
                     <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#modallong">
                       <svg class="shopping-carriage">
                         <use xlink:href="#shopping-carriage"></use>
                       </svg>
                     </button>
-                    <button type="button" class="btn btn-light" data-bs-target="#modaltoggle" data-bs-toggle="modal">
-                      <svg class="quick-view">
-                        <use xlink:href="#quick-view"></use>
-                      </svg>
-                    </button>
+                                       
+                    <a href="/single-product.html">
+                      <button type="button" class="btn btn-light">
+                        <svg class="quick-view">
+                          <use xlink:href="#quick-view"></use>
+                        </svg>
+                      </button>
+                    </a>
                   </div>
                 </div>
                   <!-- cart-concern -->
@@ -856,90 +944,7 @@
             </div>
           </div>
         </main>
-        <aside class="col-lg-2 col-md-6 col-sm-12">
-          <div class="sidebar">
-            <div class="widget-menu">
-              <div class="widget-search-bar position-relative">
-                <form role="search" method="get" class="d-flex">
-                  <input class="search-field rounded-2" placeholder="Search" type="search">
-                  <div class="search-icon position-absolute end-0">
-                    <a href="#">
-                      <svg class="search">
-                        <use xlink:href="#search"></use>
-                      </svg>
-                    </a>
-                  </div>
-                </form>
-              </div>
-            </div>
-            <div class="widget-product-categories pt-5">
-              <h5 class="widget-title text-decoration-underline">Categories</h5>
-              <ul class="product-categories sidebar-list list-unstyled text-hover">
-                <li class="cat-item">
-                  <a href="shop.html">All</a>
-                </li>
-                <li class="cat-item">
-                  <a href="single-product.html">Men Shoes</a>
-                </li>
-                <li class="cat-item">
-                  <a href="single-product.html">Women Shoes</a>
-                </li>
-                <li class="cat-item">
-                  <a href="single-product.html">Sports Shoes</a>
-                </li>
-                <li class="cat-item">
-                  <a href="single-product.html">Child Shoes</a>
-                </li>
-              </ul>
-            </div>
-            <div class="widget-product-brands pt-3">
-              <h5 class="widget-title text-decoration-underline">Brands</h5>
-              <ul class="product-tags sidebar-list list-unstyled text-hover">
-                <li class="tags-item">
-                  <a href="shop.html">Nike</a>
-                </li>
-                <li class="tags-item">
-                  <a href="shop.html">Bata</a>
-                </li>
-                <li class="tags-item">
-                  <a href="shop.html">Woodland</a>
-                </li>
-                <li class="tags-item">
-                  <a href="shop.html">Puma</a>
-                </li>
-                <li class="tags-item">
-                  <a href="shop.html">Adidas</a>
-                </li>
-                <li class="tags-item">
-                  <a href="shop.html">Reebok</a>
-                </li>
-                <li class="tags-item">
-                  <a href="shop.html">Liberty</a>
-                </li>
-              </ul>
-            </div>
-            <div class="widget-price-filter pt-3">
-              <h5 class="widget-titlewidget-title text-decoration-underline">Filter By Price</h5>
-              <ul class="product-tags sidebar-list list-unstyled text-hover border-bottom pb-3">
-                <li class="tags-item">
-                  <a href="shop.html">Less than $10</a>
-                </li>
-                <li class="tags-item">
-                  <a href="shop.html">$10- $20</a>
-                </li>
-                <li class="tags-item">
-                  <a href="shop.html">$20- $30</a>
-                </li>
-                <li class="tags-item">
-                  <a href="shop.html">$30- $40</a>
-                </li>
-                <li class="tags-item">
-                  <a href="shop.html">$40- $50</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </aside>
+        
       </div>
     </div>
   </div>
@@ -1096,9 +1101,42 @@
       </div>
     </div>
   </footer>
+
+  
   <script src="js/jquery-1.11.0.min.js"></script>
   <script src="js/plugins.js"></script>
   <script src="js/script.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var deleteButtons = document.querySelectorAll('.delete-product-btn');
+        deleteButtons.forEach(function (button) {
+          button.addEventListener('click', function (event) {
+            var productName = this.getAttribute('data-product-name');
+            var productImage = this.getAttribute('data-product-image');
+
+            document.getElementById('productNameModal').textContent = productName;
+            document.getElementById('productImageModal').src = productImage;
+
+            // Show the modal
+            var modal = new bootstrap.Modal(document.getElementById('deleteConfirmationModal'));
+            modal.show();
+          });
+        });
+
+        document.getElementById('confirmCheck').addEventListener('change', function () {
+          document.getElementById('confirmDeleteBtn').disabled = !this.checked;
+        });
+
+        document.getElementById('confirmDeleteBtn').addEventListener('click', function () {
+          alert('El producto ha sido eliminado correctamente.');
+          // logic to delete the product
+          var modal = bootstrap.Modal.getInstance(document.getElementById('deleteConfirmationModal'));
+          modal.hide();
+        });
+      });
+  </script>
+
+
 </body>
 
 </html>
