@@ -81,6 +81,18 @@
         .product-large-slider {
             height: 400px;
         }
+
+        .carousel {
+        height: 400px !important;
+        overflow: visible;
+    }
+    .carousel-inner {
+        min-height: 400px; /* Ajusta este valor según necesites */
+    }
+    .carousel-item {
+        height: 100%;
+    }
+        
     }
 
     @media (max-width: 576px) {
@@ -704,29 +716,29 @@
 
                         <!-- Inputs para las 5 imágenes -->
                         <div class="mb-4">
-                            <h5 class="widget-title text-decoration-underline mb-3">Imágenes del producto:</h5>
-                            <div class="d-flex flex-column gap-3">
-                                <div>
-                                    <label class="form-label">Imagen Principal</label>
-                                    <input type="file" class="form-control" id="mainImage" accept="image/*">
-                                </div>
-                                <div>
-                                    <label class="form-label">Imagen 2</label>
-                                    <input type="file" class="form-control" id="image2" accept="image/*">
-                                </div>
-                                <div>
-                                    <label class="form-label">Imagen 3</label>
-                                    <input type="file" class="form-control" id="image3" accept="image/*">
-                                </div>
-                                <div>
-                                    <label class="form-label">Imagen 4</label>
-                                    <input type="file" class="form-control" id="image4" accept="image/*">
-                                </div>
-                                <div>
-                                    <label class="form-label">Imagen 5</label>
-                                    <input type="file" class="form-control" id="image5" accept="image/*">
-                                </div>
-                            </div>
+                          <h5 class="widget-title text-decoration-underline mb-3">Imágenes del producto:</h5>
+                          <div class="d-flex flex-column gap-3">
+                              <div class="image-input-container">
+                                  <label class="form-label">Imagen Principal</label>
+                                  <input type="file" class="form-control" id="imageInput1" accept="image/*">
+                              </div>
+                              <div class="image-input-container">
+                                  <label class="form-label">Imagen 2</label>
+                                  <input type="file" class="form-control" id="imageInput2" accept="image/*">
+                              </div>
+                              <div class="image-input-container">
+                                  <label class="form-label">Imagen 3</label>
+                                  <input type="file" class="form-control" id="imageInput3" accept="image/*">
+                              </div>
+                              <div class="image-input-container">
+                                  <label class="form-label">Imagen 4</label>
+                                  <input type="file" class="form-control" id="imageInput4" accept="image/*">
+                              </div>
+                              <div class="image-input-container">
+                                  <label class="form-label">Imagen 5</label>
+                                  <input type="file" class="form-control" id="imageInput5" accept="image/*">
+                              </div>
+                          </div>
                         </div>
 
                         <!-- Resto del formulario igual que antes -->
@@ -878,126 +890,92 @@
   
  <script>
   document.addEventListener('DOMContentLoaded', function() {
-    const previewTitleContainer = document.querySelector('.preview-title-container');
-    let previewInitialized = false;
-    let thumbnailSliderPreview, largeSliderPreview;
-
+    // Inicialización de variables
     const imageInputs = document.querySelectorAll('input[type="file"]');
     const thumbnailSlides = document.querySelectorAll('.product-thumbnail-slider .swiper-slide img');
     const largeSlides = document.querySelectorAll('.product-large-slider .swiper-slide img');
-
-    // Array para almacenar las imágenes cargadas
+    let thumbnailSlider, largeSlider;
     let loadedImages = new Array(5).fill(null);
 
-    function initializePreviewSliders() {
-        if (!previewInitialized) {
-            thumbnailSliderPreview = new Swiper('.product-thumbnail-slider', {
-                direction: window.innerWidth >= 992 ? 'vertical' : 'horizontal',
-                slidesPerView: window.innerWidth >= 992 ? 5 : 4,
-                spaceBetween: 10,
-                watchSlidesProgress: true,
-                observer: true,
-                observeParents: true,
-                watchOverflow: true,
-                normalizeSlideIndex: true,
-                breakpoints: {
-                    320: {
-                        direction: 'horizontal',
-                        slidesPerView: 3,
-                    },
-                    576: {
-                        direction: 'horizontal',
-                        slidesPerView: 4,
-                    },
-                    992: {
-                        direction: 'vertical',
-                        slidesPerView: 5,
-                    }
-                }
-            });
-
-            largeSliderPreview = new Swiper('.product-large-slider', {
-                spaceBetween: 10,
-                observer: true,
-                observeParents: true,
-                watchOverflow: true,
-                effect: 'fade', // Añade efecto de fade como el original
-                fadeEffect: {
-                    crossFade: true
+    // Función para inicializar los sliders
+    function initializeSliders() {
+        thumbnailSlider = new Swiper('.product-thumbnail-slider', {
+            direction: window.innerWidth >= 992 ? 'vertical' : 'horizontal',
+            slidesPerView: window.innerWidth >= 992 ? 5 : 4,
+            spaceBetween: 10,
+            watchSlidesProgress: true,
+            breakpoints: {
+                320: {
+                    direction: 'horizontal',
+                    slidesPerView: 3,
                 },
-                thumbs: {
-                    swiper: thumbnailSliderPreview
+                576: {
+                    direction: 'horizontal',
+                    slidesPerView: 4,
                 },
-                pagination: {
-                    el: '.swiper-pagination',
-                    clickable: true
+                992: {
+                    direction: 'vertical',
+                    slidesPerView: 5,
                 }
-            });
+            }
+        });
 
-            previewInitialized = true;
+        largeSlider = new Swiper('.product-large-slider', {
+            spaceBetween: 10,
+            effect: 'fade',
+            fadeEffect: {
+                crossFade: true
+            },
+            thumbs: {
+                swiper: thumbnailSlider
+            },
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true
+            }
+        });
 
-            // Actualizar la dirección del thumbnail slider en resize
-            window.addEventListener('resize', function() {
-                thumbnailSliderPreview.params.direction = window.innerWidth >= 992 ? 'vertical' : 'horizontal';
-                thumbnailSliderPreview.update();
-            });
-        }
+        // Evento resize para actualizar la dirección del thumbnail slider
+        window.addEventListener('resize', function() {
+            thumbnailSlider.params.direction = window.innerWidth >= 992 ? 'vertical' : 'horizontal';
+            thumbnailSlider.update();
+        });
     }
 
-    function updatePreviews() {
-        // Filtrar las imágenes nulas
-        const validImages = loadedImages.filter(img => img !== null);
+    // Inicializar sliders al cargar la página
+    initializeSliders();
 
-        if (validImages.length > 0) {
-            previewTitleContainer.style.display = 'block';
-        } else {
-            previewTitleContainer.style.display = 'none';
-            return;
-        }
-
-        // Actualizar las imágenes en los sliders
-        validImages.forEach((imageData, index) => {
-            if (thumbnailSlides[index]) {
-                thumbnailSlides[index].src = imageData;
+    // Manejar la carga de imágenes
+    imageInputs.forEach((input, index) => {
+        input.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    loadedImages[index] = e.target.result;
+                    updateSliders();
+                };
+                reader.readAsDataURL(file);
             }
-            if (largeSlides[index]) {
+        });
+    });
+
+    // Función para actualizar los sliders con las nuevas imágenes
+    function updateSliders() {
+        loadedImages.forEach((imageData, index) => {
+            if (imageData && thumbnailSlides[index] && largeSlides[index]) {
+                thumbnailSlides[index].src = imageData;
                 largeSlides[index].src = imageData;
                 largeSlides[index].parentElement.dataset.image = imageData;
             }
         });
 
         // Actualizar los sliders
-        if (previewInitialized) {
-            thumbnailSliderPreview.update();
-            largeSliderPreview.update();
-        } else {
-            initializePreviewSliders();
-        }
+        thumbnailSlider.update();
+        largeSlider.update();
     }
-
-    imageInputs.forEach((input, index) => {
-        input.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                
-                reader.onload = function(e) {
-                    // Actualizar la imagen en el array
-                    loadedImages[index] = e.target.result;
-                    
-                    // Actualizar previews
-                    updatePreviews();
-                };
-
-                reader.readAsDataURL(file);
-            } else {
-                // Si se cancela la selección de archivo, eliminar la imagen del array
-                loadedImages[index] = null;
-                updatePreviews();
-            }
-        });
-    });
 });
+
  </script>
   <script src="js/jquery-1.11.0.min.js"></script>
   <script src="js/plugins.js"></script>
