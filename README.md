@@ -73,4 +73,49 @@ A shoe ecommerce website where you can buy shoes, make reviews, ckeck your purch
 
 ![*descripctor*](readmeImg/01.jpeg)
 
+### **otra pantalla**:
+(agrega la descriocion de la pagina aqui )
+
+![*descripctor*](readmeImg/01.jpeg)
+
+### **otra pantalla**:
+(agrega la descriocion de la pagina aqui )
+
+![*descripctor*](readmeImg/01.jpeg)
+
+### **otra pantalla**:
+(agrega la descriocion de la pagina aqui )
+
+![*descripctor*](readmeImg/01.jpeg)
+
+### **otra pantalla**:
+(agrega la descriocion de la pagina aqui )
+
+![*descripctor*](readmeImg/01.jpeg)
+
+### **otra pantalla**:
+(agrega la descriocion de la pagina aqui )
+
+![*descripctor*](readmeImg/01.jpeg)
+
+### **otra pantalla**:
+(agrega la descriocion de la pagina aqui )
+
+![*descripctor*](readmeImg/01.jpeg)
+
+### **otra pantalla**:
+(agrega la descriocion de la pagina aqui )
+
+![*descripctor*](readmeImg/01.jpeg)
+
+### **otra pantalla**:
+(agrega la descriocion de la pagina aqui )
+
+![*descripctor*](readmeImg/01.jpeg)
+
+### **otra pantalla**:
+(agrega la descriocion de la pagina aqui )
+
+![*descripctor*](readmeImg/01.jpeg)
+
 
