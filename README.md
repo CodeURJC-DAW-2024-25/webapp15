@@ -13,7 +13,8 @@
 ## 🖼 Class Diagram
 📌 *Visual representation of the system architecture:* 
 
-![parte1](https://github.com/user-attachments/assets/03e8243d-83d6-4b11-9f27-f45836ad6c18)
+![ERDiagram](https://github.com/user-attachments/assets/05360e59-039a-41a9-b84c-3220f30e63f5)
+
 
 
 ## 🎭 **Theme & Description** 
