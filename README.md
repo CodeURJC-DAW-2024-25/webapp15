@@ -1,5 +1,6 @@
 # WebApp15
 
+# Phase 0
 # Application Name: 👟 StepX
 
 ## 👥 Team Members:
@@ -60,6 +61,16 @@ A shoe ecommerce website where you can buy shoes, make reviews, ckeck your purch
 ## ⭐ Advanced Algorithm or Query:
 - **Recommendation System**: Based on past purchases, shoes are recommended to registered users
 
+## 🏗 **Screens**:
 
+### **Home Page**:
+(agrega la descriocion de la pagina aqui )
+
+![*Home*](readmeImg/01.jpeg)
+
+### **otra pantalla**:
+(agrega la descriocion de la pagina aqui )
+
+![*descripctor*](readmeImg/01.jpeg)
 
 
