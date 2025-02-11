@@ -119,3 +119,5 @@ Similarly to the edit item tab, the create item tab is available only to users w
 ![*descripctor*](readmeImg/01.jpeg)
 
 
+## 💻 Screen Diagram:
+![ScreenDiagram](https://github.com/user-attachments/assets/3f66410c-e9bd-480b-ad75-75954291a3fc)
