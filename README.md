@@ -64,29 +64,29 @@ A shoe ecommerce website where you can buy shoes, make reviews, ckeck your purch
 ## 🏗 **Screens**:
 
 ### **Home Page**:
-(agrega la descriocion de la pagina aqui )
+The home page tab is responsible for displaying what all new users can initially see, except for the section of the navigation bar where there are specific buttons that redirect to other tabs depending on the type of user detected by the system. It also allows you to navigate to other screens depending on the need.
 
 ![*Home*](readmeImg/01.jpeg)
 
-### **otra pantalla**:
-(agrega la descriocion de la pagina aqui )
+### **Indivivual Product Screen**:
+Regarding the individual product screen, it displays the corresponding images of the selected product, as well as all its relevant attributes, including the button to select the shoe size and add it to the cart. At the bottom, there are comments about this product along with a more extensive description than the one above.
 
-![*descripctor*](readmeImg/01.jpeg)
+![*descripctor*](readmeImg/03.jpeg)
 
-### **otra pantalla**:
-(agrega la descriocion de la pagina aqui )
+### **Shop Scren**:
+The shop page is responsible for showcasing the available products, with the option for different types of customers to perform specific activities. Additionally, filters are available on the left side of the page.
 
-![*descripctor*](readmeImg/01.jpeg)
+![*descripctor*](readmeImg/02.jpeg)
 
-### **otra pantalla**:
-(agrega la descriocion de la pagina aqui )
+### **Edict Product Screen**:
+The edit product tab is only available to administrator-type users. On this page, there is a form filled with the product's information (name, description, images, etc.).
 
-![*descripctor*](readmeImg/01.jpeg)
+![*descripctor*](readmeImg/08.jpeg)
 
-### **otra pantalla**:
-(agrega la descriocion de la pagina aqui )
+### **Create Product Screen**:
+Similarly to the edit item tab, the create item tab is available only to users who are administrators. This form contains the same fields as the form on the edit item tab. Both pages are accessed by clicking the respective buttons available within the shop.
 
-![*descripctor*](readmeImg/01.jpeg)
+![*descripctor*](readmeImg/09.jpeg)
 
 ### **Check-Out**:
 The checkout screen allows users to complete their purchase by entering their shipping information, such as country, name, email, address and telephone, in addition to applying discount coupons. It also shows an order summary with product list, image, adjustable quantity, subtotal, shipping cost and automatically calculated total. Includes a "Continue with Order" button to complete the purchase. Its design is clear and functional, facilitating data validation and order adjustment in real time.
@@ -119,3 +119,5 @@ This is the create user account screen. It presents a form where users can enter
 ![*Create Account*](readmeImg/12.png)
 
 
+## 💻 Screen Diagram:
+![ScreenDiagram](https://github.com/user-attachments/assets/3f66410c-e9bd-480b-ad75-75954291a3fc)
