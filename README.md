@@ -88,34 +88,34 @@ A shoe ecommerce website where you can buy shoes, make reviews, ckeck your purch
 
 ![*descripctor*](readmeImg/01.jpeg)
 
-### **otra pantalla**:
-(agrega la descriocion de la pagina aqui )
+### **Check-Out**:
+The checkout screen allows users to complete their purchase by entering their shipping information, such as country, name, email, address and telephone, in addition to applying discount coupons. It also shows an order summary with product list, image, adjustable quantity, subtotal, shipping cost and automatically calculated total. Includes a "Continue with Order" button to complete the purchase. Its design is clear and functional, facilitating data validation and order adjustment in real time.
 
-![*descripctor*](readmeImg/01.jpeg)
+![*Check-Out*](readmeImg/10.jpeg)
 
-### **otra pantalla**:
-(agrega la descriocion de la pagina aqui )
+### **Cart**:
+The cart screen shows a summary of the selected products, including name, image, adjustable quantity and price. It also calculates the subtotal and offers the "Checkout" option to proceed with the purchase, this makes it easier to manage the order before payment, and see what products the order contains.
 
-![*descripctor*](readmeImg/01.jpeg)
+![*Cart*](readmeImg/06.png)
 
-### **otra pantalla**:
-(agrega la descriocion de la pagina aqui )
+### **Profile**:
+This is the user profile screen for StepX website. Allows the user to view and edit their personal information, including first name, last name, username, email, and a short biography. It also offers the option to change the profile photo. At the bottom, the purchase history is displayed, where the user can see details of previous orders, such as the product name, order number, date, price and delivery status. The side navigation includes access to profile information, purchase history and settings, and at the end of this page there is a graph showing the spending in the store for each month.
 
-![*descripctor*](readmeImg/01.jpeg)
+![*Profile*](readmeImg/07.jpeg)
 
-### **otra pantalla**:
-(agrega la descriocion de la pagina aqui )
+### **Admin**:
+This is the StepX admin panel screen. Displays an analytical summary with key metrics such as sales, profits, visitors and orders, along with their respective variations from the last week. It also includes trend graphs, such as recent sales movement and monthly profits, allowing managers to monitor business performance. The interface is visually clear, with a design focused on quick interpretation of data.
 
-![*descripctor*](readmeImg/01.jpeg)
+![*Admin*](readmeImg/04.jpeg)
 
-### **otra pantalla**:
-(agrega la descriocion de la pagina aqui )
+### **Login**:
+This is the login screen for the StepX website. It presents a pop-up form where users can enter their username or email and password to access their account. It also offers options to remember the session and recover the password in case you forget. Additionally, it includes a registration button for new users.
 
-![*descripctor*](readmeImg/01.jpeg)
+![*Login*](readmeImg/05.jpeg)
 
-### **otra pantalla**:
-(agrega la descriocion de la pagina aqui )
+### **Create Account**:
+This is the create user account screen. It presents a form where users can enter their username, email, and select a password to create their account.
 
-![*descripctor*](readmeImg/01.jpeg)
+![*Create Account*](readmeImg/12.png)
 
 
