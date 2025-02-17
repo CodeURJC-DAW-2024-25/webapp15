@@ -12,8 +12,8 @@
     <meta name="keywords" content="Online Store">
     <meta name="description" content="Stylish - Shoes Online Store HTML Template">
 
-    <link rel="stylesheet" href="css/vendor.css">
-    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" href="/css/vendor.css">
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -541,85 +541,10 @@
     </section>
 
 
-    <!-- Include your footer here -->
-    <script>
-        function previewImages(input) {
-            const thumbnailContainer = document.getElementById('thumbnail-slider');
-            const largeContainer = document.getElementById('large-slider');
-
-            // Limpiar imágenes previas
-            thumbnailContainer.innerHTML = '';
-            largeContainer.innerHTML = '';
-
-            if (input.files) {
-                Array.from(input.files).forEach(file => {
-                    const reader = new FileReader();
-
-                    reader.onload = function (e) {
-                        // Crear imagen miniatura
-                        const thumbSlide = document.createElement('div');
-                        thumbSlide.classList.add('swiper-slide');
-                        thumbSlide.innerHTML = `<img src="${e.target.result}" class="thumb-image img-fluid">`;
-                        thumbnailContainer.appendChild(thumbSlide);
-
-                        // Crear imagen grande
-                        const largeSlide = document.createElement('div');
-                        largeSlide.classList.add('swiper-slide');
-                        largeSlide.innerHTML = `
-                            <div class="image-zoom" data-scale="2.5" data-image="${e.target.result}">
-                                <img src="${e.target.result}" class="img-fluid">
-                            </div>`;
-                        largeContainer.appendChild(largeSlide);
-                    }
-
-                    reader.readAsDataURL(file);
-                });
-
-                // Una vez que se agregan las imágenes, actualizar Swiper
-                setTimeout(() => {
-                    new Swiper('.product-thumbnail-slider', {
-                        slidesPerView: 3,
-                        spaceBetween: 10,
-                        freeMode: true,
-                        watchSlidesProgress: true,
-                    });
-
-                    new Swiper('.product-large-slider', {
-                        slidesPerView: 1,
-                        spaceBetween: 10,
-                        pagination: {
-                            el: ".swiper-pagination",
-                            clickable: true,
-                        },
-                    });
-                }, 500); // Pequeño retraso para asegurar que Swiper detecte los cambios
-            }
-        }
-
-        function previewImage(index) {
-            // Obtener el archivo seleccionado
-            const fileInput = document.getElementById('picture' + index);
-            const file = fileInput.files[0];
-
-            // Verificar si se ha seleccionado un archivo
-            if (file) {
-                const reader = new FileReader();
-
-                // Cuando el archivo se haya cargado, actualizar la imagen en el slider
-                reader.onload = function (e) {
-                    const imgElement = document.querySelectorAll('.swiper-slide img')[index - 1];  // Ajustar el índice (comienza desde 0)
-                    imgElement.src = e.target.result;
-                };
-
-                // Leer el archivo como una URL
-                reader.readAsDataURL(file);
-            }
-        }
-
-    </script>
-    <script src="js/jquery-1.11.0.min.js"></script>
-    <script src="js/plugins.js"></script>
-    <script src="js/script.js"></script>
+    
+    <script src="/js/jquery-1.11.0.min.js"></script>
+    <script src="/js/plugins.js"></script>
+    <script src="/js/script.js"></script>
 </body>
 
 </html>
