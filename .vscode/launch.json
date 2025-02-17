@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-StepxApplication<stepx>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.stepx.stepx.StepxApplication",
+            "projectName": "stepx",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
