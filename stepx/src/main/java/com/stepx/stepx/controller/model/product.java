@@ -1,20 +1,14 @@
 package com.stepx.stepx.controller.model;
 
 import java.sql.Blob;
-import java.util.List;
-import java.sql.Blob;
-import java.util.List;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
-import jakarta.persistence.ManyToMany;
 
 @Entity
-public class product {
+public class Product {
     @Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long productCode = null; //Codigo de producto
@@ -40,11 +34,11 @@ public class product {
     @Column(nullable = false)
     private Blob[] images;
 
-    //@Column(nullable = false)
-    //private review[] reviews;
+    @Column(nullable = false)
+    private Review[] reviews;
 
-    public product(){}
-        public product(String category, Double price, String brand, int stock, Blob[] images, String shortDescription, String extendedDescription){
+    public Product(){}
+        public Product(String category, Double price, String brand, int stock, Blob[] images, String shortDescription, String extendedDescription){
             this.category = category;
             this.price = price;
             this.brand = brand;
