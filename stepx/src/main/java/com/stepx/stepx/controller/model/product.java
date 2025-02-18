@@ -126,5 +126,7 @@ public class Product {
 	public String toString() {
 		return "Shoe [id=" + this.productCode + ", category=" + this.category + ", brand=" + this.brand +", short description=" + this.shortDescription + "]";
 	}
+
+    
 }
 
