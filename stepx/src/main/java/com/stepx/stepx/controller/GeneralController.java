@@ -6,6 +6,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 
+
+
 @Controller
 public class GeneralController { //todas las solicitudes "/...." son con el controlador
 
@@ -19,5 +21,16 @@ public class GeneralController { //todas las solicitudes "/...." son con el cont
         return "shop";
     }
     
+    @GetMapping("/register-user")
+    public String showRegisterUser(Model model) {
+        return "register-user";
+    }
+    
+    @GetMapping("/admin-pannel")
+    public String showAdminPanel(Model model) {
+        return "admin-pannel";
+    }
 
+    
+    
 }
