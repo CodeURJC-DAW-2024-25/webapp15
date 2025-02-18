@@ -116,7 +116,7 @@
                                                 </svg>
                                             </button>
                                             <input type="text" name="quantity"
-                                                class="form-control input-number quantity" value="1">
+                                                class="form-control input-number quantity" value="{{stock.0}}">
                                             <button type="button"
                                                 class="quantity-right-plus btn btn-light rounded-0 rounded-end btn-number"
                                                 data-type="plus">
@@ -146,7 +146,7 @@
                                                 </svg>
                                             </button>
                                             <input type="text" name="quantity"
-                                                class="form-control input-number quantity" value="1">
+                                                class="form-control input-number quantity" value="{{stock.1}}">
                                             <button type="button"
                                                 class="quantity-right-plus btn btn-light rounded-0 rounded-end btn-number"
                                                 data-type="plus">
@@ -176,7 +176,7 @@
                                                 </svg>
                                             </button>
                                             <input type="text" name="quantity"
-                                                class="form-control input-number quantity" value="1">
+                                                class="form-control input-number quantity" value="{{stock.2}}">
                                             <button type="button"
                                                 class="quantity-right-plus btn btn-light rounded-0 rounded-end btn-number"
                                                 data-type="plus">
@@ -206,7 +206,7 @@
                                                 </svg>
                                             </button>
                                             <input type="text" name="quantity"
-                                                class="form-control input-number quantity" value="1">
+                                                class="form-control input-number quantity" value="{{stock.3}}">
                                             <button type="button"
                                                 class="quantity-right-plus btn btn-light rounded-0 rounded-end btn-number"
                                                 data-type="plus">
@@ -222,7 +222,7 @@
                             <div class="mb-3">
                                 <label for="category" class="form-label">Category</label>
                                 <select id="category" name="category" class="form-control ps-3 text-input" required>
-                                    <option value="" selected>Select a category</option>
+                                    <option value="" selected>{{category}}</option>
                                     <option value="Sport">Sport</option>
                                     <option value="Casual">Casual</option>
                                     <option value="Urban">Urban</option>
