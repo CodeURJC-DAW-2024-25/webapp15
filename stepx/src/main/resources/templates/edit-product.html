@@ -33,6 +33,7 @@
         <div class="container">
             <div class="row">
                 <!-- Form Column -->
+                 {{#product}}
                 <div class="col-lg-9 mx-auto">
                     <div class="login-form bg-light p-5" style=" background: rgba(0, 0, 0, 0.2); /* Fondo semitransparente */
                     backdrop-filter: blur(50px);
@@ -47,21 +48,21 @@
                             <div class="mb-3">
                                 <label for="name" class="form-label">Name</label>
                                 <input type="text" id="name" name="name" class="form-control ps-3 text-input"
-                                    value="Nike Air force 1" required>
+                                    value="{{name}}" required>
                             </div>
 
                             <div class="mb-3">
                                 <label for="description" class="form-label">Description</label>
                                 <textarea id="description" name="description" class="form-control ps-3 text-input"
                                     rows="5"
-                                    required>This Shoes is comfortable for wearing for men. imperdiet nulla molestie ac vulputate scelerisque amet.Bibendum adipiscing platea blandit sit sed quam semper rhoncus. Diam ultrices maecenas consequat eu tortor orci.</textarea>
+                                    required>{{shortDescription}}</textarea>
                             </div>
 
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <div class="input-group">
                                         <span class="input-group-text">$</span>
-                                        <input type="number" class="form-control" value="0" required>
+                                        <input type="number" class="form-control" value="{{price}}" required>
                                     </div>
         
                                 </div>
@@ -231,7 +232,7 @@
                             <div class="mb-3">
                                 <label for="gender" class="form-label">Brand</label>
                                 <select id="gender" name="gender" class="form-control ps-3 text-input" required>
-                                    <option value="" selected>Select Brand</option>
+                                    <option value="{{brand}}" selected>{{brand}}</option>
                                     <option value="Nike">Nike</option>
                                     <option value="Puma">Puma</option>
                                     <option value="Adidas">Adidas</option>
@@ -248,13 +249,12 @@
                             </div>
                         </form>
                     </div>
+                {{/product}}    
                 </div>
             </div>
         </div>
     </section>
 
-
-    <!-- Include your footer here -->
     <script>
         function previewImages(input) {
             const thumbnailContainer = document.getElementById('thumbnail-slider');
