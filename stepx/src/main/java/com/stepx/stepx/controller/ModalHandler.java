@@ -5,7 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import com.stepx.stepx.model.product;
+import com.stepx.stepx.model.Product;
 import com.stepx.stepx.service.ProductsService;
 import org.springframework.ui.Model;
 
@@ -21,7 +21,7 @@ public class ModalHandler {
 
     public String getProductById(Model model,@PathVariable Long id) {
 
-        product product = productsService.getProductById(id);
+        Product product = productsService.getProductById(id);
 
         if (product == null) {
             return "<p>Error: Product not found</p>";

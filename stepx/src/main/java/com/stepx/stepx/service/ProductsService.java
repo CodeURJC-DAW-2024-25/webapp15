@@ -10,12 +10,10 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.stereotype.Service;
 
 import com.stepx.stepx.model.Product;
-import com.stepx.stepx.model.Product;
 
 @Service
 public class ProductsService {
     
-    private ConcurrentMap<Long, Product> products= new ConcurrentHashMap<>();//allows to use the map in a concurrent way
     private ConcurrentMap<Long, Product> products= new ConcurrentHashMap<>();//allows to use the map in a concurrent way
     private AtomicLong nextId = new AtomicLong();//allows to work with the id in a concurrent way
 
@@ -47,13 +45,13 @@ public class ProductsService {
         "urban"
         ));
 
-       save(new product("orange-white-shoe", "confy", "stylish and moder shoe for mature people", 80, "nike", 
+       save(new Product("orange-white-shoe", "confy", "stylish and moder shoe for mature people", 80, "nike", 
        new ArrayList<>(Arrays.asList("/images/shopimages/orange-white-shop-shoe.jpg","/images/shopimages/Red-nike-shop-shoe.jpg")),
        new ArrayList<Integer>(Arrays.asList(72, 17, 84,84)),
        "urban"
        ));
 
-       save(new product("pink-newbalance-shoe", "stylish", "suitable shoe for most of the world", 60, "new balance", 
+       save(new Product("pink-newbalance-shoe", "stylish", "suitable shoe for most of the world", 60, "new balance", 
        new ArrayList<>(Arrays.asList("/images/shopimages/pink-newbalance-shoe.jpg","/images/shopimages/Red-nike-shop-shoe.jpg")),
        new ArrayList<Integer>(Arrays.asList(76, 34, 3,16)),
        "casual"
@@ -69,7 +67,7 @@ public class ProductsService {
        "sport"
        ));
 
-       save(new product("red-converse-shoe", "confy", "stylish and moder shoe for mature people", 120, "converse", 
+       save(new Product("red-converse-shoe", "confy", "stylish and moder shoe for mature people", 120, "converse", 
        new ArrayList<>(Arrays.asList("/images/shopimages/red-converse-shoe.jpg","/images/shopimages/Red-nike-shop-shoe.jpg")),
        new ArrayList<Integer>(Arrays.asList(26, 46, 84,47)),
        "casual"
