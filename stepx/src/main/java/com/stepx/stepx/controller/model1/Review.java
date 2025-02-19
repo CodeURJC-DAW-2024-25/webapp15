@@ -1,4 +1,4 @@
-package com.stepx.stepx.controller.model;
+package com.stepx.stepx.controller.model1;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
