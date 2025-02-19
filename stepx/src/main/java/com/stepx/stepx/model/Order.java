@@ -1,4 +1,4 @@
-package com.stepx.stepx.controller.model;
+package com.stepx.stepx.model;
 
 import java.util.List;
 import jakarta.persistence.Column;

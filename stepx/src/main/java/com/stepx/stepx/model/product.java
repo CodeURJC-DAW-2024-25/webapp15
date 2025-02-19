@@ -1,70 +1,132 @@
 package com.stepx.stepx.model;
 
-import java.util.ArrayList;
+import java.sql.Blob;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
-public class product {
-    private Long id;
-    private String name;
+@Entity
+public class Product {
+    @Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long productCode = null; //Codigo de producto
+	
+    @Column(nullable = false)
+	private String category;
+    
+    @Column(nullable = false)
     private String shortDescription;
-    private String longDescription;
-    private int price;
+
+    @Column(nullable = false)
+    private String extendedDescription;
+	
+	@Column(nullable = false)
+	private Double price;
+
+    @Column(nullable = false)
     private String brand;
-    private ArrayList<String> images;
-    private ArrayList<Integer>stock;
-    private String category;
 
-    public product(){
+    @Column(nullable = false)
+    private int stock;
 
+    @Column(nullable = false)
+    private Blob[] images;
+
+    @Column(nullable = false)
+    private Review[] reviews;
+
+    public Product(){}
+        public Product(String category, Double price, String brand, int stock, Blob[] images, String shortDescription, String extendedDescription){
+            this.category = category;
+            this.price = price;
+            this.brand = brand;
+            this.stock = stock;
+            this.images = images;
+            this.shortDescription = shortDescription;
+            this.extendedDescription = extendedDescription;
+        }
+
+	public Long getProductCode() {
+		return this.productCode;
+	}
+
+    public void setProductCode(Long productCode){
+        this.productCode = productCode;
     }
 
-    public product(String name, String shortDescription, String longDescription, int price, String brand, ArrayList<String> images, ArrayList<Integer> stock, String category) {
-        this.name = name;
-        this.shortDescription = shortDescription;
-        this.longDescription = longDescription;
-        this.price = price;
-        this.brand = brand;
-        this.images = images;
-        this.stock = stock;
+	public String getCategory() {
+		return this.category;
+	}
+
+    public void setCategory(String category){
         this.category = category;
     }
 
-    public Long getId() {
-        return id;
+    public Double getPrice(){
+        return this.price;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setPrice(Double price){
+        this.price = price;
     }
 
-    public String getName() {
-        return name;
+    public String getBrand(){
+        return this.brand;
     }
 
-    public String getShortDescription() {
-        return shortDescription;
+    
+    public void setBrand(String brand){
+        this.brand = brand;
     }
 
-    public String getLongDescription() {
-        return longDescription;
+    public int getStock(){
+        return this.stock;
     }
 
-    public int getPrice() {
-        return price;
+    
+    public void setStock(int stock){
+        this.stock = stock;
     }
 
-    public String getBrand() {
-        return brand;
+    public Blob[] getImages(){
+        return this.images;
     }
 
-    public ArrayList<String> getImages() {
-        return images;
+    public void setImages(Blob[] images){
+        this.images = images;
     }
 
-    public ArrayList<Integer> getStock() {
-        return stock;
+    public void setImage(int ref, Blob image){ //Para cambiar imagen específica
+        this.images[ref] = image;
+    }
+    
+    public Blob getImage(int ref){
+        return this.images[ref];
     }
 
-    public String getCategory() {
-        return category;
+	public String getShortDescription() {
+		return this.shortDescription;
+	}
+
+    public void setShortDescription(String shortDescription){
+        this.shortDescription = shortDescription;
     }
+
+    public String getExtendedDescription() {
+		return this.extendedDescription;
+	}
+
+    public void setExtendedDescription(String extendedDescription){
+        this.extendedDescription = extendedDescription;
+    }
+
+	@Override
+	public String toString() {
+		return "Shoe [id=" + this.productCode + ", category=" + this.category + ", brand=" + this.brand +", short description=" + this.shortDescription + "]";
+	}
+
+    
 }
+
