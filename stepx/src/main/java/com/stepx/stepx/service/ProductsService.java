@@ -9,16 +9,16 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.stereotype.Service;
 
-import com.stepx.stepx.model.product;
+import com.stepx.stepx.model.Product;
 
 @Service
 public class ProductsService {
     
-    private ConcurrentMap<Long, product> products= new ConcurrentHashMap<>();//allows to use the map in a concurrent way
+    private ConcurrentMap<Long, Product> products= new ConcurrentHashMap<>();//allows to use the map in a concurrent way
     private AtomicLong nextId = new AtomicLong();//allows to work with the id in a concurrent way
 
     public ProductsService(){
-        save(new product("Nike Air Yellow",
+        save(new Product("Nike Air Yellow",
         "The Nike Air Max 270 React ENG combines a full-length React foam midsole with a 270 Max Air unit for unrivaled comfort and a striking visual experience.",
         "The shoes upper features lightweight, no-sew materials that create a modern aesthetic that looks as good as it feels.",
         90,
@@ -28,7 +28,7 @@ public class ProductsService {
         "sport"
         ));
 
-        save(new product("Red Nike Runnin", "Perfect for run long distances",
+        save(new Product("Red Nike Runnin", "Perfect for run long distances",
         "the style and confy of the shoe is somthing that most of the brands would like to have",
         100,
         "nike",
@@ -37,7 +37,7 @@ public class ProductsService {
         "casual"
         ));
         
-        save(new product("coloredPair", "Perfect for run long distances",
+        save(new Product("coloredPair", "Perfect for run long distances",
         "the style and confy of the shoe is somthing that most of the brands would like to have",
         70,
         "reebok",
@@ -46,19 +46,29 @@ public class ProductsService {
         "urban"
         ));
 
+<<<<<<< HEAD
        save(new product("orange-white-shoe", "confy", "stylish and moder shoe for mature people", 80, "nike", 
        new ArrayList<>(Arrays.asList("/images/shopimages/orange-white-shop-shoe.jpg","/images/shopimages/Red-nike-shop-shoe.jpg")),
+=======
+       save(new Product("orange-white-shoe", "confy", "stylish and moder shoe for mature people", 80, "nike", 
+       new ArrayList<>(Arrays.asList("/images/shopimages/orange-white-shop-shoe.jpg")),
+>>>>>>> 4c878146a05257f1bd0e29a08f573198194d058f
        new ArrayList<Integer>(Arrays.asList(72, 17, 84,84)),
        "urban"
        ));
 
+<<<<<<< HEAD
        save(new product("pink-newbalance-shoe", "stylish", "suitable shoe for most of the world", 60, "new balance", 
        new ArrayList<>(Arrays.asList("/images/shopimages/pink-newbalance-shoe.jpg","/images/shopimages/Red-nike-shop-shoe.jpg")),
+=======
+       save(new Product("pink-newbalance-shoe", "stylish", "suitable shoe for most of the world", 60, "new balance", 
+       new ArrayList<>(Arrays.asList("/images/shopimages/pink-newbalance-shoe.jpg")),
+>>>>>>> 4c878146a05257f1bd0e29a08f573198194d058f
        new ArrayList<Integer>(Arrays.asList(76, 34, 3,16)),
        "casual"
        ));
 
-       save(new product("Nike-Air-Pink",
+       save(new Product("Nike-Air-Pink",
        "The Nike Air Max 270 React ENG combines a full-length React foam midsole with a 270 Max Air unit for unrivaled comfort and a striking visual experience.",
        "The shoes upper features lightweight, no-sew materials that create a modern aesthetic that looks as good as it feels.",
        99,
@@ -68,14 +78,19 @@ public class ProductsService {
        "sport"
        ));
 
+<<<<<<< HEAD
        save(new product("red-converse-shoe", "confy", "stylish and moder shoe for mature people", 120, "converse", 
        new ArrayList<>(Arrays.asList("/images/shopimages/red-converse-shoe.jpg","/images/shopimages/Red-nike-shop-shoe.jpg")),
+=======
+       save(new Product("red-converse-shoe", "confy", "stylish and moder shoe for mature people", 120, "converse", 
+       new ArrayList<>(Arrays.asList("/images/shopimages/red-converse-shoe.jpg")),
+>>>>>>> 4c878146a05257f1bd0e29a08f573198194d058f
        new ArrayList<Integer>(Arrays.asList(26, 46, 84,47)),
        "casual"
        ));
 
 
-       save(new product("Nike-Air-multicolor",
+       save(new Product("Nike-Air-multicolor",
        "The Nike Air Max 270 React ENG combines a full-length React foam midsole with a 270 Max Air unit for unrivaled comfort and a striking visual experience.",
        "The shoes upper features lightweight, no-sew materials that create a modern aesthetic that looks as good as it feels.",
        85,
@@ -86,7 +101,7 @@ public class ProductsService {
        ));
 
 
-       save(new product("Nike-Air-grey",
+       save(new Product("Nike-Air-grey",
        "The Nike Air Max 270 React ENG combines a full-length React foam midsole with a 270 Max Air unit for unrivaled comfort and a striking visual experience.",
        "The shoes upper features lightweight, no-sew materials that create a modern aesthetic that looks as good as it feels.",
        134,
@@ -97,7 +112,7 @@ public class ProductsService {
        ));
     }
 
-    public void save(product product) { //añaadir un producto al mapa
+    public void save(Product product) { //añaadir un producto al mapa
         long id = nextId.incrementAndGet();
         product.setId(id);
         products.put(id, product);
@@ -107,11 +122,11 @@ public class ProductsService {
         products.remove(id);
     }
 
-    public Collection<product> getProducts(){ //colection is an interface of all the collections(list, set, map)
+    public Collection<Product> getProducts(){ //colection is an interface of all the collections(list, set, map)
         return products.values();
     }
 
-    public product getProductById(Long id){
+    public Product getProductById(Long id){
         return products.get(id);
     }
 
