@@ -25,7 +25,7 @@ public class ProductsService {
         "Nike",
         new ArrayList<String>(Arrays.asList("/images/shopimages/Yellow-nike-shop-shoe.jpg", "/images/shopimages/Red-nike-shop-shoe.jpg")),
         new ArrayList<Integer>(Arrays.asList(94, 55, 28,10)),
-        "sport"
+        "sport", "S"
         ));
         save(new Product("Red Nike Runnin", "Perfect for run long distances",
         "the style and confy of the shoe is somthing that most of the brands would like to have",
@@ -33,7 +33,7 @@ public class ProductsService {
         "nike",
         new ArrayList<>(Arrays.asList("/images/shopimages/Red-nike-shop-shoe.jpg","/images/shopimages/Red-nike-shop-shoe.jpg")),
         new ArrayList<Integer>(Arrays.asList(50, 10, 80,25)),
-        "casual"
+        "casual", "M"
         ));
         
         save(new Product("coloredPair", "Perfect for run long distances",
@@ -42,19 +42,19 @@ public class ProductsService {
         "reebok",
         new ArrayList<>(Arrays.asList("/images/shopimages/paircolored-shop-shoe.jpg","/images/shopimages/Red-nike-shop-shoe.jpg")),
         new ArrayList<Integer>(Arrays.asList(80, 21, 56,52)),
-        "urban"
+        "urban", "XL"
         ));
 
        save(new Product("orange-white-shoe", "confy", "stylish and moder shoe for mature people", 80, "nike", 
        new ArrayList<>(Arrays.asList("/images/shopimages/orange-white-shop-shoe.jpg","/images/shopimages/Red-nike-shop-shoe.jpg")),
        new ArrayList<Integer>(Arrays.asList(72, 17, 84,84)),
-       "urban"
+       "urban", "L"
        ));
 
        save(new Product("pink-newbalance-shoe", "stylish", "suitable shoe for most of the world", 60, "new balance", 
        new ArrayList<>(Arrays.asList("/images/shopimages/pink-newbalance-shoe.jpg","/images/shopimages/Red-nike-shop-shoe.jpg")),
        new ArrayList<Integer>(Arrays.asList(76, 34, 3,16)),
-       "casual"
+       "casual", "L"
        ));
 
        save(new Product("Nike-Air-Pink",
@@ -64,13 +64,13 @@ public class ProductsService {
        "Nike",
        new ArrayList<String>(Arrays.asList("/images/shopimages/Nike-Air-Pink.jpg","/images/shopimages/Red-nike-shop-shoe.jpg")),
        new ArrayList<Integer>(Arrays.asList(78, 90, 36,12)),
-       "sport"
+       "sport", "XL"
        ));
 
        save(new Product("red-converse-shoe", "confy", "stylish and moder shoe for mature people", 120, "converse", 
        new ArrayList<>(Arrays.asList("/images/shopimages/red-converse-shoe.jpg","/images/shopimages/Red-nike-shop-shoe.jpg")),
        new ArrayList<Integer>(Arrays.asList(26, 46, 84,47)),
-       "casual"
+       "casual", "S"
        ));
 
 
@@ -81,7 +81,7 @@ public class ProductsService {
        "Nike",
        new ArrayList<String>(Arrays.asList("/images/shopimages/Nike-Air-multicolor.jpg","/images/shopimages/Red-nike-shop-shoe.jpg")),
        new ArrayList<Integer>(Arrays.asList(26, 43, 62,79)),
-         "sport"
+         "sport", "M"
        ));
 
 
@@ -92,7 +92,7 @@ public class ProductsService {
        "Nike",
        new ArrayList<String>(Arrays.asList("/images/shopimages/Nike-Air-grey.jpg","/images/shopimages/Red-nike-shop-shoe.jpg")),
        new ArrayList<Integer>(Arrays.asList(61, 34, 72,69)),
-       "casual"
+       "casual", "L"
        ));
     }
 

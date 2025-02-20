@@ -1,3 +1,5 @@
+//Product java
+
 package com.stepx.stepx.model;
 
 import java.util.ArrayList;
@@ -12,12 +14,14 @@ public class Product {
     private ArrayList<String> images;
     private ArrayList<Integer>stock;
     private String category;
+    private String size;
+
 
     public Product(){
 
     }
 
-    public Product(String name, String shortDescription, String longDescription, int price, String brand, ArrayList<String> images, ArrayList<Integer> stock, String category) {
+    public Product(String name, String shortDescription, String longDescription, int price, String brand, ArrayList<String> images, ArrayList<Integer> stock, String category, String size) {
         this.name = name;
         this.shortDescription = shortDescription;
         this.longDescription = longDescription;
@@ -26,7 +30,9 @@ public class Product {
         this.images = images;
         this.stock = stock;
         this.category = category;
+        this.size = size;
     }
+
 
     public Long getId() {
         return id;
@@ -66,5 +72,8 @@ public class Product {
 
     public String getCategory() {
         return category;
+    }
+    public String getSize(){
+        return size;
     }
 }

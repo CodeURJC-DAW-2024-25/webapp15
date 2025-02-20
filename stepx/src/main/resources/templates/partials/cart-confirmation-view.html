@@ -1,0 +1,28 @@
+
+{{#product}}
+    <div class="message-confirmation">
+        <h1 style="text-align: center;">Do you want it in your order?</h1>
+    </div>
+    <div class="image-confirmation">
+        <img src="{{images.0}}" alt="Product Image" style="width: 100%;max-height: 100%;">
+    </div>
+    <div class="col-lg-12 col-md-12">
+        <div class="size-confirmation">
+            <h3 style="text-align: center; margin-top: 3px;">Size: {{size}}</h3>
+        </div>
+
+        <div class="name-confirmation">
+            <h2 style="text-size-adjust:unset;">{{name}}</h2>
+        </div>
+
+        <div class="price-confirmation">
+            <p>${{price}}</p>
+        </div>
+        
+        <div class="description-confirmation">
+            <p>{{shortDescription}}</p>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-red hvr-sweep-to-right dark-sweep">
+        Add cart</button>
+{{/product}}
