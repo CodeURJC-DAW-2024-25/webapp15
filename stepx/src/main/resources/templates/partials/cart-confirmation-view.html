@@ -1,4 +1,5 @@
 {{#product}}
+<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="position: relative;left: 95%;"></button>
     <div class="message-confirmation">
         <h1 style="text-align: center; font-family:sans-serif; font-size:xx-large;">DO YOU WANT IT IN YOUR ORDER?</h1>
     </div>
@@ -30,7 +31,9 @@
         </div>
     </div>
 
-    <button type="submit" class="btn btn-red hvr-sweep-to-right dark-sweep" style=" display: block;margin: 0 auto;" onclick="AddtoCart('{{id}}')" value="1269">
-        Add to cart
-    </button>
+    <div class="container-button-confirmation">
+        <button type="submit" class="btn btn-red hvr-sweep-to-right dark-sweep" style=" display: block;margin: 0 auto;" onclick="AddtoCart('{{id}}')" value="1269">
+            Add to cart
+        </button>
+    </div>
 {{/product}}
