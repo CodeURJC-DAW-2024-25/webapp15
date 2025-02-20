@@ -1,59 +1,49 @@
-
 package com.stepx.stepx.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import java.time.*;
+import jakarta.persistence.*;
 
 @Entity
-
 public class Review {
-    @Column(nullable = false)
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String content;
     private int rating;
 
-   // @Column(nullable = false)
-   // private User user;
-
-   @Column(nullable = false)
-   private String description;
-
-   @Column(nullable = false)
-    private LocalDate date;
-
-    public Review(){}
-
-    public Review(int rating, String description, LocalDate date){ //Falta agregar User
-        this.rating = rating;
-        this.description = description;
-        this.date = date;
+    // Constructor vacío
+    public Review() {
     }
 
-    public int getRating(){
-        return this.rating;
-    }
-
-    public void setRating(int rating){
+    // Constructor con parámetros
+    public Review(String content, int rating) {
+        this.content = content;
         this.rating = rating;
     }
 
-    public String getDescription(){
-        return this.description;
+    // Getters y Setters
+    public Long getId() {
+        return id;
     }
 
-    public void setDescriprion(String description){
-        this.description = description;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public LocalDate getDate(){
-        return this.date;
+    public String getContent() {
+        return content;
     }
 
-    public void setDate(LocalDate date){
-        this.date = date;
+    public void setContent(String content) {
+        this.content = content;
     }
 
-    @Override
-	public String toString() {
-		return "Review [rating=" + this.rating + ", date=" + this.date + ", description=" + this.description + "]";
-	}
+    public int getRating() {
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
 }
