@@ -1,8 +1,9 @@
-async function openModal(productId) {
-    console.log("productId", productId); // Verificar en consola
+
+async function openModal(productId, action) {
+    console.log("productId:", productId, "Action:", action); // Verificar en consola
 
     try {
-        const response = await fetch(`/shop/${productId}`);
+        const response = await fetch(`/shop/${productId}?action=${action}`);
 
         if (!response.ok) {
             throw new Error("Error en la solicitud: " + response.status);
@@ -39,3 +40,5 @@ async function openCartModal() {
 }
 
 window.openCartModal = openCartModal;
+
+window.openModal = openModal;
