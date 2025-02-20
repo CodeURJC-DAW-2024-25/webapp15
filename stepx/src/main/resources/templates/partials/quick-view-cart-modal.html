@@ -33,7 +33,12 @@
             {{/cartItems}}
         </div>
         <!-- cart-list -->
+        {{^cartItems}}
+        <p>No items in your bag yet</p>
+        {{/cartItems}}
+        
         <div class="mini-cart-total d-flex justify-content-between py-4">
+
             <span class="fs-6">Subtotal:</span>
             <span class="special-price-code">
                 <span class="price-amount amount fs-6" style="opacity: 1;">
@@ -50,7 +55,5 @@
 
         </div>
     </div>
-    {{^cartItems}}
-    <p>No items in your bag yet</p>
-    {{/cartItems}}
+
 </div>

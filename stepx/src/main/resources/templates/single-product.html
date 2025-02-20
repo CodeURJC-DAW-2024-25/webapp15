@@ -28,7 +28,7 @@
 
   {{>header}}
 
-  
+
   <section id="selling-product" class="single-product py-2 my-2 py-md-5 my-md-5">
     {{#product}}
     <div class="container">
@@ -40,16 +40,13 @@
               <div class="swiper product-thumbnail-slider">
                 <div class="swiper-wrapper">
                   <div class="swiper-slide">
-                    <img src="{{images.0}}" alt="image alternative text"
-                      class="thumb-image img-fluid">
+                    <img src="{{images.0}}" alt="image alternative text" class="thumb-image img-fluid">
                   </div>
                   <div class="swiper-slide">
-                    <img src="{{images.1}}" alt="image alternative text"
-                      class="thumb-image img-fluid">
+                    <img src="{{images.1}}" alt="image alternative text" class="thumb-image img-fluid">
                   </div>
                   <div class="swiper-slide">
-                    <img src="{{images.0}}" alt="image alternative text"
-                      class="thumb-image img-fluid">
+                    <img src="{{images.0}}" alt="image alternative text" class="thumb-image img-fluid">
                   </div>
 
                 </div>
@@ -122,13 +119,13 @@
                   <div class="qty-button d-flex flex-wrap pt-3">
                     <button type="submit" class="btn btn-black text-uppercase me-3 mt-3 hvr-sweep-to-right">Buy
                       now</button>
-                    <button type="submit" name="add-to-cart" value="1269"
+                    <button type="submit" name="add-to-cart" onclick="AddtoCart('{{id}}')" value="1269"
                       class="btn btn-outline-gray text-uppercase mt-3 hvr-sweep-to-right">Add to cart</button>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="meta-product padding-small" style="padding-top: 5px" >
+            <div class="meta-product padding-small" style="padding-top: 5px">
               <div class="meta-item d-flex align-items-baseline">
                 <h5 class="widget-title text-decoration-underline pe-2">Product Code:</h5>
                 <ul class="select-list list-unstyled d-flex">
@@ -222,7 +219,8 @@
                         <span class="author-name">Mina Brown</span>
                         <span class="review-date">– 03/07/2023</span>
                       </div>
-                      <p id="textReview">Vitae tortor condimentum lacinia quis vel eros donec ac. Nam at lectus urna duis convallis
+                      <p id="textReview">Vitae tortor condimentum lacinia quis vel eros donec ac. Nam at lectus urna
+                        duis convallis
                         convallis</p>
                       <button id="deleteReviewButton"><i class="fa-solid fa-trash"></i></button>
                     </div>
@@ -258,7 +256,8 @@
                         <span class="author-name">Jenny Rose</span>
                         <span class="review-date">– 03/06/2022</span>
                       </div>
-                      <p id="textReview">Vitae tortor condimentum lacinia quis vel eros donec ac. Nam at lectus urna duis convallis
+                      <p id="textReview">Vitae tortor condimentum lacinia quis vel eros donec ac. Nam at lectus urna
+                        duis convallis
                         convallis</p>
                       <button id="deleteReviewButton"><i class="fa-solid fa-trash"></i></button>
                     </div>
@@ -314,7 +313,7 @@
   <script src="/js/plugins.js"></script>
   <script src="/js/script.js"></script>
   <script src="/js/single-product.js"></script>
-  
+
 </body>
 
 </html>

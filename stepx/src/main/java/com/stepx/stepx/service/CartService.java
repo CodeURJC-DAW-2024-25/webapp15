@@ -22,13 +22,10 @@ public class CartService {
 
         this.productsService = productsService;
 
-        
-
     }
 
     // Agregar un producto al carrito
-    public String addProductToCart(Long productId, int quantity) {
-        Product product = productsService.getProductById(productId);
+    public String addProductToCart(Long productId, Product product) {
         if (product == null) {
             return "Error: El producto no existe.";
         }
@@ -56,6 +53,5 @@ public class CartService {
         cart.clear();
     }
 
-    // FALTA HACER QUE SE AÑADAN LOS PRODCUTOS A LA CESTA, EN SINGLE PRODUCT.
-
+    
 }
