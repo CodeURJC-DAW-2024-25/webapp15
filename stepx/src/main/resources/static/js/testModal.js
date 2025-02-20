@@ -17,3 +17,25 @@ async function openModal(productId) {
 }
     
 window.openModal = openModal;
+
+async function openCartModal() {
+    try {
+        const response = await fetch("/cart"); // Ruta para obtener los productos del carrito
+
+        if (!response.ok) {
+            throw new Error("Error al cargar el carrito: " + response.status);
+        }
+
+        const cartContent = await response.text();
+        document.getElementById("cart-modal-body").innerHTML = cartContent;
+
+        // Forzar la apertura del modal en caso de problemas con Bootstrap
+        var myModal = new bootstrap.Modal(document.getElementById('modallong'));
+        myModal.show();
+
+    } catch (error) {
+        console.error("Error en la solicitud:", error);
+    }
+}
+
+window.openCartModal = openCartModal;

@@ -15,6 +15,8 @@ import com.stepx.stepx.model.Product;
 public class ProductsService {
     
     private ConcurrentMap<Long, Product> products= new ConcurrentHashMap<>();//allows to use the map in a concurrent way
+
+   
     private AtomicLong nextId = new AtomicLong();//allows to work with the id in a concurrent way
 
     public ProductsService(){

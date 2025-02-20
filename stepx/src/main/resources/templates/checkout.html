@@ -2,32 +2,32 @@
 <html lang="en">
 
 
-  <head>
-    <title>Stylish - Shoes Online Store HTML Template</title>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="format-detection" content="telephone=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="author" content="TemplatesJungle">
-    <meta name="keywords" content="Online Store">
-    <meta name="description" content="Stylish - Shoes Online Store HTML Template">
+<head>
+  <title>Stylish - Shoes Online Store HTML Template</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="author" content="TemplatesJungle">
+  <meta name="keywords" content="Online Store">
+  <meta name="description" content="Stylish - Shoes Online Store HTML Template">
 
-    <link rel="stylesheet" href="/css/vendor.css">
-    <link rel="stylesheet" type="text/css" href="/css/style.css">
+  <link rel="stylesheet" href="/css/vendor.css">
+  <link rel="stylesheet" type="text/css" href="/css/style.css">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,900;1,900&family=Source+Sans+Pro:wght@400;600;700;900&display=swap"
-      rel="stylesheet">
-    <!--style of the images in this page -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,900;1,900&family=Source+Sans+Pro:wght@400;600;700;900&display=swap"
+    rel="stylesheet">
+  <!--style of the images in this page -->
 
-  </head>
+</head>
 
 
 <body>
-  
+
   {{>header}}
 
   <section class="checkout-container">
@@ -108,20 +108,20 @@
                 <div class="ms-3 flex-grow-1">
                   <h5 class="mb-2">Air Pink Shoes</h5>
                   <div class="d-flex justify-content-between align-items-center flex-wrap">
-                    <div class="quantity-wrapper d-flex align-items-center me-3 mb-2">
-                      <div class="quantity-controls d-flex align-items-center border rounded">
-                        <button class="btn quantity-btn border-0">
-                          <svg class="minus" width="16" height="16">
-                            <use xlink:href="#minus"></use>
-                          </svg>
-                        </button>
-                        <input type="number" class="quantity-input" value="1" min="1" max="99">
-                        <button class="btn quantity-btn border-0">
-                          <svg class="plus" width="16" height="16">
-                            <use xlink:href="#plus"></use>
-                          </svg>
-                        </button>
-                      </div>
+                    <div class="input-group product-qty">
+                      <button type="button" class="quantity-left-minus btn btn-light rounded-0 rounded-start btn-number"
+                        data-type="minus">
+                        <svg width="16" height="16">
+                          <use xlink:href="#minus"></use>
+                        </svg>
+                      </button>
+                      <input type="text" name="quantity" class="form-control input-number quantity" value="1">
+                      <button type="button" class="quantity-right-plus btn btn-light rounded-0 rounded-end btn-number"
+                        data-type="plus">
+                        <svg width="16" height="16">
+                          <use xlink:href="#plus"></use>
+                        </svg>
+                      </button>
                     </div>
                     <div class="price-wrapper mb-2">
                       <span class="fw-bold">$200.00</span>
