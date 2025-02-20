@@ -14,7 +14,7 @@ public class Product {
     private ArrayList<String> images;
     private ArrayList<Integer>stock;
     private String category;
-    private String defraultSize;
+    private String defaultSize;
 
 
     public Product(){
@@ -30,7 +30,7 @@ public class Product {
         this.images = images;
         this.stock = stock;
         this.category = category;
-        this.defraultSize = defaultSize;
+        this.defaultSize = defaultSize;
     }
 
 
@@ -73,7 +73,7 @@ public class Product {
     public String getCategory() {
         return category;
     }
-    public String getDefraultSize(){
-        return defraultSize;
+    public String getDefaultSize(){
+        return defaultSize;
     }
 }
