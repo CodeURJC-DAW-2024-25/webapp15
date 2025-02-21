@@ -31,7 +31,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                     Arrays.asList("image1.jpg", "image2.jpg"),
                     Arrays.asList(5, 6, 7, 8, 9),
                     "Running",
-                    "9"
+                    "S"
             );
 
             Shoe shoe2 = new Shoe(
@@ -43,11 +43,23 @@ public class DatabaseInitializer implements CommandLineRunner {
                     Arrays.asList("image3.jpg", "image4.jpg"),
                     Arrays.asList(6, 7, 8, 9, 10),
                     "Casual",
-                    "8"
+                    "S"
             );
 
+            Shoe shoe3 = new Shoe(
+                "Zapatillon",
+                "Stylish sneaker for everyday wear",
+                "A versatile sneaker that combines style and comfort, perfect for casual outings.",
+                90,
+                "Adidas",
+                Arrays.asList("image3.jpg", "image4.jpg"),
+                Arrays.asList(6, 7, 8, 9, 10),
+                "Casual",
+                "S"
+        );
+
             // Save the shoes to the database
-            shoeRepository.saveAll(Arrays.asList(shoe1, shoe2));
+            shoeRepository.saveAll(Arrays.asList(shoe1, shoe2,shoe3));
             System.out.println("Database initialized with sample shoes.");
         } else {
             System.out.println("Database already contains data. Skipping initialization.");
