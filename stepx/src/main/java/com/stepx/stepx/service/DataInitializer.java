@@ -7,7 +7,7 @@ import com.stepx.stepx.model.ShoeSizeStock;
 import com.stepx.stepx.repository.ShoeRepository;
 import com.stepx.stepx.repository.ShoeSizeStockRepository;
 
-import org.hibernate.mapping.List;
+import java.util.List;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.core.io.Resource;
@@ -88,7 +88,7 @@ public class DataInitializer implements CommandLineRunner {
         shoe3.setImage3(image3);
         shoeRepository.save(shoe3);
 
-        //thirt
+        //four
         image1 = loadImage("images/PRODUCS/NIKE/NKairforce_1.jpg");
         image2 = loadImage("images/PRODUCS/NIKE/NKairforce_2.jpg");
         image3 = loadImage("images/PRODUCS/NIKE/NKairforce_3.jpg");
@@ -106,37 +106,31 @@ public class DataInitializer implements CommandLineRunner {
 
 
 
-        List<Shoe> savedProducts = ShoeRepository.findAll();
-        
+        //create sisez dinamicamente para cada producto. 
+        List<Shoe> savedShoes = shoeRepository.findAll();
+        for (Shoe shoe : savedShoes) {
+            ShoeSizeStock stock1 = new ShoeSizeStock();
+            stock1.setShoe(shoe);
+            stock1.setSize("S");
+            stock1.setStock(10);
+            shoeSizeStockRepository.save(stock1);
+            ShoeSizeStock stock2 = new ShoeSizeStock();
+            stock2.setShoe(shoe);
+            stock2.setSize("M");
+            stock2.setStock(10);
+            shoeSizeStockRepository.save(stock2);
+            ShoeSizeStock stock3 = new ShoeSizeStock();
+            stock3.setShoe(shoe);
+            stock3.setSize("L");
+            stock3.setStock(10);
+            shoeSizeStockRepository.save(stock3);
+            ShoeSizeStock stock4 = new ShoeSizeStock();
+            stock4.setShoe(shoe);
+            stock4.setSize("XL");
+            stock4.setStock(10);
+            shoeSizeStockRepository.save(stock4);
+        }
 
-
-
-
-
-        // Create size stocks for the first shoe
-        ShoeSizeStock stock1 = new ShoeSizeStock();
-        stock1.setShoe(shoe1);
-        stock1.setSize("42");
-        stock1.setStock(10);
-
-
-        ShoeSizeStock stock2 = new ShoeSizeStock();
-        stock2.setShoe(shoe1);
-        stock2.setSize("43");
-        stock2.setStock(5);
-
-        // Create size stocks for the second shoe
-        ShoeSizeStock stock3 = new ShoeSizeStock();
-        stock3.setShoe(shoe3);
-        stock3.setSize("40");
-        stock3.setStock(15);
-
-
-
-        // Save size stocks to the repository
-        shoeSizeStockRepository.save(stock1);
-        shoeSizeStockRepository.save(stock2);
-        shoeSizeStockRepository.save(stock3);
 
         System.out.println("Sample data initialized successfully!");
     }
