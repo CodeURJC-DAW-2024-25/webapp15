@@ -40,8 +40,8 @@ public class DataInitializer implements CommandLineRunner {
 
         //create samples of image
         Blob image1 = loadImage("/static/images/shopimages/Nike-Air-grey.jpg");
-        Blob image2 = loadImage("/static/images/shopimages/Nike-Air-blue.jpg");
-        Blob image3 = loadImage("/static/images/shopimages/Nike-Air-red.jpg");
+        Blob image2 = loadImage("/static/images/shopimages/Nike-Air-grey.jpg");
+        Blob image3 = loadImage("/static/images/shopimages/Nike-Air-grey.jpg");
 
         Shoe shoe1 = new Shoe();
         shoe1.setName("Air Max 270");
@@ -73,7 +73,7 @@ public class DataInitializer implements CommandLineRunner {
         stock1.setShoe(shoe1);
         stock1.setSize("42");
         stock1.setStock(10);
-        
+
 
         ShoeSizeStock stock2 = new ShoeSizeStock();
         stock2.setShoe(shoe1);

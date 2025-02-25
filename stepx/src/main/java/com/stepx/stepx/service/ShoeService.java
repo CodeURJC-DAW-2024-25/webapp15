@@ -15,6 +15,9 @@ public class ShoeService {
         this.shoeRepository = shoeRepository;
     }
 
+        
+
+
     // Obtener todos los zapatos
     public List<Shoe> getAllShoes() {
         return shoeRepository.findAll();
