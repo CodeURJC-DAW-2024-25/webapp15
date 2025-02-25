@@ -1,45 +1,45 @@
 package com.stepx.stepx.model;
 
 import jakarta.persistence.*;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Shoe{
+public class Shoe {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
-    private String shortDescription;
-    private String longDescription;
-    private int price;
-    private String brand;
+    private String description;
+    private BigDecimal price;
 
-    @ElementCollection
-    private List<String> images = new ArrayList<>();
+    // Almacenamos tres imágenes como BLOBs
+    @Lob
+    @Column(name = "image1")
+    private byte[] image1;
 
-    @ElementCollection
-    private List<Integer> stock = new ArrayList<>();
+    @Lob
+    @Column(name = "image2")
+    private byte[] image2;
 
-    private String category;
-    private String defaultSize;
+    @Lob
+    @Column(name = "image3")
+    private byte[] image3;
 
-    public Shoe() {
-    }
+    @Enumerated(EnumType.STRING)
+    private Brand brand;
 
-    public Shoe(String name, String shortDescription, String longDescription, int price, String brand, List<String> images, List<Integer> stock, String category, String defaultSize) {
-        this.name = name;
-        this.shortDescription = shortDescription;
-        this.longDescription = longDescription;
-        this.price = price;
-        this.brand = brand;
-        this.images = images;
-        this.stock = stock;
-        this.category = category;
-        this.defaultSize = defaultSize;
-    }
+    @Enumerated(EnumType.STRING)
+    private Category category;
 
+    // Relación: Un zapato puede tener stock para distintas tallas
+    @OneToMany(mappedBy = "shoe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ShoeSizeStock> sizeStocks = new ArrayList<>();
+
+    // Getters y setters
     public Long getId() {
         return id;
     }
@@ -56,67 +56,90 @@ public class Shoe{
         this.name = name;
     }
 
-    public String getShortDescription() {
-        return shortDescription;
+    public String getDescription() {
+        return description;
     }
 
-    public void setShortDescription(String shortDescription) {
-        this.shortDescription = shortDescription;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public String getLongDescription() {
-        return longDescription;
-    }
-
-    public void setLongDescription(String longDescription) {
-        this.longDescription = longDescription;
-    }
-
-    public int getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
-    public String getBrand() {
+    public byte[] getImage1() {
+        return image1;
+    }
+
+    public void setImage1(byte[] image1) {
+        this.image1 = image1;
+    }
+
+    public byte[] getImage2() {
+        return image2;
+    }
+
+    public void setImage2(byte[] image2) {
+        this.image2 = image2;
+    }
+
+    public byte[] getImage3() {
+        return image3;
+    }
+
+    public void setImage3(byte[] image3) {
+        this.image3 = image3;
+    }
+
+    public Brand getBrand() {
         return brand;
     }
 
-    public void setBrand(String brand) {
+    public void setBrand(Brand brand) {
         this.brand = brand;
     }
 
-    public List<String> getImages() {
-        return images;
-    }
-
-    public void setImages(List<String> images) {
-        this.images = images;
-    }
-
-    public List<Integer> getStock() {
-        return stock;
-    }
-
-    public void setStock(List<Integer> stock) {
-        this.stock = stock;
-    }
-
-    public String getCategory() {
+    public Category getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(Category category) {
         this.category = category;
     }
 
-    public String getDefaultSize() {
-        return defaultSize;
+    public List<ShoeSizeStock> getSizeStocks() {
+        return sizeStocks;
     }
 
-    public void setDefaultSize(String defaultSize) {
-        this.defaultSize = defaultSize;
+    // Encapsulated method to add a ShoeSizeStock
+    public void addSizeStock(ShoeSizeStock sizeStock) {
+        sizeStocks.add(sizeStock);
+        sizeStock.setShoe(this); // Ensure bidirectional relationship is maintained
+    }
+
+    // Encapsulated method to remove a ShoeSizeStock
+    public void removeSizeStock(ShoeSizeStock sizeStock) {
+        sizeStocks.remove(sizeStock);
+        sizeStock.setShoe(null); // Break the bidirectional relationship
+    }
+
+    // Definimos los enums dentro de Shoe
+    public enum Category {
+        SPORT,
+        CASUAL,
+        URBAN
+    }
+
+    public enum Brand {
+        NIKE,
+        ADIDAS,
+        PUMA,
+        NEW_BALANCE,
+        VANS
     }
 }
