@@ -39,7 +39,7 @@ public class DataInitializer implements CommandLineRunner {
         // Create some sample shoes
 
         //create samples of image
-        Blob image1 = loadImage("/static/images/shopimages/Nike-Air-grey.jpg");
+        Blob image1 = loadImage("images/PRODUCS/ADIDAS/Samba-Black_1.jpg");
         Blob image2 = loadImage("/static/images/shopimages/Nike-Air-grey.jpg");
         Blob image3 = loadImage("/static/images/shopimages/Nike-Air-grey.jpg");
 
@@ -103,7 +103,7 @@ public class DataInitializer implements CommandLineRunner {
         stock4.setSize("41");
         stock4.setStock(8);
 
-        
+
 
         // Save size stocks to the repository
         shoeSizeStockRepository.save(stock1);
