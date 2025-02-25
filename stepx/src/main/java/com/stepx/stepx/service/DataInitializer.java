@@ -6,6 +6,8 @@ import com.stepx.stepx.model.Shoe;
 import com.stepx.stepx.model.ShoeSizeStock;
 import com.stepx.stepx.repository.ShoeRepository;
 import com.stepx.stepx.repository.ShoeSizeStockRepository;
+
+import org.hibernate.mapping.List;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.core.io.Resource;
@@ -38,13 +40,13 @@ public class DataInitializer implements CommandLineRunner {
     private void initializeShoesAndStocks() {
         // Create some sample shoes
 
-        //create samples of image
-        Blob image1 = loadImage("images/PRODUCS/ADIDAS/Samba-Black_1.jpg");
-        Blob image2 = loadImage("/static/images/shopimages/Nike-Air-grey.jpg");
-        Blob image3 = loadImage("/static/images/shopimages/Nike-Air-grey.jpg");
+        //create samples NIKE
+        Blob image1 = loadImage("images/PRODUCS/NIKE/NK270_1.jpg");
+        Blob image2 = loadImage("images/PRODUCS/NIKE/NK270_2.jpg");
+        Blob image3 = loadImage("images/PRODUCS/NIKE/NK270_3.jpg");
 
         Shoe shoe1 = new Shoe();
-        shoe1.setName("Air Max 270");
+        shoe1.setName("Nike 270");
         shoe1.setDescription("Nike Air Max 270 Running Shoes");
         shoe1.setPrice(new BigDecimal("150.00"));
         shoe1.setBrand(Shoe.Brand.NIKE);
@@ -52,32 +54,63 @@ public class DataInitializer implements CommandLineRunner {
         shoe1.setImage1(image1);
         shoe1.setImage2(image2);
         shoe1.setImage3(image3);
+        shoeRepository.save(shoe1);
 
+        //second
+        image1 = loadImage("images/PRODUCS/NIKE/NKair_1.jpg");
+        image2 = loadImage("images/PRODUCS/NIKE/NKair_2.jpg");
+        image3 = loadImage("images/PRODUCS/NIKE/NKair_3.jpg");
 
         Shoe shoe2 = new Shoe();
-        shoe2.setName("Stan Smith");
-        shoe2.setDescription("Adidas Stan Smith Classic Sneakers");
-        shoe2.setPrice(new BigDecimal("80.00"));
-        shoe2.setBrand(Shoe.Brand.ADIDAS);
+        shoe2.setName("Air Max 270");
+        shoe2.setDescription("Nike air ");
+        shoe2.setPrice(new BigDecimal("150.00"));
+        shoe2.setBrand(Shoe.Brand.NIKE);
         shoe2.setCategory(Shoe.Category.CASUAL);
         shoe2.setImage1(image1);
         shoe2.setImage2(image2);
         shoe2.setImage3(image3);
-        
+        shoeRepository.save(shoe2);
+
+        //thirt
+        image1 = loadImage("images/PRODUCS/NIKE/NKairforce_1.jpg");
+        image2 = loadImage("images/PRODUCS/NIKE/NKairforce_2.jpg");
+        image3 = loadImage("images/PRODUCS/NIKE/NKairforce_3.jpg");
+
         Shoe shoe3 = new Shoe();
-        shoe3.setName(" Smith");
-        shoe3.setDescription(" Stan Smith Classic Sneakers");
-        shoe3.setPrice(new BigDecimal("670.00"));
-        shoe3.setBrand(Shoe.Brand.ADIDAS);
-        shoe3.setCategory(Shoe.Category.CASUAL);
+        shoe3.setName("Nike AirForce");
+        shoe3.setDescription("Nike AirForce 1");
+        shoe3.setPrice(new BigDecimal("150.00"));
+        shoe3.setBrand(Shoe.Brand.NIKE);
+        shoe3.setCategory(Shoe.Category.URBAN);
         shoe3.setImage1(image1);
         shoe3.setImage2(image2);
         shoe3.setImage3(image3);
-
-        // Save shoes to the repository
-        shoeRepository.save(shoe1);
-        shoeRepository.save(shoe2);
         shoeRepository.save(shoe3);
+
+        //thirt
+        image1 = loadImage("images/PRODUCS/NIKE/NKairforce_1.jpg");
+        image2 = loadImage("images/PRODUCS/NIKE/NKairforce_2.jpg");
+        image3 = loadImage("images/PRODUCS/NIKE/NKairforce_3.jpg");
+
+        Shoe shoe4 = new Shoe();
+        shoe4.setName("Nike AirForce");
+        shoe4.setDescription("Nike AirForce 1");
+        shoe4.setPrice(new BigDecimal("150.00"));
+        shoe4.setBrand(Shoe.Brand.NIKE);
+        shoe4.setCategory(Shoe.Category.URBAN);
+        shoe4.setImage1(image1);
+        shoe4.setImage2(image2);
+        shoe4.setImage3(image3);
+        shoeRepository.save(shoe4);
+
+
+
+        List<Shoe> savedProducts = ShoeRepository.findAll();
+        
+
+
+
 
 
         // Create size stocks for the first shoe
@@ -94,14 +127,9 @@ public class DataInitializer implements CommandLineRunner {
 
         // Create size stocks for the second shoe
         ShoeSizeStock stock3 = new ShoeSizeStock();
-        stock3.setShoe(shoe2);
+        stock3.setShoe(shoe3);
         stock3.setSize("40");
         stock3.setStock(15);
-
-        ShoeSizeStock stock4 = new ShoeSizeStock();
-        stock4.setShoe(shoe2);
-        stock4.setSize("41");
-        stock4.setStock(8);
 
 
 
@@ -109,7 +137,6 @@ public class DataInitializer implements CommandLineRunner {
         shoeSizeStockRepository.save(stock1);
         shoeSizeStockRepository.save(stock2);
         shoeSizeStockRepository.save(stock3);
-        shoeSizeStockRepository.save(stock4);
 
         System.out.println("Sample data initialized successfully!");
     }
