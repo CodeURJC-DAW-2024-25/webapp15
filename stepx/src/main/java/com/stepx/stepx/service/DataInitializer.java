@@ -63,10 +63,22 @@ public class DataInitializer implements CommandLineRunner {
         shoe2.setImage1(image1);
         shoe2.setImage2(image2);
         shoe2.setImage3(image3);
+        
+        Shoe shoe3 = new Shoe();
+        shoe3.setName(" Smith");
+        shoe3.setDescription(" Stan Smith Classic Sneakers");
+        shoe3.setPrice(new BigDecimal("670.00"));
+        shoe3.setBrand(Shoe.Brand.ADIDAS);
+        shoe3.setCategory(Shoe.Category.CASUAL);
+        shoe3.setImage1(image1);
+        shoe3.setImage2(image2);
+        shoe3.setImage3(image3);
 
         // Save shoes to the repository
         shoeRepository.save(shoe1);
         shoeRepository.save(shoe2);
+        shoeRepository.save(shoe3);
+
 
         // Create size stocks for the first shoe
         ShoeSizeStock stock1 = new ShoeSizeStock();
@@ -90,6 +102,8 @@ public class DataInitializer implements CommandLineRunner {
         stock4.setShoe(shoe2);
         stock4.setSize("41");
         stock4.setStock(8);
+
+        
 
         // Save size stocks to the repository
         shoeSizeStockRepository.save(stock1);

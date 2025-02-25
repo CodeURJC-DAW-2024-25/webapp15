@@ -2,6 +2,8 @@ package com.stepx.stepx.service;
 
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
+
 import com.stepx.stepx.model.Shoe;
 import com.stepx.stepx.repository.ShoeRepository;
 
@@ -15,7 +17,7 @@ public class ShoeService {
         this.shoeRepository = shoeRepository;
     }
 
-        
+
 
 
     // Obtener todos los zapatos
@@ -24,10 +26,10 @@ public class ShoeService {
     }
 
     // Obtener un zapato por ID
-    public Shoe getShoeById(Long id) {
-        return shoeRepository.findById(id).orElse(null);
+    public Optional<Shoe> getShoeById(Long id) {
+        return shoeRepository.findById(id);
     }
-
+    
     // Guardar o actualizar un zapato
     public Shoe saveShoe(Shoe shoe) {
         return shoeRepository.save(shoe);

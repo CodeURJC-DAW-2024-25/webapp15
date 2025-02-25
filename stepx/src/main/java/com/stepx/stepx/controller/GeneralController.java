@@ -36,15 +36,6 @@ public class GeneralController { // todas las solicitudes "/...." son con el con
         return "index"; // nombre de la plantilla Mustache sin la extensión .html
     }
  
-    @GetMapping("/shop")
-    public String showShop(Model model) {
-
-        List<Shoe> shoes = shoeService.getAllShoes();
-        
-        model.addAttribute("shoes", shoes);
-        
-        return "shop";
-    }
 
     @GetMapping("/register-user")
     public String showRegisterUser(Model model) {
