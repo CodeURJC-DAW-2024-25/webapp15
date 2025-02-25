@@ -30,14 +30,25 @@ async function openCartModal() {
         const cartContent = await response.text();
         document.getElementById("cart-modal-body").innerHTML = cartContent;
 
-        // Forzar la apertura del modal en caso de problemas con Bootstrap
-        var myModal = new bootstrap.Modal(document.getElementById('modallong'));
+        // Obtener el modal y verificar si ya existe una instancia
+        let modalElement = document.getElementById("modallong");
+        let myModal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
+
+        // Asegurar que no haya restos de aria-hidden que bloqueen el cierre
+        modalElement.removeAttribute("aria-hidden");
+
         myModal.show();
+
+        // Evento para restablecer el foco al cerrar y evitar que el fondo quede bloqueado
+        modalElement.addEventListener("hidden.bs.modal", () => {
+            document.activeElement.blur(); // Quitar el foco del botón de cierre
+        });
 
     } catch (error) {
         console.error("Error en la solicitud:", error);
     }
 }
+
 
 window.openCartModal = openCartModal;
 

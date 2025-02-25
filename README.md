@@ -14,7 +14,7 @@
 ## 🖼 Class Diagram
 📌 *Visual representation of the system architecture:* 
 
-![ERDiagram](https://github.com/user-attachments/assets/05360e59-039a-41a9-b84c-3220f30e63f5)
+![ER_Diagram](https://github.com/user-attachments/assets/672a6dbd-1dca-41bf-91ab-3dcb288ec145)
 
 
 
