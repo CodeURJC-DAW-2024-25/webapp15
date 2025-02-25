@@ -14,7 +14,8 @@ public class Shoe {
     private Long id;
 
     private String name;
-    private String description;
+    private String shortdescription;
+    private String longDescription;
     private BigDecimal price;
 
     // Almacenamos tres imágenes como BLOBs
@@ -58,11 +59,19 @@ public class Shoe {
     }
 
     public String getDescription() {
-        return description;
+        return shortdescription;
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        this.shortdescription = description;
+    }
+
+    public void setLongDescription(String longDescription) {
+        this.longDescription = longDescription;
+    }
+
+    public String getLongDescription() {
+        return longDescription;
     }
 
     public BigDecimal getPrice() {

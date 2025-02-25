@@ -65,6 +65,7 @@ public class DataInitializer implements CommandLineRunner {
         shoe2.setName("Air Max 270");
         shoe2.setDescription("Nike air ");
         shoe2.setPrice(new BigDecimal("150.00"));
+        shoe2.setLongDescription("The Nike Air Max 270 delivers visible air under every step. Updated for modern comfort, it nods to the original 1991 Air Max 180 with its exaggerated tongue top and heritage tongue logo. ");
         shoe2.setBrand(Shoe.Brand.NIKE);
         shoe2.setCategory(Shoe.Category.CASUAL);
         shoe2.setImage1(image1);
@@ -104,6 +105,10 @@ public class DataInitializer implements CommandLineRunner {
         shoe4.setImage3(image3);
         shoeRepository.save(shoe4);
 
+        //Adidas
+
+        Shoe shoe31= new Shoe();
+        shoe31.setName("Adidas");
 
 
         //create sisez dinamicamente para cada producto. 
