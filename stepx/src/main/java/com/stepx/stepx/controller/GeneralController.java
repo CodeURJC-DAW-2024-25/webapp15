@@ -53,11 +53,7 @@ public class GeneralController { // todas las solicitudes "/...." son con el con
         return "edit-product";
     }
 
-    @GetMapping("/single-product/{id}")
-    public String showSingleProduct(Model model, @PathVariable Long id) {
-        model.addAttribute("product", productsService.getProductById(id));
-        return "single-product";
-    }
+   
 
     @GetMapping("/checkout")
     public String showCheckout(Model model) {

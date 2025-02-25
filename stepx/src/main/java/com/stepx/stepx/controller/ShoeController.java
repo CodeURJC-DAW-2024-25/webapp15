@@ -84,4 +84,15 @@ public class ShoeController {
         return ResponseEntity.notFound().build();
     }
     
+    @GetMapping("/single-product/{id}")
+    public String showSingleProduct(Model model, @PathVariable Long id) {
+        Optional<Shoe> op = shoeService.getShoeById(id);
+        if (op.isPresent()) {
+            Shoe shoe = op.get();
+            model.addAttribute("product", shoe);
+            return "single-product";
+        }
+        return "shop";
+    }
+    
 }
