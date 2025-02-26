@@ -68,7 +68,7 @@ public class ShoeController {
     @GetMapping()
     public String showShop(Model model) {
 
-        List<Shoe> shoes = shoeService.getAllShoes();
+        List<Shoe> shoes = shoeService.getNineShoes();
         
         model.addAttribute("shoes", shoes);
 
@@ -204,7 +204,7 @@ public class ShoeController {
             //need a confirmation if the stock of the default size is 0
             Optional <Integer> stock= shoeSizeStockService.getStockByShoeAndSize(id, "M");
 
-            if(stock.isPresent()&&stock.get().getStock()==0){
+            if(stock.isPresent()&&stock.get()==0){
                    model.addAttribute("error", true);
             }
             return "partials/cart-confirmation-view";
