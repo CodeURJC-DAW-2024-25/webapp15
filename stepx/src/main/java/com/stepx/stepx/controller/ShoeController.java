@@ -23,19 +23,22 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.core.io.Resource;
 
+import com.stepx.stepx.model.User;
 import com.stepx.stepx.model.Shoe;
+import com.stepx.stepx.model.Review;
 import com.stepx.stepx.model.ShoeSizeStock;
 import com.stepx.stepx.service.CartService;
 import com.stepx.stepx.service.ProductsService;
 import com.stepx.stepx.service.ShoeService;
+import com.stepx.stepx.service.ReviewService;
+import com.stepx.stepx.service.UserService;
 import com.stepx.stepx.service.ShoeSizeStockService;
 
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import org.springframework.data.domain.Page;
-
-
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 @RequestMapping("/shop")
@@ -47,20 +50,26 @@ public class ShoeController {
     private CartService cartService;
 
     @Autowired
+    private ReviewService reviewService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
     private ShoeSizeStockService shoeSizeStockService;
 
     @Autowired
     private ShoeService shoeService;
 
-    
     public String getMethodName(@RequestParam String param) {
         return new String();
     }
 
     @GetMapping()
-    public String showShop(Model model) { // Agregar HttpSession como parámetro
+    public String showShop(Model model) {
 
-        List<Shoe> shoes = shoeService.getNineShoes();
+        List<Shoe> shoes = shoeService.getAllShoes();
+        
         model.addAttribute("shoes", shoes);
 
         return "shop";
@@ -98,21 +107,27 @@ public class ShoeController {
             shoe.setImage3(new SerialBlob(image3.getBytes()));
         }
 
-        
-
         // Save the shoe to the database
         shoeService.saveShoe(shoe);
 
         ShoeSizeStock stock = new ShoeSizeStock();
-            stock.setShoe(shoe);
-            stock.setSize("M");
-            stock.setStock(10);
-            shoeSizeStockService.saveStock(stock);
+        stock.setShoe(shoe);
+        stock.setSize("M");
+        stock.setStock(10);
+        shoeSizeStockService.saveStock(stock);
 
         return "redirect:/shop"; // Redirect to shop page after creation
     }
 
-     @GetMapping("/{id}/image/{imageNumber}")
+    @PostMapping("/delete/{id}")
+    public String deleteShoe(@PathVariable Long id) {
+
+        shoeService.deleteShoe(id);
+
+        return "redirect:/shop";
+    }
+
+    @GetMapping("/{id}/image/{imageNumber}")
     public ResponseEntity<Resource> getShoeImage(@PathVariable Long id, @PathVariable int imageNumber) {
         Optional<Shoe> op = shoeService.getShoeById(id);
         if (op.isPresent()) {
@@ -139,10 +154,10 @@ public class ShoeController {
                 }
             }
         }
-        
+
         return ResponseEntity.notFound().build();
     }
-    
+
     @GetMapping("/single-product/{id}")
     public String showSingleProduct(Model model, @PathVariable Long id) {
         Optional<Shoe> op = shoeService.getShoeById(id);
@@ -150,6 +165,7 @@ public class ShoeController {
         Optional<Integer> stockM=shoeSizeStockService.getStockByShoeAndSize(id, "M");
         Optional<Integer> stockL=shoeSizeStockService.getStockByShoeAndSize(id, "L");
         Optional<Integer> stockXL=shoeSizeStockService.getStockByShoeAndSize(id, "XL");
+        List<Review> review = reviewService.getReviewsByShoe(id);
         if (op.isPresent()) {
             Shoe shoe = op.get();
             model.addAttribute("stockS", stockS.get()==0);
@@ -157,40 +173,46 @@ public class ShoeController {
             model.addAttribute("stockL", stockL.get()==0);
             model.addAttribute("stockXL", stockXL.get()==0);
             model.addAttribute("product", shoe);
+            if (review != null) {
+                model.addAttribute("review", review);
+
+            } else {
+                System.out.println("no hay lista de reviews");
+            }
             return "single-product";
+
         }
         return "shop";
     }
 
     @GetMapping("/{id}")
     public String getProductById(Model model, @PathVariable Long id, @RequestParam(required = false) String action) {
-        
+
         Optional<Shoe> product = shoeService.getShoeById(id);
 
         if (product.isEmpty()) {
             model.addAttribute("error", "Product not found");
-            return "partials/error-modal"; 
+            return "partials/error-modal";
         }
 
-        model.addAttribute("product", product.get()); //importat to do a get from the Optional that the service returns
+        model.addAttribute("product", product.get()); // importat to do a get from the Optional that the service returns
 
-        
         if ("quick".equals(action)) {
-            return "partials/quick-view-modal";  
+            return "partials/quick-view-modal";
         } else if ("confirmation".equals(action)) {
 
             //need a confirmation if the stock of the default size is 0
             Optional <Integer> stock= shoeSizeStockService.getStockByShoeAndSize(id, "M");
 
-            if(stock.isPresent()&&stock.get()==0){
+            if(stock.isPresent()&&stock.get().getStock()==0){
                    model.addAttribute("error", true);
             }
-            return "partials/cart-confirmation-view"; 
+            return "partials/cart-confirmation-view";
         } else {
             return "partials/error-modal";
         }
     }
-    
+
     @GetMapping("/loadMoreShoes/")
     public String getMore( Model model,@RequestParam int currentPage) {
 
@@ -202,4 +224,28 @@ public class ShoeController {
         return "partials/loadMoreShoe";
     }
     
+    @GetMapping("/{userId}/imageUser")
+    public ResponseEntity<Resource> getProfileImage(@PathVariable Long userId) {
+        Optional<User> userOptional = userService.findUserById(userId);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            Blob image = user.getImageUser(); // Asegúrate de tener este método en User
+    
+            if (image != null) {
+                try {
+                    Resource file = new InputStreamResource(image.getBinaryStream());
+                    return ResponseEntity.ok()
+                            .header(HttpHeaders.CONTENT_TYPE, "image/jpg")
+                            .contentLength(image.length())
+                            .body(file);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    
+        return ResponseEntity.notFound().build();
+    }
+
 }

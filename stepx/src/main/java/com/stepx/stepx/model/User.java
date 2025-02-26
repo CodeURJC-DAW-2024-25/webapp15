@@ -2,6 +2,9 @@ package com.stepx.stepx.model;
 
 import jakarta.persistence.*;
 
+import java.sql.Blob;
+import java.util.List;
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -10,13 +13,31 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Lob
+    @Column(name = "ImageProfile")
+    private Blob imageUser;
+
+    public Blob getImageUser() {
+        return imageUser;
+    }
+
+    public void setImageUser(Blob imageUser) {
+        this.imageUser = imageUser;
+    }
+
+    @OneToMany(mappedBy = "user")
+    private List<Review> review;
+
     @Column(nullable = false, unique = true)
     private String username;
 
-    public User() {}
 
-    public User(String username) {
+    public User() {
+    }
+
+    public User(String username, Blob imageUser) {
         this.username = username;
+        this.imageUser = imageUser;
     }
 
     public Long getId() {
