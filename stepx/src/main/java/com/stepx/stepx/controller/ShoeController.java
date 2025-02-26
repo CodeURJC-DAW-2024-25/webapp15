@@ -6,8 +6,11 @@ import java.sql.Blob;
 import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
+import java.time.LocalDate;
 
 import javax.sql.rowset.serial.SerialBlob;
 
@@ -176,10 +179,10 @@ public class ShoeController {
 
         if (op.isPresent()) {
             Shoe shoe = op.get();
-            model.addAttribute("stockS", stockS.get() == 0);
-            model.addAttribute("stockM", stockM.get() == 0);
-            model.addAttribute("stockL", stockL.get() == 0);
-            model.addAttribute("stockXL", stockXL.get() == 0);
+            model.addAttribute("stockS", stockS.orElse(0) == 0);
+            model.addAttribute("stockM", stockM.orElse(0) == 0);
+            model.addAttribute("stockL", stockL.orElse(0) == 0);
+            model.addAttribute("stockXL", stockXL.orElse(0) == 0);
             model.addAttribute("product", shoe);
             if (review != null) {
                 model.addAttribute("review", review);
@@ -252,6 +255,30 @@ public class ShoeController {
         }
 
         return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/submit/{id}")
+    public String publishReview(
+            @PathVariable Long id, // ID del zapato
+            @RequestParam("rating")int rating,
+            @RequestParam String description
+    // @RequestParam Long userId // ID del usuario
+    ) {
+        // Buscar el zapato y usuario en la base de datos
+        Shoe shoe = shoeService.getShoeById(id).orElseThrow(() -> new RuntimeException("Shoe not found"));
+
+        // AQUI FALTA ENCONTRAR EL USUARIO ACTUAL Y PONERLO
+        User user = userService.findUserById(1L).orElseThrow(() -> new RuntimeException("User"));// deberia ser el
+                                                                                                 // usuario actual
+        LocalDate date;
+        date = LocalDate.now();
+        // Crear la nueva review
+        Review review = new Review(rating, description, shoe, user, date);// el null reemplazar por el usuario
+
+        // Guardar la review en la base de datos
+        reviewService.save(review);
+
+        return "redirect:/shop/single-product/{id}";
     }
 
 }

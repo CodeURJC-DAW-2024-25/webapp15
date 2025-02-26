@@ -2,6 +2,7 @@ package com.stepx.stepx.model;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.stream.Collectors;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,6 +14,9 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.TemporalType;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import jakarta.persistence.Transient;
 
 @Entity
@@ -55,6 +59,10 @@ public class Review {
         this.shoe = shoe;
         this.user = user;
         this.date = LocalDate.now();
+    }
+
+    public List<Integer> getStars() {
+        return IntStream.rangeClosed(1, rating).boxed().collect(Collectors.toList());
     }
 
     public Shoe getShoe() {

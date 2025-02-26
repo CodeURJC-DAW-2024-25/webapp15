@@ -89,11 +89,16 @@
               <div class="swatch product-select" data-option-index="1">
                 <h5 class="widget-title text-decoration-underline pe-2">Size:</h5>
                 <ul class="select-size-list list-unstyled d-flex">
-                  <li data-value="XL" class="select-size-item" {{#stockXL}}style="pointer-events: none; background-color:grey;"{{/stockXL}}><a href="#">XL</a></li>
-                  <li data-value="L" class="select-size-item"  {{#stockL}}style="pointer-events: none; background-color:grey;"{{/stockL}}><a href="#">L</a></li>
-                  <li data-value="M" class="select-size-item" {{#stockM}}style="pointer-events: none; background-color:grey;"{{/stockM}}><a href="#">M</a></li>
-                  <li data-value="S" class="select-size-item"{{#stockS}}style="pointer-events: none; background-color:grey;"{{/stockS}}><a href="#">S</a></li>
-                </ul>   
+                  <li data-value="XL" class="select-size-item"
+                    {{#stockXL}}style="pointer-events: none; background-color:grey;" {{/stockXL}}><a href="#">XL</a>
+                  </li>
+                  <li data-value="L" class="select-size-item"
+                    {{#stockL}}style="pointer-events: none; background-color:grey;" {{/stockL}}><a href="#">L</a></li>
+                  <li data-value="M" class="select-size-item"
+                    {{#stockM}}style="pointer-events: none; background-color:grey;" {{/stockM}}><a href="#">M</a></li>
+                  <li data-value="S" class="select-size-item"
+                    {{#stockS}}style="pointer-events: none; background-color:grey;" {{/stockS}}><a href="#">S</a></li>
+                </ul>
               </div>
               <div class="product-quantity">
                 <div class="stock-button-wrap pt-3">
@@ -190,20 +195,11 @@
                   <div class="col-md-8">
                     <div class="review-content">
                       <div class="rating-container d-flex align-items-center mb-3">
-                        <div class="rating" data-rating="1" onclick="rate(1)">
+                        <!--RECOGE STARS DE LA FUNCION GETSTARS(NO SE LLAMA EN NINGUN LADO, LO HACE SPRING)-->
+                        <div class="rating">
+                          {{#stars}}
                           <i class="fa-solid fa-star"></i>
-                        </div>
-                        <div class="rating" data-rating="2" onclick="rate(1)">
-                          <i class="fa-solid fa-star"></i>
-                        </div>
-                        <div class="rating" data-rating="3" onclick="rate(1)">
-                          <i class="fa-solid fa-star"></i>
-                        </div>
-                        <div class="rating" data-rating="4" onclick="rate(1)">
-                          <i class="fa-solid fa-star"></i>
-                        </div>
-                        <div class="rating" data-rating="5" onclick="rate(1)">
-                          <i class="fa-solid fa-star"></i>
+                          {{/stars}}
                         </div>
                       </div>
                       <div class="review-header">
@@ -220,34 +216,22 @@
               <div class="add-review mt-5">
                 <h3>Add a review</h3>
                 <p>Your personal information will not be published. Required fields are marked *</p>
-                <form id="form" class="form-group">
-
-                  <div class="pb-3">
-                    <div class="review-rating">
-                      <span>Your rating *</span>
-                      <div class="stars rating-container d-flex align-items-center">
-                        <!-- añado aqui la clase stars para que funcienen las estrellas-->
-                        <div class="stars" data-rating="1">
-                          <i class="fa-solid fa-star"></i>
-                        </div>
-                        <div class="stars" data-rating="2">
-                          <i class="fa-solid fa-star"></i>
-                        </div>
-                        <div class="stars" data-rating="3">
-                          <i class="fa-solid fa-star"></i>
-                        </div>
-                        <div class="stars" data-rating="4">
-                          <i class="fa-solid fa-star"></i>
-                        </div>
-                        <div class="stars" data-rating="5">
-                          <i class="fa-solid fa-star"></i>
-                        </div>
-                      </div>
-                    </div>
+                <form id="form" class="form-group" action="/shop/submit/{{id}}" method="post">
+                  <div class="pb-3" style="width:11%">
+                    <label>Your Rating *</label>
+                    <select class="form-control" name="rating" required>
+                      <option value="" disabled selected>Select a rating</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3 </option>
+                      <option value="4">4 </option>
+                      <option value="5">5 </option>
+                    </select>
                   </div>
                   <div class="pb-3">
                     <label>Your Review *</label>
-                    <textarea class="form-control" placeholder="Write your review here"></textarea>
+                    <textarea class="form-control" placeholder="Write your review here" name="description"
+                      required></textarea>
                   </div>
                   <button type="submit" name="submit"
                     class="btn btn-dark btn-large text-uppercase w-100">Submit</button>
