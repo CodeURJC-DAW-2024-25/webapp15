@@ -158,7 +158,7 @@
             </a>
             </div>
           </div>
-          <div class="product-content product-store d-flex justify-content-between flex-wrap">
+          <div class="product-content product-store d-flex justify-content-between flex-wrap" id="shoes">
             <!-- Product Card element-->
             {{#shoes}}
             <div class="col-lg-4 col-md-12 col-sm-12 mb-4 pe-3">
@@ -209,9 +209,17 @@
                 </div>
               </div>
             </div>
-            {{/shoes}}
+            {{/shoes}} 
             <!--end of product card element-->
           </div>
+
+
+          <div id="loadMoreButtom">
+            <div class="btn-wrap">
+              <button class="btn btn-black btn-medium text-uppercase hvr-sweep-to-right" style="margin-bottom: 30px;" onclick="loadMore()">Show More</button>
+            </div>
+          </div>
+
         </main>
         
       </div>

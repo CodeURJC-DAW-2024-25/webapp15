@@ -89,14 +89,13 @@
               <div class="swatch product-select" data-option-index="1">
                 <h5 class="widget-title text-decoration-underline pe-2">Size:</h5>
                 <ul class="select-size-list list-unstyled d-flex">
-                  <li data-value="XL" class="select-size-item"><a href="#">XL</a></li>
-                  <li data-value="L" class="select-size-item"><a href="#">L</a></li>
-                  <li data-value="M" class="select-size-item"><a href="#">M</a></li>
-                  <li data-value="S" class="select-size-item"><a href="#">S</a></li>
-                </ul>
+                  <li data-value="XL" class="select-size-item" {{#stockXL}}style="pointer-events: none; background-color:grey;"{{/stockXL}}><a href="#">XL</a></li>
+                  <li data-value="L" class="select-size-item"  {{#stockL}}style="pointer-events: none; background-color:grey;"{{/stockL}}><a href="#">L</a></li>
+                  <li data-value="M" class="select-size-item" {{#stockM}}style="pointer-events: none; background-color:grey;"{{/stockM}}><a href="#">M</a></li>
+                  <li data-value="S" class="select-size-item"{{#stockS}}style="pointer-events: none; background-color:grey;"{{/stockS}}><a href="#">S</a></li>
+                </ul>   
               </div>
               <div class="product-quantity">
-                <div class="stock-number text-dark">12 in stock</div>
                 <div class="stock-button-wrap pt-3">
                   <div class="quantity-price d-flex justify-content-between align-items-center">
                     <div class="input-group product-qty">
@@ -127,17 +126,8 @@
             </div>
             <div class="meta-product padding-small" style="padding-top: 5px">
               <div class="meta-item d-flex align-items-baseline">
-                <h5 class="widget-title text-decoration-underline pe-2">Product Code:</h5>
-                <ul class="select-list list-unstyled d-flex">
-                  <li data-value="S" class="select-item">1223</li>
-                </ul>
-              </div>
-              <div class="meta-item d-flex align-items-baseline">
                 <h5 class="widget-title text-decoration-underline pe-2">Category:</h5>
                 <ul class="select-list list-unstyled d-flex">
-                  <li data-value="S" class="select-item">
-                    <a href="#">Men</a>,
-                  </li>
                   <li data-value="S" class="select-item">
                     <a href="#">{{category}}</a>
                   </li>

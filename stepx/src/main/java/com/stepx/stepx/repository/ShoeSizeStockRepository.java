@@ -12,6 +12,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ShoeSizeStockRepository extends JpaRepository<ShoeSizeStock, Long> {
     // Aquí puedes definir métodos de consulta personalizados si los necesitas.
-    @Query("SELECT s FROM ShoeSizeStock s WHERE s.shoe.id = :shoeid AND s.size = :size")
-    Optional<ShoeSizeStock> findByShoeAndSize(Long shoeid, String size);
+    @Query("SELECT s.stock FROM ShoeSizeStock s WHERE s.shoe.id = :shoeid AND s.size = :size")
+    Optional<Integer> findByShoeAndSize(Long shoeid, String size);
 }

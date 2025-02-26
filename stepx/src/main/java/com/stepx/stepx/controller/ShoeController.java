@@ -10,7 +10,6 @@ import java.util.Optional;
 
 import javax.sql.rowset.serial.SerialBlob;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.core.io.Resource;
 
-import com.stepx.stepx.model.Product;
 import com.stepx.stepx.model.Shoe;
 import com.stepx.stepx.model.ShoeSizeStock;
 import com.stepx.stepx.service.CartService;
@@ -34,6 +32,8 @@ import com.stepx.stepx.service.ShoeSizeStockService;
 
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+
+import org.springframework.data.domain.Page;
 
 
 
@@ -58,14 +58,14 @@ public class ShoeController {
     }
 
     @GetMapping()
-    public String showShop(Model model) {
+    public String showShop(Model model) { // Agregar HttpSession como parámetro
 
-        List<Shoe> shoes = shoeService.getAllShoes();
-        
+        List<Shoe> shoes = shoeService.getNineShoes();
         model.addAttribute("shoes", shoes);
-        
+
         return "shop";
     }
+
     @PostMapping("/create")
     public String createShoe(
             @RequestParam String name,
@@ -146,8 +146,16 @@ public class ShoeController {
     @GetMapping("/single-product/{id}")
     public String showSingleProduct(Model model, @PathVariable Long id) {
         Optional<Shoe> op = shoeService.getShoeById(id);
+        Optional<Integer> stockS=shoeSizeStockService.getStockByShoeAndSize(id, "S");
+        Optional<Integer> stockM=shoeSizeStockService.getStockByShoeAndSize(id, "M");
+        Optional<Integer> stockL=shoeSizeStockService.getStockByShoeAndSize(id, "L");
+        Optional<Integer> stockXL=shoeSizeStockService.getStockByShoeAndSize(id, "XL");
         if (op.isPresent()) {
             Shoe shoe = op.get();
+            model.addAttribute("stockS", stockS.get()==0);
+            model.addAttribute("stockM", stockM.get()==0);
+            model.addAttribute("stockL", stockL.get()==0);
+            model.addAttribute("stockXL", stockXL.get()==0);
             model.addAttribute("product", shoe);
             return "single-product";
         }
@@ -172,15 +180,26 @@ public class ShoeController {
         } else if ("confirmation".equals(action)) {
 
             //need a confirmation if the stock of the default size is 0
-            Optional <ShoeSizeStock> stock= shoeSizeStockService.getStockByShoeAndSize(id, "M");
+            Optional <Integer> stock= shoeSizeStockService.getStockByShoeAndSize(id, "M");
 
-            if(stock.isPresent()&&stock.get().getStock()==0){
+            if(stock.isPresent()&&stock.get()==0){
                    model.addAttribute("error", true);
             }
             return "partials/cart-confirmation-view"; 
         } else {
             return "partials/error-modal";
         }
+    }
+    
+    @GetMapping("/loadMoreShoes/")
+    public String getMore( Model model,@RequestParam int currentPage) {
+
+        Page<Shoe> shoePage=shoeService.getShoesPaginated(currentPage);
+        boolean more= currentPage< shoePage.getTotalPages()-1;
+        System.out.println(more);
+        model.addAttribute("hasMoreShoes",more);
+        model.addAttribute("shoes", shoePage.getContent());
+        return "partials/loadMoreShoe";
     }
     
 }

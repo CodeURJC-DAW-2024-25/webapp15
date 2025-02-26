@@ -1,4 +1,4 @@
-
+let currentPage=2;
 async function openModal(productId, action) {
     try {
 
@@ -66,5 +66,23 @@ async function AddtoCart(id) {
     } catch (error) {
         console.error("Error en la solicitud:", error);
     }
+}
+
+
+async function loadMore() {
+    try{
+        currentPage++
+        const response = await fetch(`/shop/loadMoreShoes/?currentPage=${currentPage}`);
+        const resp=await response.text();
+        if(resp.includes("<!--hasMoreShoes-->")){
+                document.getElementById("loadMoreButtom").style.display='none';
+        }
+        let shoesDiv=document.getElementById("shoes");
+        shoesDiv.innerHTML += resp;
+
+    }catch(error){
+        console.error("Error at trying to load 3 more shoes: ", error)
+    }
+
 }
 

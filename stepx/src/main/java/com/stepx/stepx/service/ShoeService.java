@@ -1,5 +1,8 @@
 package com.stepx.stepx.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -17,12 +20,9 @@ public class ShoeService {
         this.shoeRepository = shoeRepository;
     }
 
-
-
-
     // Obtener todos los zapatos
-    public List<Shoe> getAllShoes() {
-        return shoeRepository.findAll();
+    public List<Shoe> getNineShoes() {
+        return shoeRepository.findNineShoes();
     }
 
     // Obtener un zapato por ID
@@ -38,5 +38,10 @@ public class ShoeService {
     // Eliminar un zapato por ID
     public void deleteShoe(Long id) {
         shoeRepository.deleteById(id);
+    }
+
+    public Page<Shoe> getShoesPaginated(int currentPage) {
+        int pagesize=3;
+        return shoeRepository.findAll(PageRequest.of(currentPage, pagesize));
     }
 }
