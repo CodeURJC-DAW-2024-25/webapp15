@@ -1,10 +1,16 @@
 package com.stepx.stepx.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.stepx.stepx.model.Review;
+import java.util.List;
 
 public interface ReviewRepository extends JpaRepository<Review, Long>{
     
+    //List<Review>findById(long id);
 
+    @Query("SELECT r FROM Review r JOIN FETCH r.user WHERE r.shoe.id = :shoeId")
+    List<Review> findReviewsByShoeId(@Param("shoeId") Long shoeId);
 }

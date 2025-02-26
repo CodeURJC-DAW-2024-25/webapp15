@@ -34,6 +34,10 @@ public class Review {
     
     // Getters y setters
 
+    public Review(){
+        
+    }
+
     public Review(int rating, String description, Shoe shoe, User user){
         this.rating = rating;
         this.description = description;

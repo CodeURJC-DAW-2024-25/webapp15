@@ -26,10 +26,12 @@ import org.springframework.core.io.Resource;
 
 import com.stepx.stepx.model.Product;
 import com.stepx.stepx.model.Shoe;
+import com.stepx.stepx.model.Review;
 import com.stepx.stepx.model.ShoeSizeStock;
 import com.stepx.stepx.service.CartService;
 import com.stepx.stepx.service.ProductsService;
 import com.stepx.stepx.service.ShoeService;
+import com.stepx.stepx.service.ReviewService;
 import com.stepx.stepx.service.ShoeSizeStockService;
 
 import org.springframework.web.bind.annotation.RequestParam;
@@ -47,6 +49,9 @@ public class ShoeController {
 
     @Autowired
     private CartService cartService;
+
+    @Autowired
+    private ReviewService reviewService;
 
     @Autowired
     private ShoeSizeStockService shoeSizeStockService;
@@ -158,10 +163,18 @@ public class ShoeController {
     @GetMapping("/single-product/{id}")
     public String showSingleProduct(Model model, @PathVariable Long id) {
         Optional<Shoe> op = shoeService.getShoeById(id);
+        List<Review> review = reviewService.getReviewsByShoe(id);
         if (op.isPresent()) {
             Shoe shoe = op.get();
             model.addAttribute("product", shoe);
+            if(review!= null){
+                model.addAttribute("review", review);
+                
+            }else{
+                System.out.println("no hay lista de reviews");
+            }
             return "single-product";
+            
         }
         return "shop";
     }

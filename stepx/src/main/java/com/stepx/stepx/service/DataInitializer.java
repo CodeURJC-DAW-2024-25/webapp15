@@ -1172,8 +1172,10 @@ public class DataInitializer implements CommandLineRunner {
                 try {
 
                         Optional<Shoe> shoe1 = shoeRepository.findById(1L);
+                        Optional<Shoe> shoe2 = shoeRepository.findById(2L);
 
                         Optional<User> user1 = userRepository.findById(1L);
+                        Optional<User> user2 = userRepository.findById(2L);
 
                         if (shoe1.isPresent()) {
                                 if (user1.isPresent()) {
@@ -1182,6 +1184,19 @@ public class DataInitializer implements CommandLineRunner {
 
                                         Review review1 = new Review(5, "Excelente producto", shoe1.get(), user1.get());
                                         reviewRepository.save(review1);
+                                } else {
+
+                                        System.out.println("user no presente");
+                                }
+                        }
+                        if (shoe2.isPresent()) {
+                                if (user2.isPresent()) {
+
+                                        Review review1 = new Review(5, "Me parece bien pero no me termina de convencer", shoe2.get(), user1.get());
+                                        reviewRepository.save(review1);
+
+                                        Review review2 = new Review(5, "El producto me llego roto", shoe2.get(), user2.get());
+                                        reviewRepository.save(review2);
                                 } else {
 
                                         System.out.println("user no presente");
