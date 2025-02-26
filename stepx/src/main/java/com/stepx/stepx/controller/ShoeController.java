@@ -52,9 +52,6 @@ public class ShoeController {
     @Autowired
     private ShoeService shoeService;
 
-    @Autowired
-    private ShoeSizeStockService shoeSizeStockService;
-
     
     public String getMethodName(@RequestParam String param) {
         return new String();
@@ -72,7 +69,8 @@ public class ShoeController {
     @PostMapping("/create")
     public String createShoe(
             @RequestParam String name,
-            @RequestParam String longDescription,
+            @RequestParam String ShortDescription,
+            @RequestParam String LongDescription,
             @RequestParam BigDecimal price,
             @RequestParam(required = false) MultipartFile image1,
             @RequestParam(required = false) MultipartFile image2,
@@ -83,10 +81,11 @@ public class ShoeController {
         // Create a new Shoe object
         Shoe shoe = new Shoe();
         shoe.setName(name);
-        shoe.setDescription(longDescription);
+        shoe.setDescription(ShortDescription);
         shoe.setPrice(price);
         shoe.setBrand(Shoe.Brand.valueOf(brand));
         shoe.setCategory(Shoe.Category.valueOf(category));
+        shoe.setLongDescription(LongDescription);
 
         // Convert images to Blob and set them
         if (image1 != null && !image1.isEmpty()) {
@@ -106,7 +105,7 @@ public class ShoeController {
 
         ShoeSizeStock stock = new ShoeSizeStock();
             stock.setShoe(shoe);
-            stock.setSize("S");
+            stock.setSize("M");
             stock.setStock(10);
             shoeSizeStockService.saveStock(stock);
 
