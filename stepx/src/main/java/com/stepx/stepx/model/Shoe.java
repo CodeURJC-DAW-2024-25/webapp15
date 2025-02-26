@@ -41,6 +41,10 @@ public class Shoe {
     @OneToMany(mappedBy = "shoe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ShoeSizeStock> sizeStocks = new ArrayList<>();
 
+
+    @OneToMany(mappedBy = "shoe")
+    private List<Review> reviews = new ArrayList<>();
+
     // Getters y setters
     public Long getId() {
         return id;
