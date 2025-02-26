@@ -34,6 +34,8 @@ import com.stepx.stepx.service.ShoeSizeStockService;
 
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 
 
@@ -111,6 +113,16 @@ public class ShoeController {
 
         return "redirect:/shop"; // Redirect to shop page after creation
     }
+
+    @PostMapping("/delete/{id}")
+    public String deleteShoe(@PathVariable Long id) {
+
+        shoeService.deleteShoe(id);
+       
+        
+        return "redirect:/shop";
+    }
+    
 
      @GetMapping("/{id}/image/{imageNumber}")
     public ResponseEntity<Resource> getShoeImage(@PathVariable Long id, @PathVariable int imageNumber) {
