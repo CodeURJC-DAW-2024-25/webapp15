@@ -1,14 +1,19 @@
 package com.stepx.stepx.model;
 
 import java.sql.Date;
+import java.time.LocalDate;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.TemporalType;
 
+import java.time.LocalDate;
+import jakarta.persistence.Transient;
 
 @Entity
 public class Review {
@@ -22,27 +27,34 @@ public class Review {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-    
-    private String description;
-    
-    private Date date;
 
-    //relacion con el zapato, un zapato tiene varias reviews
+    private String description;
+
+    @Transient
+    private String formattedDate;
+
+    @Column(name = "date")
+    private LocalDate date;
+
+   
+
+    // relacion con el zapato, un zapato tiene varias reviews
     @ManyToOne
     @JoinColumn(name = "shoe_id")
     private Shoe shoe;
-    
+
     // Getters y setters
 
-    public Review(){
-        
+    public Review() {
+
     }
 
-    public Review(int rating, String description, Shoe shoe, User user){
+    public Review(int rating, String description, Shoe shoe, User user, LocalDate date) {
         this.rating = rating;
         this.description = description;
         this.shoe = shoe;
         this.user = user;
+        this.date = LocalDate.now();
     }
 
     public Shoe getShoe() {
@@ -69,18 +81,10 @@ public class Review {
         this.description = description;
     }
 
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
     public Long getId() {
         return id;
     }
- 
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -93,6 +97,12 @@ public class Review {
         this.rating = rating;
     }
 
-   
-    
+    public void setFormattedDate(String formattedDate) {
+        this.formattedDate = formattedDate;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
 }

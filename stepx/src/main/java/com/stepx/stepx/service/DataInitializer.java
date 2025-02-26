@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
@@ -34,6 +35,8 @@ public class DataInitializer implements CommandLineRunner {
         private Blob image2;
         private Blob image3;
         private Blob imageUser;
+
+        private LocalDate date;
 
         public DataInitializer(ShoeRepository shoeRepository, ShoeSizeStockRepository shoeSizeStockRepository,
                         ReviewRepository reviewRepository, UserRepository userRepository) {
@@ -1182,7 +1185,7 @@ public class DataInitializer implements CommandLineRunner {
 
                                         System.out.println("si estan ambos presente");
 
-                                        Review review1 = new Review(5, "Excelente producto", shoe1.get(), user1.get());
+                                        Review review1 = new Review(5, "Excelente producto", shoe1.get(), user1.get(), date);
                                         reviewRepository.save(review1);
                                 } else {
 
@@ -1192,10 +1195,10 @@ public class DataInitializer implements CommandLineRunner {
                         if (shoe2.isPresent()) {
                                 if (user2.isPresent()) {
 
-                                        Review review1 = new Review(5, "Me parece bien pero no me termina de convencer", shoe2.get(), user1.get());
+                                        Review review1 = new Review(5, "Me parece bien pero no me termina de convencer", shoe2.get(), user1.get(), date);
                                         reviewRepository.save(review1);
 
-                                        Review review2 = new Review(5, "El producto me llego roto", shoe2.get(), user2.get());
+                                        Review review2 = new Review(5, "El producto me llego roto", shoe2.get(), user2.get(), date);
                                         reviewRepository.save(review2);
                                 } else {
 
