@@ -1155,12 +1155,12 @@ public class DataInitializer implements CommandLineRunner {
         private void initializeUsers() {
 
                 try {
-                        // imageUser = loadImage("images/users/perfil1.webp");
-                        User user1 = new User("sebas");
+                        imageUser = loadImage("images/USERS/user_1.jpg");
+                        User user1 = new User("Gaby", imageUser);
                         userRepository.save(user1);
 
-                        // imageUser = loadImage("images/users/perfil1.webp");
-                        User user2 = new User("Gabs");
+                        imageUser = loadImage("images/USERS/user_2.jpg");
+                        User user2 = new User("Gonzalo", imageUser);
                         userRepository.save(user2);
                 } catch (Exception e) {
 

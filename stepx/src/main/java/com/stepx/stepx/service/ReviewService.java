@@ -25,5 +25,6 @@ public class ReviewService {
     public List<Review> getReviewsByShoe(Long shoeId) {
         return reviewRepository.findReviewsByShoeId(shoeId);
     }
+    
 
 }
