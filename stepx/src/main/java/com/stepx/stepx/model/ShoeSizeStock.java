@@ -52,4 +52,6 @@ public class ShoeSizeStock {
     public void setStock(Integer stock) {
         this.stock = stock;
     }
+
+   
 }

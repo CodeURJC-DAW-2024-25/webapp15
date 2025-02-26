@@ -83,215 +83,68 @@
                     box-shadow: 0px 40px 100px rgba(73, 2, 2, 0.5); ">
 
                         <h2 class="text-center mb-4">Create Shoe Product</h2>
-                        <form id="edit-product-form">
+                        <form id="edit-product-form" action="/shop/create" method="post" enctype="multipart/form-data">
                             <h5 class="widget-title text-decoration-underline pe-2">Shoe Information:</h5>
                             <div class="mb-3">
                                 <label for="name" class="form-label">Name</label>
-                                <input type="text" id="name" name="name" class="form-control ps-3 text-input"
-                                    value="Nike Air force 1" required>
+                                <input type="text" id="name" name="name" class="form-control ps-3 text-input" required>
                             </div>
-
+                        
                             <div class="mb-3">
-                                <label for="description" class="form-label">Description</label>
-                                <textarea id="description" name="description" class="form-control ps-3 text-input"
-                                    rows="5"
-                                    required>This Shoes is comfortable for wearing for men. imperdiet nulla molestie ac vulputate scelerisque amet.Bibendum adipiscing platea blandit sit sed quam semper rhoncus. Diam ultrices maecenas consequat eu tortor orci.</textarea>
+                                <label for="longDescription" class="form-label">Description</label>
+                                <textarea id="longDescription" name="longDescription" class="form-control ps-3 text-input" rows="5" required></textarea>
                             </div>
-
+                        
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <div class="input-group">
                                         <span class="input-group-text">$</span>
-                                        <input type="number" class="form-control" value="0" required>
+                                        <input type="number" class="form-control" name="price" required>
                                     </div>
-        
                                 </div>
                             </div>
-
+                        
                             <h5 class="widget-title text-decoration-underline pe-2">Shoe Images:</h5>
                             <div class="mb-3">
-                                <label for="picture" class="form-label">Picture 1</label>
-                                <input type="file" id="picture1" name="picture" class="form-control ps-3 text-input"
-                                    value="" accept="image/*" onchange="previewImage(1)">
+                                <label for="picture1" class="form-label">Picture 1</label>
+                                <input type="file" id="picture1" name="image1" class="form-control ps-3 text-input" accept="image/*">
                             </div>
                             <div class="mb-3">
-                                <label for="picture" class="form-label">Picture 2</label>
-                                <input type="file" id="picture2" name="picture" class="form-control ps-3 text-input"
-                                    value="" accept="image/*" onchange="previewImage(2)">
+                                <label for="picture2" class="form-label">Picture 2</label>
+                                <input type="file" id="picture2" name="image2" class="form-control ps-3 text-input" accept="image/*">
                             </div>
                             <div class="mb-3">
-                                <label for="picture" class="form-label">Picture 3</label>
-                                <input type="file" id="picture3" name="picture" class="form-control ps-3 text-input"
-                                    value="" accept="image/*" onchange="previewImage(3)">
+                                <label for="picture3" class="form-label">Picture 3</label>
+                                <input type="file" id="picture3" name="image3" class="form-control ps-3 text-input" accept="image/*">
                             </div>
-                            <div class="mb-3">
-                                <label for="picture" class="form-label">Picture 4</label>
-                                <input type="file" id="picture4" name="picture" class="form-control ps-3 text-input"
-                                    value="" accept="image/*" onchange="previewImage(4)">
-                            </div>
-                            <div class="mb-3">
-                                <label for="picture" class="form-label">Picture 5</label>
-                                <input type="file" id="picture5" name="picture" class="form-control ps-3 text-input"
-                                    value="" accept="image/*" onchange="previewImage(5)">
-                            </div>
-
+                        
                             <h5 class="widget-title text-decoration-underline pe-2">Size and Category:</h5>
-
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="category" class="form-label">Size 1</label>
-                                    <select id="category" name="category" class="form-control ps-3 text-input" required>
-                                        <option value="Sport" selected>XL</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Stock</label>
-                                    <div class="quantity-price d-flex justify-content-between align-items-center">
-                                        <div class="input-group product-qty">
-                                            <button type="button"
-                                                class="quantity-left-minus btn btn-light rounded-0 rounded-start btn-number"
-                                                data-type="minus">
-                                                <svg width="16" height="16">
-                                                    <use xlink:href="#minus"></use>
-                                                </svg>
-                                            </button>
-                                            <input type="text" name="quantity"
-                                                class="form-control input-number quantity" value="1">
-                                            <button type="button"
-                                                class="quantity-right-plus btn btn-light rounded-0 rounded-end btn-number"
-                                                data-type="plus">
-                                                <svg width="16" height="16">
-                                                    <use xlink:href="#plus"></use>
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="category" class="form-label">Size 2</label>
-                                    <select id="category" name="category" class="form-control ps-3 text-input" required>
-                                        <option value="Casual" selected>L</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Stock</label>
-                                    <div class="quantity-price d-flex justify-content-between align-items-center">
-                                        <div class="input-group product-qty">
-                                            <button type="button"
-                                                class="quantity-left-minus btn btn-light rounded-0 rounded-start btn-number"
-                                                data-type="minus">
-                                                <svg width="16" height="16">
-                                                    <use xlink:href="#minus"></use>
-                                                </svg>
-                                            </button>
-                                            <input type="text" name="quantity"
-                                                class="form-control input-number quantity" value="1">
-                                            <button type="button"
-                                                class="quantity-right-plus btn btn-light rounded-0 rounded-end btn-number"
-                                                data-type="plus">
-                                                <svg width="16" height="16">
-                                                    <use xlink:href="#plus"></use>
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="category" class="form-label">Size 3</label>
-                                    <select id="category" name="category" class="form-control ps-3 text-input" required>
-                                        <option value="Urban" selected>M</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Stock</label>
-                                    <div class="quantity-price d-flex justify-content-between align-items-center">
-                                        <div class="input-group product-qty">
-                                            <button type="button"
-                                                class="quantity-left-minus btn btn-light rounded-0 rounded-start btn-number"
-                                                data-type="minus">
-                                                <svg width="16" height="16">
-                                                    <use xlink:href="#minus"></use>
-                                                </svg>
-                                            </button>
-                                            <input type="text" name="quantity"
-                                                class="form-control input-number quantity" value="1">
-                                            <button type="button"
-                                                class="quantity-right-plus btn btn-light rounded-0 rounded-end btn-number"
-                                                data-type="plus">
-                                                <svg width="16" height="16">
-                                                    <use xlink:href="#plus"></use>
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="category" class="form-label">Size 4</label>
-                                    <select id="category" name="category" class="form-control ps-3 text-input" required>
-                                        <option value="Urban" selected>S</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Stock</label>
-                                    <div class="quantity-price d-flex justify-content-between align-items-center">
-                                        <div class="input-group product-qty">
-                                            <button type="button"
-                                                class="quantity-left-minus btn btn-light rounded-0 rounded-start btn-number"
-                                                data-type="minus">
-                                                <svg width="16" height="16">
-                                                    <use xlink:href="#minus"></use>
-                                                </svg>
-                                            </button>
-                                            <input type="text" name="quantity"
-                                                class="form-control input-number quantity" value="1">
-                                            <button type="button"
-                                                class="quantity-right-plus btn btn-light rounded-0 rounded-end btn-number"
-                                                data-type="plus">
-                                                <svg width="16" height="16">
-                                                    <use xlink:href="#plus"></use>
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
+                        
                             <div class="mb-3">
                                 <label for="category" class="form-label">Category</label>
                                 <select id="category" name="category" class="form-control ps-3 text-input" required>
                                     <option value="" selected>Select a category</option>
-                                    <option value="Sport">Sport</option>
-                                    <option value="Casual">Casual</option>
-                                    <option value="Urban">Urban</option>
+                                    <option value="SPORT">Sport</option>
+                                    <option value="CASUAL">Casual</option>
+                                    <option value="URBAN">Urban</option>
                                 </select>
                             </div>
-
+                        
                             <div class="mb-3">
-                                <label for="gender" class="form-label">Brand</label>
-                                <select id="gender" name="gender" class="form-control ps-3 text-input" required>
+                                <label for="brand" class="form-label">Brand</label>
+                                <select id="brand" name="brand" class="form-control ps-3 text-input" required>
                                     <option value="" selected>Select Brand</option>
-                                    <option value="Nike">Nike</option>
-                                    <option value="Puma">Puma</option>
-                                    <option value="Adidas">Adidas</option>
-                                    <option value="New Balance">New Balance</option>
-                                    <option value="Vans">Vans</option>
+                                    <option value="NIKE">Nike</option>
+                                    <option value="PUMA">Puma</option>
+                                    <option value="ADIDAS">Adidas</option>
+                                    <option value="NEW_BALANCE">New Balance</option>
+                                    <option value="VANS">Vans</option>
                                 </select>
                             </div>
-
+                        
                             <div class="d-grid gap-2 mt-4">
-                                <button type="submit" class="btn btn-red hvr-sweep-to-right dark-sweep">Publish
-                                    Shoe</button>
-                                <button type="button"
-                                    class="btn btn-outline-gray hvr-sweep-to-right dark-sweep">Cancel</button>
+                                <button type="submit" class="btn btn-red hvr-sweep-to-right dark-sweep">Publish Shoe</button>
+                                <button type="button" class="btn btn-outline-gray hvr-sweep-to-right dark-sweep">Cancel</button>
                             </div>
                         </form>
                     </div>

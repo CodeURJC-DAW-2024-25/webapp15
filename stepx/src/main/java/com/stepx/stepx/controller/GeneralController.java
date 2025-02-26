@@ -53,7 +53,11 @@ public class GeneralController { // todas las solicitudes "/...." son con el con
         return "edit-product";
     }
 
-   
+    @GetMapping("/create-product")
+    public String showCreate(Model model) {
+        return "create-product";
+
+    }
 
     @GetMapping("/checkout")
     public String showCheckout(Model model) {
