@@ -1,8 +1,7 @@
 
 async function openModal(productId, action) {
-    console.log("productId:", productId, "Action:", action); // Verificar en consola
-
     try {
+
         const response = await fetch(`/shop/${productId}?action=${action}`);
 
         if (!response.ok) {
@@ -10,6 +9,7 @@ async function openModal(productId, action) {
         }
 
         const modalContent = await response.text();
+
         document.getElementById("modal-body-content").innerHTML = modalContent;
 
     } catch (error) {
@@ -19,7 +19,7 @@ async function openModal(productId, action) {
     
 window.openModal = openModal;
 
-async function openCartModal() {
+async function openCartModal1() {
     try {
         const response = await fetch("/cart"); // Ruta para obtener los productos del carrito
 

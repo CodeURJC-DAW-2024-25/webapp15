@@ -18,10 +18,12 @@ import org.springframework.core.io.Resource;
 
 import com.stepx.stepx.model.Product;
 import com.stepx.stepx.model.Shoe;
-
+import com.stepx.stepx.model.ShoeSizeStock;
 import com.stepx.stepx.service.CartService;
 import com.stepx.stepx.service.ProductsService;
 import com.stepx.stepx.service.ShoeService;
+import com.stepx.stepx.service.ShoeSizeStockService;
+
 import org.springframework.web.bind.annotation.RequestParam;
 
 
@@ -34,6 +36,9 @@ public class ShoeController {
 
     @Autowired
     private CartService cartService;
+
+    @Autowired
+    private ShoeSizeStockService shoeSizeStockService;
 
     @Autowired
     private ShoeService shoeService;
@@ -93,6 +98,35 @@ public class ShoeController {
             return "single-product";
         }
         return "shop";
+    }
+
+    @GetMapping("/{id}")
+    public String getProductById(Model model, @PathVariable Long id, @RequestParam(required = false) String action) {
+        
+        Optional<Shoe> product = shoeService.getShoeById(id);
+
+        if (product.isEmpty()) {
+            model.addAttribute("error", "Product not found");
+            return "partials/error-modal"; 
+        }
+
+        model.addAttribute("product", product.get()); //importat to do a get from the Optional that the service returns
+
+        
+        if ("quick".equals(action)) {
+            return "partials/quick-view-modal";  
+        } else if ("confirmation".equals(action)) {
+
+            //need a confirmation if the stock of the default size is 0
+            Optional <ShoeSizeStock> stock= shoeSizeStockService.getStockByShoeAndSize(id, "M");
+
+            if(stock.isPresent()&&stock.get().getStock()==0){
+                   model.addAttribute("error", true);
+            }
+            return "partials/cart-confirmation-view"; 
+        } else {
+            return "partials/error-modal";
+        }
     }
     
 }

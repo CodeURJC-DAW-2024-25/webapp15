@@ -30,4 +30,8 @@ public class ShoeSizeStockService {
     public void deleteStock(Long id) {
         shoeSizeStockRepository.deleteById(id);
     }
+
+    public Optional<ShoeSizeStock> getStockByShoeAndSize(Long shoeId, String size) {
+        return shoeSizeStockRepository.findByShoeAndSize(shoeId, size);
+    }
 }

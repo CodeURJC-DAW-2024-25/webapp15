@@ -10,7 +10,7 @@
              style="height: 150px; width: auto; display: block; margin: 0 auto;">
 
         <div style="margin-bottom: 4%;margin-left: 5%; margin-right: 5%;box-shadow: 0px 0px 7px 1px gray;display: flex; align-items: center; justify-content: center; gap: 20px; margin-top: 20px;">
-            <img src="{{images.0}}" 
+            <img src="/shop/{{id}}/image/1" 
                  alt="Product Image" 
                  style="width: 30%; max-height: 30%;">
 
@@ -19,21 +19,29 @@
                     <h4>{{name}}</h4>
                 </div>
                 <div class="size-confirmation">
-                    <p style="font-weight: 700; text-transform: uppercase;">SIZE: <strong style="color: black;">{{defaultSize}}</strong><p>
+                    <p style="font-weight: 700; text-transform: uppercase;">SIZE: <strong style="color: black;">M</strong><p>
                 </div>
                 <div class="price-confirmation">
                     <p style="font-weight: 700; text-transform: uppercase;">PRICE: <strong style="color: black;">${{price}}</strong></p>
                 </div>
                 <div class="description-confirmation">
-                    <p style="font-weight: 400; color: black;font-family: sans-serif;">{{shortDescription}}</p>
+                    <p style="font-weight: 400; color: black;font-family: sans-serif;">{{shortdescription}}</p>
                 </div>
             </div>
         </div>
     </div>
+    {{#error}}
+    <div style="text-align: center;">
+        <P>No Stock Available</P>
+    </div>
+        
+    {{/error}}
 
+    {{^error}}
     <div class="container-button-confirmation">
         <button type="submit" class="btn btn-red hvr-sweep-to-right dark-sweep" style=" display: block;margin: 0 auto;" onclick="AddtoCart('{{id}}')" value="1269">
             Add to cart
         </button>
     </div>
+    {{/error}}
 {{/product}}
