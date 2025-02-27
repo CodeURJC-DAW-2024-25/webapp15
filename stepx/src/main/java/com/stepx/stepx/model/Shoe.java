@@ -46,7 +46,7 @@ public class Shoe {
     private List<ShoeSizeStock> sizeStocks = new ArrayList<>();
 
 
-    @OneToMany(mappedBy = "shoe")
+    @OneToMany(mappedBy = "shoe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
 
     // Getters y setters
