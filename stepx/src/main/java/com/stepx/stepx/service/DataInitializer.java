@@ -446,6 +446,7 @@ public class DataInitializer implements CommandLineRunner {
                 shoe6.setName("Nike AirMax Dn");
                 shoe6.setDescription("Next-level Air cushioning for superior comfort.");
                 shoe6.setLongDescription("The Nike AirMax Dn takes comfort to a new level with its innovative dual-pressure Air cushioning system. Designed for maximum responsiveness, it delivers a smooth and springy ride. The breathable mesh upper ensures ventilation, while the sleek, modern silhouette makes it a must-have for sneaker lovers.");
+                shoe6.setPrice(new BigDecimal("90.00"));
                 shoe6.setBrand(Shoe.Brand.NIKE);
                 shoe6.setCategory(Shoe.Category.SPORT);
                 shoe6.setImage1(image1);
@@ -813,7 +814,7 @@ public class DataInitializer implements CommandLineRunner {
                 shoe26.setLongDescription(
                                 "The Nike Air Max 270 delivers visible air under every step. Updated for modern comfort, it nods to the original 1991 Air Max 180 with its exaggerated tongue top and heritage tongue logo. ");
                 shoe26.setPrice(new BigDecimal("150.00"));
-                shoe26.setBrand(Shoe.Brand.NEW_BALANCE);
+                shoe26.setBrand(Shoe.Brand.NIKE);
                 shoe26.setCategory(Shoe.Category.SPORT);
                 shoe26.setImage1(image1);
                 shoe26.setImage2(image2);
