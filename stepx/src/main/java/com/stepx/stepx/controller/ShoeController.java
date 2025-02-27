@@ -33,7 +33,6 @@ import com.stepx.stepx.model.Shoe.Brand;
 import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 import com.stepx.stepx.model.Review;
 import com.stepx.stepx.model.ShoeSizeStock;
-import com.stepx.stepx.service.CartService;
 import com.stepx.stepx.service.ProductsService;
 import com.stepx.stepx.service.ShoeService;
 import com.stepx.stepx.service.ReviewService;
@@ -52,8 +51,6 @@ public class ShoeController {
     @Autowired
     private ProductsService productsService;
 
-    @Autowired
-    private CartService cartService;
 
     @Autowired
     private ReviewService reviewService;

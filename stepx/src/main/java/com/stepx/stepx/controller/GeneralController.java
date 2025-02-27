@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.stepx.stepx.model.Product;
-
-import com.stepx.stepx.service.CartService;
 import com.stepx.stepx.service.ProductsService;
 
 @Controller
@@ -20,9 +18,6 @@ public class GeneralController { // todas las solicitudes "/...." son con el con
 
     @Autowired
     private ProductsService productsService;
-
-    @Autowired
-    private CartService cartService;
 
     @GetMapping("/index")
     public String showIndex(Model model) {
@@ -56,14 +51,6 @@ public class GeneralController { // todas las solicitudes "/...." son con el con
     public String showCheckout(Model model) {
         return "checkout";
 
-    }
-
-    @GetMapping("/cart")
-    public String getProductById(Model model) {
-
-        List<Product> productList = new ArrayList<>(cartService.getCartContents().values()); //convertimos a una lista para que sea facil de iterar
-        model.addAttribute("cartItems", productList); // Agregar el contenido del carrito
-        return "partials/quick-view-cart-modal"; // 📌 Devolver el modal del carrito
     }
 
     
