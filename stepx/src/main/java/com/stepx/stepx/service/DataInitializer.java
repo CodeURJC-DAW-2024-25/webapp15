@@ -255,12 +255,12 @@ public class DataInitializer implements CommandLineRunner {
                 image3 = loadImage("images/PRODUCS/NEW_BALANCE/NB370_3.jpg");
 
                 Shoe shoe18 = new Shoe();
-                shoe18.setName("Nike AirForce");
-                shoe18.setDescription("Nike AirForce 1");
+                shoe18.setName("NB370");
+                shoe18.setDescription("null");
                 shoe18.setLongDescription(
                                 "The Nike Air Max 270 delivers visible air under every step. Updated for modern comfort, it nods to the original 1991 Air Max 180 with its exaggerated tongue top and heritage tongue logo. ");
                 shoe18.setPrice(new BigDecimal("150.00"));
-                shoe18.setBrand(Shoe.Brand.NIKE);
+                shoe18.setBrand(Shoe.Brand.NEW_BALANCE);
                 shoe18.setCategory(Shoe.Category.URBAN);
                 shoe18.setImage1(image1);
                 shoe18.setImage2(image2);
@@ -307,8 +307,8 @@ public class DataInitializer implements CommandLineRunner {
                 image3 = loadImage("images/PRODUCS/NIKE/NKairmax_black_3.jpg");
 
                 Shoe shoe4 = new Shoe();
-                shoe4.setName("Nike AirForce");
-                shoe4.setDescription("Nike AirForce 1");
+                shoe4.setName("NKairmax Black");
+                shoe4.setDescription("null");
                 shoe4.setLongDescription(
                                 "The Nike Air Max 270 delivers visible air under every step. Updated for modern comfort, it nods to the original 1991 Air Max 180 with its exaggerated tongue top and heritage tongue logo. ");
                 shoe4.setPrice(new BigDecimal("150.00"));
@@ -325,12 +325,12 @@ public class DataInitializer implements CommandLineRunner {
                 image3 = loadImage("images/PRODUCS/NEW_BALANCE/NB405_3.jpg");
 
                 Shoe shoe19 = new Shoe();
-                shoe19.setName("Nike AirForce");
-                shoe19.setDescription("Nike AirForce 1");
+                shoe19.setName("NB405");
+                shoe19.setDescription("NB405");
                 shoe19.setLongDescription(
                                 "The Nike Air Max 270 delivers visible air under every step. Updated for modern comfort, it nods to the original 1991 Air Max 180 with its exaggerated tongue top and heritage tongue logo. ");
                 shoe19.setPrice(new BigDecimal("150.00"));
-                shoe19.setBrand(Shoe.Brand.NIKE);
+                shoe19.setBrand(Shoe.Brand.NEW_BALANCE);
                 shoe19.setCategory(Shoe.Category.URBAN);
                 shoe19.setImage1(image1);
                 shoe19.setImage2(image2);
@@ -377,13 +377,13 @@ public class DataInitializer implements CommandLineRunner {
                 image3 = loadImage("images/PRODUCS/NIKE/NKblack_3.jpg");
 
                 Shoe shoe5 = new Shoe();
-                shoe5.setName("Nike AirForce");
+                shoe5.setName("Nike AirForce Black");
                 shoe5.setDescription("Nike AirForce 1");
                 shoe5.setLongDescription(
                                 "The Nike Air Max 270 delivers visible air under every step. Updated for modern comfort, it nods to the original 1991 Air Max 180 with its exaggerated tongue top and heritage tongue logo. ");
                 shoe5.setPrice(new BigDecimal("150.00"));
                 shoe5.setBrand(Shoe.Brand.NIKE);
-                shoe5.setCategory(Shoe.Category.URBAN);
+                shoe5.setCategory(Shoe.Category.SPORT);
                 shoe5.setImage1(image1);
                 shoe5.setImage2(image2);
                 shoe5.setImage3(image3);
@@ -395,12 +395,12 @@ public class DataInitializer implements CommandLineRunner {
                 image3 = loadImage("images/PRODUCS/NEW_BALANCE/NB530_3.jpg");
 
                 Shoe shoe20 = new Shoe();
-                shoe20.setName("Nike AirForce");
-                shoe20.setDescription("Nike AirForce 1");
+                shoe20.setName("NB530");
+                shoe20.setDescription("NB530");
                 shoe20.setLongDescription(
                                 "The Nike Air Max 270 delivers visible air under every step. Updated for modern comfort, it nods to the original 1991 Air Max 180 with its exaggerated tongue top and heritage tongue logo. ");
                 shoe20.setPrice(new BigDecimal("150.00"));
-                shoe20.setBrand(Shoe.Brand.NIKE);
+                shoe20.setBrand(Shoe.Brand.NEW_BALANCE);
                 shoe20.setCategory(Shoe.Category.URBAN);
                 shoe20.setImage1(image1);
                 shoe20.setImage2(image2);
@@ -435,7 +435,7 @@ public class DataInitializer implements CommandLineRunner {
                 shoe51.setLongDescription("null");
                 shoe51.setPrice(new BigDecimal("70.00"));
                 shoe51.setBrand(Shoe.Brand.PUMA);
-                shoe51.setCategory(Shoe.Category.URBAN);
+                shoe51.setCategory(Shoe.Category.SPORT);
                 shoe51.setImage1(image1);
                 shoe51.setImage2(image2);
                 shoe51.setImage3(image3);
@@ -453,7 +453,7 @@ public class DataInitializer implements CommandLineRunner {
                                 "The Nike Air Max 270 delivers visible air under every step. Updated for modern comfort, it nods to the original 1991 Air Max 180 with its exaggerated tongue top and heritage tongue logo. ");
                 shoe6.setPrice(new BigDecimal("150.00"));
                 shoe6.setBrand(Shoe.Brand.NIKE);
-                shoe6.setCategory(Shoe.Category.URBAN);
+                shoe6.setCategory(Shoe.Category.CASUAL);
                 shoe6.setImage1(image1);
                 shoe6.setImage2(image2);
                 shoe6.setImage3(image3);
@@ -465,12 +465,12 @@ public class DataInitializer implements CommandLineRunner {
                 image3 = loadImage("images/PRODUCS/NEW_BALANCE/NB550_3.jpg");
 
                 Shoe shoe21 = new Shoe();
-                shoe21.setName("Nike AirForce");
+                shoe21.setName("NB550");
                 shoe21.setDescription("Nike AirForce 1");
                 shoe21.setLongDescription(
                                 "The Nike Air Max 270 delivers visible air under every step. Updated for modern comfort, it nods to the original 1991 Air Max 180 with its exaggerated tongue top and heritage tongue logo. ");
                 shoe21.setPrice(new BigDecimal("150.00"));
-                shoe21.setBrand(Shoe.Brand.NIKE);
+                shoe21.setBrand(Shoe.Brand.NEW_BALANCE);
                 shoe21.setCategory(Shoe.Category.URBAN);
                 shoe21.setImage1(image1);
                 shoe21.setImage2(image2);
@@ -517,7 +517,7 @@ public class DataInitializer implements CommandLineRunner {
                 image3 = loadImage("images/PRODUCS/NIKE/NKdunk_grey_3.jpg");
 
                 Shoe shoe7 = new Shoe();
-                shoe7.setName("Nike AirForce");
+                shoe7.setName("NKdunk Grey");
                 shoe7.setDescription("Nike AirForce 1");
                 shoe7.setLongDescription(
                                 "The Nike Air Max 270 delivers visible air under every step. Updated for modern comfort, it nods to the original 1991 Air Max 180 with its exaggerated tongue top and heritage tongue logo. ");
@@ -540,7 +540,7 @@ public class DataInitializer implements CommandLineRunner {
                 shoe22.setLongDescription(
                                 "The Nike Air Max 270 delivers visible air under every step. Updated for modern comfort, it nods to the original 1991 Air Max 180 with its exaggerated tongue top and heritage tongue logo. ");
                 shoe22.setPrice(new BigDecimal("150.00"));
-                shoe22.setBrand(Shoe.Brand.NIKE);
+                shoe22.setBrand(Shoe.Brand.NEW_BALANCE);
                 shoe22.setCategory(Shoe.Category.URBAN);
                 shoe22.setImage1(image1);
                 shoe22.setImage2(image2);
@@ -610,7 +610,7 @@ public class DataInitializer implements CommandLineRunner {
                 shoe23.setLongDescription(
                                 "The Nike Air Max 270 delivers visible air under every step. Updated for modern comfort, it nods to the original 1991 Air Max 180 with its exaggerated tongue top and heritage tongue logo. ");
                 shoe23.setPrice(new BigDecimal("150.00"));
-                shoe23.setBrand(Shoe.Brand.NIKE);
+                shoe23.setBrand(Shoe.Brand.NEW_BALANCE);
                 shoe23.setCategory(Shoe.Category.URBAN);
                 shoe23.setImage1(image1);
                 shoe23.setImage2(image2);
@@ -680,7 +680,7 @@ public class DataInitializer implements CommandLineRunner {
                 shoe24.setLongDescription(
                                 "The Nike Air Max 270 delivers visible air under every step. Updated for modern comfort, it nods to the original 1991 Air Max 180 with its exaggerated tongue top and heritage tongue logo. ");
                 shoe24.setPrice(new BigDecimal("150.00"));
-                shoe24.setBrand(Shoe.Brand.NIKE);
+                shoe24.setBrand(Shoe.Brand.NEW_BALANCE);
                 shoe24.setCategory(Shoe.Category.URBAN);
                 shoe24.setImage1(image1);
                 shoe24.setImage2(image2);
@@ -750,7 +750,7 @@ public class DataInitializer implements CommandLineRunner {
                 shoe25.setLongDescription(
                                 "The Nike Air Max 270 delivers visible air under every step. Updated for modern comfort, it nods to the original 1991 Air Max 180 with its exaggerated tongue top and heritage tongue logo. ");
                 shoe25.setPrice(new BigDecimal("150.00"));
-                shoe25.setBrand(Shoe.Brand.NIKE);
+                shoe25.setBrand(Shoe.Brand.NEW_BALANCE);
                 shoe25.setCategory(Shoe.Category.URBAN);
                 shoe25.setImage1(image1);
                 shoe25.setImage2(image2);
@@ -803,7 +803,7 @@ public class DataInitializer implements CommandLineRunner {
                                 "The Nike Air Max 270 delivers visible air under every step. Updated for modern comfort, it nods to the original 1991 Air Max 180 with its exaggerated tongue top and heritage tongue logo. ");
                 shoe11.setPrice(new BigDecimal("150.00"));
                 shoe11.setBrand(Shoe.Brand.NIKE);
-                shoe11.setCategory(Shoe.Category.URBAN);
+                shoe11.setCategory(Shoe.Category.CASUAL);
                 shoe11.setImage1(image1);
                 shoe11.setImage2(image2);
                 shoe11.setImage3(image3);
@@ -820,8 +820,8 @@ public class DataInitializer implements CommandLineRunner {
                 shoe26.setLongDescription(
                                 "The Nike Air Max 270 delivers visible air under every step. Updated for modern comfort, it nods to the original 1991 Air Max 180 with its exaggerated tongue top and heritage tongue logo. ");
                 shoe26.setPrice(new BigDecimal("150.00"));
-                shoe26.setBrand(Shoe.Brand.NIKE);
-                shoe26.setCategory(Shoe.Category.URBAN);
+                shoe26.setBrand(Shoe.Brand.NEW_BALANCE);
+                shoe26.setCategory(Shoe.Category.CASUAL);
                 shoe26.setImage1(image1);
                 shoe26.setImage2(image2);
                 shoe26.setImage3(image3);
@@ -838,7 +838,7 @@ public class DataInitializer implements CommandLineRunner {
                 shoe42.setLongDescription("null");
                 shoe42.setPrice(new BigDecimal("70.00"));
                 shoe42.setBrand(Shoe.Brand.ADIDAS);
-                shoe42.setCategory(Shoe.Category.URBAN);
+                shoe42.setCategory(Shoe.Category.CASUAL);
                 shoe42.setImage1(image1);
                 shoe42.setImage2(image2);
                 shoe42.setImage3(image3);
@@ -890,7 +890,7 @@ public class DataInitializer implements CommandLineRunner {
                 shoe27.setLongDescription(
                                 "The Nike Air Max 270 delivers visible air under every step. Updated for modern comfort, it nods to the original 1991 Air Max 180 with its exaggerated tongue top and heritage tongue logo. ");
                 shoe27.setPrice(new BigDecimal("150.00"));
-                shoe27.setBrand(Shoe.Brand.NIKE);
+                shoe27.setBrand(Shoe.Brand.NEW_BALANCE);
                 shoe27.setCategory(Shoe.Category.URBAN);
                 shoe27.setImage1(image1);
                 shoe27.setImage2(image2);
@@ -960,7 +960,7 @@ public class DataInitializer implements CommandLineRunner {
                 shoe28.setLongDescription(
                                 "The Nike Air Max 270 delivers visible air under every step. Updated for modern comfort, it nods to the original 1991 Air Max 180 with its exaggerated tongue top and heritage tongue logo. ");
                 shoe28.setPrice(new BigDecimal("150.00"));
-                shoe28.setBrand(Shoe.Brand.NIKE);
+                shoe28.setBrand(Shoe.Brand.NEW_BALANCE);
                 shoe28.setCategory(Shoe.Category.URBAN);
                 shoe28.setImage1(image1);
                 shoe28.setImage2(image2);
@@ -1030,7 +1030,7 @@ public class DataInitializer implements CommandLineRunner {
                 shoe29.setLongDescription(
                                 "The Nike Air Max 270 delivers visible air under every step. Updated for modern comfort, it nods to the original 1991 Air Max 180 with its exaggerated tongue top and heritage tongue logo. ");
                 shoe29.setPrice(new BigDecimal("150.00"));
-                shoe29.setBrand(Shoe.Brand.NIKE);
+                shoe29.setBrand(Shoe.Brand.NEW_BALANCE);
                 shoe29.setCategory(Shoe.Category.URBAN);
                 shoe29.setImage1(image1);
                 shoe29.setImage2(image2);
@@ -1100,7 +1100,7 @@ public class DataInitializer implements CommandLineRunner {
                 shoe30.setLongDescription(
                                 "The Nike Air Max 270 delivers visible air under every step. Updated for modern comfort, it nods to the original 1991 Air Max 180 with its exaggerated tongue top and heritage tongue logo. ");
                 shoe30.setPrice(new BigDecimal("150.00"));
-                shoe30.setBrand(Shoe.Brand.NIKE);
+                shoe30.setBrand(Shoe.Brand.NEW_BALANCE);
                 shoe30.setCategory(Shoe.Category.URBAN);
                 shoe30.setImage1(image1);
                 shoe30.setImage2(image2);

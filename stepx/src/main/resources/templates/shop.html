@@ -102,14 +102,17 @@
             <div class="widget-product-categories pt-5">
               <h5 class="widget-title text-decoration-underline">Categories</h5>
               <ul class="product-categories sidebar-list list-unstyled text-hover">
+                <li class="tags-item">
+                  <a href="#" onclick="resetFilters(event)">All</a>
+               </li>
                 <li class="cat-item">
-                  <a href="shop.html">Sport</a>
+                  <a href="#" onclick="searchByCategory(event,'SPORT')">Sport</a>
                 </li>
                 <li class="cat-item">
-                  <a href="single-product.html">Casual</a>
+                  <a href="#" onclick="searchByCategory(event,'CASUAL')" >Casual</a>
                 </li>
                 <li class="cat-item">
-                  <a href="single-product.html">Urban</a>
+                  <a href="#" onclick="searchByCategory(event,'URBAN')" >Urban</a>
                 </li>
               </ul>
             </div>
@@ -117,50 +120,32 @@
               <h5 class="widget-title text-decoration-underline">Brands</h5>
               <ul class="product-tags sidebar-list list-unstyled text-hover">
                 <li class="tags-item">
-                  <a href="shop.html">Nike</a>
+                  <a href="#" onclick="resetFilters(event)">All</a>
+               </li>
+                <li class="tags-item">
+                  <a href="#" onclick="searchByBrand(event,'NIKE')">Nike</a>
                 </li>
                 <li class="tags-item">
-                  <a href="shop.html">Puma</a>
+                  <a href="#" onclick="searchByBrand(event,'PUMA')">Puma</a>
                 </li>
                 <li class="tags-item">
-                  <a href="shop.html">Vans</a>
+                  <a href="#" onclick="searchByBrand(event,'ADIDAS')">Adidas</a>
                 </li>
                 <li class="tags-item">
-                  <a href="shop.html">Adidas</a>
-                </li>
-                <li class="tags-item">
-                  <a href="shop.html">New Balance</a>
+                  <a href="#" onclick="searchByBrand(event,'NEW_BALANCE')">New Balance</a>
                 </li>
               </ul>
             </div>
           </div>
         </aside>
         <main class="col-lg-10 col-md-6 col-sm-12">
-          <div class="filter-shop d-flex justify-content-between">
-            <div class="showing-product">
-              <p>Showing 1–9 of 55 results</p>
-            </div>
-            <div class="sort-by pb-3">
-              <select id="input-sort" class="form-control" data-filter-sort="" data-filter-order="">
-                <option value="">Default sorting</option>
-                <option value="">Name (A - Z)</option>
-                <option value="">Name (Z - A)</option>
-                <option value="">Price (Low-High)</option>
-                <option value="">Price (High-Low)</option>
-                <option value="">Rating (Highest)</option>
-                <option value="">Rating (Lowest)</option>
-                <option value="">Model (A - Z)</option>
-                <option value="">Model (Z - A)</option>
-              </select>
-            </div>
-          </div>
           <div >
             <div class="btn-wrap">
               <a href="/create-product">
               <button href="/create-product" class="btn btn-black btn-medium text-uppercase hvr-sweep-to-right" style="margin-bottom: 30px;">Create Shoe</button>
             </a>
             </div>
-          </div>
+          </div>  
           <div class="product-content product-store d-flex justify-content-between flex-wrap" id="shoes">
             <!-- Product Card element-->
             {{#shoes}}
@@ -220,11 +205,14 @@
           </div>
 
 
-          <div id="loadMoreButtom">
+          <div id="loadMoreButtom"  {{^hasMoreShoes}}style="display:none;"{{/hasMoreShoes}}>
             <div class="btn-wrap">
-              <button class="btn btn-black btn-medium text-uppercase hvr-sweep-to-right" style="margin-bottom: 30px;" onclick="loadMore()">Show More</button>
+                <button class="btn btn-black btn-medium text-uppercase hvr-sweep-to-right"
+                        style="margin-bottom: 30px;" onclick="loadMore()">
+                    Show More
+                </button>
             </div>
-          </div>
+        </div>
 
         </main>
         

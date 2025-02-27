@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.stepx.stepx.model.Shoe;
+import com.stepx.stepx.model.Shoe.Brand;
 import com.stepx.stepx.repository.ShoeRepository;
 
 @Service
@@ -20,9 +21,37 @@ public class ShoeService {
         this.shoeRepository = shoeRepository;
     }
 
-    // Obtener todos los zapatos
-    public List<Shoe> getNineShoes() {
-        return shoeRepository.findNineShoes();
+    // to get first 9 shoes without filter aplicated
+    public Page<Shoe> getNineShoes(int page) {
+        int pageSize=9;
+        return shoeRepository.findNineShoes(PageRequest.of(page, pageSize));
+    }
+
+    //obtain the first 9 of a brand
+    public Page<Shoe>getShoesByBrand(int page,String brand){ 
+        int pageSize=9;
+        return shoeRepository.findFirst9ByBrand(brand,PageRequest.of(page, pageSize));
+    }
+
+    //obtain the next 3 shoes with brand filter aplicated
+    public Page<Shoe> getShoesPaginatedByBrand(int currentPage, String selectedBrand) {
+        int pageSize = 3;
+        System.out.println(pageSize);
+        Page<Shoe>paginatedShoe=shoeRepository.findByBrand(selectedBrand, PageRequest.of(currentPage, pageSize));
+        System.out.println(paginatedShoe.getNumberOfElements());
+        return shoeRepository.findByBrand(selectedBrand, PageRequest.of(currentPage, pageSize));
+    }    
+
+    //obtain the first 9 of category
+    public Page<Shoe> getShoesByCategory(int page,String category){  
+        int pageSize=9;
+        return shoeRepository.findFirst9ByCategory(category,PageRequest.of(page,pageSize));
+    }
+
+    //obtain the next 3 shoes with category filter aplicated
+    public Page<Shoe> getShoesPaginatedByCategory(int currentPage, String selectedCategory){
+        int pageSize=3;
+        return shoeRepository.findByCategory(selectedCategory,PageRequest.of(currentPage, pageSize));
     }
 
     // Obtener un zapato por ID

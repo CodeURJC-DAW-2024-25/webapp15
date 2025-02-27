@@ -25,6 +25,8 @@ import org.springframework.core.io.Resource;
 
 import com.stepx.stepx.model.User;
 import com.stepx.stepx.model.Shoe;
+import com.stepx.stepx.model.Shoe.Brand;
+import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 import com.stepx.stepx.model.Review;
 import com.stepx.stepx.model.ShoeSizeStock;
 import com.stepx.stepx.service.CartService;
@@ -68,12 +70,22 @@ public class ShoeController {
     @GetMapping()
     public String showShop(Model model) {
 
-        List<Shoe> shoes = shoeService.getNineShoes();
-        
-        model.addAttribute("shoes", shoes);
-
+        Page<Shoe> shoes = shoeService.getNineShoes(0);
+        boolean more= 0< shoes.getTotalPages()-1;
+        model.addAttribute("shoes", shoes.getContent());
+        model.addAttribute("hasMoreShoes", more);
         return "shop";
     }
+
+    @GetMapping("/resetFilters")
+    public String resetFilters(Model model) {
+        Page<Shoe> shoes = shoeService.getNineShoes(0);
+        boolean more = 0 < shoes.getTotalPages() - 1;
+        model.addAttribute("shoes", shoes.getContent());
+        model.addAttribute("hasMoreShoes", more);
+        return "partials/loadMoreShoe";  // ¡Devuelve solo la parte de los productos!
+}
+
 
     @PostMapping("/create")
     public String createShoe(
@@ -248,4 +260,61 @@ public class ShoeController {
         return ResponseEntity.notFound().build();
     }
 
+
+
+    @GetMapping("/getByBrand")//first 9 shoes of same brand
+    public String getByBrand(@RequestParam String brand,Model model) {
+        try{
+            int currentPage=0;
+            Page<Shoe> shoes = shoeService.getShoesByBrand(currentPage,brand);
+            boolean more = currentPage<=shoes.getTotalPages()-1;
+            System.out.println(more);
+            model.addAttribute("hasMoreShoes", more);
+            model.addAttribute("shoes", shoes.getContent());
+            return "partials/loadMoreShoe";
+        }catch(IllegalArgumentException  e){
+            System.err.println("Error: Marca no válida: " + brand);
+            return "error"; // Devuelve una vista de error si el Enum no es válido
+        }
+    }
+
+    @GetMapping("/getByCategory")//first 9 shoes of same category
+    public String getByCategory(@RequestParam String category,Model model) {
+        try{
+            int currentPage=0;
+            Page<Shoe> shoes=shoeService.getShoesByCategory(currentPage,category);
+            boolean more = currentPage<=shoes.getTotalPages()-1;
+            System.out.println(shoes.getTotalPages()-1);
+            model.addAttribute("shoes", shoes.getContent());
+            model.addAttribute("hasMoreShoes", more);
+            return "partials/loadMoreShoe";
+
+        }catch(IllegalArgumentException  e){
+            System.err.println("Error: categoria no válida: " + category);
+            return "error"; // Devuelve una vista de error si el Enum no es válido
+        }
+        
+    }
+    
+    @GetMapping("/loadMoreShoesByBrand")
+    public String getMoreByBrand(@RequestParam String brand,Model model, @RequestParam int currentPage) {
+        Page<Shoe>paginatedShoe=shoeService.getShoesPaginatedByBrand(currentPage,brand);
+        System.out.println(paginatedShoe.getNumberOfElements());
+        boolean more = currentPage< paginatedShoe.getTotalPages()-1;
+        model.addAttribute("shoes", paginatedShoe.getContent());
+        model.addAttribute("hasMoreShoes", more);
+        return "partials/loadMoreShoe";
+    }
+
+    @GetMapping("/loadMoreShoesByCategory")
+    public String loadMoreShoesByCategory(@RequestParam String category ,@RequestParam int currentPage,Model model) {
+        Page<Shoe> paginatedShoes=shoeService.getShoesPaginatedByCategory(currentPage, category);
+        System.out.println(paginatedShoes.getNumberOfElements());
+        boolean more=currentPage<paginatedShoes.getTotalPages()-1;
+        model.addAttribute("shoes", paginatedShoes.getContent());
+        model.addAttribute("hasMoreShoes", more);
+        return "partials/loadMoreShoe";
+    }
+    
+    
 }
