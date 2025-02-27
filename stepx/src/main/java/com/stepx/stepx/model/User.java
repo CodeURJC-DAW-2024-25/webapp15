@@ -28,6 +28,10 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Review> review;
 
+
+    @OneToMany(mappedBy = "user")
+    private List<OrderShoes> orders;
+
     @Column(nullable = false, unique = true)
     private String username;
 
