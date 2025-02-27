@@ -4,9 +4,13 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
+import java.time.LocalDate;
 
 import javax.sql.rowset.serial.SerialBlob;
 
@@ -173,23 +177,28 @@ public class ShoeController {
     @GetMapping("/single-product/{id}")
     public String showSingleProduct(Model model, @PathVariable Long id) {
         Optional<Shoe> op = shoeService.getShoeById(id);
-        Optional<Integer> stockS=shoeSizeStockService.getStockByShoeAndSize(id, "S");
-        Optional<Integer> stockM=shoeSizeStockService.getStockByShoeAndSize(id, "M");
-        Optional<Integer> stockL=shoeSizeStockService.getStockByShoeAndSize(id, "L");
-        Optional<Integer> stockXL=shoeSizeStockService.getStockByShoeAndSize(id, "XL");
+        Optional<Integer> stockS = shoeSizeStockService.getStockByShoeAndSize(id, "S");
+        Optional<Integer> stockM = shoeSizeStockService.getStockByShoeAndSize(id, "M");
+        Optional<Integer> stockL = shoeSizeStockService.getStockByShoeAndSize(id, "L");
+        Optional<Integer> stockXL = shoeSizeStockService.getStockByShoeAndSize(id, "XL");
         List<Review> review = reviewService.getReviewsByShoe(id);
+
+        // Convertir LocalDate a String en formato DD/MM/YYYY
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        review.forEach(reviews -> {
+            reviews.setFormattedDate(reviews.getDate().format(formatter));
+        });
+
         if (op.isPresent()) {
             Shoe shoe = op.get();
-            model.addAttribute("stockS", stockS.get()==0);
-            model.addAttribute("stockM", stockM.get()==0);
-            model.addAttribute("stockL", stockL.get()==0);
-            model.addAttribute("stockXL", stockXL.get()==0);
+            model.addAttribute("stockS", stockS.orElse(0) == 0);
+            model.addAttribute("stockM", stockM.orElse(0) == 0);
+            model.addAttribute("stockL", stockL.orElse(0) == 0);
+            model.addAttribute("stockXL", stockXL.orElse(0) == 0);
             model.addAttribute("product", shoe);
             if (review != null) {
                 model.addAttribute("review", review);
 
-            } else {
-                System.out.println("no hay lista de reviews");
             }
             return "single-product";
 
@@ -213,11 +222,11 @@ public class ShoeController {
             return "partials/quick-view-modal";
         } else if ("confirmation".equals(action)) {
 
-            //need a confirmation if the stock of the default size is 0
-            Optional <Integer> stock= shoeSizeStockService.getStockByShoeAndSize(id, "M");
+            // need a confirmation if the stock of the default size is 0
+            Optional<Integer> stock = shoeSizeStockService.getStockByShoeAndSize(id, "M");
 
-            if(stock.isPresent()&&stock.get()==0){
-                   model.addAttribute("error", true);
+            if (stock.isPresent() && stock.get() == 0) {
+                model.addAttribute("error", true);
             }
             return "partials/cart-confirmation-view";
         } else {
@@ -226,16 +235,16 @@ public class ShoeController {
     }
 
     @GetMapping("/loadMoreShoes/")
-    public String getMore( Model model,@RequestParam int currentPage) {
+    public String getMore(Model model, @RequestParam int currentPage) {
 
-        Page<Shoe> shoePage=shoeService.getShoesPaginated(currentPage);
-        boolean more= currentPage< shoePage.getTotalPages()-1;
+        Page<Shoe> shoePage = shoeService.getShoesPaginated(currentPage);
+        boolean more = currentPage < shoePage.getTotalPages() - 1;
         System.out.println(more);
-        model.addAttribute("hasMoreShoes",more);
+        model.addAttribute("hasMoreShoes", more);
         model.addAttribute("shoes", shoePage.getContent());
         return "partials/loadMoreShoe";
     }
-    
+
     @GetMapping("/{userId}/imageUser")
     public ResponseEntity<Resource> getProfileImage(@PathVariable Long userId) {
         Optional<User> userOptional = userService.findUserById(userId);
@@ -243,7 +252,7 @@ public class ShoeController {
         if (userOptional.isPresent()) {
             User user = userOptional.get();
             Blob image = user.getImageUser(); // Asegúrate de tener este método en User
-    
+
             if (image != null) {
                 try {
                     Resource file = new InputStreamResource(image.getBinaryStream());
@@ -256,7 +265,7 @@ public class ShoeController {
                 }
             }
         }
-    
+
         return ResponseEntity.notFound().build();
     }
 
