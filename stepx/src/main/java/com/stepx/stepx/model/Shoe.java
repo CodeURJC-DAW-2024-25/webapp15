@@ -45,6 +45,10 @@ public class Shoe {
     @OneToMany(mappedBy = "shoe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ShoeSizeStock> sizeStocks = new ArrayList<>();
 
+    @ManyToOne
+    private OrderShoes order;
+
+
 
     @OneToMany(mappedBy = "shoe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
