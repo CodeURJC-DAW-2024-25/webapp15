@@ -324,6 +324,32 @@ public class ShoeController {
         model.addAttribute("hasMoreShoes", more);
         return "partials/loadMoreShoe";
     }
+
+    @PostMapping("/submit/{id}")
+    public String publishReview(
+            @PathVariable Long id, // ID del zapato
+            @RequestParam("rating")int rating,
+            @RequestParam String description
+    // @RequestParam Long userId // ID del usuario
+    ) {
+        // Buscar el zapato y usuario en la base de datos
+        Shoe shoe = shoeService.getShoeById(id).orElseThrow(() -> new RuntimeException("Shoe not found"));
+
+        // AQUI FALTA ENCONTRAR EL USUARIO ACTUAL Y PONERLO
+        User user = userService.findUserById(1L).orElseThrow(() -> new RuntimeException("User"));// deberia ser el
+                                                                                                 // usuario actual
+        LocalDate date;
+        date = LocalDate.now();
+        // Crear la nueva review
+        Review review = new Review(rating, description, shoe, user, date);// el null reemplazar por el usuario
+
+        // Guardar la review en la base de datos
+        reviewService.save(review);
+
+        return "redirect:/shop/single-product/{id}";
+    }
+
+
     
     
 }
