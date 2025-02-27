@@ -3,6 +3,7 @@ package com.stepx.stepx.model;
 import jakarta.persistence.*;
 
 import java.sql.Blob;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -29,8 +30,8 @@ public class User {
     private List<Review> review;
 
 
-    @OneToMany(mappedBy = "user", cascade=CascadeType.PERSIST)
-    private List<OrderShoes> orders;
+    @OneToMany(mappedBy = "user", cascade=CascadeType.ALL,orphanRemoval = false)
+    private List<OrderShoes> orders =new ArrayList<>();
 
     @Column(nullable = false, unique = true)
     private String username;

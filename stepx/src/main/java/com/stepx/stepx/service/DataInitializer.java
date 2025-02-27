@@ -1157,27 +1157,24 @@ public class DataInitializer implements CommandLineRunner {
                         User user1 = new User("Gaby", imageUser);
                         userRepository.save(user1);
 
-                        OrderShoes ordershoe= new OrderShoes(user1);
-
-                        ordershoe.setState("nosFinished");
-
-                        orderShoesRepository.save(ordershoe);
-                        user1.addOrderShoe(ordershoe);
-                        userRepository.save(user1);
-
-
                         imageUser = loadImage("images/USERS/user_2.jpg");
                         User user2 = new User("Gonzalo", imageUser);
                         userRepository.save(user2);
-        
+
+
+                        
+                        OrderShoes ordershoe= new OrderShoes(user1);
+                        ordershoe.setState("nosFinished");
+                        orderShoesRepository.save(ordershoe);
+                        user1.addOrderShoe(ordershoe);
+                        userRepository.save(user1);
+                        System.out.println("ID de ordershoe2: " + ordershoe.getId());
 
                         OrderShoes ordershoe2= new OrderShoes(user2);
-
-
                         ordershoe2.setState("notFinished");
-
                         orderShoesRepository.save(ordershoe2);
                         user2.addOrderShoe(ordershoe2);
+                        System.out.println("ID de ordershoe2: " + ordershoe2.getId());
                         userRepository.save(user2);
 
                 } catch (Exception e) {
@@ -1209,7 +1206,7 @@ public class DataInitializer implements CommandLineRunner {
                         }
                         if (shoe2.isPresent()) {
                                 if (user2.isPresent()) {
-
+                                        System.out.println("usuario 2 inicializado");
                                         Review review1 = new Review(5, "Me parece bien pero no me termina de convencer", shoe2.get(), user1.get(), date);
                                         reviewRepository.save(review1);
 

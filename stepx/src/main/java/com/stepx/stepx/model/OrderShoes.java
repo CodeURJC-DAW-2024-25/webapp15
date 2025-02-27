@@ -41,6 +41,8 @@ public class OrderShoes {
     @JoinColumn(name = "user_id")
     private User user;
 
+    public OrderShoes(){}
+    
     public OrderShoes(User user){
         this.user=user;
     }
