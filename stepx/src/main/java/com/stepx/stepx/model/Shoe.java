@@ -154,6 +154,5 @@ public class Shoe {
         ADIDAS,
         PUMA,
         NEW_BALANCE,
-        VANS
     }
 }
