@@ -15,7 +15,11 @@ public class Shoe {
 
     private String name;
     private String shortdescription;
+    
+    @Lob
+    @Column(columnDefinition = "TEXT") 
     private String longDescription;
+    
     private BigDecimal price;
 
     // Almacenamos tres imágenes como BLOBs
