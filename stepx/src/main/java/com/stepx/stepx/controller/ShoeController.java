@@ -160,7 +160,6 @@ public class ShoeController {
             if (image != null) {
                 try {
                     Resource file = new InputStreamResource(image.getBinaryStream());
-                    System.out.println(image.length());
                     return ResponseEntity.ok()
                             .header(HttpHeaders.CONTENT_TYPE, "image/jpg")
                             .contentLength(image.length())
@@ -219,17 +218,21 @@ public class ShoeController {
         model.addAttribute("product", product.get()); // importat to do a get from the Optional that the service returns
 
         if ("quick".equals(action)) {
-            return "partials/quick-view-modal";
-        } else if ("confirmation".equals(action)) {
 
+            return "partials/quick-view-modal";
+
+        } else if ("confirmation".equals(action)) {
             // need a confirmation if the stock of the default size is 0
             Optional<Integer> stock = shoeSizeStockService.getStockByShoeAndSize(id, "M");
-
             if (stock.isPresent() && stock.get() == 0) {
                 model.addAttribute("error", true);
             }
             return "partials/cart-confirmation-view";
-        } else {
+
+        }else if("delete".equals(action)){
+            return "partials/deleteShoeModal";
+        } 
+        else {
             return "partials/error-modal";
         }
     }
@@ -239,7 +242,6 @@ public class ShoeController {
 
         Page<Shoe> shoePage = shoeService.getShoesPaginated(currentPage);
         boolean more = currentPage < shoePage.getTotalPages() - 1;
-        System.out.println(more);
         model.addAttribute("hasMoreShoes", more);
         model.addAttribute("shoes", shoePage.getContent());
         return "partials/loadMoreShoe";
@@ -277,7 +279,6 @@ public class ShoeController {
             int currentPage=0;
             Page<Shoe> shoes = shoeService.getShoesByBrand(currentPage,brand);
             boolean more = currentPage<=shoes.getTotalPages()-1;
-            System.out.println(more);
             model.addAttribute("hasMoreShoes", more);
             model.addAttribute("shoes", shoes.getContent());
             return "partials/loadMoreShoe";
@@ -293,7 +294,6 @@ public class ShoeController {
             int currentPage=0;
             Page<Shoe> shoes=shoeService.getShoesByCategory(currentPage,category);
             boolean more = currentPage<=shoes.getTotalPages()-1;
-            System.out.println(shoes.getTotalPages()-1);
             model.addAttribute("shoes", shoes.getContent());
             model.addAttribute("hasMoreShoes", more);
             return "partials/loadMoreShoe";
@@ -308,7 +308,6 @@ public class ShoeController {
     @GetMapping("/loadMoreShoesByBrand")
     public String getMoreByBrand(@RequestParam String brand,Model model, @RequestParam int currentPage) {
         Page<Shoe>paginatedShoe=shoeService.getShoesPaginatedByBrand(currentPage,brand);
-        System.out.println(paginatedShoe.getNumberOfElements());
         boolean more = currentPage< paginatedShoe.getTotalPages()-1;
         model.addAttribute("shoes", paginatedShoe.getContent());
         model.addAttribute("hasMoreShoes", more);
@@ -318,7 +317,6 @@ public class ShoeController {
     @GetMapping("/loadMoreShoesByCategory")
     public String loadMoreShoesByCategory(@RequestParam String category ,@RequestParam int currentPage,Model model) {
         Page<Shoe> paginatedShoes=shoeService.getShoesPaginatedByCategory(currentPage, category);
-        System.out.println(paginatedShoes.getNumberOfElements());
         boolean more=currentPage<paginatedShoes.getTotalPages()-1;
         model.addAttribute("shoes", paginatedShoes.getContent());
         model.addAttribute("hasMoreShoes", more);

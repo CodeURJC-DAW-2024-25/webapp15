@@ -5,7 +5,6 @@ let selectedCategory=null;
 
 async function openModal(productId, action) {
     try {
-
         const response = await fetch(`/shop/${productId}?action=${action}`);
 
         if (!response.ok) {
@@ -13,7 +12,6 @@ async function openModal(productId, action) {
         }
 
         const modalContent = await response.text();
-
         document.getElementById("modal-body-content").innerHTML = modalContent;
 
     } catch (error) {
@@ -124,9 +122,6 @@ async function loadMore() {
     try{
         currentPage++ // Aumentamos la página
 
-        console.log(selectedBrand) // Verifica en la consola que el valor sea correcto
-        console.log(selectedCategory);
-
         let url = `/shop/loadMoreShoes/?currentPage=${currentPage}`; // URL por defecto
 
         if (selectedBrand !== null) {
@@ -134,8 +129,6 @@ async function loadMore() {
         } else if (selectedCategory !== null) {
             url = `/shop/loadMoreShoesByCategory?currentPage=${currentPage}&category=${selectedCategory}`;
         }
-
-        console.log(url) // Verificar la URL generada
 
         const response = await fetch(url);
         const resp = await response.text();

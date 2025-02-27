@@ -35,29 +35,7 @@
   <!-- Button to Trigger Modal -->
 
 
-<!-- Modal for Confirmation -->
- {{#shoes}}
-<div class="modal fade" id="deleteConfirmationModal-{{id}}" tabindex="-1" aria-labelledby="deleteModalLabel-{{id}}" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="deleteModalLabel-{{id}}">Confirm Deletion</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        Are you sure you want to delete "{{name}}"? This action cannot be undone.
-      </div>
-      <div class="modal-footer">
-        <!-- Form for Deletion -->
-        <form action="/shop/delete/{{id}}" method="post">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-danger">Delete</button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
-{{/shoes}}
+
   <!-- /End of Modal Delete Confirmation -->
 
   {{>header}}
@@ -157,7 +135,7 @@
                   <div class="cart-button d-flex gap-2 justify-content-center align-items-center">
                     <!--Delete Buttom-->
                     
-                    <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal-{{id}}">
+                    <button type="button" onclick="openModal('{{id}}','delete')"  class="btn btn-light" data-bs-toggle="modal" data-bs-target="#modaltoggle">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
                         <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
                       </svg>
@@ -236,16 +214,7 @@
 
 <!--Cart confirmation Modal-->
 
-<div class="modal fade" id="cartConfirmationModal" aria-hidden="true" tabindex="-1" style="display: none;">
-  <div class="modal-dialog modal-fullscreen-md-down modal-md modal-dialog-centered" style="display: none;">
-    <div class="modal-content" style="display: none;">
-      <div class="modal-body" id="modal-body-content" style="display: none;">
 
-      </div>
-    </div>
-  </div>
-</div>
-<!--Cart confirmation Modal-->
   
 
   {{>footer}}
@@ -254,7 +223,7 @@
   <script src="/js/jquery-1.11.0.min.js"></script>
   <script src="/js/plugins.js"></script>
   <script src="/js/script.js"></script>
-  <script src="/js/shop.js"></script>
+ <!--<script src="/js/shop.js"></script>-->
   <script src="/js/testModal.js"></script>
 
 
