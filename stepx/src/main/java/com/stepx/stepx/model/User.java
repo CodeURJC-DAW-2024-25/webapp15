@@ -29,7 +29,7 @@ public class User {
     private List<Review> review;
 
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade=CascadeType.PERSIST)
     private List<OrderShoes> orders;
 
     @Column(nullable = false, unique = true)
@@ -59,5 +59,9 @@ public class User {
     @Override
     public String toString() {
         return "User [id=" + id + ", username=" + username + "]";
+    }
+
+    public void addOrderShoe(OrderShoes orderShoes){
+        this.orders.add(orderShoes);
     }
 }

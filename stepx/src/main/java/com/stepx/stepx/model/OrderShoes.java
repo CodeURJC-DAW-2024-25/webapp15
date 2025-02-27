@@ -41,6 +41,10 @@ public class OrderShoes {
     @JoinColumn(name = "user_id")
     private User user;
 
+    public OrderShoes(User user){
+        this.user=user;
+    }
+
     public Long getId() {
         return id;
     }

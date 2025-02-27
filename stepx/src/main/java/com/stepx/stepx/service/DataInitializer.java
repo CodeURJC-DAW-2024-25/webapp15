@@ -3,11 +3,13 @@ package com.stepx.stepx.service;
 import javax.sql.rowset.serial.SerialBlob;
 import java.sql.Blob;
 import com.stepx.stepx.model.Shoe;
+import com.stepx.stepx.model.OrderShoes;
 import com.stepx.stepx.model.Review;
 import com.stepx.stepx.model.ShoeSizeStock;
 import com.stepx.stepx.model.User;
 import com.stepx.stepx.repository.ShoeRepository;
 import com.stepx.stepx.repository.ShoeSizeStockRepository;
+import com.stepx.stepx.repository.OrderShoesRepository;
 import com.stepx.stepx.repository.ReviewRepository;
 import com.stepx.stepx.repository.UserRepository;
 
@@ -31,6 +33,7 @@ public class DataInitializer implements CommandLineRunner {
         private final ShoeSizeStockRepository shoeSizeStockRepository;
         private final ReviewRepository reviewRepository;
         private final UserRepository userRepository;
+        private final OrderShoesRepository orderShoesRepository;
         private Blob image1;
         private Blob image2;
         private Blob image3;
@@ -39,11 +42,12 @@ public class DataInitializer implements CommandLineRunner {
         private LocalDate date;
 
         public DataInitializer(ShoeRepository shoeRepository, ShoeSizeStockRepository shoeSizeStockRepository,
-                        ReviewRepository reviewRepository, UserRepository userRepository) {
+                        ReviewRepository reviewRepository, UserRepository userRepository,OrderShoesRepository orderShoesRepository) {
                 this.shoeRepository = shoeRepository;
                 this.shoeSizeStockRepository = shoeSizeStockRepository;
                 this.reviewRepository = reviewRepository;
                 this.userRepository = userRepository;
+                this.orderShoesRepository=orderShoesRepository;
 
         }
 
@@ -1153,9 +1157,29 @@ public class DataInitializer implements CommandLineRunner {
                         User user1 = new User("Gaby", imageUser);
                         userRepository.save(user1);
 
+                        OrderShoes ordershoe= new OrderShoes(user1);
+
+                        ordershoe.setState("nosFinished");
+
+                        orderShoesRepository.save(ordershoe);
+                        user1.addOrderShoe(ordershoe);
+                        userRepository.save(user1);
+
+
                         imageUser = loadImage("images/USERS/user_2.jpg");
                         User user2 = new User("Gonzalo", imageUser);
                         userRepository.save(user2);
+        
+
+                        OrderShoes ordershoe2= new OrderShoes(user2);
+
+
+                        ordershoe2.setState("notFinished");
+
+                        orderShoesRepository.save(ordershoe2);
+                        user2.addOrderShoe(ordershoe2);
+                        userRepository.save(user2);
+
                 } catch (Exception e) {
 
                 }
@@ -1174,13 +1198,13 @@ public class DataInitializer implements CommandLineRunner {
                         if (shoe1.isPresent()) {
                                 if (user1.isPresent()) {
 
-                                        System.out.println("si estan ambos presente");
+                                        System.out.println("user1 present");
 
                                         Review review1 = new Review(5, "Excelente producto", shoe1.get(), user1.get(), date);
                                         reviewRepository.save(review1);
                                 } else {
 
-                                        System.out.println("user no presente");
+                                        System.out.println("user1 no presente");
                                 }
                         }
                         if (shoe2.isPresent()) {
@@ -1193,7 +1217,7 @@ public class DataInitializer implements CommandLineRunner {
                                         reviewRepository.save(review2);
                                 } else {
 
-                                        System.out.println("user no presente");
+                                        System.out.println("user2 no presente");
                                 }
                         }
 
