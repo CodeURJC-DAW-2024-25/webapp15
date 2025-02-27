@@ -18,8 +18,7 @@ async function openModal(productId, action) {
         console.error("Error at the request:", error);
     }
 }
-    
-window.openModal = openModal;
+
 
 
 
@@ -99,11 +98,6 @@ async function openCartModal1() {
 }
 
 
-window.openCartModal = openCartModal;
-
-window.openModal = openModal;
-
-
 async function AddtoCart(id) {
     try {
         const response = await fetch(`/single-product/${id}/add`); // Ruta para añadir los prodcutos
@@ -116,7 +110,6 @@ async function AddtoCart(id) {
         console.error("Error en la solicitud:", error);
     }
 }
-
 
 async function loadMore() {
     try{
@@ -162,3 +155,10 @@ async function resetFilters(event) {
         console.log("Error al restablecer los filtros", error);
     }
 }
+
+window.openCartModal = openCartModal;
+
+window.openModal = openModal;
+
+    
+window.openModal = openModal;
