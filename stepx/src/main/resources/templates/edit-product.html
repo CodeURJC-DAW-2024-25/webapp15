@@ -26,309 +26,136 @@
 </head>
 
 <body>
-   {{>header}}
+    {{>header}}
 
     <!-- Entire Body  -->
     <section class="login-detail py-5">
         <div class="container">
             <div class="row">
                 <!-- Form Column -->
-                 {{#product}}
+
+                <!-- Edit Shoe Product Form -->
                 <div class="col-lg-9 mx-auto">
-                    <div class="login-form bg-light p-5" style=" background: rgba(0, 0, 0, 0.2); /* Fondo semitransparente */
-                    backdrop-filter: blur(50px);
-                    -webkit-backdrop-filter: blur(50px); 
-                    border-radius: 10px; 
-                    padding: 20px;
-                    box-shadow: 0px 40px 100px rgba(73, 2, 2, 0.5); ">
+                    <div class="login-form bg-light p-5"
+                        style="background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(50px); -webkit-backdrop-filter: blur(50px); border-radius: 10px; padding: 20px; box-shadow: 0px 40px 100px rgba(73, 2, 2, 0.5);">
 
                         <h2 class="text-center mb-4">Edit Shoe Product</h2>
-                        <form id="edit-product-form">
+                        <form action="/shop/edit/{{shoe.id}}" method="post" enctype="multipart/form-data">
+
                             <h5 class="widget-title text-decoration-underline pe-2">Shoe Information:</h5>
                             <div class="mb-3">
                                 <label for="name" class="form-label">Name</label>
                                 <input type="text" id="name" name="name" class="form-control ps-3 text-input"
-                                    value="{{name}}" required>
+                                    value="{{shoe.name}}" required>
                             </div>
 
                             <div class="mb-3">
-                                <label for="description" class="form-label">Description</label>
-                                <textarea id="description" name="description" class="form-control ps-3 text-input"
-                                    rows="5"
-                                    required>{{shortDescription}}</textarea>
+                                <label for="shortDescription" class="form-label">Short Description</label>
+                                <textarea id="shortDescription" name="description" class="form-control ps-3 text-input"
+                                    rows="5" required>{{shoe.description}}</textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="longDescription" class="form-label">Long Description</label>
+                                <textarea id="longDescription" name="LongDescription"
+                                    class="form-control ps-3 text-input" rows="5">{{shoe.LongDescription}}</textarea>
                             </div>
 
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <div class="input-group">
                                         <span class="input-group-text">$</span>
-                                        <input type="number" class="form-control" value="{{price}}" required>
+                                        <input type="number" class="form-control" name="price" step="0.01"
+                                            value="{{shoe.price}}" required>
                                     </div>
-        
                                 </div>
                             </div>
 
                             <h5 class="widget-title text-decoration-underline pe-2">Shoe Images:</h5>
                             <div class="mb-3">
-                                <label for="picture" class="form-label">Picture 1</label>
-                                <input type="file" id="picture1" name="picture" class="form-control ps-3 text-input"
-                                    value="" accept="image/*" onchange="previewImage(1)">
+                                <label for="image1" class="form-label">Image 1</label>
+                                <input type="file" id="image1" name="image1" class="form-control ps-3 text-input"
+                                    accept="image/*">
                             </div>
                             <div class="mb-3">
-                                <label for="picture" class="form-label">Picture 2</label>
-                                <input type="file" id="picture2" name="picture" class="form-control ps-3 text-input"
-                                    value="" accept="image/*" onchange="previewImage(2)">
+                                <label for="image2" class="form-label">Image 2</label>
+                                <input type="file" id="image2" name="image2" class="form-control ps-3 text-input"
+                                    accept="image/*">
                             </div>
                             <div class="mb-3">
-                                <label for="picture" class="form-label">Picture 3</label>
-                                <input type="file" id="picture3" name="picture" class="form-control ps-3 text-input"
-                                    value="" accept="image/*" onchange="previewImage(3)">
-                            </div>
-                            <div class="mb-3">
-                                <label for="picture" class="form-label">Picture 4</label>
-                                <input type="file" id="picture4" name="picture" class="form-control ps-3 text-input"
-                                    value="" accept="image/*" onchange="previewImage(4)">
-                            </div>
-                            <div class="mb-3">
-                                <label for="picture" class="form-label">Picture 5</label>
-                                <input type="file" id="picture5" name="picture" class="form-control ps-3 text-input"
-                                    value="" accept="image/*" onchange="previewImage(5)">
+                                <label for="image3" class="form-label">Image 3</label>
+                                <input type="file" id="image3" name="image3" class="form-control ps-3 text-input"
+                                    accept="image/*">
                             </div>
 
                             <h5 class="widget-title text-decoration-underline pe-2">Size and Category:</h5>
 
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="category" class="form-label">Sizes</label>
-                                    <div id="category" name="category" class="form-control ps-3 text-input" required>
-                                        <p style="margin: 0px; color: black;">S</p>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Stock</label>
-                                    <div class="quantity-price d-flex justify-content-between align-items-center">
-                                        <div class="input-group product-qty" >
-                                            <button type="button"
-                                                class="quantity-left-minus btn btn-light rounded-0 rounded-start btn-number"
-                                                data-type="minus">
-                                                <svg width="16" height="16">
-                                                    <use xlink:href="#minus"></use>
-                                                </svg>
-                                            </button>
-                                            <input type="text" name="quantity"
-                                                class="form-control input-number quantity" value="{{stock.0}}">
-                                            <button type="button"
-                                                class="quantity-right-plus btn btn-light rounded-0 rounded-end btn-number"
-                                                data-type="plus">
-                                                <svg width="16" height="16">
-                                                    <use xlink:href="#plus"></use>
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <div id="category" name="category" class="form-control ps-3 text-input" required>
-                                      <p style="margin: 0px; color: black;">M</p>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <div class="quantity-price d-flex justify-content-between align-items-center">
-                                        <div class="input-group product-qty">
-                                            <button type="button"
-                                                class="quantity-left-minus btn btn-light rounded-0 rounded-start btn-number"
-                                                data-type="minus">
-                                                <svg width="16" height="16">
-                                                    <use xlink:href="#minus"></use>
-                                                </svg>
-                                            </button>
-                                            <input type="text" name="quantity"
-                                                class="form-control input-number quantity" value="{{stock.1}}">
-                                            <button type="button"
-                                                class="quantity-right-plus btn btn-light rounded-0 rounded-end btn-number"
-                                                data-type="plus">
-                                                <svg width="16" height="16">
-                                                    <use xlink:href="#plus"></use>
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <div id="category" name="category" class="form-control ps-3 text-input" required>
-                                        <p style="margin: 0px; color: black;">L</p>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <div class="quantity-price d-flex justify-content-between align-items-center">
-                                        <div class="input-group product-qty">
-                                            <button type="button"
-                                                class="quantity-left-minus btn btn-light rounded-0 rounded-start btn-number"
-                                                data-type="minus">
-                                                <svg width="16" height="16">
-                                                    <use xlink:href="#minus"></use>
-                                                </svg>
-                                            </button>
-                                            <input type="text" name="quantity"
-                                                class="form-control input-number quantity" value="{{stock.2}}">
-                                            <button type="button"
-                                                class="quantity-right-plus btn btn-light rounded-0 rounded-end btn-number"
-                                                data-type="plus">
-                                                <svg width="16" height="16">
-                                                    <use xlink:href="#plus"></use>
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <div id="category" name="category" class="form-control ps-3 text-input" required>
-                                        <p style="margin: 0px; color: black;">XL</p>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <div class="quantity-price d-flex justify-content-between align-items-center">
-                                        <div class="input-group product-qty">
-                                            <button type="button"
-                                                class="quantity-left-minus btn btn-light rounded-0 rounded-start btn-number"
-                                                data-type="minus">
-                                                <svg width="16" height="16">
-                                                    <use xlink:href="#minus"></use>
-                                                </svg>
-                                            </button>
-                                            <input type="text" name="quantity"
-                                                class="form-control input-number quantity" value="{{stock.3}}">
-                                            <button type="button"
-                                                class="quantity-right-plus btn btn-light rounded-0 rounded-end btn-number"
-                                                data-type="plus">
-                                                <svg width="16" height="16">
-                                                    <use xlink:href="#plus"></use>
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
                             <div class="mb-3">
                                 <label for="category" class="form-label">Category</label>
                                 <select id="category" name="category" class="form-control ps-3 text-input" required>
-                                    <option value="" selected>{{category}}</option>
-                                    <option value="Sport">Sport</option>
-                                    <option value="Casual">Casual</option>
-                                    <option value="Urban">Urban</option>
+                                    <option value="SPORT" >Sport</option>
+                                    <option value="CASUAL" >Casual</option>
+                                    <option value="URBAN" >Urban</option>
                                 </select>
                             </div>
 
                             <div class="mb-3">
-                                <label for="gender" class="form-label">Brand</label>
-                                <select id="gender" name="gender" class="form-control ps-3 text-input" required>
-                                    <option value="{{brand}}" selected>{{brand}}</option>
-                                    <option value="Nike">Nike</option>
-                                    <option value="Puma">Puma</option>
-                                    <option value="Adidas">Adidas</option>
-                                    <option value="New Balance">New Balance</option>
-                                    <option value="Vans">Vans</option>
+                                <label for="brand" class="form-label">Brand</label>
+                                <select id="brand" name="brand" class="form-control ps-3 text-input" required>
+                                    <option value="NIKE" >Nike</option>
+                                    <option value="PUMA" >Puma</option>
+                                    <option value="ADIDAS" >Adidas</option>
+                                    <option value="NEW_BALANCE" >New Balance
+                                    </option>
+                                    
                                 </select>
                             </div>
 
                             <div class="d-grid gap-2 mt-4">
-                                <button type="submit" class="btn btn-red hvr-sweep-to-right dark-sweep">Edit
+                                <button type="submit" class="btn btn-red hvr-sweep-to-right dark-sweep">Update
                                     Shoe</button>
                                 <button type="button"
                                     class="btn btn-outline-gray hvr-sweep-to-right dark-sweep">Cancel</button>
                             </div>
                         </form>
                     </div>
-                {{/product}}    
                 </div>
+
             </div>
         </div>
     </section>
 
+
+
     <script>
-        function previewImages(input) {
-            const thumbnailContainer = document.getElementById('thumbnail-slider');
-            const largeContainer = document.getElementById('large-slider');
-
-            // Limpiar imágenes previas
-            thumbnailContainer.innerHTML = '';
-            largeContainer.innerHTML = '';
-
-            if (input.files) {
-                Array.from(input.files).forEach(file => {
-                    const reader = new FileReader();
-
-                    reader.onload = function (e) {
-                        // Crear imagen miniatura
-                        const thumbSlide = document.createElement('div');
-                        thumbSlide.classList.add('swiper-slide');
-                        thumbSlide.innerHTML = `<img src="${e.target.result}" class="thumb-image img-fluid">`;
-                        thumbnailContainer.appendChild(thumbSlide);
-
-                        // Crear imagen grande
-                        const largeSlide = document.createElement('div');
-                        largeSlide.classList.add('swiper-slide');
-                        largeSlide.innerHTML = `
-                            <div class="image-zoom" data-scale="2.5" data-image="${e.target.result}">
-                                <img src="${e.target.result}" class="img-fluid">
-                            </div>`;
-                        largeContainer.appendChild(largeSlide);
+        document.addEventListener("DOMContentLoaded", function () {
+            const brand = "{{shoe.brand}}"; // Pass the brand from the server
+            const brandSelect = document.getElementById("brand");
+            if (brandSelect) {
+                for (let option of brandSelect.options) {
+                    if (option.value === brand) {
+                        option.selected = true;
+                        break;
                     }
-
-                    reader.readAsDataURL(file);
-                });
-
-                // Una vez que se agregan las imágenes, actualizar Swiper
-                setTimeout(() => {
-                    new Swiper('.product-thumbnail-slider', {
-                        slidesPerView: 3,
-                        spaceBetween: 10,
-                        freeMode: true,
-                        watchSlidesProgress: true,
-                    });
-
-                    new Swiper('.product-large-slider', {
-                        slidesPerView: 1,
-                        spaceBetween: 10,
-                        pagination: {
-                            el: ".swiper-pagination",
-                            clickable: true,
-                        },
-                    });
-                }, 500); // Pequeño retraso para asegurar que Swiper detecte los cambios
+                }
             }
-        }
-
-        function previewImage(index) {
-            // Obtener el archivo seleccionado
-            const fileInput = document.getElementById('picture' + index);
-            const file = fileInput.files[0];
-
-            // Verificar si se ha seleccionado un archivo
-            if (file) {
-                const reader = new FileReader();
-
-                // Cuando el archivo se haya cargado, actualizar la imagen en el slider
-                reader.onload = function (e) {
-                    const imgElement = document.querySelectorAll('.swiper-slide img')[index - 1];  // Ajustar el índice (comienza desde 0)
-                    imgElement.src = e.target.result;
-                };
-
-                // Leer el archivo como una URL
-                reader.readAsDataURL(file);
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Pass the category from the server
+            const category = "{{shoe.category}}"; 
+            const categorySelect = document.getElementById("category");
+    
+            if (categorySelect) {
+                for (let option of categorySelect.options) {
+                    if (option.value === category) {
+                        option.selected = true;
+                        break;
+                    }
+                }
             }
-        }
-//.product-qyt
+        });
     </script>
     <script src="/js/jquery-1.11.0.min.js"></script>
     <script src="/js/plugins.js"></script>

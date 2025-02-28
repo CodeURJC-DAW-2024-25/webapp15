@@ -285,6 +285,56 @@ public class ShoeController {
         }
     }
 
+    @GetMapping("/edit/{id}")
+public String showEditForm(@PathVariable Long id, Model model) {
+    Optional<Shoe> op = shoeService.getShoeById(id);
+    if (op.isPresent()) {
+        model.addAttribute("shoe", op.get());
+        return "edit-product"; // Name of the edit form template
+    }
+    return "redirect:/shop"; // Redirect to shop page if shoe not found
+}
+
+@PostMapping("/edit/{id}")
+public String updateShoe(
+        @PathVariable Long id,
+        @RequestParam String name,
+        @RequestParam String description, // Ensure this matches the form
+        @RequestParam String LongDescription,
+        @RequestParam BigDecimal price,
+        @RequestParam(required = false) MultipartFile image1,
+        @RequestParam(required = false) MultipartFile image2,
+        @RequestParam(required = false) MultipartFile image3,
+        @RequestParam String brand,
+        @RequestParam String category) throws IOException, SQLException {
+    
+    Optional<Shoe> op = shoeService.getShoeById(id);
+    if (op.isPresent()) {
+        Shoe shoe = op.get();
+        shoe.setName(name);
+        shoe.setDescription(description);  // This should match 'description'
+        shoe.setLongDescription(LongDescription);
+        shoe.setPrice(price);
+        shoe.setBrand(Shoe.Brand.valueOf(brand));
+        shoe.setCategory(Shoe.Category.valueOf(category));
+
+        // Update images if new files are provided
+        if (image1 != null && !image1.isEmpty()) {
+            shoe.setImage1(new javax.sql.rowset.serial.SerialBlob(image1.getBytes()));
+        }
+        if (image2 != null && !image2.isEmpty()) {
+            shoe.setImage2(new javax.sql.rowset.serial.SerialBlob(image2.getBytes()));
+        }
+        if (image3 != null && !image3.isEmpty()) {
+            shoe.setImage3(new javax.sql.rowset.serial.SerialBlob(image3.getBytes()));
+        }
+
+        shoeService.saveShoe(shoe);
+    }
+
+    return "redirect:/shop";
+}
+
     @GetMapping("/getByCategory")//first 9 shoes of same category
     public String getByCategory(@RequestParam String category,Model model) {
         try{
