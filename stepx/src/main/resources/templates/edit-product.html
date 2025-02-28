@@ -34,68 +34,99 @@
             <div class="row">
                 <!-- Form Column -->
 
+                <!-- Edit Shoe Product Form -->
                 <div class="col-lg-9 mx-auto">
-                    <div class="login-form bg-light p-5">
+                    <div class="login-form bg-light p-5"
+                        style="background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(50px); -webkit-backdrop-filter: blur(50px); border-radius: 10px; padding: 20px; box-shadow: 0px 40px 100px rgba(73, 2, 2, 0.5);">
 
                         <h2 class="text-center mb-4">Edit Shoe Product</h2>
-                        <!-- edit-product.html -->
-                        <!-- edit-product.html -->
-                        <!-- edit-product.html -->
                         <form action="/shop/edit/{{shoe.id}}" method="post" enctype="multipart/form-data">
-                            <!-- Name -->
-                            <label for="name">Name:</label>
-                            <input type="text" id="name" name="name" value="{{shoe.name}}" required>
-                        
-                            <!-- Short Description -->
-                            <label for="shortDescription">Short Description:</label>
-                            <input type="text" id="shortDescription" name="description" value="{{shoe.description}}" required>
-                        
-                            <!-- Long Description -->
-                            <label for="longDescription">Long Description:</label>
-                            <textarea id="longDescription" name="LongDescription">{{shoe.LongDescription}}</textarea>
-                        
-                            <!-- Price -->
-                            <label for="price">Price:</label>
-                            <input type="number" id="price" name="price" step="0.01" value="{{shoe.price}}" required>
-                        
-                            <!-- Images -->
-                            <label for="image1">Image 1:</label>
-                            <input type="file" id="image1" name="image1">
-                        
-                            <label for="image2">Image 2:</label>
-                            <input type="file" id="image2" name="image2">
-                        
-                            <label for="image3">Image 3:</label>
-                            <input type="file" id="image3" name="image3">
-                        
-                            <!-- Category Dropdown -->
-                            <label for="category">Category:</label>
-                            <select id="category" name="category" required>
-                                <option value="SPORT" >Sport</option>
-                                <option value="CASUAL" >Casual</option>
-                                <option value="URBAN" >Urban</option>
-                            </select>
-                        
-                            <!-- Brand Dropdown -->
-                            <label for="brand">Brand:</label>
-                            <select id="brand" name="brand" required>
-                                <option value="NIKE" >Nike</option>
-                                <option value="ADIDAS" >Adidas</option>
-                                <option value="PUMA" >Puma</option>
-                                <option value="NEW_BALANCE">New Balance</option>
-                            </select>
-                        
-                            <button type="submit">Update Shoe</button>
+
+                            <h5 class="widget-title text-decoration-underline pe-2">Shoe Information:</h5>
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Name</label>
+                                <input type="text" id="name" name="name" class="form-control ps-3 text-input"
+                                    value="{{shoe.name}}" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="shortDescription" class="form-label">Short Description</label>
+                                <textarea id="shortDescription" name="description" class="form-control ps-3 text-input"
+                                    rows="5" required>{{shoe.description}}</textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="longDescription" class="form-label">Long Description</label>
+                                <textarea id="longDescription" name="LongDescription"
+                                    class="form-control ps-3 text-input" rows="5">{{shoe.LongDescription}}</textarea>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" name="price" step="0.01"
+                                            value="{{shoe.price}}" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h5 class="widget-title text-decoration-underline pe-2">Shoe Images:</h5>
+                            <div class="mb-3">
+                                <label for="image1" class="form-label">Image 1</label>
+                                <input type="file" id="image1" name="image1" class="form-control ps-3 text-input"
+                                    accept="image/*">
+                            </div>
+                            <div class="mb-3">
+                                <label for="image2" class="form-label">Image 2</label>
+                                <input type="file" id="image2" name="image2" class="form-control ps-3 text-input"
+                                    accept="image/*">
+                            </div>
+                            <div class="mb-3">
+                                <label for="image3" class="form-label">Image 3</label>
+                                <input type="file" id="image3" name="image3" class="form-control ps-3 text-input"
+                                    accept="image/*">
+                            </div>
+
+                            <h5 class="widget-title text-decoration-underline pe-2">Size and Category:</h5>
+
+                            <div class="mb-3">
+                                <label for="category" class="form-label">Category</label>
+                                <select id="category" name="category" class="form-control ps-3 text-input" required>
+                                    <option value="SPORT" >Sport</option>
+                                    <option value="CASUAL" >Casual</option>
+                                    <option value="URBAN" >Urban</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="brand" class="form-label">Brand</label>
+                                <select id="brand" name="brand" class="form-control ps-3 text-input" required>
+                                    <option value="NIKE" >Nike</option>
+                                    <option value="PUMA" >Puma</option>
+                                    <option value="ADIDAS" >Adidas</option>
+                                    <option value="NEW_BALANCE" >New Balance
+                                    </option>
+                                    
+                                </select>
+                            </div>
+
+                            <div class="d-grid gap-2 mt-4">
+                                <button type="submit" class="btn btn-red hvr-sweep-to-right dark-sweep">Update
+                                    Shoe</button>
+                                <button type="button"
+                                    class="btn btn-outline-gray hvr-sweep-to-right dark-sweep">Cancel</button>
+                            </div>
                         </form>
                     </div>
-
                 </div>
+
             </div>
         </div>
     </section>
 
 
-    
+
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const brand = "{{shoe.brand}}"; // Pass the brand from the server
