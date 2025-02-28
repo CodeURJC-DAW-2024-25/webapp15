@@ -141,6 +141,22 @@
             }
         });
     </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Pass the category from the server
+            const category = "{{shoe.category}}"; 
+            const categorySelect = document.getElementById("category");
+    
+            if (categorySelect) {
+                for (let option of categorySelect.options) {
+                    if (option.value === category) {
+                        option.selected = true;
+                        break;
+                    }
+                }
+            }
+        });
+    </script>
     <script src="/js/jquery-1.11.0.min.js"></script>
     <script src="/js/plugins.js"></script>
     <script src="/js/script.js"></script>
