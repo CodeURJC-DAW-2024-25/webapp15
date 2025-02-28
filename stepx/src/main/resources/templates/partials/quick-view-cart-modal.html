@@ -1,59 +1,63 @@
-<div class="modal-header">
+<div class="modal-header border-0">
     <h2 class="modal-title fs-5">Cart</h2>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-</div>
-<div class="modal-body">
-    <div class="shopping-cart">
-        <div class="shopping-cart-content">
-            {{#cartItems}}
-            <div class="mini-cart cart-list p-0 mt-3">
-                <div class="mini-cart-item d-flex border-bottom pb-3">
-                    <div class="col-lg-2 col-md-3 col-sm-2 me-4">
-                        <a href="#" title="product-image">
-                            <img src="{{images.0}}" class="img-fluid" alt="single-product-item">
-                        </a>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-8">
-                        <div class="product-header d-flex justify-content-between align-items-center mb-3">
-                            <h4 class="product-title fs-6 me-5">{{name}}</h4>
-                            <a href="" class="remove" aria-label="Remove this item" data-product_id="11913"
-                                data-cart_item_key="abc" data-product_sku="">
-                                <svg class="close">
-                                    <use xlink:href="#close"></use>
-                                </svg>
-                            </a>
-                        </div>
-                        <div class="price-code">
-                            <span class="product-price fs-6">${{price}}</span>
-                        </div>
-                        <!-- quantity-price -->
-                    </div>
-                </div>
-            </div>
-            {{/cartItems}}
+  </div>
+  
+  <div class="modal-body px-4">
+    {{#cartItems}}
+    <div class="mini-cart cart-list p-0 mt-3">
+      <div class="mini-cart-item d-flex border-bottom pb-3">
+        <div class="col-lg-2 col-md-3 col-sm-2 me-4">
+          <a href="#" title="product-image">
+            <img src="shop/{{id}}/image/1" class="img-fluid" alt="single-product-item">
+          </a>
         </div>
-        <!-- cart-list -->
-        {{^cartItems}}
-        <p>No items in your bag yet</p>
-        {{/cartItems}}
-        
-        <div class="mini-cart-total d-flex justify-content-between py-4">
-
-            <span class="fs-6">Subtotal:</span>
-            <span class="special-price-code">
-                <span class="price-amount amount fs-6" style="opacity: 1;">
-                    <bdi>
-                        <span class="price-currency-symbol">$</span>198.00 </bdi>
-                </span>
-            </span>
-        </div>
-        <div class="modal-footer my-4 justify-content-center">
-            <a href="/checkout">
-                <button type="button" class="btn btn-outline-gray hvr-sweep-to-right dark-sweep">Checkout
-                </button>
+        <div class="col-lg-9 col-md-8 col-sm-8">
+          <div class="product-header d-flex justify-content-between align-items-center mb-3">
+            <h4 class="product-title fs-6 me-5">{{name}}</h4>
+            <a href="" class="remove" aria-label="Remove this item" data-product_id="{{id}}"
+              data-cart_item_key="abc" data-product_sku="">
+              <svg class="close">
+                <use xlink:href="#close"></use>
+              </svg>
             </a>
-
+          </div>
+          <div class="price-code">
+            <span class="product-price fs-6">${{price}}</span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mt-2">
+            <span class="fs-6"><strong>Talla:</strong> {{size}}</span>
+            <span class="fs-6"><strong>Cantidad:</strong> {{quantity}}</span>
+          </div>
         </div>
+      </div>
     </div>
-
-</div>
+    {{/cartItems}}
+    
+    {{^cartItems}}
+    <div class="text-center py-4">
+      <p class="mb-0">No items in your bag yet</p>
+    </div>
+    {{/cartItems}}
+  
+    <div class="mini-cart-total d-flex justify-content-between py-4">
+      <span class="fs-6">Subtotal:</span>
+      <span class="special-price-code">
+        <span class="price-amount amount fs-6" style="opacity: 1;">
+          <bdi>
+            <span class="price-currency-symbol">$</span>{{#setSubtotal}} {{total}} {{/setSubtotal}}
+            {{^setSubtotal}}0{{/setSubtotal}}
+          </bdi>
+        </span>
+      </span>
+    </div>
+  
+    <div class="modal-footer border-0 justify-content-center px-0">
+      <a href="/checkout" class="w-100">
+        <button type="button" class="btn btn-outline-gray hvr-sweep-to-right dark-sweep w-100">
+          Checkout
+        </button>
+      </a>
+    </div>
+  </div>
+  

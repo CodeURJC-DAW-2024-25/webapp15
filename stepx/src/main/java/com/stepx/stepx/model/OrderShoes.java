@@ -158,8 +158,23 @@ public class OrderShoes {
         orderItems .add(newItem);
     }
 
+    public int getLenghtOrderShoes(){
+        return this.orderItems.size();
+    }
     
+    public List<OrderItem> getOrderItems(){
+        return this.orderItems;
+    }
 
+    public BigDecimal getTotalPrice(){
+        BigDecimal total=BigDecimal.ZERO;
 
+        for(OrderItem item:this.orderItems){
+            BigDecimal itemTotal=item.getShoe().getPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
+            total=total.add(itemTotal);
+        }
+
+        return total;
+    }
     
 }

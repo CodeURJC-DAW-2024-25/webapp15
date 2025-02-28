@@ -1164,7 +1164,7 @@ public class DataInitializer implements CommandLineRunner {
 
                         
                         OrderShoes ordershoe= new OrderShoes(user1);
-                        ordershoe.setState("nosFinished");
+                        ordershoe.setState("notFinished");
                         orderShoesRepository.save(ordershoe);
                         user1.addOrderShoe(ordershoe);
                         userRepository.save(user1);
