@@ -20,6 +20,42 @@ async function openModal(productId, action) {
 }
 
 
+async function AddtoCart(id_Shoe,size,quantity,id_user) {
+    try {
+        const formData = new URLSearchParams(); // Crea los datos en formato x-www-form-urlencoded
+        formData.append("id", id_Shoe);
+        formData.append("size", size);
+        formData.append("cuantity", quantity);
+        formData.append("id_user",id_user);
+
+        const response = await fetch("/OrderItem/addItem", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: formData.toString() // Convierte los datos a string para enviarlos
+        });
+
+
+        if (!response.ok) {
+            throw new Error("Error al cargar el carrito: " + response.status);
+        }
+
+        const responseData = await response.text(); // Lee la respuesta del servidor
+
+        // Mostrar mensaje de éxito (puedes reemplazarlo con una notificación en tu UI)
+        alert("✅ Producto agregado al carrito: " + responseData);
+
+        let modal=document.getElementById("modaltoggle")
+        let bootstrapModal= bootstrap.Modal.getInstance(modal);
+        bootstrapModal.hide();
+
+    } catch (error) {
+        console.error("Error en la solicitud:", error);
+        alert("❌ Error al agregar al carrito.");
+    }
+}
+
 
 
 //first 9 of brand
@@ -97,19 +133,6 @@ async function openCartModal1() {
     }
 }
 
-
-async function AddtoCart(id) {
-    try {
-        const response = await fetch(`/single-product/${id}/add`); // Ruta para añadir los prodcutos
-
-        if (!response.ok) {
-            throw new Error("Error al cargar el carrito: " + response.status);
-        }
-
-    } catch (error) {
-        console.error("Error en la solicitud:", error);
-    }
-}
 
 async function loadMore() {
     try{

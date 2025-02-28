@@ -30,8 +30,9 @@ public class User {
     private List<Review> review;
 
 
-    @OneToMany(mappedBy = "user", cascade=CascadeType.ALL,orphanRemoval = false)
-    private List<OrderShoes> orders =new ArrayList<>();
+    // Relación con órdenes de compra
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = false)
+    private List<OrderShoes> orders = new ArrayList<>();
 
     @Column(nullable = false, unique = true)
     private String username;

@@ -42,16 +42,14 @@ public class Shoe {
     private Category category;
 
     // Relación: Un zapato puede tener stock para distintas tallas
-    @OneToMany(mappedBy = "shoe", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "shoe", cascade = CascadeType.ALL, orphanRemoval = true)//relation with shoessizestock
     private List<ShoeSizeStock> sizeStocks = new ArrayList<>();
 
-    @ManyToOne
-    private OrderShoes order;
-
-
-
-    @OneToMany(mappedBy = "shoe", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "shoe", cascade = CascadeType.ALL, orphanRemoval = true)//relationWith reviews
     private List<Review> reviews = new ArrayList<>();
+
+    @OneToMany(mappedBy = "shoe", cascade = CascadeType.ALL, orphanRemoval = true)//relation with orderItem
+    private List<OrderItem> orderItems = new ArrayList<>();
 
     // Getters y setters
     public Long getId() {
