@@ -57,6 +57,7 @@ public class DataInitializer implements CommandLineRunner {
                 initializeShoesAndStocks();
                 initializeUsers();
                 initializeReviews();
+                initializeOrders();
 
         }
 
@@ -1221,6 +1222,34 @@ public class DataInitializer implements CommandLineRunner {
                 } catch (Exception e) {
 
                 }
+
+                
+        }
+
+        private void initializeOrders() { //no funcionaba porque no recuperaba la lsita de zapatos en ordershoe
+
+                Optional<User> user1 = userRepository.findById(1L);
+                Optional<User> user2 = userRepository.findById(2L);
+                if (user1.isPresent()) {
+                        OrderShoes ordershoe = new OrderShoes(user1.get());
+                        ordershoe.setState("nosFinished");
+                        orderShoesRepository.save(ordershoe);
+                        user1.get().addOrderShoe(ordershoe);
+                        userRepository.save(user1.get());
+                        System.out.println("ID de ordershoe2: " + ordershoe.getId());
+
+                        
+                }
+                if (user2.isPresent()) {
+                        OrderShoes ordershoe2 = new OrderShoes(user2.get());
+                        ordershoe2.setState("Finiched");
+                        orderShoesRepository.save(ordershoe2);
+                        user2.get().addOrderShoe(ordershoe2);
+                        System.out.println("ID de ordershoe2: " + ordershoe2.getId());
+                        userRepository.save(user2.get());
+                        
+                }
+
 
         }
 }

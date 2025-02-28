@@ -31,8 +31,9 @@ public class User {
 
 
     // Relación con órdenes de compra
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = false)
-    private List<OrderShoes> orders = new ArrayList<>();
+    @OneToMany(mappedBy = "user", cascade=CascadeType.ALL,orphanRemoval = false,fetch = FetchType.EAGER)
+    private List<OrderShoes> orders =new ArrayList<>();
+
 
     @Column(nullable = false, unique = true)
     private String username;
