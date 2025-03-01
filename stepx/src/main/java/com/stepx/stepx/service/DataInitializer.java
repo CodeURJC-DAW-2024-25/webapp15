@@ -1162,22 +1162,6 @@ public class DataInitializer implements CommandLineRunner {
                         User user2 = new User("Gonzalo", imageUser);
                         userRepository.save(user2);
 
-
-                        
-                        OrderShoes ordershoe= new OrderShoes(user1);
-                        ordershoe.setState("notFinished");
-                        orderShoesRepository.save(ordershoe);
-                        user1.addOrderShoe(ordershoe);
-                        userRepository.save(user1);
-                        System.out.println("ID de ordershoe2: " + ordershoe.getId());
-
-                        OrderShoes ordershoe2= new OrderShoes(user2);
-                        ordershoe2.setState("notFinished");
-                        orderShoesRepository.save(ordershoe2);
-                        user2.addOrderShoe(ordershoe2);
-                        System.out.println("ID de ordershoe2: " + ordershoe2.getId());
-                        userRepository.save(user2);
-
                 } catch (Exception e) {
 
                 }
@@ -1232,7 +1216,7 @@ public class DataInitializer implements CommandLineRunner {
                 Optional<User> user2 = userRepository.findById(2L);
                 if (user1.isPresent()) {
                         OrderShoes ordershoe = new OrderShoes(user1.get());
-                        ordershoe.setState("nosFinished");
+                        ordershoe.setState("notFinished");
                         orderShoesRepository.save(ordershoe);
                         user1.get().addOrderShoe(ordershoe);
                         userRepository.save(user1.get());
@@ -1242,7 +1226,7 @@ public class DataInitializer implements CommandLineRunner {
                 }
                 if (user2.isPresent()) {
                         OrderShoes ordershoe2 = new OrderShoes(user2.get());
-                        ordershoe2.setState("Finiched");
+                        ordershoe2.setState("Finished");
                         orderShoesRepository.save(ordershoe2);
                         user2.get().addOrderShoe(ordershoe2);
                         System.out.println("ID de ordershoe2: " + ordershoe2.getId());
