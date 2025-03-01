@@ -22,8 +22,13 @@ async function openModal(productId, action) {
 
 async function AddtoCart(id_Shoe,size,quantity,id_user) {
     try {
+
+        console.log(id_Shoe);
+        console.log(size);
+        console.log(quantity);
+        console.log(id_user);
         const formData = new URLSearchParams(); // Crea los datos en formato x-www-form-urlencoded
-        formData.append("id", id_Shoe);
+        formData.append("id_Shoe", id_Shoe);
         formData.append("size", size);
         formData.append("cuantity", quantity);
         formData.append("id_user",id_user);
@@ -103,19 +108,19 @@ async function searchByCategory(event,category){
     }
 }
 
-async function openCartModal1() {
+async function openCartModal(id_user) {
     try {
-        const response = await fetch("/cart"); // Ruta para obtener los productos del carrito
+        const response = await fetch(`/user/cart?id_user=${id_user}`); // Ruta para obtener los productos del carrito
 
         if (!response.ok) {
             throw new Error("Error al cargar el carrito: " + response.status);
         }
 
         const cartContent = await response.text();
-        document.getElementById("cart-modal-body").innerHTML = cartContent;
+        document.getElementById("modal-body-content").innerHTML = cartContent;
 
         // Obtener el modal y verificar si ya existe una instancia
-        let modalElement = document.getElementById("modallong");
+        let modalElement = document.getElementById("modaltoggle");
         let myModal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
 
         // Asegurar que no haya restos de aria-hidden que bloqueen el cierre

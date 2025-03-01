@@ -2,13 +2,14 @@ package com.stepx.stepx.controller;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.security.Principal;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import java.time.LocalDate;
@@ -19,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -53,8 +53,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
-@RequestMapping("/OrderItem")
-public class OrderItemController {
+@RequestMapping("/user")
+public class UserController {
     
     @Autowired
     private ShoeService shoeService;
@@ -71,46 +71,46 @@ public class OrderItemController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/addItem")
-    public ResponseEntity<String> addItemToCart(@RequestParam Long id_Shoe, @RequestParam String size, @RequestParam int cuantity,@RequestParam Long id_user) { 
-        //obtenemos el usuario
-        Optional<User> usergetted= userService.findUserById(id_user);
-       
-        if (!usergetted.isPresent()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario no autenticado");
-        }
+    @GetMapping("/cart")
+    public String getMethodName(@RequestParam Long id_user,Model model) {
 
+        //primero comrpibamos el usuario
+        Optional<User> usergetted= userService.findUserById(id_user);
+        if (!usergetted.isPresent()) {
+            System.out.println("el usuario buscado no existe");
+        }
         User user=usergetted.get();
 
         //verify if the user has a cart or not
         Optional<OrderShoes> cart_Optional= orderShoesService.getCartById(id_user); //get the cart asosiated to the id
         OrderShoes cart;
-        if(cart_Optional.isPresent()){
+        if(cart_Optional.isPresent()){//in case that has a cart
             cart = cart_Optional.get();
+            if(cart.getLenghtOrderShoes()==0){ //if exists but its empty
+                model.addAttribute("setSubtotal", false);
+            }else{//exists but has orderItems
+                List<Map<String,Object>> cartItems=new ArrayList<>();
+                for(OrderItem orderItem:cart.getOrderItems()){
+                    Map<String,Object> item=new HashMap<>();
+                    item.put("id", orderItem.getShoe().getId());//id of the shoe
+                    item.put("name", orderItem.getShoe().getName());
+                    item.put("price",orderItem.getShoe().getPrice());
+                    item.put("quantity", orderItem.getQuantity());
+                    item.put("size", orderItem.getSize());
+                    cartItems.add(item);
+                }
+                model.addAttribute("setSubtotal",true);
+                model.addAttribute("total",cart.getTotalPrice());
+                model.addAttribute("cartItems", cartItems);
+            }
         }else{
-            cart = orderShoesService.createCartForUser(user);
+            cart = orderShoesService.createCartForUser(user);//put in cart modal not objects jet
+            model.addAttribute("setSubtotal", false);
         }
-        
-        //search the shoe in the bbdd
+        //comprobamos el carrito o lo cargamos
 
-        Optional<Shoe> shoe_optional=shoeService.getShoeById(id_Shoe);
-        if(!shoe_optional.isPresent()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("shoes not found");
-        }
-        Shoe shoe=shoe_optional.get();
-
-        //add the shoes into the cart
-        //first verify if the shoe is in the cart, in that case just increment the quantity
-        Optional<OrderItem> orderItemOptional=orderItemService.findByCartAndShoeAndSize(id_user, id_Shoe, size);
-        OrderItem orderItem;
-        if(orderItemOptional.isPresent()){//in case that exist in the cart, increase the cunatity
-            orderItem=orderItemOptional.get();
-            orderItem.setQuantity(orderItem.getQuantity()+1);
-        }else{
-            orderItem=new OrderItem(cart, shoe, cuantity, size);
-        }
-        orderItemService.save(orderItem);
-        return ResponseEntity.ok("Shoe added to your cart");
+        return "partials/quick-view-cart-modal";
     }
     
+
 }

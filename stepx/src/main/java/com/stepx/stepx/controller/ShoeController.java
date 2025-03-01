@@ -20,7 +20,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import com.stepx.stepx.repository.ShoeSizeStockRepository;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,7 +28,6 @@ import org.springframework.core.io.Resource;
 
 import com.stepx.stepx.model.User;
 import com.stepx.stepx.model.Shoe;
-import com.stepx.stepx.model.Shoe.Brand;
 import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 import com.stepx.stepx.model.Review;
 import com.stepx.stepx.model.ShoeSizeStock;
