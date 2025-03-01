@@ -29,7 +29,7 @@ public class CustomAuthenticationSuccessHandler extends SavedRequestAwareAuthent
         
         // Guardar información en la sesión
         HttpSession session = request.getSession();
-        String username = authentication.getName();
+        String username = authentication.;
         User user = userRepository.findByUsername(username).orElseThrow();
 
         boolean isAdmin = authentication.getAuthorities().stream()
