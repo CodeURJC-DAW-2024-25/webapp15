@@ -53,6 +53,11 @@ public class GeneralController { // todas las solicitudes "/...." son con el con
 
     }
 
+    @GetMapping("/profile")
+    public String showProfileString(Model model) {
+        return "profile";
+
+    }
     
 
 }
