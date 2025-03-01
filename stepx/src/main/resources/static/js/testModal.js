@@ -139,7 +139,7 @@ async function openCartModal(id_user) {
 }
 
 function DownloadTicket(orderId) {
-    fetch(`/checkout/downloadTicket/${orderId}`) // Ajustamos la URL
+    fetch(`/checkout/downloadTicket?orderId=${orderId}`)// Ajustamos la URL
         .then(response => {
             if (!response.ok) {
                 throw new Error("Error generating PDF.");

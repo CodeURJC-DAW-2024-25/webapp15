@@ -32,7 +32,7 @@ public class PdfService {
     private String renderHtmlTemplate(Map<String, Object> orderData) {
         MustacheFactory mf = new DefaultMustacheFactory();
         Mustache mustache = mf.compile(new InputStreamReader(
-                getClass().getResourceAsStream("/templates/ticket.html"), StandardCharsets.UTF_8), "ticket");
+                getClass().getResourceAsStream("ticket.html"), StandardCharsets.UTF_8), "ticket");
 
         StringWriter writer = new StringWriter();
         mustache.execute(writer, orderData);
