@@ -246,9 +246,9 @@ async function  recalculate(user_id) {
         let quantity=parseInt(input.value,10);
         formData.append("ids",id);
         formData.append("quantities",quantity);
-        formData.append("id_user",user_id);
-        }
+        }   
     )
+    formData.append("id_user",user_id);
     try{
 
         let response= await fetch(`/checkout/recalculate`,{
