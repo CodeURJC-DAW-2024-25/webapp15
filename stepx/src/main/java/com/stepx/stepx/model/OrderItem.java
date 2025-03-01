@@ -31,7 +31,7 @@ public class OrderItem {
     @JoinColumn(name = "order_id")
     private OrderShoes orderShoes;
 
-    @ManyToOne
+    @ManyToOne// hace que en la tabla tenga varias ordenes con el mismo zapato(si pongo one to one no se puede repetir el shoe_id)
     @JoinColumn(name = "shoe_id")
     private Shoe shoe;
 
