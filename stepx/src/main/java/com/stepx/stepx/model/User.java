@@ -38,13 +38,16 @@ public class User {
     @Column(nullable = false, unique = true)
     private String username;
 
+    @Column(nullable = false, unique = true)
+    private String email;
 
     public User() {
     }
 
-    public User(String username, Blob imageUser) {
+    public User(String username,String email, Blob imageUser) {
         this.username = username;
         this.imageUser = imageUser;
+        this.email=email;
     }
 
     public Long getId() {
@@ -54,9 +57,15 @@ public class User {
     public String getUsername() {
         return username;
     }
+    public String getEmail() {
+        return email;
+    }
 
     public void setUsername(String username) {
         this.username = username;
+        
+    }public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override

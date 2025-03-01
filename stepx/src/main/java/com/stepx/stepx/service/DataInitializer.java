@@ -1155,11 +1155,11 @@ public class DataInitializer implements CommandLineRunner {
 
                 try {
                         imageUser = loadImage("images/USERS/user_1.jpg");
-                        User user1 = new User("Gaby", imageUser);
+                        User user1 = new User("Gaby","baguim2323@gmail.com", imageUser);
                         userRepository.save(user1);
 
                         imageUser = loadImage("images/USERS/user_2.jpg");
-                        User user2 = new User("Gonzalo", imageUser);
+                        User user2 = new User("Gonzalo","gonzaluski@gmail.com", imageUser);
                         userRepository.save(user2);
 
 
