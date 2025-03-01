@@ -69,64 +69,62 @@ public class CheckoutController {
     private PdfService pdfService;
 
     @PostMapping("/downloadTicket")
-public void downloadTicket(
-    @RequestParam Long orderId,
-    @RequestParam String country,
-    @RequestParam(required = false) String coupon,
-    @RequestParam String firstName,
-    @RequestParam String lastName,
-    @RequestParam String email,
-    @RequestParam String address,
-    @RequestParam String phone,
-    HttpServletResponse response
-) throws IOException {
-    System.out.println("🔹 Recibiendo solicitud para descargar ticket con ID: " + orderId);
+    public void downloadTicket(
+            @RequestParam Long orderId,
+            @RequestParam String country,
+            @RequestParam(required = false) String coupon,
+            @RequestParam String firstName,
+            @RequestParam String lastName,
+            @RequestParam String email,
+            @RequestParam String address,
+            @RequestParam String phone,
+            HttpServletResponse response
+    ) throws IOException {
+        System.out.println("🔹 Recibiendo solicitud para descargar ticket con ID: " + orderId);
 
-    Optional<OrderShoes> orderOptional = orderShoesService.getCartById(1L);
-    if (!orderOptional.isPresent()) {
-        System.out.println("❌ Error: Orden no encontrada con ID " + orderId);
-        response.sendError(HttpServletResponse.SC_NOT_FOUND, "Order not found");
-        return;
+        // Obtener la orden desde el servicio
+        Optional<OrderShoes> orderOptional = orderShoesService.getCartById(orderId);
+        if (!orderOptional.isPresent()) {
+            System.out.println("❌ Error: Orden no encontrada con ID " + orderId);
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Order not found");
+            return;
+        }
+
+        OrderShoes order = orderOptional.get();
+        order.setCountry(country);
+        order.setCuponUsed(coupon);
+        order.setFirstName(firstName);
+        order.setSecondName(lastName);
+        order.setEmail(email);
+        order.setAddress(address);
+        order.setNumerPhone(phone);
+        order.setState("Processed");
+        orderShoesService.saveOrderShoes(order);
+
+        // Preparar los datos para pasar a la plantilla
+        Map<String, Object> data = new HashMap<>();
+        data.put("customerName", firstName + " " + lastName);
+        data.put("email", email);
+        data.put("address", address);
+        data.put("phone", phone);
+        data.put("country", country);
+        data.put("coupon", coupon != null ? coupon : "No coupon applied");
+        data.put("date", order.getDate());
+
+        System.out.println("🔹 Generando PDF...");
+        byte[] pdfBytes = pdfService.generatePdfFromOrder(data);
+
+        if (pdfBytes == null || pdfBytes.length == 0) {
+            System.out.println("❌ Error: El PDF está vacío o no se generó correctamente.");
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error generating PDF");
+            return;
+        }
+
+        System.out.println("✅ PDF generado correctamente. Enviando respuesta...");
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Disposition", "attachment; filename=ticket.pdf");
+        response.getOutputStream().write(pdfBytes);
     }
-
-    OrderShoes order = orderOptional.get();
-
-    order.setId(orderId);
-    order.setCountry(country);
-    order.setCuponUsed(coupon);
-    order.setFirstName(firstName);
-    order.setSecondName(lastName);
-    order.setEmail(email);
-    order.setAddress(address);
-    order.setNumerPhone(phone);
-    order.setState("Proceced");
-    orderShoesService.saveOrderShoes(order);
-
-    // 📌 Agregar datos al PDF
-    Map<String, Object> data = new HashMap<>();
-    data.put("customerName", firstName + " " + lastName);
-    data.put("email", email);
-    data.put("address", address);
-    data.put("phone", phone);
-    data.put("country", country);
-    data.put("coupon", coupon != null ? coupon : "No coupon applied");
-    data.put("date", order.getDate());
-
-    System.out.println("🔹 Generando PDF...");
-    byte[] pdfBytes = pdfService.generatePdfFromOrder(data);
-
-    if (pdfBytes == null || pdfBytes.length == 0) {
-        System.out.println("❌ Error: El PDF está vacío o no se generó correctamente.");
-        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error generating PDF");
-        return;
-    }
-
-    System.out.println("✅ PDF generado correctamente. Enviando respuesta...");
-
-    response.setContentType("application/pdf");
-    response.setHeader("Content-Disposition", "attachment; filename=ticket.pdf");
-    response.getOutputStream().write(pdfBytes);
-}
 
 
     @GetMapping("/{id_user}")
