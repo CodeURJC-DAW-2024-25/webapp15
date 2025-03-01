@@ -122,8 +122,9 @@
                             <use xlink:href="#minus"></use>
                           </svg>
                         </button>
-                        <input type="text" name="quantity" class="form-control input-number quantity"
-                          value={{quantity}}>
+
+                        <input type="text" name="quantity" class="form-control input-number quantity quantity-input"value={{quantity}}  data-id="{{id_orderItem}}">
+
                         <button type="button" class="quantity-right-plus btn btn-light rounded-0 rounded-end btn-number"
                           data-type="plus">
                           <svg width="16" height="16">
@@ -153,6 +154,10 @@
                 </div>
                 {{/cartItems}}
               </div>
+
+              {{#setSubtotal}} 
+            <button type="submit" class="btn btn-red hvr-sweep-to-right dark-sweep w-100" onclick="recalculate(1)">Recalculate</button>
+            {{/setSubtotal}}
               <!-- total -->
               <div class="mt-4 pt-4 border-top">
                 <div class="d-flex justify-content-between mb-2">
@@ -173,6 +178,7 @@
                 </div>
               </div>
             </div>
+
 
           </div>
         </div>

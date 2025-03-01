@@ -73,6 +73,7 @@ public class UserController {
             cart = cart_Optional.get();
             if(cart.getLenghtOrderShoes() == 0) {
                 model.addAttribute("setSubtotal", false);
+                model.addAttribute("empty", true);
             } else {
                 List<Map<String,Object>> cartItems = new ArrayList<>();
                 for(OrderItem orderItem : cart.getOrderItems()) {
@@ -88,10 +89,12 @@ public class UserController {
                 model.addAttribute("setSubtotal", true);
                 model.addAttribute("total", cart.getTotalPrice());
                 model.addAttribute("cartItems", cartItems);
+                model.addAttribute("empty", false);
             }
         } else {
             cart = orderShoesService.createCartForUser(user);
             model.addAttribute("setSubtotal", false);
+            model.addAttribute("empty", true);
         }
         
         // Add user ID to the model for the coupon button

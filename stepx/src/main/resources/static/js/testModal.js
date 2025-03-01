@@ -209,6 +209,44 @@ async function deleteItemfromCart(idItem, idUser) {
     }
 }
 
+async function  recalculate(user_id) {
+    console.log(user_id)
+    let formData=new FormData();
+    //obtain quantities and ids of the orderItems
+    document.querySelectorAll(".quantity-input").forEach(input=>{
+        let id = input.getAttribute("data-id");
+        let quantity=parseInt(input.value,10);
+        formData.append("ids",id);
+        formData.append("quantities",quantity);
+        formData.append("id_user",user_id);
+        }
+    )
+    try{
+
+        let response= await fetch(`/checkout/recalculate`,{
+            method:"POST",
+            body:formData
+        });
+
+        if(!response.ok){
+            throw new Error(`Error HTTP: ${response.status}`);
+        }
+
+        let result = await response.text();
+        document.getElementById("CartItemsList").innerHTML = result;
+
+        if (typeof window.initProductQty === "function") {
+            window.initProductQty();
+        } else {
+            console.error("initProductQty no está disponible. Verifica si script.js fue cargado.");
+        }
+        
+    }catch(error){
+        alert("something bad happens trying to recalculate")
+    }
+}
+
+
 window.openCartModal = openCartModal;
 
 window.openModal = openModal;

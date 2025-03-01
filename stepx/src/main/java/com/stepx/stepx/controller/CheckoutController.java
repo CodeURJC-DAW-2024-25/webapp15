@@ -35,6 +35,7 @@ import com.stepx.stepx.model.OrderItem;
 import com.stepx.stepx.model.OrderShoes;
 import com.stepx.stepx.model.Review;
 import com.stepx.stepx.model.ShoeSizeStock;
+import com.stepx.stepx.service.OrderItemService;
 import com.stepx.stepx.service.OrderShoesService;
 import com.stepx.stepx.service.ProductsService;
 import com.stepx.stepx.service.ShoeService;
@@ -57,6 +58,9 @@ public class CheckoutController {
 
     @Autowired
     private OrderShoesService orderShoesService;
+
+    @Autowired
+    private OrderItemService orderItemService;
 
     @GetMapping("/{id_user}")
     public String showCheckout(@PathVariable Long id_user, Model model) {
@@ -139,4 +143,39 @@ public class CheckoutController {
 }
 
 
+    @PostMapping("/recalculate")
+    public String Recalculate(@RequestParam List<Long> ids,@RequestParam List<Integer> quantities,@RequestParam Long id_user,Model model) {
+        for (int i=0;i<ids.size();i++){
+            orderItemService.updateOrderItem(ids.get(i),quantities.get(i));
+        }
+
+        Optional<OrderShoes> cart_Optional = orderShoesService.getCartById(id_user); // get the cart asosiated to the id
+        OrderShoes cart;
+        if (cart_Optional.isPresent()) {// in case that has a cart
+            cart = cart_Optional.get();
+            if (cart.getLenghtOrderShoes() == 0) { // if exists but its empty
+                model.addAttribute("setSubtotal", false);
+            } else {// exists but has orderItems
+                List<Map<String, Object>> cartItems = new ArrayList<>();
+                for (OrderItem orderItem : cart.getOrderItems()) {
+                    Map<String, Object> item = new HashMap<>();
+                    item.put("id", orderItem.getShoe().getId());// id of the shoe
+                    item.put("name", orderItem.getShoe().getName());
+                    item.put("price", orderItem.getShoe().getPrice());
+                    item.put("quantity", orderItem.getQuantity());
+                    item.put("size", orderItem.getSize());
+                    item.put("id_orderItem", orderItem.getId());
+                    cartItems.add(item);
+                }
+                model.addAttribute("setSubtotal", true);
+                model.addAttribute("total", cart.getTotalPrice());
+                model.addAttribute("cartItems", cartItems);
+            }
+        } else {
+            model.addAttribute("setSubtotal", false);
+        }
+
+        return "partials/checkout-itemsList";
+    }
+    
 }

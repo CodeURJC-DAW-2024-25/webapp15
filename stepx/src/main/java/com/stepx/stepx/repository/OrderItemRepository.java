@@ -20,4 +20,6 @@ Optional<OrderItem> findByCartAndShoeAndSize(@Param("userId") Long userId, @Para
 
 public void deleteById(Long id);
 
+public Optional<OrderItem> findById(Long id);
+
 }

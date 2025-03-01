@@ -18,30 +18,30 @@
   }
 
   // input spinner
-  var initProductQty = function(){
-
-    $('.product-qty').each(function(){
-
+  window.initProductQty = function () {
+    $('.product-qty').each(function () {
       var $el_product = $(this);
-      var quantity = 0;
 
-      $el_product.find('.quantity-right-plus').click(function(e){
-          e.preventDefault();
-          var quantity = parseInt($el_product.find('.quantity').val());
-          $el_product.find('.quantity').val(quantity + 1);
+      // 🔹 Eliminar event listeners anteriores antes de agregar nuevos
+      $el_product.find('.quantity-right-plus').off("click");
+      $el_product.find('.quantity-left-minus').off("click");
+
+      $el_product.find('.quantity-right-plus').on("click", function (e) {
+        e.preventDefault();
+        var quantity = parseInt($el_product.find('.quantity').val());
+        $el_product.find('.quantity').val(quantity + 1);
       });
 
-      $el_product.find('.quantity-left-minus').click(function(e){
-          e.preventDefault();
-          var quantity = parseInt($el_product.find('.quantity').val());
-          if(quantity>0){
-            $el_product.find('.quantity').val(quantity - 1);
-          }
+      $el_product.find('.quantity-left-minus').on("click", function (e) {
+        e.preventDefault();
+        var quantity = parseInt($el_product.find('.quantity').val());
+        if (quantity > 1) {
+          $el_product.find('.quantity').val(quantity - 1);
+        }
       });
 
     });
-
-  }
+  };
 
   // init Chocolat light box
 	var initChocolat = function () {
@@ -167,13 +167,16 @@
         clickable: true,
       },
     });
-
-    
-
   }); // End of a document
+
+
 
   $(window).load(function(){
     $('.preloader').fadeOut();
+  });
+
+  $(document).ready(function () {
+    initProductQty();
   });
 
 })(jQuery);
