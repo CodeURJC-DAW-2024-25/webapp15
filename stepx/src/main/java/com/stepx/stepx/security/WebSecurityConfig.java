@@ -22,8 +22,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig{
-
-	private static final Logger logger = LoggerFactory.getLogger(RepositoryUserDetailsService.class);
     
 	//@Autowired
     private RepositoryUserDetailsService userDetailsService;
