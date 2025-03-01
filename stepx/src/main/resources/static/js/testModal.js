@@ -226,6 +226,12 @@ async function deleteItemfromCart(idItem, idUser) {
         // Eliminar del DOM sin recargar
         document.getElementById("CartItemsList").innerHTML = result;
 
+        
+        if (typeof window.initProductQty === "function") {
+            window.initProductQty();
+        } else {
+            console.error("initProductQty no está disponible. Verifica si script.js fue cargado.");
+        }
     } catch (error) {
         console.error("Error al eliminar el item:", error);
     }
