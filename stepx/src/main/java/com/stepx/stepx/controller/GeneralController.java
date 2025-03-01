@@ -2,20 +2,29 @@
 package com.stepx.stepx.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import com.mysql.cj.x.protobuf.MysqlxCrud.Order;
+import com.stepx.stepx.model.OrderItem;
+import com.stepx.stepx.model.OrderShoes;
 import com.stepx.stepx.model.Product;
-import com.stepx.stepx.model.Shoe;
-
-import com.stepx.stepx.service.CartService;
+import com.stepx.stepx.model.User;
+import com.stepx.stepx.service.OrderItemService;
+import com.stepx.stepx.service.OrderShoesService;
 import com.stepx.stepx.service.ProductsService;
-import com.stepx.stepx.service.ShoeService;
+import com.stepx.stepx.service.UserService;
 
 @Controller
 public class GeneralController { // todas las solicitudes "/...." son con el controlador
@@ -24,18 +33,16 @@ public class GeneralController { // todas las solicitudes "/...." son con el con
     private ProductsService productsService;
 
     @Autowired
-    private CartService cartService;
+    private UserService userService;
 
     @Autowired
-    private ShoeService shoeService;
-
+    private OrderShoesService orderShoesService;
 
 
     @GetMapping("/index")
     public String showIndex(Model model) {
         return "index"; // nombre de la plantilla Mustache sin la extensión .html
     }
- 
 
     @GetMapping("/register-user")
     public String showRegisterUser(Model model) {
@@ -59,20 +66,11 @@ public class GeneralController { // todas las solicitudes "/...." son con el con
 
     }
 
-    @GetMapping("/checkout")
-    public String showCheckout(Model model) {
-        return "checkout";
+    @GetMapping("/profile")
+    public String showProfileString(Model model) {
+        return "profile";
 
     }
 
-    @GetMapping("/cart")
-    public String getProductById(Model model) {
-
-        List<Product> productList = new ArrayList<>(cartService.getCartContents().values()); //convertimos a una lista para que sea facil de iterar
-        model.addAttribute("cartItems", productList); // Agregar el contenido del carrito
-        return "partials/quick-view-cart-modal"; // 📌 Devolver el modal del carrito
-    }
-
-    
 
 }

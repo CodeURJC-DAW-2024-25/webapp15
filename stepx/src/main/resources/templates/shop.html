@@ -35,29 +35,7 @@
   <!-- Button to Trigger Modal -->
 
 
-<!-- Modal for Confirmation -->
- {{#shoes}}
-<div class="modal fade" id="deleteConfirmationModal-{{id}}" tabindex="-1" aria-labelledby="deleteModalLabel-{{id}}" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="deleteModalLabel-{{id}}">Confirm Deletion</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        Are you sure you want to delete "{{name}}"? This action cannot be undone.
-      </div>
-      <div class="modal-footer">
-        <!-- Form for Deletion -->
-        <form action="/shop/delete/{{id}}" method="post">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-danger">Delete</button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
-{{/shoes}}
+
   <!-- /End of Modal Delete Confirmation -->
 
   {{>header}}
@@ -70,7 +48,7 @@
             <h1 class="display-2 text-uppercase text-dark">Shop</h1>
             <div class="breadcrumbs">
               <span class="item">
-                <a href="index.html">Home ></a>
+                <a href="/index">Home ></a>
               </span>
               <span class="item">Shop</span>
             </div>
@@ -85,31 +63,20 @@
       <div class="row">
         <aside class="col-lg-2 col-md-6 col-sm-12">
           <div class="sidebar">
-            <div class="widget-menu">
-              <div class="widget-search-bar position-relative">
-                <form role="search" method="get" class="d-flex">
-                  <input class="search-field rounded-2" placeholder="Search" type="search">
-                  <div class="search-icon position-absolute end-0">
-                    <a href="#">
-                      <svg class="search">
-                        <use xlink:href="#search"></use>
-                      </svg>
-                    </a>
-                  </div>
-                </form>
-              </div>
-            </div>
             <div class="widget-product-categories pt-5">
               <h5 class="widget-title text-decoration-underline">Categories</h5>
               <ul class="product-categories sidebar-list list-unstyled text-hover">
+                <li class="tags-item">
+                  <a href="#" onclick="resetFilters(event)">All</a>
+               </li>
                 <li class="cat-item">
-                  <a href="shop.html">Sport</a>
+                  <a href="#" onclick="searchByCategory(event,'SPORT')">Sport</a>
                 </li>
                 <li class="cat-item">
-                  <a href="single-product.html">Casual</a>
+                  <a href="#" onclick="searchByCategory(event,'CASUAL')" >Casual</a>
                 </li>
                 <li class="cat-item">
-                  <a href="single-product.html">Urban</a>
+                  <a href="#" onclick="searchByCategory(event,'URBAN')" >Urban</a>
                 </li>
               </ul>
             </div>
@@ -117,50 +84,32 @@
               <h5 class="widget-title text-decoration-underline">Brands</h5>
               <ul class="product-tags sidebar-list list-unstyled text-hover">
                 <li class="tags-item">
-                  <a href="shop.html">Nike</a>
+                  <a href="#" onclick="resetFilters(event)">All</a>
+               </li>
+                <li class="tags-item">
+                  <a href="#" onclick="searchByBrand(event,'NIKE')">Nike</a>
                 </li>
                 <li class="tags-item">
-                  <a href="shop.html">Puma</a>
+                  <a href="#" onclick="searchByBrand(event,'PUMA')">Puma</a>
                 </li>
                 <li class="tags-item">
-                  <a href="shop.html">Vans</a>
+                  <a href="#" onclick="searchByBrand(event,'ADIDAS')">Adidas</a>
                 </li>
                 <li class="tags-item">
-                  <a href="shop.html">Adidas</a>
-                </li>
-                <li class="tags-item">
-                  <a href="shop.html">New Balance</a>
+                  <a href="#" onclick="searchByBrand(event,'NEW_BALANCE')">New Balance</a>
                 </li>
               </ul>
             </div>
           </div>
         </aside>
         <main class="col-lg-10 col-md-6 col-sm-12">
-          <div class="filter-shop d-flex justify-content-between">
-            <div class="showing-product">
-              <p>Showing 1–9 of 55 results</p>
-            </div>
-            <div class="sort-by pb-3">
-              <select id="input-sort" class="form-control" data-filter-sort="" data-filter-order="">
-                <option value="">Default sorting</option>
-                <option value="">Name (A - Z)</option>
-                <option value="">Name (Z - A)</option>
-                <option value="">Price (Low-High)</option>
-                <option value="">Price (High-Low)</option>
-                <option value="">Rating (Highest)</option>
-                <option value="">Rating (Lowest)</option>
-                <option value="">Model (A - Z)</option>
-                <option value="">Model (Z - A)</option>
-              </select>
-            </div>
-          </div>
           <div >
             <div class="btn-wrap">
               <a href="/create-product">
               <button href="/create-product" class="btn btn-black btn-medium text-uppercase hvr-sweep-to-right" style="margin-bottom: 30px;">Create Shoe</button>
             </a>
             </div>
-          </div>
+          </div>  
           <div class="product-content product-store d-flex justify-content-between flex-wrap" id="shoes">
             <!-- Product Card element-->
             {{#shoes}}
@@ -172,7 +121,7 @@
                   <div class="cart-button d-flex gap-2 justify-content-center align-items-center">
                     <!--Delete Buttom-->
                     
-                    <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal-{{id}}">
+                    <button type="button" onclick="openModal('{{id}}','delete')"  class="btn btn-light" data-bs-toggle="modal" data-bs-target="#modaltoggle">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
                         <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
                       </svg>
@@ -180,7 +129,7 @@
                       
                   
                       <!--Edit Buttom-->
-                    <a href="/edit-product/{{id}}">
+                    <a href="/shop/edit/{{id}}">
                       <button type="button" class="btn btn-light">
                         <svg class="icon-pencil">
                           <use xlink:href="#icon-pencil"></use>
@@ -220,11 +169,14 @@
           </div>
 
 
-          <div id="loadMoreButtom">
+          <div id="loadMoreButtom"  {{^hasMoreShoes}}style="display:none;"{{/hasMoreShoes}}>
             <div class="btn-wrap">
-              <button class="btn btn-black btn-medium text-uppercase hvr-sweep-to-right" style="margin-bottom: 30px;" onclick="loadMore()">Show More</button>
+                <button class="btn btn-black btn-medium text-uppercase hvr-sweep-to-right"
+                        style="margin-bottom: 30px;" onclick="loadMore()">
+                    Show More
+                </button>
             </div>
-          </div>
+        </div>
 
         </main>
         
@@ -248,16 +200,7 @@
 
 <!--Cart confirmation Modal-->
 
-<div class="modal fade" id="cartConfirmationModal" aria-hidden="true" tabindex="-1" style="display: none;">
-  <div class="modal-dialog modal-fullscreen-md-down modal-md modal-dialog-centered" style="display: none;">
-    <div class="modal-content" style="display: none;">
-      <div class="modal-body" id="modal-body-content" style="display: none;">
 
-      </div>
-    </div>
-  </div>
-</div>
-<!--Cart confirmation Modal-->
   
 
   {{>footer}}
@@ -266,7 +209,7 @@
   <script src="/js/jquery-1.11.0.min.js"></script>
   <script src="/js/plugins.js"></script>
   <script src="/js/script.js"></script>
-  <script src="/js/shop.js"></script>
+ <!--<script src="/js/shop.js"></script>-->
   <script src="/js/testModal.js"></script>
 
 

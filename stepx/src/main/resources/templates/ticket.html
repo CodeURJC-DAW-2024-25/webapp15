@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Receipt</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { color: #333; }
+        .container { width: 100%; padding: 20px; border: 1px solid #ddd; }
+        .info { margin-bottom: 20px; }
+        .order-items { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .order-items th, .order-items td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        .total { font-size: 18px; font-weight: bold; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Receipt</h1>
+        <div class="info">
+            <p><strong>Customer:</strong> {{customerName}}</p>
+            <p><strong>Email:</strong> {{email}}</p>
+            <p><strong>Address:</strong> {{address}}, {{city}} ({{zipCode}})</p>
+        </div>
+
+        <table class="order-items">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#cartItems}}
+                <tr>
+                    <td>{{name}}</td>
+                    <td>{{quantity}}</td>
+                    <td>{{price}} $</td>
+                </tr>
+                {{/cartItems}}
+            </tbody>
+        </table>
+
+        <p class="total">Total: {{total}} $</p>
+    </div>
+</body>
+</html>

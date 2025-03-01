@@ -20,7 +20,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import com.stepx.stepx.repository.ShoeSizeStockRepository;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,9 +28,9 @@ import org.springframework.core.io.Resource;
 
 import com.stepx.stepx.model.User;
 import com.stepx.stepx.model.Shoe;
+import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 import com.stepx.stepx.model.Review;
 import com.stepx.stepx.model.ShoeSizeStock;
-import com.stepx.stepx.service.CartService;
 import com.stepx.stepx.service.ProductsService;
 import com.stepx.stepx.service.ShoeService;
 import com.stepx.stepx.service.ReviewService;
@@ -50,8 +49,6 @@ public class ShoeController {
     @Autowired
     private ProductsService productsService;
 
-    @Autowired
-    private CartService cartService;
 
     @Autowired
     private ReviewService reviewService;
@@ -72,12 +69,22 @@ public class ShoeController {
     @GetMapping()
     public String showShop(Model model) {
 
-        List<Shoe> shoes = shoeService.getNineShoes();
-
-        model.addAttribute("shoes", shoes);
-
+        Page<Shoe> shoes = shoeService.getNineShoes(0);
+        boolean more= 0< shoes.getTotalPages()-1;
+        model.addAttribute("shoes", shoes.getContent());
+        model.addAttribute("hasMoreShoes", more);
         return "shop";
     }
+
+    @GetMapping("/resetFilters")
+    public String resetFilters(Model model) {
+        Page<Shoe> shoes = shoeService.getNineShoes(0);
+        boolean more = 0 < shoes.getTotalPages() - 1;
+        model.addAttribute("shoes", shoes.getContent());
+        model.addAttribute("hasMoreShoes", more);
+        return "partials/loadMoreShoe";  // ¡Devuelve solo la parte de los productos!
+}
+
 
     @PostMapping("/create")
     public String createShoe(
@@ -148,7 +155,6 @@ public class ShoeController {
             if (image != null) {
                 try {
                     Resource file = new InputStreamResource(image.getBinaryStream());
-                    System.out.println(image.length());
                     return ResponseEntity.ok()
                             .header(HttpHeaders.CONTENT_TYPE, "image/jpg")
                             .contentLength(image.length())
@@ -207,17 +213,21 @@ public class ShoeController {
         model.addAttribute("product", product.get()); // importat to do a get from the Optional that the service returns
 
         if ("quick".equals(action)) {
-            return "partials/quick-view-modal";
-        } else if ("confirmation".equals(action)) {
 
+            return "partials/quick-view-modal";
+
+        } else if ("confirmation".equals(action)) {
             // need a confirmation if the stock of the default size is 0
             Optional<Integer> stock = shoeSizeStockService.getStockByShoeAndSize(id, "M");
-
             if (stock.isPresent() && stock.get() == 0) {
                 model.addAttribute("error", true);
             }
             return "partials/cart-confirmation-view";
-        } else {
+
+        }else if("delete".equals(action)){
+            return "partials/deleteShoeModal";
+        } 
+        else {
             return "partials/error-modal";
         }
     }
@@ -227,7 +237,6 @@ public class ShoeController {
 
         Page<Shoe> shoePage = shoeService.getShoesPaginated(currentPage);
         boolean more = currentPage < shoePage.getTotalPages() - 1;
-        System.out.println(more);
         model.addAttribute("hasMoreShoes", more);
         model.addAttribute("shoes", shoePage.getContent());
         return "partials/loadMoreShoe";
@@ -257,6 +266,108 @@ public class ShoeController {
         return ResponseEntity.notFound().build();
     }
 
+
+
+    @GetMapping("/getByBrand")//first 9 shoes of same brand
+    public String getByBrand(@RequestParam String brand,Model model) {
+        try{
+            int currentPage=0;
+            Page<Shoe> shoes = shoeService.getShoesByBrand(currentPage,brand);
+            boolean more = currentPage<=shoes.getTotalPages()-1;
+            model.addAttribute("hasMoreShoes", more);
+            model.addAttribute("shoes", shoes.getContent());
+            return "partials/loadMoreShoe";
+        }catch(IllegalArgumentException  e){
+            System.err.println("Error: Marca no válida: " + brand);
+            return "error"; // Devuelve una vista de error si el Enum no es válido
+        }
+    }
+
+    @GetMapping("/edit/{id}")
+public String showEditForm(@PathVariable Long id, Model model) {
+    Optional<Shoe> op = shoeService.getShoeById(id);
+    if (op.isPresent()) {
+        model.addAttribute("shoe", op.get());
+        return "edit-product"; // Name of the edit form template
+    }
+    return "redirect:/shop"; // Redirect to shop page if shoe not found
+}
+
+@PostMapping("/edit/{id}")
+public String updateShoe(
+        @PathVariable Long id,
+        @RequestParam String name,
+        @RequestParam String description, // Ensure this matches the form
+        @RequestParam String LongDescription,
+        @RequestParam BigDecimal price,
+        @RequestParam(required = false) MultipartFile image1,
+        @RequestParam(required = false) MultipartFile image2,
+        @RequestParam(required = false) MultipartFile image3,
+        @RequestParam String brand,
+        @RequestParam String category) throws IOException, SQLException {
+    
+    Optional<Shoe> op = shoeService.getShoeById(id);
+    if (op.isPresent()) {
+        Shoe shoe = op.get();
+        shoe.setName(name);
+        shoe.setDescription(description);  // This should match 'description'
+        shoe.setLongDescription(LongDescription);
+        shoe.setPrice(price);
+        shoe.setBrand(Shoe.Brand.valueOf(brand));
+        shoe.setCategory(Shoe.Category.valueOf(category));
+
+        // Update images if new files are provided
+        if (image1 != null && !image1.isEmpty()) {
+            shoe.setImage1(new javax.sql.rowset.serial.SerialBlob(image1.getBytes()));
+        }
+        if (image2 != null && !image2.isEmpty()) {
+            shoe.setImage2(new javax.sql.rowset.serial.SerialBlob(image2.getBytes()));
+        }
+        if (image3 != null && !image3.isEmpty()) {
+            shoe.setImage3(new javax.sql.rowset.serial.SerialBlob(image3.getBytes()));
+        }
+
+        shoeService.saveShoe(shoe);
+    }
+
+    return "redirect:/shop";
+}
+
+    @GetMapping("/getByCategory")//first 9 shoes of same category
+    public String getByCategory(@RequestParam String category,Model model) {
+        try{
+            int currentPage=0;
+            Page<Shoe> shoes=shoeService.getShoesByCategory(currentPage,category);
+            boolean more = currentPage<=shoes.getTotalPages()-1;
+            model.addAttribute("shoes", shoes.getContent());
+            model.addAttribute("hasMoreShoes", more);
+            return "partials/loadMoreShoe";
+
+        }catch(IllegalArgumentException  e){
+            System.err.println("Error: categoria no válida: " + category);
+            return "error"; // Devuelve una vista de error si el Enum no es válido
+        }
+        
+    }
+    
+    @GetMapping("/loadMoreShoesByBrand")
+    public String getMoreByBrand(@RequestParam String brand,Model model, @RequestParam int currentPage) {
+        Page<Shoe>paginatedShoe=shoeService.getShoesPaginatedByBrand(currentPage,brand);
+        boolean more = currentPage< paginatedShoe.getTotalPages()-1;
+        model.addAttribute("shoes", paginatedShoe.getContent());
+        model.addAttribute("hasMoreShoes", more);
+        return "partials/loadMoreShoe";
+    }
+
+    @GetMapping("/loadMoreShoesByCategory")
+    public String loadMoreShoesByCategory(@RequestParam String category ,@RequestParam int currentPage,Model model) {
+        Page<Shoe> paginatedShoes=shoeService.getShoesPaginatedByCategory(currentPage, category);
+        boolean more=currentPage<paginatedShoes.getTotalPages()-1;
+        model.addAttribute("shoes", paginatedShoes.getContent());
+        model.addAttribute("hasMoreShoes", more);
+        return "partials/loadMoreShoe";
+    }
+
     @PostMapping("/submit/{id}")
     public String publishReview(
             @PathVariable Long id, // ID del zapato
@@ -281,4 +392,7 @@ public class ShoeController {
         return "redirect:/shop/single-product/{id}";
     }
 
+
+    
+    
 }

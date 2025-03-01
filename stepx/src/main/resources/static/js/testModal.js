@@ -1,7 +1,10 @@
-let currentPage=2;
+let currentPage = 2;
+let selectedBrand = null;
+let selectedCategory = null;
+
+
 async function openModal(productId, action) {
     try {
-
         const response = await fetch(`/shop/${productId}?action=${action}`);
 
         if (!response.ok) {
@@ -9,29 +12,115 @@ async function openModal(productId, action) {
         }
 
         const modalContent = await response.text();
-
         document.getElementById("modal-body-content").innerHTML = modalContent;
 
     } catch (error) {
         console.error("Error at the request:", error);
     }
 }
-    
-window.openModal = openModal;
 
-async function openCartModal1() {
+
+async function AddtoCart(id_Shoe, size, quantity, id_user) {
     try {
-        const response = await fetch("/cart"); // Ruta para obtener los productos del carrito
+
+        console.log(id_Shoe);
+        console.log(size);
+        console.log(quantity);
+        console.log(id_user);
+        const formData = new URLSearchParams(); // Crea los datos en formato x-www-form-urlencoded
+        formData.append("id_Shoe", id_Shoe);
+        formData.append("size", size);
+        formData.append("cuantity", quantity);
+        formData.append("id_user", id_user);
+
+        const response = await fetch("/OrderItem/addItem", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: formData.toString() // Convierte los datos a string para enviarlos
+        });
+
+
+        if (!response.ok) {
+            throw new Error("Error al cargar el carrito: " + response.status);
+        }
+
+        const responseData = await response.text(); // Lee la respuesta del servidor
+
+        // Mostrar mensaje de éxito (puedes reemplazarlo con una notificación en tu UI)
+        alert("✅ Producto agregado al carrito: " + responseData);
+
+        let modal = document.getElementById("modaltoggle")
+        let bootstrapModal = bootstrap.Modal.getInstance(modal);
+        bootstrapModal.hide();
+
+    } catch (error) {
+        console.error("Error en la solicitud:", error);
+        alert("❌ Error al agregar al carrito.");
+    }
+}
+
+
+
+//first 9 of brand
+async function searchByBrand(event, brand) {
+    event.preventDefault();
+    selectedBrand = brand;
+    selectedCategory = null;
+    currentPage = 2;
+
+    try {
+        const response = await fetch(`/shop/getByBrand?brand=${brand}`);
+        if (!response.ok) {
+            throw new Error("error en la solicitud" + response.status);
+        }
+
+        const shoebybrand = await response.text();
+
+        document.getElementById("shoes").innerHTML = shoebybrand;
+        document.getElementById("loadMoreButtom").style.display = "block";
+
+    } catch (error) {
+        console.log("error al buscar por marcas");
+    }
+
+}
+
+//first 9 of category
+async function searchByCategory(event, category) {
+    event.preventDefault();
+    selectedCategory = category;
+    selectedBrand = null;
+    currentPage = 2;
+
+    try {
+        const response = await fetch(`/shop/getByCategory?category=${category}`);
+        if (!response.ok) {
+            throw new Error("error en la solicitud" + response.status);
+        }
+        const shoebycatagory = await response.text();
+        document.getElementById("shoes").innerHTML = shoebycatagory;
+        document.getElementById("loadMoreButtom").style.display = 'block';
+
+    } catch (error) {
+        console.log("error trying to load from categories")
+    }
+}
+
+async function openCartModal(id_user) {
+    try {
+        const response = await fetch(`/user/cart?id_user=${id_user}`); // Ruta para obtener los productos del carrito
 
         if (!response.ok) {
             throw new Error("Error al cargar el carrito: " + response.status);
         }
 
         const cartContent = await response.text();
-        document.getElementById("cart-modal-body").innerHTML = cartContent;
+        document.getElementById("modal-body-content").innerHTML = cartContent;
 
         // Obtener el modal y verificar si ya existe una instancia
-        let modalElement = document.getElementById("modallong");
+        let modalElement = document.getElementById("modaltoggle");
         let myModal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
 
         // Asegurar que no haya restos de aria-hidden que bloqueen el cierre
@@ -49,40 +138,146 @@ async function openCartModal1() {
     }
 }
 
+function DownloadTicket(orderId) {
+    fetch(`/checkout/downloadTicket?orderId=${orderId}`)// Ajustamos la URL
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Error generating PDF.");
+            }
+            return response.blob();
+        })
+        .then(blob => {
+            const link = document.createElement("a");
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "ticket.pdf";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("Error generating PDF.");
+        });
+}
+
+
+async function loadMore() {
+    try {
+        currentPage++ // Aumentamos la página
+
+        let url = `/shop/loadMoreShoes/?currentPage=${currentPage}`; // URL por defecto
+
+        if (selectedBrand !== null) {
+            url = `/shop/loadMoreShoesByBrand?currentPage=${currentPage}&brand=${selectedBrand}`;
+        } else if (selectedCategory !== null) {
+            url = `/shop/loadMoreShoesByCategory?currentPage=${currentPage}&category=${selectedCategory}`;
+        }
+
+        const response = await fetch(url);
+        const resp = await response.text();
+
+        if (resp.includes("<!--hasMoreShoes-->")) {
+            document.getElementById("loadMoreButtom").style.display = 'none';
+        }
+
+        let shoesDiv = document.getElementById("shoes");
+        shoesDiv.innerHTML += resp; // Agregar más productos
+
+    } catch (error) {
+        console.error("Error at trying to load 3 more shoes: ", error)
+    }
+}
+
+async function resetFilters(event) {
+    event.preventDefault();
+    selectedBrand = null;
+    selectedCategory = null;
+    currentPage = 2;
+
+    try {
+        const response = await fetch(`/shop/resetFilters`);
+        const allShoes = await response.text();
+
+        document.getElementById("shoes").innerHTML = allShoes;
+        document.getElementById("loadMoreButtom").style.display = 'block';
+
+    } catch (error) {
+        console.log("Error al restablecer los filtros", error);
+    }
+}
+
+async function deleteItemfromCart(idItem, idUser) {
+    if (!idItem || !idUser) {
+        console.error("Error: idItem o idUser es undefined");
+        return;
+    }
+
+    try {
+        const response = await fetch(`/checkout/deleteItem/${idItem}/${idUser}`, { method: 'GET' });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const result = await response.text(); // Espera la respuesta del servidor
+        console.log("✅ Respuesta del servidor:", result);
+
+        // Eliminar el elemento del carrito en el HTML inmediatamente
+        // Eliminar del DOM sin recargar
+        document.getElementById("CartItemsList").innerHTML = result;
+
+        
+        if (typeof window.initProductQty === "function") {
+            window.initProductQty();
+        } else {
+            console.error("initProductQty no está disponible. Verifica si script.js fue cargado.");
+        }
+    } catch (error) {
+        console.error("Error al eliminar el item:", error);
+    }
+}
+
+async function  recalculate(user_id) {
+    console.log(user_id)
+    let formData=new FormData();
+    //obtain quantities and ids of the orderItems
+    document.querySelectorAll(".quantity-input").forEach(input=>{
+        let id = input.getAttribute("data-id");
+        let quantity=parseInt(input.value,10);
+        formData.append("ids",id);
+        formData.append("quantities",quantity);
+        }   
+    )
+    formData.append("id_user",user_id);
+    try{
+
+        let response= await fetch(`/checkout/recalculate`,{
+            method:"POST",
+            body:formData
+        });
+
+        if(!response.ok){
+            throw new Error(`Error HTTP: ${response.status}`);
+        }
+
+        let result = await response.text();
+        document.getElementById("CartItemsList").innerHTML = result;
+
+        if (typeof window.initProductQty === "function") {
+            window.initProductQty();
+        } else {
+            console.error("initProductQty no está disponible. Verifica si script.js fue cargado.");
+        }
+        
+    }catch(error){
+        alert("something bad happens trying to recalculate")
+    }
+}
+
 
 window.openCartModal = openCartModal;
 
 window.openModal = openModal;
 
 
-async function AddtoCart(id) {
-    try {
-        const response = await fetch(`/single-product/${id}/add`); // Ruta para añadir los prodcutos
-
-        if (!response.ok) {
-            throw new Error("Error al cargar el carrito: " + response.status);
-        }
-
-    } catch (error) {
-        console.error("Error en la solicitud:", error);
-    }
-}
-
-
-async function loadMore() {
-    try{
-        currentPage++
-        const response = await fetch(`/shop/loadMoreShoes/?currentPage=${currentPage}`);
-        const resp=await response.text();
-        if(resp.includes("<!--hasMoreShoes-->")){
-                document.getElementById("loadMoreButtom").style.display='none';
-        }
-        let shoesDiv=document.getElementById("shoes");
-        shoesDiv.innerHTML += resp;
-
-    }catch(error){
-        console.error("Error at trying to load 3 more shoes: ", error)
-    }
-
-}
-
+window.openModal = openModal;

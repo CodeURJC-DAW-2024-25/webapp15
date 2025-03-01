@@ -37,11 +37,11 @@
         <div class="col-lg-7 mb-4 mb-lg-0">
           <div class="login-form bg-light p-5">
             <h2 class="mb-4">Shipping Details</h2>
-            <form>
+            <form action = "/checkout/downloadTicket" method="POST">
               <!-- country -->
               <div class="mb-3">
                 <label for="country" class="form-label">Country</label>
-                <select class="form-control ps-3 text-input" id="country" required>
+                <select class="form-control ps-3 text-input" id="country" name="country" required>
                   <option value="">Select your country</option>
                   <option value="US">United States</option>
                   <option value="UK">United Kingdom</option>
@@ -55,38 +55,39 @@
                 <label class="form-label">Coupon</label>
                 <div class="input-group">
                   <input type="text" class="form-control ps-3 text-input" placeholder="Enter your coupon code">
-                  <button class="btn btn-red hvr-sweep-to-right dark-sweep" type="button">Apply</button>
+                  <button class="btn btn-red hvr-sweep-to-right dark-sweep" type="button" name="coupon">Apply</button>
                 </div>
               </div>
 
               <!-- personal information-->
               <div class="mb-3">
                 <label for="firstName" class="form-label">First Name</label>
-                <input type="text" class="form-control ps-3 text-input" id="firstName"
+                <input type="text" class="form-control ps-3 text-input" id="firstName" name="firstName"
                   placeholder="Enter your First Name" required>
               </div>
+              <input type="hidden" name="orderId" value="{{id_orderShoe}}">
 
               <div class="mb-3">
                 <label for="lastName" class="form-label">Second Name</label>
-                <input type="text" class="form-control ps-3 text-input" id="lastName"
+                <input type="text" class="form-control ps-3 text-input" id="lastName" name="lastName"
                   placeholder="Enter your Second Name" required>
               </div>
 
               <div class="mb-3">
                 <label for="email" class="form-label">Email Address</label>
-                <input type="email" class="form-control ps-3 text-input" id="email"
+                <input type="email" class="form-control ps-3 text-input" id="email" name="email"
                   placeholder="Enter your E-mail Address" required>
               </div>
 
               <div class="mb-3">
                 <label for="address" class="form-label">Address</label>
-                <input type="text" class="form-control ps-3 text-input" id="address" placeholder="Enter your Address"
+                <input type="text" class="form-control ps-3 text-input" id="address" name="address" placeholder="Enter your Address"
                   required>
               </div>
 
               <div class="mb-4">
                 <label for="phone" class="form-label">Phone Number</label>
-                <input type="tel" class="form-control ps-3 text-input" id="phone" placeholder="Enter your Phone Number"
+                <input type="tel" class="form-control ps-3 text-input" id="phone" name="phone" placeholder="Enter your Phone Number"
                   required>
               </div>
 
@@ -99,66 +100,106 @@
         <div class="col-lg-5">
           <div class="login-form bg-light p-5">
             <h2 class="mb-4">Order Summary</h2>
-
             <!-- products list -->
-            <div class="order-items">
-              <!-- individual product of the order -->
-              <div class="order-item d-flex align-items-center">
-                <img src="images/card-item2.jpg" alt="Product" class="product-image">
-                <div class="ms-3 flex-grow-1">
-                  <h5 class="mb-2">Air Pink Shoes</h5>
-                  <div class="d-flex justify-content-between align-items-center flex-wrap">
-                    <div class="input-group product-qty">
-                      <button type="button" class="quantity-left-minus btn btn-light rounded-0 rounded-start btn-number"
-                        data-type="minus">
-                        <svg width="16" height="16">
-                          <use xlink:href="#minus"></use>
+            <div id="CartItemsList">
+              <div class="order-items">
+                <!-- individual product of the order -->
+                {{#cartItems}}
+                <div id="item-{{id_orderItem}}" class="order-item d-flex align-items-center"
+                  style="padding-bottom: 20px">
+                  <div class="col-lg-2 col-md-3 col-sm-2 me-4">
+                    <a href="#" title="product-image">
+                      <img src="/shop/{{id}}/image/1" class="img-fluid" alt="single-product-item">
+                    </a>
+                  </div>
+                  <div class="ms-3 flex-grow-1">
+                    <h5 class="mb-2">{{name}}</h5>
+                    <div class="d-flex justify-content-between align-items-center flex-wrap">
+                      <div class="input-group product-qty">
+                        <button type="button"
+                          class="quantity-left-minus btn btn-light rounded-0 rounded-start btn-number"
+                          data-type="minus">
+                          <svg width="16" height="16">
+                            <use xlink:href="#minus"></use>
+                          </svg>
+                        </button>
+
+                        <input type="text" name="quantity" class="form-control input-number quantity quantity-input"value={{quantity}}  data-id="{{id_orderItem}}">
+
+                        <button type="button" class="quantity-right-plus btn btn-light rounded-0 rounded-end btn-number"
+                          data-type="plus">
+                          <svg width="16" height="16">
+                            <use xlink:href="#plus"></use>
+                          </svg>
+                        </button>
+                      </div>
+                      <div class="price-wrapper mb-2">
+                        <span class="fw-bold">{{price}}</span>
+                      </div>
+                      <!--boton de eliminar producto en checkout-->
+                      <button class="btn btn-link text-danger p-0 mb-2"
+                        onclick="deleteItemfromCart('{{id_orderItem}}','1')">
+                        <svg class="close" width="16" height="16">
+                          <use xlink:href="#close"></use>
                         </svg>
                       </button>
-                      <input type="text" name="quantity" class="form-control input-number quantity" value="1">
-                      <button type="button" class="quantity-right-plus btn btn-light rounded-0 rounded-end btn-number"
-                        data-type="plus">
-                        <svg width="16" height="16">
-                          <use xlink:href="#plus"></use>
-                        </svg>
-                      </button>
+
                     </div>
-                    <div class="price-wrapper mb-2">
-                      <span class="fw-bold">$200.00</span>
-                    </div>
-                    <button class="btn btn-link text-danger p-0 mb-2">
-                      <svg class="close" width="16" height="16">
-                        <use xlink:href="#close"></use>
-                      </svg>
-                    </button>
                   </div>
                 </div>
+                {{/cartItems}}
 
+                {{^cartItems}}
+                <div class="text-center py-4">
+                  <p class="mb-0">No items in your bag yet</p>
+                </div>
+                {{/cartItems}}
               </div>
 
-
+              {{#setSubtotal}} 
+            <button type="submit" class="btn btn-red hvr-sweep-to-right dark-sweep w-100" onclick="recalculate(1)">Recalculate</button>
+            {{/setSubtotal}}
+              <!-- total -->
+              <div class="mt-4 pt-4 border-top">
+                <div class="d-flex justify-content-between mb-2">
+                  <span>Subtotal:</span>
+                  <span class="fw-bold">{{#setSubtotal}} {{total}} $ {{/setSubtotal}}
+                    {{^setSubtotal}}0.00${{/setSubtotal}}</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                  <span>Shipping:</span>
+                  <span class="fw-bold">{{#setSubtotal}} Free {{/setSubtotal}}
+                    {{^setSubtotal}}0.00${{/setSubtotal}}</span>
+                </div>
+                {{#setSubtotal}}
+                <div class="d-flex justify-content-between mt-3 pt-3 border-top">
+                  <span class="h5">Total:</span>
+                  <span class="h5">{{total}} $</span>
+                  {{/setSubtotal}}
+                </div>
+              </div>
             </div>
 
-            <!-- total -->
-            <div class="mt-4 pt-4 border-top">
-              <div class="d-flex justify-content-between mb-2">
-                <span>Subtotal:</span>
-                <span class="fw-bold">$99.00</span>
-              </div>
-              <div class="d-flex justify-content-between mb-2">
-                <span>Shipping:</span>
-                <span class="fw-bold">$10.00</span>
-              </div>
-              <div class="d-flex justify-content-between mt-3 pt-3 border-top">
-                <span class="h5">Total:</span>
-                <span class="h5">$109.00</span>
-              </div>
-            </div>
+
           </div>
         </div>
+
+
       </div>
     </div>
   </section>
+
+  <!-- quick view -->
+  <div class="modal fade" id="modaltoggle" aria-hidden="true" tabindex="-1">
+    <div class="modal-dialog modal-fullscreen-md-down modal-md modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-body" id="modal-body-content">
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- / quick view -->
 
   {{>footer}}
 

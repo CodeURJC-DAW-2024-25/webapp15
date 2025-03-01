@@ -15,7 +15,11 @@ public class Shoe {
 
     private String name;
     private String shortdescription;
+    
+    @Lob
+    @Column(columnDefinition = "TEXT") 
     private String longDescription;
+    
     private BigDecimal price;
 
     // Almacenamos tres imágenes como BLOBs
@@ -38,12 +42,14 @@ public class Shoe {
     private Category category;
 
     // Relación: Un zapato puede tener stock para distintas tallas
-    @OneToMany(mappedBy = "shoe", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "shoe", cascade = CascadeType.ALL, orphanRemoval = true)//relation with shoessizestock
     private List<ShoeSizeStock> sizeStocks = new ArrayList<>();
 
-
-    @OneToMany(mappedBy = "shoe")
+    @OneToMany(mappedBy = "shoe", cascade = CascadeType.ALL, orphanRemoval = true)//relationWith reviews
     private List<Review> reviews = new ArrayList<>();
+
+    @OneToMany(mappedBy = "shoe", cascade = CascadeType.ALL, orphanRemoval = true)//relation with orderItem
+    private List<OrderItem> orderItems = new ArrayList<>();
 
     // Getters y setters
     public Long getId() {
@@ -154,6 +160,5 @@ public class Shoe {
         ADIDAS,
         PUMA,
         NEW_BALANCE,
-        VANS
     }
 }
