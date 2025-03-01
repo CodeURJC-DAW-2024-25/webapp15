@@ -184,6 +184,31 @@ async function resetFilters(event) {
     }
 }
 
+async function deleteItemfromCart(idItem, idUser) {
+    if (!idItem || !idUser) {
+        console.error("Error: idItem o idUser es undefined");
+        return;
+    }
+
+    try {
+        const response = await fetch(`/checkout/deleteItem/${idItem}/${idUser}`, { method: 'GET' });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const result = await response.text(); // Espera la respuesta del servidor
+        console.log("✅ Respuesta del servidor:", result);
+
+        // Eliminar el elemento del carrito en el HTML inmediatamente
+        // Eliminar del DOM sin recargar
+        document.getElementById("CartItemsList").innerHTML = result;
+
+    } catch (error) {
+        console.error("Error al eliminar el item:", error);
+    }
+}
+
 window.openCartModal = openCartModal;
 
 window.openModal = openModal;

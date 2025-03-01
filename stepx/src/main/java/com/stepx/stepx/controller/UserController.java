@@ -82,6 +82,7 @@ public class UserController {
                     item.put("price", orderItem.getShoe().getPrice());
                     item.put("quantity", orderItem.getQuantity());
                     item.put("size", orderItem.getSize());
+                    item.put("id_orderItem", orderItem.getId());
                     cartItems.add(item);
                 }
                 model.addAttribute("setSubtotal", true);

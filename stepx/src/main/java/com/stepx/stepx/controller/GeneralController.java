@@ -66,43 +66,6 @@ public class GeneralController { // todas las solicitudes "/...." son con el con
 
     }
 
-    @GetMapping("/checkout/{id_user}")
-public String showCheckout(@PathVariable Long id_user,Model model) {
-    // Obtener el usuariio
-    Optional<User> usergetted= userService.findUserById(id_user);
-        if (!usergetted.isPresent()) {
-            System.out.println("el usuario buscado no existe");
-        }
-
-    Optional<OrderShoes> cart_Optional= orderShoesService.getCartById(id_user); //get the cart asosiated to the id
-        OrderShoes cart;
-        if(cart_Optional.isPresent()){//in case that has a cart
-            cart = cart_Optional.get();
-            if(cart.getLenghtOrderShoes()==0){ //if exists but its empty
-                model.addAttribute("setSubtotal", false);
-            }else{//exists but has orderItems
-                List<Map<String,Object>> cartItems=new ArrayList<>();
-                for(OrderItem orderItem:cart.getOrderItems()){
-                    Map<String,Object> item=new HashMap<>();
-                    item.put("id", orderItem.getShoe().getId());//id of the shoe
-                    item.put("name", orderItem.getShoe().getName());
-                    item.put("price",orderItem.getShoe().getPrice());
-                    item.put("quantity", orderItem.getQuantity());
-                    item.put("size", orderItem.getSize());
-                    cartItems.add(item);
-                }
-                model.addAttribute("setSubtotal",true);
-                model.addAttribute("total",cart.getTotalPrice());
-                model.addAttribute("cartItems", cartItems);
-            }
-        }else{
-            model.addAttribute("setSubtotal", false);
-        }
-        //comprobamos el carrito o lo cargamos
-
-    return "checkout";
-}
-
     @GetMapping("/profile")
     public String showProfileString(Model model) {
         return "profile";

@@ -1,0 +1,67 @@
+<div class="order-items">
+    <!-- individual product of the order -->
+    {{#cartItems}}
+    <div id="item-{{id_orderItem}}" class="order-item d-flex align-items-center" style="padding-bottom: 20px">
+        <div class="col-lg-2 col-md-3 col-sm-2 me-4">
+            <a href="#" title="product-image">
+                <img src="/shop/{{id}}/image/1" class="img-fluid" alt="single-product-item">
+            </a>
+        </div>
+        <div class="ms-3 flex-grow-1">
+            <h5 class="mb-2">{{name}}</h5>
+            <div class="d-flex justify-content-between align-items-center flex-wrap">
+                <div class="input-group product-qty">
+                    <button type="button" class="quantity-left-minus btn btn-light rounded-0 rounded-start btn-number"
+                        data-type="minus">
+                        <svg width="16" height="16">
+                            <use xlink:href="#minus"></use>
+                        </svg>
+                    </button>
+                    <input type="text" name="quantity" class="form-control input-number quantity" value={{quantity}}>
+                    <button type="button" class="quantity-right-plus btn btn-light rounded-0 rounded-end btn-number"
+                        data-type="plus">
+                        <svg width="16" height="16">
+                            <use xlink:href="#plus"></use>
+                        </svg>
+                    </button>
+                </div>
+                <div class="price-wrapper mb-2">
+                    <span class="fw-bold">{{price}}</span>
+                </div>
+                <!--boton de eliminar producto en checkout-->
+                <button class="btn btn-link text-danger p-0 mb-2" onclick="deleteItemfromCart('{{id_orderItem}}','1')">
+                    <svg class="close" width="16" height="16">
+                        <use xlink:href="#close"></use>
+                    </svg>
+                </button>
+
+            </div>
+        </div>
+    </div>
+    {{/cartItems}}
+
+    {{^cartItems}}
+    <div class="text-center py-4">
+        <p class="mb-0">No items in your bag yet</p>
+    </div>
+    {{/cartItems}}
+</div>
+<!-- total -->
+<div class="mt-4 pt-4 border-top">
+    <div class="d-flex justify-content-between mb-2">
+        <span>Subtotal:</span>
+        <span class="fw-bold">{{#setSubtotal}} {{total}} $ {{/setSubtotal}}
+            {{^setSubtotal}}0.00${{/setSubtotal}}</span>
+    </div>
+    <div class="d-flex justify-content-between mb-2">
+        <span>Shipping:</span>
+        <span class="fw-bold">{{#setSubtotal}} Free {{/setSubtotal}}
+            {{^setSubtotal}}0.00${{/setSubtotal}}</span>
+    </div>
+    {{#setSubtotal}}
+    <div class="d-flex justify-content-between mt-3 pt-3 border-top">
+        <span class="h5">Total:</span>
+        <span class="h5">{{total}} $</span>
+        {{/setSubtotal}}
+    </div>
+</div>
