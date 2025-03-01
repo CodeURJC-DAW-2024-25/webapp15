@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Repository
@@ -38,5 +39,7 @@ public interface ShoeRepository extends JpaRepository<Shoe, Long> {
     @Query(value="SELECT * FROM shoe WHERE category=:category",nativeQuery = true)
     Page<Shoe> findByCategory(@Param("category") String category,Pageable pageable);
 
+     @Query("SELECT SUM(price) FROM Shoe")
+    BigDecimal sumOfAllPrices();
     
 }

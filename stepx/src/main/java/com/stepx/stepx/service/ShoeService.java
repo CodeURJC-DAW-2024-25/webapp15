@@ -4,6 +4,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -72,5 +74,8 @@ public class ShoeService {
     public Page<Shoe> getShoesPaginated(int currentPage) {
         int pagesize=3;
         return shoeRepository.findAll(PageRequest.of(currentPage, pagesize));
+    }
+    public BigDecimal getTotalEarnings() {
+        return shoeRepository.sumOfAllPrices();
     }
 }

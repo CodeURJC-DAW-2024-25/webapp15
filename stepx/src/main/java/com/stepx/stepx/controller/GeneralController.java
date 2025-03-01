@@ -103,6 +103,11 @@ public String showCheckout(@PathVariable Long id_user,Model model) {
     return "checkout";
 }
 
+    @GetMapping("/profile")
+    public String showProfileString(Model model) {
+        return "profile";
+
+    }
 
 
 }
