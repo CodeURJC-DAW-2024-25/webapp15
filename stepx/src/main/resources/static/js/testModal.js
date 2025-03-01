@@ -1,6 +1,6 @@
-let currentPage=2;
-let selectedBrand=null;
-let selectedCategory=null;
+let currentPage = 2;
+let selectedBrand = null;
+let selectedCategory = null;
 
 
 async function openModal(productId, action) {
@@ -20,7 +20,7 @@ async function openModal(productId, action) {
 }
 
 
-async function AddtoCart(id_Shoe,size,quantity,id_user) {
+async function AddtoCart(id_Shoe, size, quantity, id_user) {
     try {
 
         console.log(id_Shoe);
@@ -31,7 +31,7 @@ async function AddtoCart(id_Shoe,size,quantity,id_user) {
         formData.append("id_Shoe", id_Shoe);
         formData.append("size", size);
         formData.append("cuantity", quantity);
-        formData.append("id_user",id_user);
+        formData.append("id_user", id_user);
 
         const response = await fetch("/OrderItem/addItem", {
             method: "POST",
@@ -51,8 +51,8 @@ async function AddtoCart(id_Shoe,size,quantity,id_user) {
         // Mostrar mensaje de éxito (puedes reemplazarlo con una notificación en tu UI)
         alert("✅ Producto agregado al carrito: " + responseData);
 
-        let modal=document.getElementById("modaltoggle")
-        let bootstrapModal= bootstrap.Modal.getInstance(modal);
+        let modal = document.getElementById("modaltoggle")
+        let bootstrapModal = bootstrap.Modal.getInstance(modal);
         bootstrapModal.hide();
 
     } catch (error) {
@@ -64,46 +64,46 @@ async function AddtoCart(id_Shoe,size,quantity,id_user) {
 
 
 //first 9 of brand
-async function searchByBrand(event,brand){
+async function searchByBrand(event, brand) {
     event.preventDefault();
-    selectedBrand=brand;
-    selectedCategory=null;
-    currentPage=2;
+    selectedBrand = brand;
+    selectedCategory = null;
+    currentPage = 2;
 
-    try{
-        const response=await fetch(`/shop/getByBrand?brand=${brand}`);
-        if(!response.ok){
-            throw new Error ("error en la solicitud"+ response.status);
+    try {
+        const response = await fetch(`/shop/getByBrand?brand=${brand}`);
+        if (!response.ok) {
+            throw new Error("error en la solicitud" + response.status);
         }
 
-        const shoebybrand=await response.text();
+        const shoebybrand = await response.text();
 
-        document.getElementById("shoes").innerHTML=shoebybrand;
-        document.getElementById("loadMoreButtom").style.display="block";
+        document.getElementById("shoes").innerHTML = shoebybrand;
+        document.getElementById("loadMoreButtom").style.display = "block";
 
-    }catch(error){
+    } catch (error) {
         console.log("error al buscar por marcas");
     }
 
 }
 
 //first 9 of category
-async function searchByCategory(event,category){
+async function searchByCategory(event, category) {
     event.preventDefault();
-    selectedCategory=category;
-    selectedBrand=null;
-    currentPage=2;
+    selectedCategory = category;
+    selectedBrand = null;
+    currentPage = 2;
 
-    try{
-        const response=await fetch(`/shop/getByCategory?category=${category}`);
-        if(!response.ok){
-            throw new Error ("error en la solicitud"+ response.status);
+    try {
+        const response = await fetch(`/shop/getByCategory?category=${category}`);
+        if (!response.ok) {
+            throw new Error("error en la solicitud" + response.status);
         }
-        const shoebycatagory= await response.text();
-        document.getElementById("shoes").innerHTML=shoebycatagory;
+        const shoebycatagory = await response.text();
+        document.getElementById("shoes").innerHTML = shoebycatagory;
         document.getElementById("loadMoreButtom").style.display = 'block';
 
-    }catch(error){
+    } catch (error) {
         console.log("error trying to load from categories")
     }
 }
@@ -138,9 +138,31 @@ async function openCartModal(id_user) {
     }
 }
 
+function DownloadTicket(orderId) {
+    fetch(`/checkout/downloadTicket/${orderId}`) // Ajustamos la URL
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Error generating PDF.");
+            }
+            return response.blob();
+        })
+        .then(blob => {
+            const link = document.createElement("a");
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "ticket.pdf";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("Error generating PDF.");
+        });
+}
+
 
 async function loadMore() {
-    try{
+    try {
         currentPage++ // Aumentamos la página
 
         let url = `/shop/loadMoreShoes/?currentPage=${currentPage}`; // URL por defecto
@@ -175,9 +197,9 @@ async function resetFilters(event) {
     try {
         const response = await fetch(`/shop/resetFilters`);
         const allShoes = await response.text();
-        
+
         document.getElementById("shoes").innerHTML = allShoes;
-        document.getElementById("loadMoreButtom").style.display = 'block'; 
+        document.getElementById("loadMoreButtom").style.display = 'block';
 
     } catch (error) {
         console.log("Error al restablecer los filtros", error);
@@ -251,5 +273,5 @@ window.openCartModal = openCartModal;
 
 window.openModal = openModal;
 
-    
+
 window.openModal = openModal;

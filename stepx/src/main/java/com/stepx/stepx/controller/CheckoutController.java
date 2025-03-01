@@ -45,6 +45,9 @@ import com.stepx.stepx.service.ShoeSizeStockService;
 
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import com.stepx.stepx.service.PdfService;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -61,6 +64,58 @@ public class CheckoutController {
 
     @Autowired
     private OrderItemService orderItemService;
+
+
+    @Autowired
+    private PdfService pdfService;
+
+    @GetMapping("/downloadTicket{orderId}")
+    public void downloadTicket(@RequestParam Long orderId, HttpServletResponse response) throws IOException {
+        Optional<OrderShoes> orderOptional = orderShoesService.getCartById(orderId);
+        if (orderOptional.isPresent()) {
+            OrderShoes order = orderOptional.get();
+
+            Map<String, Object> data = new HashMap<>();
+            data.put("customerName", order.getUser().getUsername());
+            data.put("email", order.getEmail());
+            data.put("address", order.getAddress());
+            data.put("date", order.getDate());
+
+            byte[] pdfBytes = pdfService.generatePdfFromOrder(data);
+
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition", "attachment; filename=ticket.pdf");
+            response.getOutputStream().write(pdfBytes);
+        }
+    }
+
+    
+
+
+    @Autowired
+    private PdfService pdfService;
+
+    @GetMapping("/downloadTicket{orderId}")
+    public void downloadTicket(@RequestParam Long orderId, HttpServletResponse response) throws IOException {
+        Optional<OrderShoes> orderOptional = orderShoesService.getCartById(orderId);
+        if (orderOptional.isPresent()) {
+            OrderShoes order = orderOptional.get();
+
+            Map<String, Object> data = new HashMap<>();
+            data.put("customerName", order.getUser().getUsername());
+            data.put("email", order.getEmail());
+            data.put("address", order.getAddress());
+            data.put("date", order.getDate());
+
+            byte[] pdfBytes = pdfService.generatePdfFromOrder(data);
+
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition", "attachment; filename=ticket.pdf");
+            response.getOutputStream().write(pdfBytes);
+        }
+    }
+
+    
 
     @GetMapping("/{id_user}")
     public String showCheckout(@PathVariable Long id_user, Model model) {
@@ -91,6 +146,8 @@ public class CheckoutController {
                 model.addAttribute("setSubtotal", true);
                 model.addAttribute("total", cart.getTotalPrice());
                 model.addAttribute("cartItems", cartItems);
+                model.addAttribute("id_orderShoe", cart.getId());
+               
             }
         } else {
             model.addAttribute("setSubtotal", false);
