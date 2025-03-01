@@ -91,32 +91,6 @@ public class CheckoutController {
 
     
 
-
-    @Autowired
-    private PdfService pdfService;
-
-    @GetMapping("/downloadTicket{orderId}")
-    public void downloadTicket(@RequestParam Long orderId, HttpServletResponse response) throws IOException {
-        Optional<OrderShoes> orderOptional = orderShoesService.getCartById(orderId);
-        if (orderOptional.isPresent()) {
-            OrderShoes order = orderOptional.get();
-
-            Map<String, Object> data = new HashMap<>();
-            data.put("customerName", order.getUser().getUsername());
-            data.put("email", order.getEmail());
-            data.put("address", order.getAddress());
-            data.put("date", order.getDate());
-
-            byte[] pdfBytes = pdfService.generatePdfFromOrder(data);
-
-            response.setContentType("application/pdf");
-            response.setHeader("Content-Disposition", "attachment; filename=ticket.pdf");
-            response.getOutputStream().write(pdfBytes);
-        }
-    }
-
-    
-
     @GetMapping("/{id_user}")
     public String showCheckout(@PathVariable Long id_user, Model model) {
         // Obtener el usuariio
