@@ -2,46 +2,43 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Receipt</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        h1 { color: #333; }
-        .container { width: 100%; padding: 20px; border: 1px solid #ddd; }
-        .info { margin-bottom: 20px; }
-        .order-items { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        .order-items th, .order-items td { border: 1px solid #ddd; padding: 10px; text-align: left; }
-        .total { font-size: 18px; font-weight: bold; margin-top: 20px; }
+        /* Estilos básicos */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        .ticket {
+            background-color: #ff8c00; /* Color de fondo */
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            margin: 20px;
+        }
+
+        h1 {
+            font-size: 24px;
+        }
+
+        p {
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Receipt</h1>
-        <div class="info">
-            <p><strong>Customer:</strong> {{customerName}}</p>
-            <p><strong>Email:</strong> {{email}}</p>
-            <p><strong>Address:</strong> {{address}}, {{city}} ({{zipCode}})</p>
-        </div>
-
-        <table class="order-items">
-            <thead>
-                <tr>
-                    <th>Product</th>
-                    <th>Quantity</th>
-                    <th>Price</th>
-                </tr>
-            </thead>
-            <tbody>
-                {{#cartItems}}
-                <tr>
-                    <td>{{name}}</td>
-                    <td>{{quantity}}</td>
-                    <td>{{price}} $</td>
-                </tr>
-                {{/cartItems}}
-            </tbody>
-        </table>
-
-        <p class="total">Total: {{total}} $</p>
+    <div class="ticket">
+        <h1>Ticket para {{customerName}}</h1>
+        <p>Email: {{email}}</p>
+        <p>Dirección: {{address}}</p>
+        <p>Teléfono: {{phone}}</p>
+        <p>País: {{country}}</p>
+        <p>Fecha: {{date}}</p>
+        <p>Código de cupón: {{coupon}}</p>
     </div>
 </body>
 </html>

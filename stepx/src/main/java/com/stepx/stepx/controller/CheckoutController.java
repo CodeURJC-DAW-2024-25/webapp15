@@ -82,7 +82,7 @@ public void downloadTicket(
 ) throws IOException {
     System.out.println("🔹 Recibiendo solicitud para descargar ticket con ID: " + orderId);
 
-    Optional<OrderShoes> orderOptional = orderShoesService.getCartById(orderId);
+    Optional<OrderShoes> orderOptional = orderShoesService.getCartById(1L);
     if (!orderOptional.isPresent()) {
         System.out.println("❌ Error: Orden no encontrada con ID " + orderId);
         response.sendError(HttpServletResponse.SC_NOT_FOUND, "Order not found");
