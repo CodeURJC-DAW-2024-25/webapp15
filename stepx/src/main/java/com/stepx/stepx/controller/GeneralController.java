@@ -10,8 +10,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -60,13 +58,8 @@ public class GeneralController { // todas las solicitudes "/...." son con el con
         boolean isAuthenticated = request.getUserPrincipal() != null;
 
         if (isAuthenticated) {
-            @GetMapping("/index")
-public String showIndex(Model model) {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    Long id= authentication.getPrincipal().getClass().getId;
-
-            String username = request.getUserPrincipal().; //cambiar a id
-            User user = userRepository.findById(username).orElseThrow();
+            String username = request.getUserPrincipal().getName(); //cambiar a id
+            User user = userRepository.findByUsername(username).orElseThrow();
             
             model.addAttribute("username", user.getUsername());
             model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN")); //Creamos variable boleana que verifica si es admin
@@ -143,20 +136,5 @@ public String showIndex(Model model) {
 
     }
 
-    @GetMapping("/cart")
-    public String getProductById(Model model) {
-
-        List<Product> productList = new ArrayList<>(cartService.getCartContents().values()); //convertimos a una lista para que sea facil de iterar
-        model.addAttribute("cartItems", productList); // Agregar el contenido del carrito
-        return "partials/quick-view-cart-modal"; // 📌 Devolver el modal del carrito
-    }
-
-    GetMapping("/profile")
-    public String showProfileString(Model model) {
-        return "profile";
-
-    }
-
-    
 
 }
