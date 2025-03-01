@@ -18,6 +18,7 @@ import java.util.Optional;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.core.io.Resource;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
@@ -38,17 +39,18 @@ public class DataInitializer implements CommandLineRunner {
         private Blob image2;
         private Blob image3;
         private Blob imageUser;
+        private PasswordEncoder passwordEncoder;
 
         private LocalDate date;
 
         public DataInitializer(ShoeRepository shoeRepository, ShoeSizeStockRepository shoeSizeStockRepository,
-                        ReviewRepository reviewRepository, UserRepository userRepository,OrderShoesRepository orderShoesRepository) {
+                        ReviewRepository reviewRepository, UserRepository userRepository,OrderShoesRepository orderShoesRepository, PasswordEncoder passwordEncoder) {
                 this.shoeRepository = shoeRepository;
                 this.shoeSizeStockRepository = shoeSizeStockRepository;
                 this.reviewRepository = reviewRepository;
                 this.userRepository = userRepository;
                 this.orderShoesRepository=orderShoesRepository;
-
+                this.passwordEncoder = passwordEncoder;
         }
 
         @Override
@@ -1155,11 +1157,11 @@ public class DataInitializer implements CommandLineRunner {
 
                 try {
                         imageUser = loadImage("images/USERS/user_1.jpg");
-                        User user1 = new User("Gaby","baguim2323@gmail.com", imageUser);
+                        User user1 = new User("Gaby","baguim2323@gmail.com", passwordEncoder.encode("pass"), imageUser);
                         userRepository.save(user1);
 
                         imageUser = loadImage("images/USERS/user_2.jpg");
-                        User user2 = new User("Gonzalo","gonzaluski@gmail.com", imageUser);
+                        User user2 = new User("Gonzalo","gonzaluski@gmail.com", passwordEncoder.encode("pass"),imageUser);
                         userRepository.save(user2);
 
                 } catch (Exception e) {
