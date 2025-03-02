@@ -23,7 +23,7 @@ public class CustomAuthenticationSuccessHandler extends SavedRequestAwareAuthent
     @Autowired
     private UserRepository userRepository;
 
-    @Override
+   /* @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
             Authentication authentication) throws IOException, ServletException {
         
@@ -44,7 +44,7 @@ public class CustomAuthenticationSuccessHandler extends SavedRequestAwareAuthent
         
         // Continuar con el comportamiento predeterminado (redirección)
         super.onAuthenticationSuccess(request, response, authentication);
-    }
+    }*/
 }
  
     

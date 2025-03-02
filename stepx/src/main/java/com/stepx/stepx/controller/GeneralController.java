@@ -79,7 +79,14 @@ public class GeneralController { // todas las solicitudes "/...." son con el con
 
 
     @GetMapping("/profile")
-    public String profile() {
+    public String profile(HttpServletRequest request, Model model) {
+        model.addAttribute("isAuthenticated", request.getUserPrincipal() != null);
+        String username = request.getUserPrincipal().getName();
+        User user = userRepository.findByUsername(username).orElseThrow();
+        model.addAttribute("username", user.getUsername());
+        model.addAttribute("email", user.getEmail());
+        String path = "/shop/" + user.getId() + "/imageUser";
+        model.addAttribute("image", path);
         return "profile";
     }
 
