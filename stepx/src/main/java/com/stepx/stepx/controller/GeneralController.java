@@ -73,19 +73,19 @@ public class GeneralController { // todas las solicitudes "/...." son con el con
     public String login(Model model, HttpServletRequest request) {
         User user = (User) request.getAttribute("user");
         model.addAttribute("isAuthenticated", user != null);
-        return "/index";  // Redirige a la página principal
+        return "login";  // Redirige a la página principal
     }
 
-    @GetMapping("/login-success")
-    public String loginSuccess(HttpServletRequest request, Model model) {
-        String username = request.getUserPrincipal().getName();
-        User user = userRepository.findByUsername(username).orElseThrow();
+    // @GetMapping("/login-success")
+    // public String loginSuccess(HttpServletRequest request, Model model) {
+    //     String username = request.getUserPrincipal().getName();
+    //     User user = userRepository.findByUsername(username).orElseThrow();
 
-        model.addAttribute("username", user.getUsername());
-        model.addAttribute("admin", request.isUserInRole("ADMIN"));
-        model.addAttribute("isAuthenticated", request.getUserPrincipal() != null);
-        return "/index";  // Redirige a la página principal
-    }
+    //     model.addAttribute("username", user.getUsername());
+    //     model.addAttribute("admin", request.isUserInRole("ADMIN"));
+    //     model.addAttribute("isAuthenticated", request.getUserPrincipal() != null);
+    //     return "/index";  // Redirige a la página principal
+    // }
 
 
     @GetMapping("/profile")

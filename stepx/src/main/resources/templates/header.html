@@ -143,7 +143,7 @@
         <div class="login-detail">
           <div class="login-form p-0">
             <div class="col-lg-12 mx-auto">
-              <form id="login-form">
+              <form id="login-form" action="/login" method="post">
                 <input type="text" name="username" placeholder="Username or Email Address *"
                   class="mb-3 ps-3 text-input">
                 <input type="password" name="password" placeholder="Password" class="ps-3 text-input">
@@ -160,7 +160,7 @@
             </div>
           </div>
           <div class="modal-footer mt-5 d-flex justify-content-center">
-            <button type="button" class="btn btn-red hvr-sweep-to-right dark-sweep">Login</button>
+            <button type="submit" form="login-form" class="btn btn-red hvr-sweep-to-right dark-sweep">Login</button>
             <a href="/register-user">
                   <button type="button" class="btn btn-outline-gray hvr-sweep-to-right dark-sweep" id="registerButton"> Register</button>
                 </a>

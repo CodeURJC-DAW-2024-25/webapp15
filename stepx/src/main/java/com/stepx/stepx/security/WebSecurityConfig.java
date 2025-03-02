@@ -67,11 +67,13 @@ public class WebSecurityConfig{
         )
         .formLogin(formLogin -> formLogin
             .loginPage("/login") 
+			.usernameParameter("username")
+			.passwordParameter("password")
 			.successHandler(successHandler)
             .defaultSuccessUrl("/index", true)
             .failureUrl("/login?error=true")  // Redirige a la página principal con un parámetro de error
             .permitAll()
-        )
+        ) 
         .logout(logout -> logout
 			.logoutSuccessUrl("/index")
             .permitAll()
