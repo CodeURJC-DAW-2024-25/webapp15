@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.core.io.Resource;
 
 import com.stepx.stepx.model.User;
+import com.stepx.stepx.repository.UserRepository;
 import com.stepx.stepx.model.Shoe;
 import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 import com.stepx.stepx.model.Review;
@@ -35,6 +36,10 @@ import com.stepx.stepx.service.ProductsService;
 import com.stepx.stepx.service.ShoeService;
 import com.stepx.stepx.service.ReviewService;
 import com.stepx.stepx.service.UserService;
+
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+
 import com.stepx.stepx.service.ShoeSizeStockService;
 
 import org.springframework.web.bind.annotation.RequestParam;
@@ -62,15 +67,28 @@ public class ShoeController {
     @Autowired
     private ShoeService shoeService;
 
+     @Autowired
+    private UserRepository userRepository;
+
     public String getMethodName(@RequestParam String param) {
         return new String();
     }
 
     @GetMapping()
-    public String showShop(Model model) {
+    public String showShop(Model model, HttpServletRequest request) {
 
         Page<Shoe> shoes = shoeService.getNineShoes(0);
         boolean more= 0< shoes.getTotalPages()-1;
+        boolean isAuthenticated = request.getUserPrincipal() != null;
+    model.addAttribute("isAuthenticated", isAuthenticated);
+    
+    if (isAuthenticated) {
+        String username = request.getUserPrincipal().getName();
+        User user = userRepository.findByUsername(username).orElseThrow();
+        model.addAttribute("username", user.getUsername());
+        model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
+        
+    }
         model.addAttribute("shoes", shoes.getContent());
         model.addAttribute("hasMoreShoes", more);
         return "shop";
@@ -96,8 +114,19 @@ public class ShoeController {
             @RequestParam(required = false) MultipartFile image2,
             @RequestParam(required = false) MultipartFile image3,
             @RequestParam String brand,
-            @RequestParam String category) throws IOException, SQLException {
+            @RequestParam String category,
+            HttpServletRequest request, Model model) throws IOException, SQLException {
 
+        boolean isAuthenticated = request.getUserPrincipal() != null;
+        model.addAttribute("isAuthenticated", isAuthenticated);
+        String username = request.getUserPrincipal().getName();
+        User user = userRepository.findByUsername(username).orElseThrow();
+        
+        if (isAuthenticated) {
+            model.addAttribute("username", user.getUsername());
+            model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
+    
+        }
         // Create a new Shoe object
         Shoe shoe = new Shoe();
         shoe.setName(name);
@@ -106,6 +135,8 @@ public class ShoeController {
         shoe.setBrand(Shoe.Brand.valueOf(brand));
         shoe.setCategory(Shoe.Category.valueOf(category));
         shoe.setLongDescription(LongDescription);
+
+
 
         // Convert images to Blob and set them
         if (image1 != null && !image1.isEmpty()) {
@@ -131,7 +162,18 @@ public class ShoeController {
     }
 
     @PostMapping("/delete/{id}")
-    public String deleteShoe(@PathVariable Long id) {
+    public String deleteShoe(@PathVariable Long id, Model model,HttpServletRequest request) {
+
+        boolean isAuthenticated = request.getUserPrincipal() != null;
+        model.addAttribute("isAuthenticated", isAuthenticated);
+        String username = request.getUserPrincipal().getName();
+        User user = userRepository.findByUsername(username).orElseThrow();
+        
+        if (isAuthenticated) {
+            model.addAttribute("username", user.getUsername());
+            model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
+
+        }
 
         shoeService.deleteShoe(id);
 
@@ -139,8 +181,19 @@ public class ShoeController {
     }
 
     @GetMapping("/{id}/image/{imageNumber}")
-    public ResponseEntity<Resource> getShoeImage(@PathVariable Long id, @PathVariable int imageNumber) {
+    public ResponseEntity<Resource> getShoeImage(@PathVariable Long id, @PathVariable int imageNumber, Model model, HttpServletRequest request) {
         Optional<Shoe> op = shoeService.getShoeById(id);
+        
+        boolean isAuthenticated = request.getUserPrincipal() != null;
+        model.addAttribute("isAuthenticated", isAuthenticated);
+        String username = request.getUserPrincipal().getName();
+        User user = userRepository.findByUsername(username).orElseThrow();
+        
+        if (isAuthenticated) {
+            model.addAttribute("username", user.getUsername());
+            model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
+
+        }
         if (op.isPresent()) {
             Shoe shoe = op.get();
             Blob image = null;
@@ -169,13 +222,24 @@ public class ShoeController {
     }
 
     @GetMapping("/single-product/{id}")
-    public String showSingleProduct(Model model, @PathVariable Long id) {
+    public String showSingleProduct(Model model, @PathVariable Long id, HttpServletRequest request) {
         Optional<Shoe> op = shoeService.getShoeById(id);
         Optional<Integer> stockS = shoeSizeStockService.getStockByShoeAndSize(id, "S");
         Optional<Integer> stockM = shoeSizeStockService.getStockByShoeAndSize(id, "M");
         Optional<Integer> stockL = shoeSizeStockService.getStockByShoeAndSize(id, "L");
         Optional<Integer> stockXL = shoeSizeStockService.getStockByShoeAndSize(id, "XL");
         List<Review> review = reviewService.getReviewsByShoe(id);
+
+        boolean isAuthenticated = request.getUserPrincipal() != null;
+        model.addAttribute("isAuthenticated", isAuthenticated);
+        String username = request.getUserPrincipal().getName();
+        User user = userRepository.findByUsername(username).orElseThrow();
+        
+        if (isAuthenticated) {
+            model.addAttribute("username", user.getUsername());
+            model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
+
+        }
 
         // Convertir LocalDate a String en formato DD/MM/YYYY
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -201,9 +265,20 @@ public class ShoeController {
     }
 
     @GetMapping("/{id}")
-    public String getProductById(Model model, @PathVariable Long id, @RequestParam(required = false) String action) {
+    public String getProductById(Model model, @PathVariable Long id, @RequestParam(required = false) String action, HttpServletRequest request) {
 
         Optional<Shoe> product = shoeService.getShoeById(id);
+
+        boolean isAuthenticated = request.getUserPrincipal() != null;
+        model.addAttribute("isAuthenticated", isAuthenticated);
+        String username = request.getUserPrincipal().getName();
+        User user = userRepository.findByUsername(username).orElseThrow();
+        
+        if (isAuthenticated) {
+            model.addAttribute("username", user.getUsername());
+            model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
+
+        }
 
         if (product.isEmpty()) {
             model.addAttribute("error", "Product not found");
@@ -243,11 +318,22 @@ public class ShoeController {
     }
 
     @GetMapping("/{userId}/imageUser")
-    public ResponseEntity<Resource> getProfileImage(@PathVariable Long userId) {
+    public ResponseEntity<Resource> getProfileImage(@PathVariable Long userId, Model model, HttpServletRequest request) {
         Optional<User> userOptional = userService.findUserById(userId);
 
+    boolean isAuthenticated = request.getUserPrincipal() != null;
+    model.addAttribute("isAuthenticated", isAuthenticated);
+    String username = request.getUserPrincipal().getName();
+    User user = userRepository.findByUsername(username).orElseThrow();
+    
+    if (isAuthenticated) {
+        model.addAttribute("username", user.getUsername());
+        model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
+
+    }
+
         if (userOptional.isPresent()) {
-            User user = userOptional.get();
+            //User user = userOptional.get();
             Blob image = user.getImageUser(); // Asegúrate de tener este método en User
 
             if (image != null) {
@@ -269,7 +355,20 @@ public class ShoeController {
 
 
     @GetMapping("/getByBrand")//first 9 shoes of same brand
-    public String getByBrand(@RequestParam String brand,Model model) {
+    public String getByBrand(@RequestParam String brand,Model model, HttpServletRequest request) {
+        boolean isAuthenticated = request.getUserPrincipal() != null;
+    model.addAttribute("isAuthenticated", isAuthenticated);
+    String username = request.getUserPrincipal().getName();
+    User user = userRepository.findByUsername(username).orElseThrow();
+    
+    if (isAuthenticated) {
+        model.addAttribute("username", user.getUsername());
+        model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
+
+    }
+
+
+
         try{
             int currentPage=0;
             Page<Shoe> shoes = shoeService.getShoesByBrand(currentPage,brand);
@@ -284,8 +383,9 @@ public class ShoeController {
     }
 
     @GetMapping("/edit/{id}")
-public String showEditForm(@PathVariable Long id, Model model) {
+public String showEditForm(@PathVariable Long id, Model model,HttpServletRequest request) {
     Optional<Shoe> op = shoeService.getShoeById(id);
+    model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
     if (op.isPresent()) {
         model.addAttribute("shoe", op.get());
         return "edit-product"; // Name of the edit form template
@@ -304,7 +404,18 @@ public String updateShoe(
         @RequestParam(required = false) MultipartFile image2,
         @RequestParam(required = false) MultipartFile image3,
         @RequestParam String brand,
-        @RequestParam String category) throws IOException, SQLException {
+        @RequestParam String category, HttpServletRequest request, Model model) throws IOException, SQLException {
+
+    boolean isAuthenticated = request.getUserPrincipal() != null;
+    model.addAttribute("isAuthenticated", isAuthenticated);
+    String username = request.getUserPrincipal().getName();
+    User user = userRepository.findByUsername(username).orElseThrow();
+    
+    if (isAuthenticated) {
+        model.addAttribute("username", user.getUsername());
+        model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
+
+    }
     
     Optional<Shoe> op = shoeService.getShoeById(id);
     if (op.isPresent()) {
@@ -372,15 +483,23 @@ public String updateShoe(
     public String publishReview(
             @PathVariable Long id, // ID del zapato
             @RequestParam("rating")int rating,
-            @RequestParam String description
+            @RequestParam String description, Model model, HttpServletRequest request
     // @RequestParam Long userId // ID del usuario
-    ) {
+    ){
+    boolean isAuthenticated = request.getUserPrincipal() != null;
+    model.addAttribute("isAuthenticated", isAuthenticated);
+    String username = request.getUserPrincipal().getName();
+    User user = userRepository.findByUsername(username).orElseThrow();
+    
+    if (isAuthenticated) {
+        model.addAttribute("username", user.getUsername());
+        model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
+
+    }
         // Buscar el zapato y usuario en la base de datos
         Shoe shoe = shoeService.getShoeById(id).orElseThrow(() -> new RuntimeException("Shoe not found"));
 
-        // AQUI FALTA ENCONTRAR EL USUARIO ACTUAL Y PONERLO
-        User user = userService.findUserById(1L).orElseThrow(() -> new RuntimeException("User"));// deberia ser el
-                                                                                                 // usuario actual
+        // AQUI FALTA ENCONTRAR EL USUARIO ACTUAL Y PONERLO                                                                                         // usuario actual
         LocalDate date;
         date = LocalDate.now();
         // Crear la nueva review
@@ -390,9 +509,6 @@ public String updateShoe(
         reviewService.save(review);
 
         return "redirect:/shop/single-product/{id}";
+    
     }
-
-
-    
-    
 }
