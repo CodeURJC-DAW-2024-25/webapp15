@@ -61,6 +61,10 @@ public class OrderShoes {
         return date;
     }
 
+    public void setActualDate() {
+        this.date = LocalDate.now();
+    }
+
     public void setDate(LocalDate date) {
         this.date = date;
     }

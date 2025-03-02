@@ -1,47 +1,139 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8">
-    <title>Receipt</title>
+    </meta>
+    <title>Ticket de Venta</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        h1 { color: #333; }
-        .container { width: 100%; padding: 20px; border: 1px solid #ddd; }
-        .info { margin-bottom: 20px; }
-        .order-items { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        .order-items th, .order-items td { border: 1px solid #ddd; padding: 10px; text-align: left; }
-        .total { font-size: 18px; font-weight: bold; margin-top: 20px; }
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            margin: 0;
+            padding: 0;
+            background: #fff;
+        }
+
+        .container {
+            width: 500px;
+            padding: 10px;
+            border: 1px solid #000;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .header svg {
+            width: 50px;
+            height: 50px;
+        }
+
+        .details {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .details td {
+            padding: 5px;
+            border-bottom: 1px solid #000;
+        }
+
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .items-table th,
+        .items-table td {
+            border: 1px solid #000;
+            padding: 5px;
+            text-align: left;
+        }
+
+        .totals {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .totals td {
+            padding: 5px;
+            text-align: right;
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
-        <h1>Receipt</h1>
-        <div class="info">
-            <p><strong>Customer:</strong> {{customerName}}</p>
-            <p><strong>Email:</strong> {{email}}</p>
-            <p><strong>Address:</strong> {{address}}, {{city}} ({{zipCode}})</p>
+        <div class="header">
+            <h1>StepX</h1>
+            <p style="margin-bottom: 30px;">Helseink Street, Gran Via - Madrid.</p>
         </div>
+        <table class="details">
+            <tr>
+                <td><strong>Fecha:</strong></td>
+                <td>{{date}}</td>
+            </tr>
+            <tr>
+                <td><strong>Cliente:</strong></td>
+                <td>{{ customerName}}</td>
+            </tr>
+            <tr>
+                <td><strong>Email:</strong></td>
+                <td>{{ email}}</td>
+            </tr>
+            <tr>
+                <td><strong>Phone Contact:</strong></td>
+                <td>{{ phone}}</td>
+            </tr>
+            <tr>
+                <td><strong>Address:</strong></td>
+                <td>{{ address}}</td>
+            </tr>
+            <tr>
+                <td><strong>Country:</strong></td>
+                <td>{{ country}}</td>
+            </tr>
 
-        <table class="order-items">
+
+
+        </table>
+        <table class="items-table">
             <thead>
                 <tr>
                     <th>Product</th>
-                    <th>Quantity</th>
+                    <th>Brand</th>
+                    <th>Cant</th>
                     <th>Price</th>
+                    <th>size</th>
                 </tr>
             </thead>
             <tbody>
-                {{#cartItems}}
+                {{#products}}
                 <tr>
-                    <td>{{name}}</td>
+                    <td>{{shoe.name}}</td>
+                    <td>{{shoe.brand}}</td>
                     <td>{{quantity}}</td>
-                    <td>{{price}} $</td>
+                    <td>{{shoe.price}}</td>
+                    <td>{{size}}</td>
                 </tr>
-                {{/cartItems}}
+                {{/products}} 
             </tbody>
-        </table>
 
-        <p class="total">Total: {{total}} $</p>
+        </table>
+        <table class="totals">
+            <tr>
+                <td><strong>Subtotal:</strong></td>
+                <td>{{total}}</td>
+            </tr>
+            <tr>
+                <td><strong>Shipping:</strong></td>
+                <td>Free</td>
+            </tr>
+        </table>
     </div>
 </body>
+
 </html>

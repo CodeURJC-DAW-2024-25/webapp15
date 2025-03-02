@@ -48,9 +48,6 @@ async function AddtoCart(id_Shoe, size, quantity, id_user) {
 
         const responseData = await response.text(); // Lee la respuesta del servidor
 
-        // Mostrar mensaje de éxito (puedes reemplazarlo con una notificación en tu UI)
-        alert("✅ Producto agregado al carrito: " + responseData);
-
         let modal = document.getElementById("modaltoggle")
         let bootstrapModal = bootstrap.Modal.getInstance(modal);
         bootstrapModal.hide();

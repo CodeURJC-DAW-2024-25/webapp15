@@ -81,10 +81,12 @@ public class CheckoutController {
             @RequestParam String email,
             @RequestParam String address,
             @RequestParam String phone,
-            HttpServletResponse response) throws IOException {
+            HttpServletResponse response
+    ) throws IOException {
         System.out.println("🔹 Recibiendo solicitud para descargar ticket con ID: " + orderId);
 
-        Optional<OrderShoes> orderOptional = orderShoesService.getCartById(orderId);
+        // Obtener la orden desde el servicio
+        Optional<OrderShoes> orderOptional = orderShoesService.getCartById(1L);
         if (!orderOptional.isPresent()) {
             System.out.println("❌ Error: Orden no encontrada con ID " + orderId);
             response.sendError(HttpServletResponse.SC_NOT_FOUND, "Order not found");
@@ -92,8 +94,6 @@ public class CheckoutController {
         }
 
         OrderShoes order = orderOptional.get();
-
-        order.setId(orderId);
         order.setCountry(country);
         order.setCuponUsed(coupon);
         order.setFirstName(firstName);
@@ -101,10 +101,11 @@ public class CheckoutController {
         order.setEmail(email);
         order.setAddress(address);
         order.setNumerPhone(phone);
-        order.setState("Proceced");
+        order.setState("Processed");
+        order.setActualDate();
         orderShoesService.saveOrderShoes(order);
 
-        // 📌 Agregar datos al PDF
+        // Preparar los datos para pasar a la plantilla
         Map<String, Object> data = new HashMap<>();
         data.put("customerName", firstName + " " + lastName);
         data.put("email", email);
@@ -113,6 +114,8 @@ public class CheckoutController {
         data.put("country", country);
         data.put("coupon", coupon != null ? coupon : "No coupon applied");
         data.put("date", order.getDate());
+        data.put("products", order.getOrderItems());
+        data.put("total", order.getTotalPrice());
 
         System.out.println("🔹 Generando PDF...");
         byte[] pdfBytes = pdfService.generatePdfFromOrder(data);
@@ -124,11 +127,11 @@ public class CheckoutController {
         }
 
         System.out.println("✅ PDF generado correctamente. Enviando respuesta...");
-
         response.setContentType("application/pdf");
         response.setHeader("Content-Disposition", "attachment; filename=ticket.pdf");
         response.getOutputStream().write(pdfBytes);
     }
+
 
     @GetMapping("/{id_user}")
     public String showCheckout(@PathVariable Long id_user, Model model) {
