@@ -56,14 +56,15 @@ public class GeneralController { // todas las solicitudes "/...." son con el con
     @GetMapping("/index")
     public String showIndex(Model model, HttpServletRequest request) {
         boolean isAuthenticated = request.getUserPrincipal() != null;
+        model.addAttribute("isAuthenticated", isAuthenticated);
 
         if (isAuthenticated) {
-            String username = request.getUserPrincipal().getName(); //cambiar a id
+            String username = request.getUserPrincipal().getName(); 
             User user = userRepository.findByUsername(username).orElseThrow();
             
             model.addAttribute("username", user.getUsername());
             model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN")); //Creamos variable boleana que verifica si es admin
-            model.addAttribute("isAuthenticatedAndNotAdmin", !request.isUserInRole("ROLE_ADMIN"));
+            
         }
 
         return "index"; // nombre de la plantilla Mustache sin la extensión .html
@@ -75,17 +76,6 @@ public class GeneralController { // todas las solicitudes "/...." son con el con
         model.addAttribute("isAuthenticated", user != null);
         return "login";  // Redirige a la página principal
     }
-
-    // @GetMapping("/login-success")
-    // public String loginSuccess(HttpServletRequest request, Model model) {
-    //     String username = request.getUserPrincipal().getName();
-    //     User user = userRepository.findByUsername(username).orElseThrow();
-
-    //     model.addAttribute("username", user.getUsername());
-    //     model.addAttribute("admin", request.isUserInRole("ADMIN"));
-    //     model.addAttribute("isAuthenticated", request.getUserPrincipal() != null);
-    //     return "/index";  // Redirige a la página principal
-    // }
 
 
     @GetMapping("/profile")
@@ -108,24 +98,20 @@ public class GeneralController { // todas las solicitudes "/...." son con el con
 
     @GetMapping("/admin-pannel")
     public String showAdminPanel(Model model, HttpServletRequest request) {
-        String username = request.getUserPrincipal().getName();
-
-        User user = userRepository.findByUsername(username).orElseThrow();
-
-        model.addAttribute("username", user.getUsername());
-        model.addAttribute("admin", request.isUserInRole("ADMIN"));
-
+        model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
         return "admin-pannel"; 
     }
 
     @GetMapping("/edit-product/{id}")
-    public String showEditProduct(Model model, @PathVariable Long id) {
+    public String showEditProduct(Model model, @PathVariable Long id,HttpServletRequest request) {
         model.addAttribute("product", productsService.getProductById(id));
+        model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
         return "edit-product";
     }
 
     @GetMapping("/create-product")
-    public String showCreate(Model model) {
+    public String showCreate(Model model,HttpServletRequest request) {
+        model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
         return "create-product";
 
     }
