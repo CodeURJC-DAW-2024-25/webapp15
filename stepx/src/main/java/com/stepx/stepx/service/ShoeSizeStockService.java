@@ -3,7 +3,10 @@ package com.stepx.stepx.service;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 import com.stepx.stepx.model.ShoeSizeStock;
 
 import com.stepx.stepx.repository.ShoeSizeStockRepository;
@@ -34,4 +37,14 @@ public class ShoeSizeStockService {
     public Optional<Integer> getStockByShoeAndSize(Long shoeId, String size) {
         return shoeSizeStockRepository.findByShoeAndSize(shoeId, size);
     }
+
+    public Map<String, Integer> getAllStocksForShoes(List<Long> shoeIds) {
+        List<ShoeSizeStock> stocks = shoeSizeStockRepository.findByShoeIds(shoeIds);
+        return stocks.stream().collect(Collectors.toMap(
+            stock -> stock.getShoe().getId() + "_" + stock.getSize(),
+            ShoeSizeStock::getStock,
+            (existing,replacement)->existing
+        ));
+    }
+
 }
