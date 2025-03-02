@@ -28,6 +28,8 @@ import com.stepx.stepx.service.UserService;
 import com.stepx.stepx.repository.UserRepository;
 
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,17 +60,22 @@ public class UserController {
     private UserRepository userRepository;
 
     @GetMapping("/cart")
-    public String getMethodName(@RequestParam Long id_user, Model model) {
+    public String getCartUser(HttpServletRequest  request, Model model) {
+        
+        //obtain user session
+        HttpSession session=request.getSession();
+        String username=(String) session.getAttribute("username");
         // Existing cart code
-        Optional<User> usergetted = userService.findUserById(id_user);
+        Optional<User> usergetted = userService.findUserByUserName(username);
         if (!usergetted.isPresent()) {
             System.out.println("el usuario buscado no existe");
         }
         User user = usergetted.get();
 
         // verify if the user has a cart or not
-        Optional<OrderShoes> cart_Optional = orderShoesService.getCartById(id_user);
+        Optional<OrderShoes> cart_Optional = orderShoesService.getCartById(user.getId());
         OrderShoes cart;
+
         if(cart_Optional.isPresent()) {
             cart = cart_Optional.get();
             if(cart.getLenghtOrderShoes() == 0) {
@@ -98,7 +105,7 @@ public class UserController {
         }
         
         // Add user ID to the model for the coupon button
-        model.addAttribute("userId", id_user);
+        //model.addAttribute("userId", user.getId());
         
         return "partials/quick-view-cart-modal";
     }
