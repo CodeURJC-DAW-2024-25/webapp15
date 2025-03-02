@@ -1212,30 +1212,46 @@ public class DataInitializer implements CommandLineRunner {
                 
         }
 
-        private void initializeOrders() { //no funcionaba porque no recuperaba la lsita de zapatos en ordershoe
-
-                Optional<User> user1 = userRepository.findById(1L);
-                Optional<User> user2 = userRepository.findById(2L);
+        private void initializeOrders() {
+                Optional<User> user1 = userRepository.findById(1L); // Gabi
+                Optional<User> user2 = userRepository.findById(2L); // Gonzalo
+            
                 if (user1.isPresent()) {
-                        OrderShoes ordershoe = new OrderShoes(user1.get());
-                        ordershoe.setState("notFinished");
-                        orderShoesRepository.save(ordershoe);
-                        user1.get().addOrderShoe(ordershoe);
-                        userRepository.save(user1.get());
-                        System.out.println("ID de ordershoe2: " + ordershoe.getId());
-
-                        
+                    User gabi = user1.get();
+                    createOrdersForUser(gabi, 10, "Finished");
                 }
+            
                 if (user2.isPresent()) {
-                        OrderShoes ordershoe2 = new OrderShoes(user2.get());
-                        ordershoe2.setState("Finished");
-                        orderShoesRepository.save(ordershoe2);
-                        user2.get().addOrderShoe(ordershoe2);
-                        System.out.println("ID de ordershoe2: " + ordershoe2.getId());
-                        userRepository.save(user2.get());
-                        
+                    User gonzalo = user2.get();
+                    createOrdersForUser(gonzalo, 12, "Finished");
                 }
-
-
-        }
+            }
+            
+            private void createOrdersForUser(User user, int numberOfOrders, String state) {
+                LocalDate startDate = LocalDate.of(2025, 1, 1);
+            
+                for (int i = 0; i < numberOfOrders; i++) {
+                    OrderShoes order = new OrderShoes(user);
+                    order.setState(state);
+            
+                    // Generar una fecha aleatoria dentro del año 2025
+                    int month = (i % 12) + 1; // Distribuir por todos los meses
+                    int day = (int) (Math.random() * 28) + 1; // Día aleatorio entre 1 y 28
+                    LocalDate orderDate = LocalDate.of(2025, month, day);
+                    order.setDate(orderDate);
+            
+                    // Generar un summary aleatorio entre 50 y 300
+                    double randomSummary = 50 + Math.random() * 250; // Número entre 50 y 300
+                    BigDecimal summary = BigDecimal.valueOf(randomSummary).setScale(2, BigDecimal.ROUND_HALF_UP); // Redondear a 2 decimales
+                    order.setSummary(summary);
+            
+                    orderShoesRepository.save(order);
+                    user.addOrderShoe(order);
+            
+                    System.out.println("Pedido creado para " + user.getUsername() + " con ID: " + order.getId() + 
+                                       ", fecha: " + orderDate + ", summary: " + summary);
+                }
+            
+                userRepository.save(user);
+            }
 }

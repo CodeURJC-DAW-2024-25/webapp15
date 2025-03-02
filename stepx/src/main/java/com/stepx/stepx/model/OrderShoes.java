@@ -65,6 +65,10 @@ public class OrderShoes {
         this.date = LocalDate.now();
     }
 
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
     public String getCuponUsed() {
         return cuponUsed;
     }
