@@ -83,7 +83,7 @@ public class CheckoutController {
         System.out.println("🔹 Recibiendo solicitud para descargar ticket con ID: " + orderId);
 
         // Obtener la orden desde el servicio
-        Optional<OrderShoes> orderOptional = orderShoesService.getCartById(orderId);
+        Optional<OrderShoes> orderOptional = orderShoesService.getCartById(1L);
         if (!orderOptional.isPresent()) {
             System.out.println("❌ Error: Orden no encontrada con ID " + orderId);
             response.sendError(HttpServletResponse.SC_NOT_FOUND, "Order not found");
@@ -99,6 +99,7 @@ public class CheckoutController {
         order.setAddress(address);
         order.setNumerPhone(phone);
         order.setState("Processed");
+        order.setActualDate();
         orderShoesService.saveOrderShoes(order);
 
         // Preparar los datos para pasar a la plantilla
@@ -110,6 +111,8 @@ public class CheckoutController {
         data.put("country", country);
         data.put("coupon", coupon != null ? coupon : "No coupon applied");
         data.put("date", order.getDate());
+        data.put("products", order.getOrderItems());
+        data.put("total", order.getTotalPrice());
 
         System.out.println("🔹 Generando PDF...");
         byte[] pdfBytes = pdfService.generatePdfFromOrder(data);

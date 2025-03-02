@@ -24,10 +24,21 @@ public class PdfService {
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             // Renderizar el PDF con ITextRenderer
             ITextRenderer renderer = new ITextRenderer();
+
+            // Establecer la base URL para las imágenes (la ruta base dentro del classpath)
+            // Aquí es donde indicas que las imágenes están en el directorio "static"
+            renderer.getSharedContext().setBaseURL("classpath:/static/");
+
+            // Establecer el documento HTML para el PDF
             renderer.setDocumentFromString(htmlContent);
-            renderer.getSharedContext().setBaseURL("file:///" + new File("src/main/resources").getAbsolutePath());
+
+            // Realizar el layout del PDF
             renderer.layout();
+
+            // Crear el PDF en el OutputStream
             renderer.createPDF(outputStream);
+
+            // Devolver el contenido del PDF como un array de bytes
             return outputStream.toByteArray();
         } catch (Exception e) {
             e.printStackTrace();

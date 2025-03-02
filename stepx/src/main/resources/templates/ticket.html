@@ -1,44 +1,139 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ticket</title>
+    </meta>
+    <title>Ticket de Venta</title>
     <style>
-        /* Estilos básicos */
         body {
             font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            color: #333;
+            font-size: 14px;
+            margin: 0;
+            padding: 0;
+            background: #fff;
         }
 
-        .ticket {
-            background-color: #ff8c00; /* Color de fondo */
-            border-radius: 8px;
-            padding: 20px;
+        .container {
+            width: 500px;
+            padding: 10px;
+            border: 1px solid #000;
+        }
+
+        .header {
             text-align: center;
-            color: white;
-            margin: 20px;
+            margin-bottom: 10px;
         }
 
-        h1 {
-            font-size: 24px;
+        .header svg {
+            width: 50px;
+            height: 50px;
         }
 
-        p {
-            font-size: 16px;
+        .details {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .details td {
+            padding: 5px;
+            border-bottom: 1px solid #000;
+        }
+
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .items-table th,
+        .items-table td {
+            border: 1px solid #000;
+            padding: 5px;
+            text-align: left;
+        }
+
+        .totals {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .totals td {
+            padding: 5px;
+            text-align: right;
         }
     </style>
 </head>
+
 <body>
-    <div class="ticket">
-        <h1>Ticket para {{customerName}}</h1>
-        <p>Email: {{email}}</p>
-        <p>Dirección: {{address}}</p>
-        <p>Teléfono: {{phone}}</p>
-        <p>País: {{country}}</p>
-        <p>Fecha: {{date}}</p>
-        <p>Código de cupón: {{coupon}}</p>
+    <div class="container">
+        <div class="header">
+            <h1>StepX</h1>
+            <p style="margin-bottom: 30px;">Helseink Street, Gran Via - Madrid.</p>
+        </div>
+        <table class="details">
+            <tr>
+                <td><strong>Fecha:</strong></td>
+                <td>{{date}}</td>
+            </tr>
+            <tr>
+                <td><strong>Cliente:</strong></td>
+                <td>{{ customerName}}</td>
+            </tr>
+            <tr>
+                <td><strong>Email:</strong></td>
+                <td>{{ email}}</td>
+            </tr>
+            <tr>
+                <td><strong>Phone Contact:</strong></td>
+                <td>{{ phone}}</td>
+            </tr>
+            <tr>
+                <td><strong>Address:</strong></td>
+                <td>{{ address}}</td>
+            </tr>
+            <tr>
+                <td><strong>Country:</strong></td>
+                <td>{{ country}}</td>
+            </tr>
+
+
+
+        </table>
+        <table class="items-table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Brand</th>
+                    <th>Cant</th>
+                    <th>Price</th>
+                    <th>size</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#products}}
+                <tr>
+                    <td>{{shoe.name}}</td>
+                    <td>{{shoe.brand}}</td>
+                    <td>{{quantity}}</td>
+                    <td>{{shoe.price}}</td>
+                    <td>{{size}}</td>
+                </tr>
+                {{/products}} 
+            </tbody>
+
+        </table>
+        <table class="totals">
+            <tr>
+                <td><strong>Subtotal:</strong></td>
+                <td>{{total}}</td>
+            </tr>
+            <tr>
+                <td><strong>Shipping:</strong></td>
+                <td>Free</td>
+            </tr>
+        </table>
     </div>
 </body>
+
 </html>
