@@ -105,9 +105,9 @@ async function searchByCategory(event, category) {
     }
 }
 
-async function openCartModal(id_user) {
+async function openCartModal() {
     try {
-        const response = await fetch(`/user/cart?id_user=${id_user}`); // Ruta para obtener los productos del carrito
+        const response = await fetch(`/user/cart`); // Ruta para obtener los productos del carrito
 
         if (!response.ok) {
             throw new Error("Error al cargar el carrito: " + response.status);

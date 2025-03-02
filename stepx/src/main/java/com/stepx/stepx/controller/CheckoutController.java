@@ -135,12 +135,12 @@ public class CheckoutController {
 
     @GetMapping("/{id_user}")
     public String showCheckout(@PathVariable Long id_user, Model model) {
-        // Obtener el usuariio
+
         Optional<User> usergetted = userService.findUserById(id_user);
         if (!usergetted.isPresent()) {
             model.addAttribute("setSubtotal", false);
             model.addAttribute("cartItems", false);
-            return "checkout"; // ✅ Asegurar que se devuelve la vista checkout.html
+            return "checkout";
         }
 
         Optional<OrderShoes> cart_Optional = orderShoesService.getCartById(id_user); // get the cart asosiated to the id
@@ -150,7 +150,7 @@ public class CheckoutController {
             model.addAttribute("setSubtotal", false);
             model.addAttribute("cartItems", false);
             
-            return "checkout"; // ✅ Asegurar que se devuelve la vista checkout.html
+            return "checkout";
         }
 
         OrderShoes cart=cart_Optional.get();
@@ -159,7 +159,7 @@ public class CheckoutController {
             model.addAttribute("setSubtotal", false);
             model.addAttribute("cartItems", false);
             model.addAttribute("id_orderShoe", cart.getId());
-            return "checkout"; // ✅ Asegurar que se devuelve la vista checkout.html
+            return "checkout";
         }
 
         //ids of all of orderitems from cart
@@ -268,10 +268,6 @@ public class CheckoutController {
             @RequestParam Long id_user,
             Model model) {
 
-        System.out.println("📩 Recibido en backend: ID Usuario -> " + id_user);
-        System.out.println("📩 Recibido en backend: IDs -> " + ids);
-        System.out.println("📩 Recibido en backend: Cantidades -> " + quantities);
-
         if (ids.isEmpty() || quantities.isEmpty()) {
             model.addAttribute("setSubtotal", false);
             return "partials/checkout-itemsList";
@@ -284,7 +280,6 @@ public class CheckoutController {
             }
         }
 
-        // 🔹 Llamar al servicio para actualizar los datos en la BD
         orderItemService.updateOrderItemsBatch(ids, quantities);
 
         Optional<OrderShoes> cartOptional = orderShoesService.getCartById(id_user);
@@ -329,7 +324,6 @@ public class CheckoutController {
 
         // Calcular el nuevo total excluyendo productos sin stock
         BigDecimal total = orderShoesService.getTotalPriceExcludingOutOfStock(cart.getId());
-        System.out.println("💰 Nuevo total del carrito: " + total);
 
         // Enviar datos a la vista
         model.addAttribute("setSubtotal", true);

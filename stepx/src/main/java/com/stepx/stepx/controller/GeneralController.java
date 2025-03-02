@@ -53,7 +53,7 @@ public class GeneralController { // todas las solicitudes "/...." son con el con
 
 
 
-    @GetMapping("/index")
+    @GetMapping({"/","/index"})
     public String showIndex(Model model, HttpServletRequest request) {
         boolean isAuthenticated = request.getUserPrincipal() != null;
         model.addAttribute("isAuthenticated", isAuthenticated);
