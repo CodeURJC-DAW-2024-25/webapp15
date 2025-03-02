@@ -37,11 +37,11 @@
         <div class="col-lg-7 mb-4 mb-lg-0">
           <div class="login-form bg-light p-5">
             <h2 class="mb-4">Shipping Details</h2>
-            <form>
+            <form action = "/checkout/downloadTicket" method="POST">
               <!-- country -->
               <div class="mb-3">
                 <label for="country" class="form-label">Country</label>
-                <select class="form-control ps-3 text-input" id="country" required>
+                <select class="form-control ps-3 text-input" id="country" name="country" required>
                   <option value="">Select your country</option>
                   <option value="US">United States</option>
                   <option value="UK">United Kingdom</option>
@@ -54,39 +54,40 @@
               <div class="mb-4 coupon-section">
                 <label class="form-label">Coupon</label>
                 <div class="input-group">
-                  <input type="text" class="form-control ps-3 text-input" placeholder="Enter your coupon code">
-                  <button class="btn btn-red hvr-sweep-to-right dark-sweep" type="button">Apply</button>
+                  <input type="text" name="coupon" class="form-control ps-3 text-input" placeholder="Enter your coupon code">
+                  <button class="btn btn-red hvr-sweep-to-right dark-sweep" type="button" >Apply</button>
                 </div>
               </div>
 
               <!-- personal information-->
               <div class="mb-3">
                 <label for="firstName" class="form-label">First Name</label>
-                <input type="text" class="form-control ps-3 text-input" id="firstName"
+                <input type="text" class="form-control ps-3 text-input" id="firstName" name="firstName"
                   placeholder="Enter your First Name" required>
               </div>
+              <input type="hidden" name="orderId" value="{{id_orderShoe}}">
 
               <div class="mb-3">
                 <label for="lastName" class="form-label">Second Name</label>
-                <input type="text" class="form-control ps-3 text-input" id="lastName"
+                <input type="text" class="form-control ps-3 text-input" id="lastName" name="lastName"
                   placeholder="Enter your Second Name" required>
               </div>
 
               <div class="mb-3">
                 <label for="email" class="form-label">Email Address</label>
-                <input type="email" class="form-control ps-3 text-input" id="email"
+                <input type="email" class="form-control ps-3 text-input" id="email" name="email"
                   placeholder="Enter your E-mail Address" required>
               </div>
 
               <div class="mb-3">
                 <label for="address" class="form-label">Address</label>
-                <input type="text" class="form-control ps-3 text-input" id="address" placeholder="Enter your Address"
+                <input type="text" class="form-control ps-3 text-input" id="address" name="address" placeholder="Enter your Address"
                   required>
               </div>
 
               <div class="mb-4">
                 <label for="phone" class="form-label">Phone Number</label>
-                <input type="tel" class="form-control ps-3 text-input" id="phone" placeholder="Enter your Phone Number"
+                <input type="tel" class="form-control ps-3 text-input" id="phone" name="phone" placeholder="Enter your Phone Number"
                   required>
               </div>
 
@@ -122,8 +123,9 @@
                             <use xlink:href="#minus"></use>
                           </svg>
                         </button>
-                        <input type="text" name="quantity" class="form-control input-number quantity"
-                          value={{quantity}}>
+
+                        <input type="text" name="quantity" class="form-control input-number quantity quantity-input"value={{quantity}}  data-id="{{id_orderItem}}">
+
                         <button type="button" class="quantity-right-plus btn btn-light rounded-0 rounded-end btn-number"
                           data-type="plus">
                           <svg width="16" height="16">
@@ -153,6 +155,10 @@
                 </div>
                 {{/cartItems}}
               </div>
+
+              {{#setSubtotal}} 
+            <button type="submit" class="btn btn-red hvr-sweep-to-right dark-sweep w-100" onclick="recalculate(1)">Recalculate</button>
+            {{/setSubtotal}}
               <!-- total -->
               <div class="mt-4 pt-4 border-top">
                 <div class="d-flex justify-content-between mb-2">
@@ -173,6 +179,7 @@
                 </div>
               </div>
             </div>
+
 
           </div>
         </div>

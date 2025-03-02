@@ -61,8 +61,8 @@ public class OrderShoes {
         return date;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setActualDate() {
+        this.date = LocalDate.now();
     }
 
     public String getCuponUsed() {

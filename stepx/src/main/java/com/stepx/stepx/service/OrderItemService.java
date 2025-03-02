@@ -33,4 +33,12 @@ public class OrderItemService {
     public void save(OrderItem orderItem){//save the order item in the bbdd
         orderItemRepository.save(orderItem);
     }
+
+    public void updateOrderItem(Long id,int quantity){
+        Optional<OrderItem> item_Optional = orderItemRepository.findById(id);
+        OrderItem item=item_Optional.get();
+        item.setQuantity(quantity);
+        orderItemRepository.save(item);
+
+    }
 }

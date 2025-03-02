@@ -4,11 +4,17 @@ import jakarta.persistence.*;
 
 import java.sql.Blob;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements UserDetails{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,6 +35,12 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Review> review;
 
+    @Column(nullable = false)
+    private String encodedPassword;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+	private List<String> roles = new ArrayList<>();
+
 
     // Relación con órdenes de compra
     @OneToMany(mappedBy = "user", cascade=CascadeType.ALL,orphanRemoval = false,fetch = FetchType.EAGER)
@@ -44,10 +56,12 @@ public class User {
     public User() {
     }
 
-    public User(String username,String email, Blob imageUser) {
+    public User(String username,String email,String encodedPassword, Blob imageUser, String ... roles) {
         this.username = username;
         this.imageUser = imageUser;
         this.email=email;
+        this.encodedPassword = encodedPassword;
+        this.roles = Arrays.asList(roles);
     }
 
     public Long getId() {
@@ -67,6 +81,52 @@ public class User {
     }public void setEmail(String email) {
         this.email = email;
     }
+
+    public String getEncodedPassword() {
+        return encodedPassword;
+    }
+
+    public void setEncodedPassword(String encodedPassword) {
+        this.encodedPassword = encodedPassword;
+    }
+
+    public List<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
+    }
+
+    public boolean isAdmin(){
+        return roles.contains("ADMIN") || roles.contains("ROLES_ADMIN");
+    }
+
+    public boolean isRegularUser(){
+        return roles.contains("USER") || roles.contains("ROLES_USER");
+    }
+
+    public static Object builder() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'builder'");
+    }
+
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<GrantedAuthority> authorities = new ArrayList<>();
+            for (String role : roles) {
+                authorities.add(new SimpleGrantedAuthority(role));
+            }
+        return authorities;
+    }
+
+    @Override
+    public String getPassword() {
+        return encodedPassword;
+    }
+
+
 
     @Override
     public String toString() {
