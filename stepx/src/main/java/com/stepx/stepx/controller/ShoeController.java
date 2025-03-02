@@ -35,6 +35,9 @@ import com.stepx.stepx.service.ProductsService;
 import com.stepx.stepx.service.ShoeService;
 import com.stepx.stepx.service.ReviewService;
 import com.stepx.stepx.service.UserService;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import com.stepx.stepx.service.ShoeSizeStockService;
 
 import org.springframework.web.bind.annotation.RequestParam;
@@ -96,7 +99,10 @@ public class ShoeController {
             @RequestParam(required = false) MultipartFile image2,
             @RequestParam(required = false) MultipartFile image3,
             @RequestParam String brand,
-            @RequestParam String category) throws IOException, SQLException {
+            @RequestParam String category,
+            HttpServletRequest request, Model model) throws IOException, SQLException {
+        
+        model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN")); //Creamos variable boleana que verifica si es admin
 
         // Create a new Shoe object
         Shoe shoe = new Shoe();
@@ -106,6 +112,8 @@ public class ShoeController {
         shoe.setBrand(Shoe.Brand.valueOf(brand));
         shoe.setCategory(Shoe.Category.valueOf(category));
         shoe.setLongDescription(LongDescription);
+
+
 
         // Convert images to Blob and set them
         if (image1 != null && !image1.isEmpty()) {
@@ -284,8 +292,9 @@ public class ShoeController {
     }
 
     @GetMapping("/edit/{id}")
-public String showEditForm(@PathVariable Long id, Model model) {
+public String showEditForm(@PathVariable Long id, Model model,HttpServletRequest request) {
     Optional<Shoe> op = shoeService.getShoeById(id);
+    model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
     if (op.isPresent()) {
         model.addAttribute("shoe", op.get());
         return "edit-product"; // Name of the edit form template

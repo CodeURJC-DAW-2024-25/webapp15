@@ -98,7 +98,13 @@ public class GeneralController { // todas las solicitudes "/...." son con el con
 
     @GetMapping("/admin-pannel")
     public String showAdminPanel(Model model, HttpServletRequest request) {
-        model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
+        if (request.getUserPrincipal() == null || !request.isUserInRole("ROLE_ADMIN")) {
+            return "redirect:/index"; // Redirigir a la página principal si no es admin
+        }
+        
+        // Añadir atributo para confirmar que es admin
+        model.addAttribute("admin", true);
+
         return "admin-pannel"; 
     }
 
