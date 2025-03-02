@@ -105,8 +105,7 @@
               <div class="order-items">
                 <!-- individual product of the order -->
                 {{#cartItems}}
-                <div id="item-{{id_orderItem}}" class="order-item d-flex align-items-center"
-                  style="padding-bottom: 20px">
+                <div id="item-{{id_orderItem}}" class="order-item d-flex align-items-center" style="padding-bottom: 20px">
                   <div class="col-lg-2 col-md-3 col-sm-2 me-4">
                     <a href="#" title="product-image">
                       <img src="/shop/{{id}}/image/1" class="img-fluid" alt="single-product-item">
@@ -116,49 +115,57 @@
                     <h5 class="mb-2">{{name}}</h5>
                     <div class="d-flex justify-content-between align-items-center flex-wrap">
                       <div class="input-group product-qty">
-                        <button type="button"
-                          class="quantity-left-minus btn btn-light rounded-0 rounded-start btn-number"
+                        {{#stock}}
+                        <button type="button" class="quantity-left-minus btn btn-light rounded-0 rounded-start btn-number"
                           data-type="minus">
                           <svg width="16" height="16">
                             <use xlink:href="#minus"></use>
                           </svg>
                         </button>
-
-                        <input type="text" name="quantity" class="form-control input-number quantity quantity-input"value={{quantity}}  data-id="{{id_orderItem}}">
-
+              
+                        <input type="text" name="quantity" class="form-control input-number quantity quantity-input"
+                          value={{quantity}} data-id="{{id_orderItem}}">
+              
                         <button type="button" class="quantity-right-plus btn btn-light rounded-0 rounded-end btn-number"
                           data-type="plus">
                           <svg width="16" height="16">
                             <use xlink:href="#plus"></use>
                           </svg>
                         </button>
+                        {{/stock}}
+              
+                        {{^stock}}
+                        <p>No stock available</p>
+                        <input type="hidden" name="quantity" class="form-control input-number quantity quantity-input" value=0
+                          data-id="{{id_orderItem}}">
+                        {{/stock}}
                       </div>
                       <div class="price-wrapper mb-2">
                         <span class="fw-bold">{{price}}</span>
                       </div>
                       <!--boton de eliminar producto en checkout-->
-                      <button class="btn btn-link text-danger p-0 mb-2"
-                        onclick="deleteItemfromCart('{{id_orderItem}}','1')">
+                      <button class="btn btn-link text-danger p-0 mb-2" onclick="deleteItemfromCart('{{id_orderItem}}','1')">
                         <svg class="close" width="16" height="16">
                           <use xlink:href="#close"></use>
                         </svg>
                       </button>
-
+              
                     </div>
                   </div>
                 </div>
                 {{/cartItems}}
-
+              
                 {{^cartItems}}
                 <div class="text-center py-4">
                   <p class="mb-0">No items in your bag yet</p>
                 </div>
                 {{/cartItems}}
               </div>
-
-              {{#setSubtotal}} 
-            <button type="submit" class="btn btn-red hvr-sweep-to-right dark-sweep w-100" onclick="recalculate(1)">Recalculate</button>
-            {{/setSubtotal}}
+              
+              {{#setSubtotal}}
+              <button type="submit" class="btn btn-red hvr-sweep-to-right dark-sweep w-100"
+                onclick="recalculate(1)">Recalculate</button>
+              {{/setSubtotal}}
               <!-- total -->
               <div class="mt-4 pt-4 border-top">
                 <div class="d-flex justify-content-between mb-2">
@@ -179,8 +186,6 @@
                 </div>
               </div>
             </div>
-
-
           </div>
         </div>
 
@@ -206,6 +211,7 @@
   <script src="/js/jquery-1.11.0.min.js"></script>
   <script src="/js/plugins.js"></script>
   <script src="/js/script.js"></script>
+  <script src="/js/checkout.js"></script>
 </body>
 
 </html>

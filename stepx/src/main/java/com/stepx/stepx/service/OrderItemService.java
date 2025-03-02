@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.stepx.stepx.model.OrderItem;
 import com.stepx.stepx.model.Product;
@@ -34,11 +35,23 @@ public class OrderItemService {
         orderItemRepository.save(orderItem);
     }
 
+    @Transactional
     public void updateOrderItem(Long id,int quantity){
         Optional<OrderItem> item_Optional = orderItemRepository.findById(id);
         OrderItem item=item_Optional.get();
         item.setQuantity(quantity);
         orderItemRepository.save(item);
 
+    }
+
+    @Transactional
+    public void updateOrderItemsBatch(List<Long>ids,List<Integer>quantities){
+        if (ids.size() != quantities.size()) {
+            throw new IllegalArgumentException("Las listas de IDs y cantidades deben tener el mismo tamaño.");
+        }
+        
+        for (int i = 0; i < ids.size(); i++) {
+            orderItemRepository.updateOrderItemQuantity(ids.get(i), quantities.get(i));
+        }
     }
 }
