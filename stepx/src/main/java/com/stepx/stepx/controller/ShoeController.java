@@ -456,7 +456,7 @@ public String updateShoe(
 
         }catch(IllegalArgumentException  e){
             System.err.println("Error: categoria no válida: " + category);
-            return "error"; // Devuelve una vista de error si el Enum no es válido
+            return "error"; // if enum is not valid returns a view
         }
         
     }
@@ -481,10 +481,10 @@ public String updateShoe(
 
     @PostMapping("/submit/{id}")
     public String publishReview(
-            @PathVariable Long id, // ID del zapato
+            @PathVariable Long id, // ID's shoe
             @RequestParam("rating")int rating,
             @RequestParam String description, Model model, HttpServletRequest request
-    // @RequestParam Long userId // ID del usuario
+    // @RequestParam Long userId // ID's user
     ){
     boolean isAuthenticated = request.getUserPrincipal() != null;
     model.addAttribute("isAuthenticated", isAuthenticated);
@@ -496,16 +496,15 @@ public String updateShoe(
         model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
 
     }
-        // Buscar el zapato y usuario en la base de datos
+        // Looking for shoe in database
         Shoe shoe = shoeService.getShoeById(id).orElseThrow(() -> new RuntimeException("Shoe not found"));
 
-        // AQUI FALTA ENCONTRAR EL USUARIO ACTUAL Y PONERLO                                                                                         // usuario actual
         LocalDate date;
         date = LocalDate.now();
-        // Crear la nueva review
+        // Create new review
         Review review = new Review(rating, description, shoe, user, date);// el null reemplazar por el usuario
 
-        // Guardar la review en la base de datos
+        // Saving the review
         reviewService.save(review);
 
         return "redirect:/shop/single-product/{id}";

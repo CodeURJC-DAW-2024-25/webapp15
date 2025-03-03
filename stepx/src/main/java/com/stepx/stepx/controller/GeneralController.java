@@ -37,7 +37,7 @@ import com.stepx.stepx.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
-public class GeneralController { // todas las solicitudes "/...." son con el controlador
+public class GeneralController {
 
     @Autowired
     private ProductsService productsService;
@@ -67,19 +67,19 @@ public class GeneralController { // todas las solicitudes "/...." son con el con
             User user = userRepository.findByUsername(username).orElseThrow();
 
             model.addAttribute("username", user.getUsername());
-            model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN")); // Creamos variable boleana que verifica si
-                                                                             // es admin
+            model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN")); // Create boolean value for admin
+                                                                        
 
         }
 
-        return "index"; // nombre de la plantilla Mustache sin la extensión .html
+        return "index";
     }
 
     @GetMapping("/login")
     public String login(Model model, HttpServletRequest request) {
         User user = (User) request.getAttribute("user");
         model.addAttribute("isAuthenticated", user != null);
-        return "index"; // Redirige a la página principal
+        return "index"; // Index, main page
     }
 
     @GetMapping("/profile")
@@ -107,23 +107,20 @@ public class GeneralController { // todas las solicitudes "/...." son con el con
 
     @GetMapping("/styles")
     public String showStyles(Model model) {
-        return "styles"; // nombre de la plantilla Mustache sin la extensión .html
+        return "styles"; 
     }
 
     @GetMapping("/register-user")
     public String showRegisterUser(Model model) {
         return "register-user";
     }
-
-    // Con este mapping recuperamos datos y elementos que solo pertenezcan a admin
+    //Recovering data and elements to show to admin users
 
     @GetMapping("/admin-pannel")
     public String showAdminPanel(Model model, HttpServletRequest request) {
         if (request.getUserPrincipal() == null || !request.isUserInRole("ROLE_ADMIN")) {
             return "redirect:/index"; // Redirigir a la página principal si no es admin
         }
-
-        // Añadir atributo para confirmar que es admin
         model.addAttribute("admin", true);
 
         return "admin-pannel";
@@ -159,26 +156,26 @@ public class GeneralController { // todas las solicitudes "/...." son con el con
             HttpServletRequest request,
             RedirectAttributes redirectAttributes) {
 
-        // Validar que los emails coincidan
+        // Validate match emails
         if (!email.equals(emailRepeated)) {
             redirectAttributes.addFlashAttribute("error", "❌ Los correos electrónicos no coinciden.");
             return "redirect:/register-user";
         }
 
-        // Verificar si el usuario o el email ya existen
+        //Verigy email and user exists
         if (userRepository.findByUsername(username).isPresent() /** || userRepository.findByEmail(email).isPresent() */
         ) {
             redirectAttributes.addFlashAttribute("error", "❌ El nombre de usuario ya está en uso.");
             return "redirect:/register-user";
         }
 
-        // Codificar la contraseña
+        // Code the password
         String encodedPassword = passwordEncoder.encode(password);
 
-        // Crear nuevo usuario
+        // Create new user
         User newUser = new User(username, email, encodedPassword, null, "USER");
 
-        // Guardar en la base de datos
+        // Saving in data
         userRepository.save(newUser);
 
         return "redirect:/index";

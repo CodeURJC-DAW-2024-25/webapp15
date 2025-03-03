@@ -10,8 +10,6 @@ import java.util.List;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long>{
-    
-    //List<Review>findById(long id);
 
     @Query("SELECT r FROM Review r JOIN FETCH r.user WHERE r.shoe.id = :shoeId")
     List<Review> findReviewsByShoeId(@Param("shoeId") Long shoeId);

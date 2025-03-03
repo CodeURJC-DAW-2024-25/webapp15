@@ -42,7 +42,8 @@ public class Review {
 
    
 
-    // relacion con el zapato, un zapato tiene varias reviews
+    
+    //A shoe has numerous reviews, making 1:N
     @ManyToOne
     @JoinColumn(name = "shoe_id")
     private Shoe shoe;

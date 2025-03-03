@@ -26,6 +26,6 @@ public class AdminController {
     public String adminDashboard(Model model) {
         BigDecimal totalEarnings = shoeService.getTotalEarnings();
         model.addAttribute("totalEarnings", totalEarnings);
-        return "admin-pannel"; // Nombre de tu archivo HTML (admin.html)
+        return "admin-pannel";
     }
 }

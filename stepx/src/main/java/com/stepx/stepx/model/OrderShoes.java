@@ -23,13 +23,13 @@ public class OrderShoes {
     @Column(name = "date")
     private LocalDate date;
 
-    // Relación con OrderItem (Corrigiendo el nombre de la lista)
+    // Relating with OrderItem (Correcting name from list)
     @OneToMany(mappedBy = "orderShoes", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> orderItems = new ArrayList<>(); // Antes estaba como orderShoes, lo corregí a orderItems
+    private List<OrderItem> orderItems = new ArrayList<>(); // Before it was like orderShoes, fixed to orderItems
 
 
     private String cuponUsed;
-    //del forumulario de checkout
+    //From checkout form
     private String country;
     private String firstName;
     private String secondName;
@@ -150,7 +150,7 @@ public class OrderShoes {
     }
 
     public void addItem(Shoe shoe, int quantity, String size) {
-        // Revisamos si ya existe el zapato con la misma talla en la orden
+        //Check if the she already exists with the same size at the order
         for (OrderItem item : orderItems ) {
             if (item.getShoe().equals(shoe) && item.getSize().equals(size)) {
                 item.setQuantity(item.getQuantity() + quantity);
