@@ -485,7 +485,7 @@ public class ShoeController {
 
         } catch (IllegalArgumentException e) {
             System.err.println("Error: categoria no válida: " + category);
-            return "error"; // Devuelve una vista de error si el Enum no es válido
+            return "error"; // if enum is not valid returns a view
         }
 
     }
@@ -557,10 +557,10 @@ public class ShoeController {
         // AQUI FALTA ENCONTRAR EL USUARIO ACTUAL Y PONERLO // usuario actual
         LocalDate date;
         date = LocalDate.now();
-        // Crear la nueva review
+        // Create new review
         Review review = new Review(rating, description, shoe, user, date);// el null reemplazar por el usuario
 
-        // Guardar la review en la base de datos
+        // Saving the review
         reviewService.save(review);
 
         return "redirect:/shop/single-product/{id}";

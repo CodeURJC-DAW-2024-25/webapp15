@@ -42,7 +42,7 @@ public class User implements UserDetails{
 	private List<String> roles = new ArrayList<>();
 
 
-    // Relación con órdenes de compra
+    // Relation between orders shopping
     @OneToMany(mappedBy = "user", cascade=CascadeType.ALL,orphanRemoval = false,fetch = FetchType.EAGER)
     private List<OrderShoes> orders =new ArrayList<>();
 

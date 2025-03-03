@@ -73,7 +73,7 @@ public class OrderItemController {
 
     @PostMapping("/addItem")
     public ResponseEntity<String> addItemToCart(@RequestParam Long id_Shoe, @RequestParam String size, @RequestParam int cuantity,@RequestParam Long id_user) { 
-        //obtenemos el usuario
+        //Getting the user
         Optional<User> usergetted= userService.findUserById(id_user);
        
         if (!usergetted.isPresent()) {

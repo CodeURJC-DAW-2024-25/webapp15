@@ -85,7 +85,7 @@ public class CheckoutController {
     ) throws IOException {
         System.out.println("🔹 Recibiendo solicitud para descargar ticket con ID: " + orderId);
 
-        // Obtener la orden desde el servicio
+        // Getting order from service
         Optional<OrderShoes> orderOptional = orderShoesService.getCartById(1L);
         if (!orderOptional.isPresent()) {
             System.out.println("❌ Error: Orden no encontrada con ID " + orderId);
@@ -104,8 +104,8 @@ public class CheckoutController {
         order.setState("Processed");
         order.setActualDate();
         orderShoesService.saveOrderShoes(order);
-
-        // Preparar los datos para pasar a la plantilla
+        
+        //Prearing data to send the template
         Map<String, Object> data = new HashMap<>();
         data.put("customerName", firstName + " " + lastName);
         data.put("email", email);
@@ -272,8 +272,7 @@ public class CheckoutController {
             model.addAttribute("setSubtotal", false);
             return "partials/checkout-itemsList";
         }
-
-        // Asegurar que las cantidades sean al menos 1
+        //Making sure the quantify is at least 1
         for (int i = 0; i < quantities.size(); i++) {
             if (quantities.get(i) < 1) {
                 quantities.set(i, 1);
@@ -294,17 +293,17 @@ public class CheckoutController {
             return "partials/checkout-itemsList";
         }
 
-        // Obtener lista de IDs de los productos en el carrito después de actualizar
+        //Getting ID's List for every product in cart
         List<Long> shoeIds = cart.getOrderItems().stream()
                 .map(orderItem -> orderItem.getShoe().getId())
                 .distinct()
                 .collect(Collectors.toList());
 
-        // Obtener todos los stocks en una sola consulta optimizada
+        //getting all stocks in one optimized request
         Map<String, Integer> stockMap = shoeSizeStockService.getAllStocksForShoes(shoeIds);
 
-        // Procesar los productos en el carrito con la nueva cantidad y el stock
-        // actualizado
+        // Procesing all products in cart
+        // updated
         List<Map<String, Object>> cartItems = new ArrayList<>();
         for (OrderItem orderItem : cart.getOrderItems()) {
             Shoe shoe = orderItem.getShoe();
@@ -322,10 +321,10 @@ public class CheckoutController {
             cartItems.add(item);
         }
 
-        // Calcular el nuevo total excluyendo productos sin stock
+        // Calculating new total
         BigDecimal total = orderShoesService.getTotalPriceExcludingOutOfStock(cart.getId());
 
-        // Enviar datos a la vista
+        // Send data to view
         model.addAttribute("setSubtotal", true);
         model.addAttribute("total", total);
         model.addAttribute("cartItems", cartItems);

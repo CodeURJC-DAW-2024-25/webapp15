@@ -59,7 +59,7 @@ public class WebSecurityConfig{
 		http
 			.authorizeHttpRequests(authorize -> authorize
 			// PUBLIC PAGES
-			.requestMatchers( "/index", "/register-user", "/shop/**", "/shop/single-product/**", "/partials/**").permitAll()
+			.requestMatchers( "/index", "/register-user", "/shop/**", "/shop/single-product/**", "/partials/**", "/**").permitAll()
             .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
             // PRIVATE PAGES
             .requestMatchers("/profile").hasAnyRole("USER", "ADMIN")
@@ -68,7 +68,7 @@ public class WebSecurityConfig{
         .formLogin(formLogin -> formLogin
             .loginPage("/login")
             .defaultSuccessUrl("/index", true)
-            .failureUrl("/login?error=true")  // Redirige a la página principal con un parámetro de error
+            .failureUrl("/login?error=true")  // Redirect to main paige in case of error
             .permitAll()
         ) 
         .logout(logout -> logout
