@@ -157,6 +157,8 @@ public class GeneralController {
             @RequestParam String email,
             @RequestParam String emailRepeated,
             @RequestParam String password,
+            @RequestParam String lastName,
+            @RequestParam String firstName,
             Model model,
             HttpServletRequest request,
             RedirectAttributes redirectAttributes) {
@@ -179,6 +181,8 @@ public class GeneralController {
 
         // Create new user
         User newUser = new User(username, email, encodedPassword, null, "USER");
+        newUser.setLastName(lastName);
+        newUser.setFirstname(firstName);
 
         // Saving in data
         userRepository.save(newUser);
