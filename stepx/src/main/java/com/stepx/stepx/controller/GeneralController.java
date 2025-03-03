@@ -79,7 +79,7 @@ public class GeneralController { // todas las solicitudes "/...." son con el con
     public String login(Model model, HttpServletRequest request) {
         User user = (User) request.getAttribute("user");
         model.addAttribute("isAuthenticated", user != null);
-        return "login"; // Redirige a la página principal
+        return "index"; // Redirige a la página principal
     }
 
     @GetMapping("/profile")
