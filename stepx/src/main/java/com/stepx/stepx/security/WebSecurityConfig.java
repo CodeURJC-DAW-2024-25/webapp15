@@ -66,9 +66,7 @@ public class WebSecurityConfig{
             .requestMatchers("/edit-product/**", "/admin-pannel", "/create-product").hasAnyRole("ADMIN")
         )
         .formLogin(formLogin -> formLogin
-            .loginPage("/login") 
-			.usernameParameter("username")
-			.passwordParameter("password")
+            .loginPage("/login")
             .defaultSuccessUrl("/index", true)
             .failureUrl("/login?error=true")  // Redirige a la página principal con un parámetro de error
             .permitAll()
