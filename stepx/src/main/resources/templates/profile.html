@@ -51,7 +51,7 @@
           <div class="profile-sidebar bg-gray p-4 rounded-3">
             <div class="profile-image text-center mb-4">
               <div class="image-wrapper mb-3">
-                <img src="images/banner-image4.jpg" alt="Profile Picture" class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
+                <img src="/id/imageUser" alt="Profile Picture" class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
               </div>
               <button class="btn btn-outline-dark btn-sm">Change Photo</button>
             </div>
@@ -74,29 +74,30 @@
           <!-- Profile Information -->
           <div id="profile-info" class="profile-section bg-white p-4 rounded-3 mb-4">
             <h2 class="section-title mb-4">Profile Information</h2>
-            <form class="profile-form">
+            <form class="profile-form" id="user-profile-form" action="profile/update" method="post">
               <div class="row">
                 <div class="col-md-6 mb-3">
                   <label class="form-label">First Name</label>
-                  <input type="text" class="form-control" value="John">
+                  <input type="text" class="form-control" name="firstName" value="">
                 </div>
                 <div class="col-md-6 mb-3">
                   <label class="form-label">Last Name</label>
-                  <input type="text" class="form-control" value="Doe">
+                  <input type="text" class="form-control" name="lastName" value="">
                 </div>
                 <div class="col-md-6 mb-3">
                   <label class="form-label">Username</label>
-                  <input type="text" class="form-control" value="johndoe123">
+                  <input type="text" class="form-control" name="username" value="{{username}}">
                 </div>
                 <div class="col-md-6 mb-3">
                   <label class="form-label">Email</label>
-                  <input type="email" class="form-control" value="john.doe@example.com">
+                  <input type="email" class="form-control" name="email" value="{{email}}">
                 </div>
                 
                 <div class="col-12">
-                  <button type="submit" class="btn btn-dark hvr-sweep-to-right">Save Changes</button>
+                  <button type="submit" form="user-profile-form" class="btn btn-dark hvr-sweep-to-right">Save Changes</button>
                 </div>
               </div>
+              <input type="hidden" name="_csrf" value="{{token}}"/>
             </form>
           </div>
 

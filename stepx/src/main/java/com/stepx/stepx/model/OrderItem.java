@@ -31,15 +31,15 @@ public class OrderItem {
     @JoinColumn(name = "order_id")
     private OrderShoes orderShoes;
 
-    @ManyToOne// hace que en la tabla tenga varias ordenes con el mismo zapato(si pongo one to one no se puede repetir el shoe_id)
+    @ManyToOne// Makes the same table could have many orders with the same shoe product, if i put one to one the shoe ID cannot repeat)
     @JoinColumn(name = "shoe_id")
     private Shoe shoe;
 
     @Column(nullable = false)
-    private int quantity;  // Cantidad del mismo zapato
+    private int quantity;  // Quantity of product
 
     @Column(nullable = false)
-    private String size;   // Talla del zapato
+    private String size;   // Size shoe
 
     
     public OrderItem() {}

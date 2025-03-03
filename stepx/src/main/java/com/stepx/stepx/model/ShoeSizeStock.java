@@ -9,12 +9,11 @@ public class ShoeSizeStock {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    // Relación con el zapato
     @ManyToOne
     @JoinColumn(name = "shoe_id")
     private Shoe shoe;
     
-    // Se puede usar String para manejar tallas como "42", "M", etc.
+    // String could be used for "42", "M", sizes
     private String size;
     
     private Integer stock;

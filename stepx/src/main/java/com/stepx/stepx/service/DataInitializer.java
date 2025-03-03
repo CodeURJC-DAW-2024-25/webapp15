@@ -65,8 +65,7 @@ public class DataInitializer implements CommandLineRunner {
 
         private void initializeShoesAndStocks() {
                 // Create some sample shoes
-                // Código reorganizado de manera aleatoria
-
+                // Reorganized code in a random way
                 // Adidas
                 image1 = loadImage("images/PRODUCS/ADIDAS/Campus-00s-Beta_1.jpg");
                 image2 = loadImage("images/PRODUCS/ADIDAS/Campus-00s-Beta_2.jpg");
@@ -1157,11 +1156,11 @@ public class DataInitializer implements CommandLineRunner {
 
                 try {
                         imageUser = loadImage("images/USERS/user_1.jpg");
-                        User user1 = new User("Gaby","baguim2323@gmail.com", passwordEncoder.encode("pass"), imageUser);
+                        User user1 = new User("Gaby","baguim2323@gmail.com", passwordEncoder.encode("pass"), imageUser, "ADMIN", "USER");
                         userRepository.save(user1);
 
                         imageUser = loadImage("images/USERS/user_2.jpg");
-                        User user2 = new User("Gonzalo","gonzaluski@gmail.com", passwordEncoder.encode("pass"),imageUser);
+                        User user2 = new User("Gonzalo","gonzaluski@gmail.com", passwordEncoder.encode("pass"),imageUser, "USER");
                         userRepository.save(user2);
 
                 } catch (Exception e) {
@@ -1234,15 +1233,15 @@ public class DataInitializer implements CommandLineRunner {
                     OrderShoes order = new OrderShoes(user);
                     order.setState(state);
             
-                    // Generar una fecha aleatoria dentro del año 2025
-                    int month = (i % 12) + 1; // Distribuir por todos los meses
-                    int day = (int) (Math.random() * 28) + 1; // Día aleatorio entre 1 y 28
+                    // Generate a random date from 2025 year
+                    int month = (i % 12) + 1; 
+                    int day = (int) (Math.random() * 28) + 1; // Random day between 1 y 28
                     LocalDate orderDate = LocalDate.of(2025, month, day);
                     order.setDate(orderDate);
             
-                    // Generar un summary aleatorio entre 50 y 300
-                    double randomSummary = 50 + Math.random() * 250; // Número entre 50 y 300
-                    BigDecimal summary = BigDecimal.valueOf(randomSummary).setScale(2, BigDecimal.ROUND_HALF_UP); // Redondear a 2 decimales
+                    // Generate random summary between 50 and 300
+                    double randomSummary = 50 + Math.random() * 250; // Number between 50 and 300
+                    BigDecimal summary = BigDecimal.valueOf(randomSummary).setScale(2, BigDecimal.ROUND_HALF_UP); // Round two decimal places
                     order.setSummary(summary);
             
                     orderShoesRepository.save(order);

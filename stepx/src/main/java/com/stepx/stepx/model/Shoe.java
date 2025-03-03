@@ -22,7 +22,7 @@ public class Shoe {
     
     private BigDecimal price;
 
-    // Almacenamos tres imágenes como BLOBs
+    //Saving images as Blobs 
     @Lob
     @Column(name = "image1")
     private Blob image1;
@@ -41,7 +41,7 @@ public class Shoe {
     @Enumerated(EnumType.STRING)
     private Category category;
 
-    // Relación: Un zapato puede tener stock para distintas tallas
+    // A shoe has stock to be related to many sizes    
     @OneToMany(mappedBy = "shoe", cascade = CascadeType.ALL, orphanRemoval = true)//relation with shoessizestock
     private List<ShoeSizeStock> sizeStocks = new ArrayList<>();
 
@@ -148,7 +148,7 @@ public class Shoe {
         sizeStock.setShoe(null); // Break the bidirectional relationship
     }
 
-    // Definimos los enums dentro de Shoe
+    // Define enums inside Shoe
     public enum Category {
         SPORT,
         CASUAL,

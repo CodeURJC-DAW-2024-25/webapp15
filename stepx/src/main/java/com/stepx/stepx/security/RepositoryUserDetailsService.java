@@ -24,7 +24,7 @@ public class RepositoryUserDetailsService implements UserDetailsService {
 	private UserRepository userRepository;
 
 	public RepositoryUserDetailsService(UserRepository userRepository) {
-        this.userRepository = userRepository; //consultas
+        this.userRepository = userRepository; //requests in databse
     }
 
 	@Override
@@ -35,9 +35,9 @@ public class RepositoryUserDetailsService implements UserDetailsService {
 		});
 
 		
-		List<GrantedAuthority> roles = new ArrayList<>();
+		List<GrantedAuthority> roles = new ArrayList<>();//spring grantedAuthority
 		for (String role : user.getRoles()) {
-			roles.add(new SimpleGrantedAuthority("ROLE_" + role));
+			roles.add(new SimpleGrantedAuthority("ROLE_" + role));//spring waits until roles start as ROLE_ 
 		}
 
 		return new org.springframework.security.core.userdetails.User(user.getUsername(), 

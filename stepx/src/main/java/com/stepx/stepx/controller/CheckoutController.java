@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
+import java.util.stream.Collectors;
 import java.time.LocalDate;
 
 import javax.sql.rowset.serial.SerialBlob;
@@ -66,6 +66,9 @@ public class CheckoutController {
     private OrderItemService orderItemService;
 
     @Autowired
+    private ShoeSizeStockService shoeSizeStockService;
+
+    @Autowired
     private PdfService pdfService;
 
     @PostMapping("/downloadTicket")
@@ -82,7 +85,7 @@ public class CheckoutController {
     ) throws IOException {
         System.out.println("🔹 Recibiendo solicitud para descargar ticket con ID: " + orderId);
 
-        // Obtener la orden desde el servicio
+        // Getting order from service
         Optional<OrderShoes> orderOptional = orderShoesService.getCartById(1L);
         if (!orderOptional.isPresent()) {
             System.out.println("❌ Error: Orden no encontrada con ID " + orderId);
@@ -101,8 +104,8 @@ public class CheckoutController {
         order.setState("Processed");
         order.setActualDate();
         orderShoesService.saveOrderShoes(order);
-
-        // Preparar los datos para pasar a la plantilla
+        
+        //Prearing data to send the template
         Map<String, Object> data = new HashMap<>();
         data.put("customerName", firstName + " " + lastName);
         data.put("email", email);
@@ -132,41 +135,65 @@ public class CheckoutController {
 
     @GetMapping("/{id_user}")
     public String showCheckout(@PathVariable Long id_user, Model model) {
-        // Obtener el usuariio
+
         Optional<User> usergetted = userService.findUserById(id_user);
         if (!usergetted.isPresent()) {
-            System.out.println("el usuario buscado no existe");
+            model.addAttribute("setSubtotal", false);
+            model.addAttribute("cartItems", false);
+            return "checkout";
         }
 
         Optional<OrderShoes> cart_Optional = orderShoesService.getCartById(id_user); // get the cart asosiated to the id
-        OrderShoes cart;
-        if (cart_Optional.isPresent()) {// in case that has a cart
-            cart = cart_Optional.get();
-            if (cart.getLenghtOrderShoes() == 0) { // if exists but its empty
-                model.addAttribute("setSubtotal", false);
-            } else {// exists but has orderItems
-                List<Map<String, Object>> cartItems = new ArrayList<>();
-                for (OrderItem orderItem : cart.getOrderItems()) {
-                    Map<String, Object> item = new HashMap<>();
-                    item.put("id", orderItem.getShoe().getId());// id of the shoe
-                    item.put("name", orderItem.getShoe().getName());
-                    item.put("price", orderItem.getShoe().getPrice());
-                    item.put("quantity", orderItem.getQuantity());
-                    item.put("size", orderItem.getSize());
-                    item.put("id_orderItem", orderItem.getId());
-                    cartItems.add(item);
-                }
-                model.addAttribute("setSubtotal", true);
-                model.addAttribute("total", cart.getTotalPrice());
-                model.addAttribute("cartItems", cartItems);
-                model.addAttribute("id_orderShoe", cart.getId());
+        
 
-            }
-        } else {
+        if(cart_Optional.isEmpty()){
             model.addAttribute("setSubtotal", false);
+            model.addAttribute("cartItems", false);
+            
+            return "checkout";
         }
-        // comprobamos el carrito o lo cargamos
 
+        OrderShoes cart=cart_Optional.get();
+
+        if(cart.getLenghtOrderShoes()==0){
+            model.addAttribute("setSubtotal", false);
+            model.addAttribute("cartItems", false);
+            model.addAttribute("id_orderShoe", cart.getId());
+            return "checkout";
+        }
+
+        //ids of all of orderitems from cart
+        List<Long> shoeIds = cart.getOrderItems().stream()
+            .map(orderItem -> orderItem.getShoe().getId())
+            .distinct()
+            .collect(Collectors.toList());
+
+        //all of stocks in a single consult
+        Map<String, Integer> stockMap = shoeSizeStockService.getAllStocksForShoes(shoeIds);
+
+        //process the information
+        List<Map<String,Object>> cartItems=new ArrayList<>();
+        for (OrderItem orderItem:cart.getOrderItems()){
+            Shoe shoe=orderItem.getShoe();
+            String stockKey=shoe.getId()+"_"+orderItem.getSize();
+            boolean stockAvailable=stockMap.getOrDefault(stockKey,0)>0;///if the stock is grater than 0
+                
+            Map<String, Object> item = new HashMap<>();
+            item.put("id", shoe.getId());
+            item.put("name", shoe.getName());
+            item.put("price", shoe.getPrice());
+            item.put("quantity", orderItem.getQuantity());
+            item.put("size", orderItem.getSize());
+            item.put("id_orderItem", orderItem.getId());
+            item.put("stock", stockAvailable);
+            cartItems.add(item);
+        }
+
+        BigDecimal total=orderShoesService.getTotalPriceExcludingOutOfStock(cart.getId());
+        model.addAttribute("setSubtotal", true);
+        model.addAttribute("total", total);
+        model.addAttribute("cartItems", cartItems);
+        model.addAttribute("id_orderShoe", cart.getId());
         return "checkout";
 
     }
@@ -176,74 +203,132 @@ public class CheckoutController {
 
         Optional<User> usergetted = userService.findUserById(id_user);
         if (!usergetted.isPresent()) {
-            System.out.println("el usuario buscado no existe");
+            model.addAttribute("setSubtotal", false);
+            model.addAttribute("cartItems", false);
+            return "partials/checkout-itemsList";
         }
 
         Optional<OrderShoes> cart_Optional = orderShoesService.getCartById(id_user); // get the cart asosiated to the id
-        OrderShoes cart;
-        if (cart_Optional.isPresent()) {// in case that has a cart
-            cart = cart_Optional.get();
-            System.out.println("existe el carrito");
-            if (cart.getLenghtOrderShoes() != 0) { // if has Items in the cart
-                orderShoesService.deleteOrderItems(id_user, id);
-                orderShoesService.saveOrderShoes(cart);
 
-                List<Map<String, Object>> cartItems = new ArrayList<>();
-                for (OrderItem orderItem : cart.getOrderItems()) {
-                    Map<String, Object> item = new HashMap<>();
-                    item.put("id", orderItem.getShoe().getId());
-                    item.put("name", orderItem.getShoe().getName());
-                    item.put("price", orderItem.getShoe().getPrice());
-                    item.put("quantity", orderItem.getQuantity());
-                    item.put("size", orderItem.getSize());
-                    item.put("id_orderItem", orderItem.getId());
-                    cartItems.add(item);
-                }
-                model.addAttribute("setSubtotal", true);
-                model.addAttribute("total", cart.getTotalPrice());
-                model.addAttribute("cartItems", cartItems);
-            }
-        } else {
+        OrderShoes cart=cart_Optional.get();
+        if (cart.getLenghtOrderShoes()==0) {
             model.addAttribute("setSubtotal", false);
+            model.addAttribute("cartItems", false);
+            return "partials/checkout-itemsList";
         }
 
-        System.out.println("No existe el carrito");
+        orderShoesService.deleteOrderItems(id_user, id);//delete the orderitem from the cart
+        orderShoesService.saveOrderShoes(cart);
+
+        List<OrderItem> remainingItems= cart.getOrderItems();
+        if (remainingItems.isEmpty()){
+            model.addAttribute("setSubtotal", false);
+            model.addAttribute("cartItems", false);
+        }
+
+        List<Long> shoeIds = remainingItems.stream()
+            .map(orderItem -> orderItem.getShoe().getId())
+            .distinct()
+            .collect(Collectors.toList());
+
+        Map<String, Integer> stockMap = shoeSizeStockService.getAllStocksForShoes(shoeIds);
+    
+        List<Map<String, Object>> cartItems = new ArrayList<>();
+        for (OrderItem orderItem : remainingItems) {
+            Shoe shoe = orderItem.getShoe();
+            String stockKey = shoe.getId() + "_" + orderItem.getSize();
+            boolean stockAvailable = stockMap.getOrDefault(stockKey, 0) > 0;
+    
+            Map<String, Object> item = new HashMap<>();
+            item.put("id", shoe.getId());
+            item.put("name", shoe.getName());
+            item.put("price", shoe.getPrice());
+            item.put("quantity", orderItem.getQuantity());
+            item.put("size", orderItem.getSize());
+            item.put("id_orderItem", orderItem.getId());
+            item.put("stock", stockAvailable);
+            cartItems.add(item);
+        }    
+
+        BigDecimal total=orderShoesService.getTotalPriceExcludingOutOfStock(cart.getId());
+        if (total == null) {
+            total = BigDecimal.ZERO;
+        }
+        model.addAttribute("setSubtotal", true);
+        model.addAttribute("total", total);
+        model.addAttribute("cartItems", cartItems);
+        model.addAttribute("id_orderShoe", cart.getId());
 
         return "partials/checkout-itemsList";
     }
 
     @PostMapping("/recalculate")
-    public String Recalculate(@RequestParam List<Long> ids, @RequestParam List<Integer> quantities,
-            @RequestParam Long id_user, Model model) {
-        for (int i = 0; i < ids.size(); i++) {
-            orderItemService.updateOrderItem(ids.get(i), quantities.get(i));
+    public String Recalculate(@RequestParam List<Long> ids,
+            @RequestParam List<Integer> quantities,
+            @RequestParam Long id_user,
+            Model model) {
+
+        if (ids.isEmpty() || quantities.isEmpty()) {
+            model.addAttribute("setSubtotal", false);
+            return "partials/checkout-itemsList";
+        }
+        //Making sure the quantify is at least 1
+        for (int i = 0; i < quantities.size(); i++) {
+            if (quantities.get(i) < 1) {
+                quantities.set(i, 1);
+            }
         }
 
-        Optional<OrderShoes> cart_Optional = orderShoesService.getCartById(id_user); // get the cart asosiated to the id
-        OrderShoes cart;
-        if (cart_Optional.isPresent()) {// in case that has a cart
-            cart = cart_Optional.get();
-            if (cart.getLenghtOrderShoes() == 0) { // if exists but its empty
-                model.addAttribute("setSubtotal", false);
-            } else {// exists but has orderItems
-                List<Map<String, Object>> cartItems = new ArrayList<>();
-                for (OrderItem orderItem : cart.getOrderItems()) {
-                    Map<String, Object> item = new HashMap<>();
-                    item.put("id", orderItem.getShoe().getId());// id of the shoe
-                    item.put("name", orderItem.getShoe().getName());
-                    item.put("price", orderItem.getShoe().getPrice());
-                    item.put("quantity", orderItem.getQuantity());
-                    item.put("size", orderItem.getSize());
-                    item.put("id_orderItem", orderItem.getId());
-                    cartItems.add(item);
-                }
-                model.addAttribute("setSubtotal", true);
-                model.addAttribute("total", cart.getTotalPrice());
-                model.addAttribute("cartItems", cartItems);
-            }
-        } else {
+        orderItemService.updateOrderItemsBatch(ids, quantities);
+
+        Optional<OrderShoes> cartOptional = orderShoesService.getCartById(id_user);
+        if (!cartOptional.isPresent()) {
             model.addAttribute("setSubtotal", false);
+            return "partials/checkout-itemsList";
         }
+
+        OrderShoes cart = cartOptional.get();
+        if (cart.getLenghtOrderShoes() == 0) {
+            model.addAttribute("setSubtotal", false);
+            return "partials/checkout-itemsList";
+        }
+
+        //Getting ID's List for every product in cart
+        List<Long> shoeIds = cart.getOrderItems().stream()
+                .map(orderItem -> orderItem.getShoe().getId())
+                .distinct()
+                .collect(Collectors.toList());
+
+        //getting all stocks in one optimized request
+        Map<String, Integer> stockMap = shoeSizeStockService.getAllStocksForShoes(shoeIds);
+
+        // Procesing all products in cart
+        // updated
+        List<Map<String, Object>> cartItems = new ArrayList<>();
+        for (OrderItem orderItem : cart.getOrderItems()) {
+            Shoe shoe = orderItem.getShoe();
+            String stockKey = shoe.getId() + "_" + orderItem.getSize();
+            boolean stockAvailable = stockMap.getOrDefault(stockKey, 0) > 0;
+
+            Map<String, Object> item = new HashMap<>();
+            item.put("id", shoe.getId());
+            item.put("name", shoe.getName());
+            item.put("price", shoe.getPrice());
+            item.put("quantity", orderItem.getQuantity()); // Ya está actualizado
+            item.put("size", orderItem.getSize());
+            item.put("id_orderItem", orderItem.getId());
+            item.put("stock", stockAvailable);
+            cartItems.add(item);
+        }
+
+        // Calculating new total
+        BigDecimal total = orderShoesService.getTotalPriceExcludingOutOfStock(cart.getId());
+
+        // Send data to view
+        model.addAttribute("setSubtotal", true);
+        model.addAttribute("total", total);
+        model.addAttribute("cartItems", cartItems);
+        model.addAttribute("id_orderShoe", cart.getId());
 
         return "partials/checkout-itemsList";
     }

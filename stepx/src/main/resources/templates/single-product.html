@@ -186,7 +186,7 @@
             <div class="tab-pane fade padding-small" id="nav-review" role="tabpanel" aria-labelledby="nav-review-tab">
               <div class="review-box d-flex flex-wrap">
                 {{#review}}
-                <div class="col-lg-6 d-flex flex-wrap"> <!-- todo contenedor de 1 review-->
+                <div class="col-lg-6 d-flex flex-wrap"> <!-- All the container for 1 review -->
                   <div class="col-md-2 me-3 mb-3">
                     <div class="image-holder">
                       <img src="/shop/{{user.id}}/imageUser" alt="review" class="img-fluid">
@@ -195,7 +195,7 @@
                   <div class="col-md-8">
                     <div class="review-content">
                       <div class="rating-container d-flex align-items-center mb-3">
-                        <!--RECOGE STARS DE LA FUNCION GETSTARS(NO SE LLAMA EN NINGUN LADO, LO HACE SPRING)-->
+                        <!--PICKS STARS FROM GETSTARS(IT IS NOT CALLED FROM ANYWHERE, SPRNG MAKE IT BY ITSELF)-->
                         <div class="rating">
                           {{#stars}}
                           <i class="fa-solid fa-star"></i>
@@ -236,6 +236,7 @@
                   <button type="submit" name="submit"
                     class="btn btn-dark btn-large text-uppercase w-100">Submit</button>
                 </form>
+                <input type="hidden" name="_csrf" value="{{token}}"/>
               </div>
             </div>
           </div>
