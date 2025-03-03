@@ -41,7 +41,8 @@ public class Shoe {
     @Enumerated(EnumType.STRING)
     private Category category;
 
-    // A shoe has stock to be related to many sizes    @OneToMany(mappedBy = "shoe", cascade = CascadeType.ALL, orphanRemoval = true)//relation with shoessizestock
+    // A shoe has stock to be related to many sizes    
+    @OneToMany(mappedBy = "shoe", cascade = CascadeType.ALL, orphanRemoval = true)//relation with shoessizestock
     private List<ShoeSizeStock> sizeStocks = new ArrayList<>();
 
     @OneToMany(mappedBy = "shoe", cascade = CascadeType.ALL, orphanRemoval = true)//relationWith reviews
