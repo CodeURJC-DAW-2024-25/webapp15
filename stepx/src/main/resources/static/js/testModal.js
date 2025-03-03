@@ -20,35 +20,47 @@ async function openModal(productId, action) {
 }
 
 
-async function AddtoCart(id_Shoe, size, quantity, id_user) {
+async function AddtoCart(id_Shoe, size, quantity) {
     try {
+        
+        console.log("Añadiendo producto al carrito:");
+        console.log("ID:", id_Shoe);
+        console.log("Size:", size);
+        console.log("Quantity:", quantity);
 
-        console.log(id_Shoe);
-        console.log(size);
-        console.log(quantity);
-        console.log(id_user);
-        const formData = new URLSearchParams(); // Crea los datos en formato x-www-form-urlencoded
+        // Obtener el token CSRF del head de la página
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute("content");
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute("content");
+
+        console.log("CSRF Token:", csrfToken);
+        console.log("CSRF Header:", csrfHeader);
+
+        const formData = new URLSearchParams();
         formData.append("id_Shoe", id_Shoe);
         formData.append("size", size);
-        formData.append("cuantity", quantity);
-        formData.append("id_user", id_user);
+        formData.append("cuantity", quantity); // 🔥 Aquí revisa que sea 'quantity' y no 'cuantity'
+
+        console.log("Datos enviados:", formData.toString());
 
         const response = await fetch("/OrderItem/addItem", {
             method: "POST",
             headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
+                "Content-Type": "application/x-www-form-urlencoded",
+                [csrfHeader]: csrfToken
             },
-            body: formData.toString() // Convierte los datos a string para enviarlos
+            body: formData.toString(),
+            credentials: "include"
         });
-
-
+        
+        const responseText = await response.text();
+        console.log("Respuesta del servidor:", responseText);
+        
         if (!response.ok) {
-            throw new Error("Error al cargar el carrito: " + response.status);
+            alert("⚠️ Hubo un problema al agregar el producto, pero se intentará actualizar el carrito.");
         }
+        console.log("Producto añadido con éxito");
 
-        const responseData = await response.text(); // Lee la respuesta del servidor
-
-        let modal = document.getElementById("modaltoggle")
+        let modal = document.getElementById("modaltoggle");
         let bootstrapModal = bootstrap.Modal.getInstance(modal);
         bootstrapModal.hide();
 
@@ -57,6 +69,7 @@ async function AddtoCart(id_Shoe, size, quantity, id_user) {
         alert("❌ Error al agregar al carrito.");
     }
 }
+
 
 
 

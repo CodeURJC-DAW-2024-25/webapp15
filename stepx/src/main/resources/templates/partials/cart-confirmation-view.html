@@ -39,9 +39,12 @@
 
     {{^error}}
     <div class="container-button-confirmation">
-        <button type="submit" class="btn btn-red hvr-sweep-to-right dark-sweep" style=" display: block;margin: 0 auto;" onclick="AddtoCart('{{id}}','M',1,1)" value="1269">
-            Add to cart
-        </button>
+        <form action="#" method="POST">
+            <input type="hidden" name="_csrf" value="{{token}}" />
+            <button type="button" class="btn btn-red hvr-sweep-to-right dark-sweep" style=" display: block;margin: 0 auto;" onclick="AddtoCart('{{id}}','M',1)" value="1269">
+                Add to cart
+            </button>
+        </form>
     </div>
     {{/error}}
 {{/product}}

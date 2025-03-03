@@ -47,7 +47,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.RequestBody;
-
+import org.springframework.security.web.csrf.CsrfToken;
 @Controller
 @RequestMapping("/shop")
 public class ShoeController {
@@ -75,6 +75,12 @@ public class ShoeController {
 
     @GetMapping()
     public String showShop(Model model, HttpServletRequest request) {
+
+        CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
+
+        // 🔥 Pasar el token a la plantilla para que esté disponible en el <head>
+        model.addAttribute("token", csrfToken.getToken());
+        model.addAttribute("headerName", csrfToken.getHeaderName());
 
         Page<Shoe> shoes = shoeService.getNineShoes(0);
         boolean more = 0 < shoes.getTotalPages() - 1;

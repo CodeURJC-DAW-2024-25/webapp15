@@ -31,6 +31,7 @@ import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,11 +63,14 @@ public class UserController {
     @GetMapping("/cart")
     public String getCartUser(HttpServletRequest  request, Model model) {
         
-        //obtain user session
-        HttpSession session=request.getSession();
-        String username=(String) session.getAttribute("username");
+        Principal principal = request.getUserPrincipal();
+        System.out.println("nombre del ususario con la sesión actual "+principal.getName());
+        if (principal != null) {
+            System.out.println("Usuario autenticado: " + principal.getName());
+        }
+
         // Existing cart code
-        Optional<User> usergetted = userService.findUserByUserName(username);
+        Optional<User> usergetted = userService.findUserByUserName(principal.getName());
         if (!usergetted.isPresent()) {
             System.out.println("el usuario buscado no existe");
         }

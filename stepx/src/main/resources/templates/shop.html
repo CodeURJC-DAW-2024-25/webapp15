@@ -10,7 +10,9 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="author" content="TemplatesJungle">
   <meta name="keywords" content="Online Store">
-  <meta name="description" content="Stylish - Shoes Online Store HTML Template">
+  <meta name="description" content="Stylish - Shoes Online Store HTML Template">ç
+  <meta name="_csrf" content="{{token}}"/>
+<meta name="_csrf_header" content="{{headerName}}"/>
 
   <link rel="stylesheet" href="/css/vendor.css">
   <link rel="stylesheet" type="text/css" href="/css/style.css">
@@ -103,13 +105,16 @@
           </div>
         </aside>
         <main class="col-lg-10 col-md-6 col-sm-12">
+          {{#admin}}
           <div >
             <div class="btn-wrap">
               <a href="/create-product">
               <button href="/create-product" class="btn btn-black btn-medium text-uppercase hvr-sweep-to-right" style="margin-bottom: 30px;">Create Shoe</button>
             </a>
             </div>
-          </div>  
+            
+          </div> 
+          {{/admin}} 
           <div class="product-content product-store d-flex justify-content-between flex-wrap" id="shoes">
             <!-- Product Card element-->
             {{#shoes}}

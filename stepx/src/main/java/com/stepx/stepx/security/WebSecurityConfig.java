@@ -54,15 +54,14 @@ public class WebSecurityConfig{
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http, CustomAuthenticationSuccessHandler successHandler) throws Exception {
 		
-		http.authenticationProvider(authenticationProvider());
-		
+		http.authenticationProvider(authenticationProvider());	
 		http
 			.authorizeHttpRequests(authorize -> authorize
 			// PUBLIC PAGES
 			.requestMatchers( "/index", "/register-user", "/shop/**", "/shop/single-product/**", "/partials/**", "/**").permitAll()
             .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
             // PRIVATE PAGES
-            .requestMatchers("/profile").hasAnyRole("USER", "ADMIN")
+            .requestMatchers("/profile","/OrderItem/addItem").hasAnyRole("USER", "ADMIN")
             .requestMatchers("/edit-product/**", "/admin-pannel", "/create-product").hasAnyRole("ADMIN")
         )
         .formLogin(formLogin -> formLogin
