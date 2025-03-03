@@ -24,6 +24,28 @@ public class User implements UserDetails{
     @Column(name = "ImageProfile")
     private Blob imageUser;
 
+    @Column(name = "Name")
+    private String firstname;
+
+    @Column(name = "LastName")
+    private String lastName;
+
+    public String getFirstName() {
+        return firstname;
+    }
+
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
     public Blob getImageUser() {
         return imageUser;
     }

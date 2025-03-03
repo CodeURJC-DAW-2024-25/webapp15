@@ -85,12 +85,17 @@ public class GeneralController {
     @GetMapping("/profile")
     public String profile(HttpServletRequest request, Model model) {
         model.addAttribute("isAuthenticated", request.getUserPrincipal() != null);
+
         String username = request.getUserPrincipal().getName();
         User user = userRepository.findByUsername(username).orElseThrow();
+
         model.addAttribute("username", user.getUsername());
         model.addAttribute("email", user.getEmail());
-        model.addAttribute("image", "/images/USERS/user_" + user.getId() +".jpg");
-        return "profile";
+        model.addAttribute("imageBlob", user.getImageUser());
+        ///{userId}/imageUser"
+        /// /{{user.id}}/imageUser
+        model.addAttribute("id", user.getId());
+        return "profile"; 
     }
 
 
@@ -152,6 +157,8 @@ public class GeneralController {
             @RequestParam String email,
             @RequestParam String emailRepeated,
             @RequestParam String password,
+            @RequestParam String lastName,
+            @RequestParam String firstName,
             Model model,
             HttpServletRequest request,
             RedirectAttributes redirectAttributes) {
@@ -174,6 +181,8 @@ public class GeneralController {
 
         // Create new user
         User newUser = new User(username, email, encodedPassword, null, "USER");
+        newUser.setLastName(lastName);
+        newUser.setFirstname(firstName);
 
         // Saving in data
         userRepository.save(newUser);
