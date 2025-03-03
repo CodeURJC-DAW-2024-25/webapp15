@@ -85,8 +85,19 @@ public class GeneralController { // todas las solicitudes "/...." son con el con
         User user = userRepository.findByUsername(username).orElseThrow();
         model.addAttribute("username", user.getUsername());
         model.addAttribute("email", user.getEmail());
-        String path = "/shop/" + user.getId() + "/imageUser";
-        model.addAttribute("image", path);
+        model.addAttribute("image", "/images/USERS/user_" + user.getId() +".jpg");
+        return "profile";
+    }
+
+
+    @GetMapping("/profile/update")
+    public String profileUpdate(
+    @RequestParam("firstName") String firstName,
+    @RequestParam("lastName") String lastName,
+    @RequestParam("username") String username,
+    @RequestParam("email") String email,HttpServletRequest request, Model model){
+        
+        model.addAttribute("updateBanner", true);
         return "profile";
     }
 

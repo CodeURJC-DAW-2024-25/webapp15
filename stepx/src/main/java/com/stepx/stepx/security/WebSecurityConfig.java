@@ -59,7 +59,7 @@ public class WebSecurityConfig{
 		http
 			.authorizeHttpRequests(authorize -> authorize
 			// PUBLIC PAGES
-			.requestMatchers( "/index", "/register-user", "/shop/**", "/shop/single-product/**").permitAll()
+			.requestMatchers( "/index", "/register-user", "/shop/**", "/shop/single-product/**", "/partials/**").permitAll()
             .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
             // PRIVATE PAGES
             .requestMatchers("/profile").hasAnyRole("USER", "ADMIN")
@@ -69,7 +69,6 @@ public class WebSecurityConfig{
             .loginPage("/login") 
 			.usernameParameter("username")
 			.passwordParameter("password")
-			//.successHandler(successHandler)
             .defaultSuccessUrl("/index", true)
             .failureUrl("/login?error=true")  // Redirige a la página principal con un parámetro de error
             .permitAll()
@@ -78,9 +77,6 @@ public class WebSecurityConfig{
 			.logoutSuccessUrl("/index")
             .permitAll()
         );
-
-    // Disable CSRF at the moment
-    http.csrf(csrf -> csrf.disable());
 
 		return http.build();
 	}
