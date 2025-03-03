@@ -81,7 +81,7 @@
             <h1 class="h3 mb-3"><strong>Analytics</strong> Dashboard</h1>
 
             <div class="row">
-                <div class="col-xl-6 col-xxl-5 d-flex">
+                <div class="d-flex">
                     <div class="w-100">
                         <div class="row">
                             <div class="col-sm-6">
@@ -137,7 +137,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <h1 class="mt-1 mb-3">{{totalEarnings}}</h1>
+                                        <h1 class="mt-1 mb-3">8999</h1>
                                         <div class="mb-0">
                                             <span class="text-success"> <i class="mdi mdi-arrow-bottom-right"></i> 6.65% </span>
                                             <span class="text-muted">Since last week</span>
@@ -168,18 +168,7 @@
                     </div>
                 </div>
 
-                <div class="col-xl-6 col-xxl-7">
-                    <div class="card flex-fill w-100">
-                        <div class="card-header">
-                            <h5 class="card-title mb-0">Recent Movement</h5>
-                        </div>
-                        <div class="card-body py-3">
-                            <div class="chart chart-sm">
-                                <canvas id="chartjs-dashboard-line"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+              
             </div>
 
             <!-- New Chart Section: Money Gained by Month -->
@@ -198,84 +187,7 @@
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-12 col-lg-8 col-xxl-9 d-flex">
-                    <div class="card flex-fill">
-                        <div class="card-header">
-                            <h5 class="card-title mb-0">Latest Projects</h5>
-                        </div>
-                        <table class="table table-hover my-0">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th class="d-none d-xl-table-cell">Start Date</th>
-                                    <th class="d-none d-xl-table-cell">End Date</th>
-                                    <th>Status</th>
-                                    <th class="d-none d-md-table-cell">Assignee</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Project Apollo</td>
-                                    <td class="d-none d-xl-table-cell">01/01/2023</td>
-                                    <td class="d-none d-xl-table-cell">31/06/2023</td>
-                                    <td><span class="badge bg-success">Done</span></td>
-                                    <td class="d-none d-md-table-cell">Vanessa Tucker</td>
-                                </tr>
-                                <tr>
-                                    <td>Project Fireball</td>
-                                    <td class="d-none d-xl-table-cell">01/01/2023</td>
-                                    <td class="d-none d-xl-table-cell">31/06/2023</td>
-                                    <td><span class="badge bg-danger">Cancelled</span></td>
-                                    <td class="d-none d-md-table-cell">William Harris</td>
-                                </tr>
-                                <tr>
-                                    <td>Project Hades</td>
-                                    <td class="d-none d-xl-table-cell">01/01/2023</td>
-                                    <td class="d-none d-xl-table-cell">31/06/2023</td>
-                                    <td><span class="badge bg-success">Done</span></td>
-                                    <td class="d-none d-md-table-cell">Sharon Lessman</td>
-                                </tr>
-                                <tr>
-                                    <td>Project Nitro</td>
-                                    <td class="d-none d-xl-table-cell">01/01/2023</td>
-                                    <td class="d-none d-xl-table-cell">31/06/2023</td>
-                                    <td><span class="badge bg-warning">In progress</span></td>
-                                    <td class="d-none d-md-table-cell">Vanessa Tucker</td>
-                                </tr>
-                                <tr>
-                                    <td>Project Phoenix</td>
-                                    <td class="d-none d-xl-table-cell">01/01/2023</td>
-                                    <td class="d-none d-xl-table-cell">31/06/2023</td>
-                                    <td><span class="badge bg-success">Done</span></td>
-                                    <td class="d-none d-md-table-cell">William Harris</td>
-                                </tr>
-                                <tr>
-                                    <td>Project X</td>
-                                    <td class="d-none d-xl-table-cell">01/01/2023</td>
-                                    <td class="d-none d-xl-table-cell">31/06/2023</td>
-                                    <td><span class="badge bg-success">Done</span></td>
-                                    <td class="d-none d-md-table-cell">Sharon Lessman</td>
-                                </tr>
-                                <tr>
-                                    <td>Project Romeo</td>
-                                    <td class="d-none d-xl-table-cell">01/01/2023</td>
-                                    <td class="d-none d-xl-table-cell">31/06/2023</td>
-                                    <td><span class="badge bg-success">Done</span></td>
-                                    <td class="d-none d-md-table-cell">Christina Mason</td>
-                                </tr>
-                                <tr>
-                                    <td>Project Wombat</td>
-                                    <td class="d-none d-xl-table-cell">01/01/2023</td>
-                                    <td class="d-none d-xl-table-cell">31/06/2023</td>
-                                    <td><span class="badge bg-warning">In progress</span></td>
-                                    <td class="d-none d-md-table-cell">William Harris</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+            
         </div>
     </main>
 
@@ -306,6 +218,153 @@
             </div>
         </div>
     </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Create a new section for the shoe orders chart
+            const section = document.createElement('div');
+            section.className = 'row';
+            section.innerHTML = `
+                <div class="col-xl-6 col-xxl-7">
+                    <div class="card flex-fill">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Shoe Orders by Month</h5>
+                        </div>
+                        <div class="card-body py-3">
+                            <div class="chart chart-sm">
+                                <canvas id="chartjs-shoe-orders"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+    
+            // Insert after the money gained section
+            const moneyGainedSection = document.querySelector('.row:nth-child(3)');
+            moneyGainedSection.parentNode.insertBefore(section, moneyGainedSection.nextSibling);
+    
+            // Create the chart
+            var ctx = document.getElementById("chartjs-shoe-orders").getContext("2d");
+    
+            new Chart(ctx, {
+                type: "scatter", // Changed from "bar" to "scatter"
+                data: {
+                    datasets: [{
+                        label: "Processed Shoe Orders",
+                        data: shoeOrderData.data.map((value, index) => ({
+                            x: index + 1, // Assuming labels are months (1-based index)
+                            y: value
+                        })),
+                        backgroundColor: "rgba(32, 107, 196, 0.8)",
+                        borderColor: "rgba(32, 107, 196, 1)",
+                        borderWidth: 2,
+                        pointRadius: 5, // Size of the points
+                        pointHoverRadius: 7, // Size of the points when hovered
+                        pointBackgroundColor: "rgba(32, 107, 196, 1)", // Color of the points
+                        pointBorderColor: "#fff", // Border color of the points
+                        pointBorderWidth: 2, // Border width of the points
+                        showLine: true, // Optional: Connect points with a line
+                        fill: false // Do not fill the area under the line
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    legend: {
+                        display: false
+                    },
+                    scales: {
+                        xAxes: [{
+                            type: "linear", // X-axis as linear scale
+                            position: "bottom",
+                            ticks: {
+                                beginAtZero: true,
+                                stepSize: 1, // Ensure each month is spaced correctly
+                                callback: function (value) {
+                                    return shoeOrderData.labels[value - 1]; // Map index to label
+                                }
+                            },
+                            gridLines: {
+                                display: false
+                            }
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true,
+                                stepSize: Math.max(1, Math.ceil(Math.max(...shoeOrderData.data) / 5))
+                            },
+                            gridLines: {
+                                display: true
+                            }
+                        }]
+                    },
+                    tooltips: {
+                        callbacks: {
+                            label: function (tooltipItem, data) {
+                                return tooltipItem.yLabel + ' orders'; // Display y-value in tooltip
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+
+    <script>
+        // Add this script to your HTML file (right after or before the existing shoeOrderData script)
+document.addEventListener("DOMContentLoaded", function () {
+    // Create the money gained chart
+    var ctx = document.getElementById("chartjs-money-gained").getContext("2d");
+
+    new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: moneyGainedData.labels,
+            datasets: [{
+                label: "Money Gained ($)",
+                data: moneyGainedData.data,
+                backgroundColor: "rgba(75, 192, 192, 0.8)",
+                borderColor: "rgba(75, 192, 192, 1)",
+                borderWidth: 1
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            legend: {
+                display: true,
+                position: 'top'
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        callback: function(value, index, values) {
+                            return '$' + value.toLocaleString();
+                        }
+                    },
+                    gridLines: {
+                        display: true
+                    }
+                }],
+                xAxes: [{
+                    gridLines: {
+                        display: false
+                    }
+                }]
+            },
+            tooltips: {
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        return '$' + tooltipItem.yLabel.toLocaleString();
+                    }
+                }
+            }
+        }
+    });
+});
+    </script>
+
+<script>{{{data}}}</script>
+<script>{{{moneyData}}}</script>
 
 	<script src="js/admin.js"></script>
 

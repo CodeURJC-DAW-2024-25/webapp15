@@ -1218,12 +1218,12 @@ public class DataInitializer implements CommandLineRunner {
             
                 if (user1.isPresent()) {
                     User gabi = user1.get();
-                    createOrdersForUser(gabi, 10, "Finished");
+                    createOrdersForUser(gabi, 10, "Processed");
                 }
             
                 if (user2.isPresent()) {
                     User gonzalo = user2.get();
-                    createOrdersForUser(gonzalo, 12, "Finished");
+                    createOrdersForUser(gonzalo, 12, "Processed");
                 }
             }
             
