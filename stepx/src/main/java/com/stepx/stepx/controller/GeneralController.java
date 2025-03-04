@@ -25,6 +25,7 @@ import com.stepx.stepx.model.OrderShoes;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.stepx.stepx.model.Product;
+import com.stepx.stepx.model.Shoe;
 import com.stepx.stepx.model.User;
 import com.stepx.stepx.repository.UserRepository;
 import com.stepx.stepx.service.OrderItemService;
@@ -55,6 +56,9 @@ public class GeneralController {
     private OrderShoesService orderShoesService;
 
     @Autowired
+    private OrderItemService orderItemService;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @GetMapping({ "/", "/index" })
@@ -68,8 +72,19 @@ public class GeneralController {
 
             model.addAttribute("username", user.getUsername());
             model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN")); // Create boolean value for admin
-                                                                        
 
+        }
+
+        List<Shoe> bestSellingShoes = orderItemService.getBestSellingShoes(5); // Mostrar los 5 más vendidos
+        if (bestSellingShoes.isEmpty()) {
+            System.out.println("esta la lista  de mejores products esta vacia");
+            return "blog";
+            
+        } else {
+            // Manejo del caso cuando la lista está vacía
+            Shoe shoe1 = bestSellingShoes.get(0);
+            System.out.println(shoe1.getName());
+            model.addAttribute("bestSellingShoes", bestSellingShoes);
         }
 
         return "index";
@@ -92,34 +107,33 @@ public class GeneralController {
         model.addAttribute("username", user.getUsername());
         model.addAttribute("email", user.getEmail());
         model.addAttribute("imageBlob", user.getImageUser());
-        ///{userId}/imageUser"
+        /// {userId}/imageUser"
         /// /{{user.id}}/imageUser
         model.addAttribute("id", user.getId());
-        return "profile"; 
+        return "profile";
     }
-
 
     @GetMapping("/profile/update")
     public String profileUpdate(
-    @RequestParam("firstName") String firstName,
-    @RequestParam("lastName") String lastName,
-    @RequestParam("username") String username,
-    @RequestParam("email") String email,HttpServletRequest request, Model model){
-        
+            @RequestParam("firstName") String firstName,
+            @RequestParam("lastName") String lastName,
+            @RequestParam("username") String username,
+            @RequestParam("email") String email, HttpServletRequest request, Model model) {
+
         model.addAttribute("updateBanner", true);
         return "profile";
     }
 
     @GetMapping("/styles")
     public String showStyles(Model model) {
-        return "styles"; 
+        return "styles";
     }
 
     @GetMapping("/register-user")
     public String showRegisterUser(Model model) {
         return "register-user";
     }
-    //Recovering data and elements to show to admin users
+    // Recovering data and elements to show to admin users
 
     @GetMapping("/admin-pannel")
     public String showAdminPanel(Model model, HttpServletRequest request) {
@@ -163,7 +177,7 @@ public class GeneralController {
             return "redirect:/register-user";
         }
 
-        //Verigy email and user exists
+        // Verigy email and user exists
         if (userRepository.findByUsername(username).isPresent() /** || userRepository.findByEmail(email).isPresent() */
         ) {
             redirectAttributes.addFlashAttribute("error", "❌ El nombre de usuario ya está en uso.");

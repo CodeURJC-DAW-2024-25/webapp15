@@ -9,12 +9,15 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.stepx.stepx.model.OrderItem;
 import com.stepx.stepx.model.Product;
+import com.stepx.stepx.model.Shoe;
 import com.stepx.stepx.repository.OrderItemRepository;
 
 @Service
@@ -53,5 +56,12 @@ public class OrderItemService {
         for (int i = 0; i < ids.size(); i++) {
             orderItemRepository.updateOrderItemQuantity(ids.get(i), quantities.get(i));
         }
+    }
+
+    public List<Shoe> getBestSellingShoes(int limit) {
+        List<Object[]> results = orderItemRepository.findBestSellingShoes(PageRequest.of(0, limit));
+        return results.stream()
+                      .map(result -> (Shoe) result[0]) // Extraemos solo el objeto Shoe
+                      .collect(Collectors.toList());
     }
 }

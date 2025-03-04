@@ -33,6 +33,11 @@ public interface OrderShoesRepository extends JpaRepository<OrderShoes, Long> {
     @Query(value = "SELECT DATE_FORMAT(date, '%m') AS month, SUM(summary) AS total_money FROM order_shoes WHERE state = 'Processed' GROUP BY DATE_FORMAT(date, '%Y-%m') ORDER BY month", nativeQuery = true)
     List<Map<String, Object>> getMoneyGainedByMonth();
 
+
+
+
+
+
     
 
     
