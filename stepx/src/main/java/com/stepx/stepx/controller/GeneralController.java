@@ -145,12 +145,6 @@ public class GeneralController {
 
     }
 
-    @GetMapping("/checkout")
-    public String showCheckout(Model model) {
-        return "checkout";
-
-    }
-
     @PostMapping("/createAccount")
     public String createUser(
             @RequestParam String username,

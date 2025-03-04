@@ -145,7 +145,7 @@
                         <span class="fw-bold">{{price}}</span>
                       </div>
                       <!--boton de eliminar producto en checkout-->
-                      <button class="btn btn-link text-danger p-0 mb-2" onclick="deleteItemfromCart('{{id_orderItem}}','1')">
+                      <button class="btn btn-link text-danger p-0 mb-2" onclick="deleteItemfromCart('{{id_orderItem}}')">
                         <svg class="close" width="16" height="16">
                           <use xlink:href="#close"></use>
                         </svg>
@@ -165,7 +165,7 @@
               
               {{#setSubtotal}}
               <button type="submit" class="btn btn-red hvr-sweep-to-right dark-sweep w-100"
-                onclick="recalculate(1)">Recalculate</button>
+                onclick="recalculate()">Recalculate</button>
               {{/setSubtotal}}
               <!-- total -->
               <div class="mt-4 pt-4 border-top">

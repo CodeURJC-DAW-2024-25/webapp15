@@ -2,6 +2,11 @@ let currentPage = 2;
 let selectedBrand = null;
 let selectedCategory = null;
 
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("modaltoggle").addEventListener("hidden.bs.modal", function () {
+        document.activeElement.blur();
+    });
+});
 
 async function openModal(productId, action) {
     try {
@@ -40,7 +45,6 @@ async function AddtoCart(id_Shoe, size, quantity) {
         console.log("Size:", size);
         console.log("Quantity:", quantity);
 
-        // Obtener el token CSRF del head de la página
         const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute("content");
         const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute("content");
 
@@ -50,7 +54,7 @@ async function AddtoCart(id_Shoe, size, quantity) {
         const formData = new URLSearchParams();
         formData.append("id_Shoe", id_Shoe);
         formData.append("size", size);
-        formData.append("cuantity", quantity); // 🔥 Aquí revisa que sea 'quantity' y no 'cuantity'
+        formData.append("cuantity", quantity);
 
         console.log("Datos enviados:", formData.toString());
 
@@ -112,7 +116,7 @@ async function searchByBrand(event, brand) {
 
 }
 
-//first 9 of category
+//first 9 of category(check)
 async function searchByCategory(event, category) {
     event.preventDefault();
     selectedCategory = category;

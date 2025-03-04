@@ -10,9 +10,9 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="author" content="TemplatesJungle">
   <meta name="keywords" content="Online Store">
-  <meta name="description" content="Stylish - Shoes Online Store HTML Template">ç
+  <meta name="description" content="Stylish - Shoes Online Store HTML Template">
   <meta name="_csrf" content="{{token}}"/>
-<meta name="_csrf_header" content="{{headerName}}"/>
+  <meta name="_csrf_header" content="{{headerName}}"/>
 
   <link rel="stylesheet" href="/css/vendor.css">
   <link rel="stylesheet" type="text/css" href="/css/style.css">
@@ -115,6 +115,8 @@
             
           </div> 
           {{/admin}} 
+
+
           <div class="product-content product-store d-flex justify-content-between flex-wrap" id="shoes">
             <!-- Product Card element-->
             {{#shoes}}
@@ -149,7 +151,7 @@
                     {{#isAuthenticated}}
                     {{^admin}}
 
-                    <!--modal of carriage-->
+                    <!--modal of carriage(check)-->
                     <button type="button" class="btn btn-light" onclick="openModal('{{id}}','confirmation')" data-bs-toggle="modal" data-bs-target="#modaltoggle">
                       <svg class="shopping-carriage">
                         <use xlink:href="#shopping-carriage"></use>
@@ -158,7 +160,7 @@
                     {{/admin}}
                     {{/isAuthenticated}}
                            
-                    <!--modal of preview-->
+                    <!--modal of preview (check)-->
                     <button type="button" class="btn btn-light" onclick="openModal('{{id}}','quick')" data-bs-toggle="modal" data-bs-target="#modaltoggle">
                       <svg class="quick-view">
                           <use xlink:href="#quick-view"></use>

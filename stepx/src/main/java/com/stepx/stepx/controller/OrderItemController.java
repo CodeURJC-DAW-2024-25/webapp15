@@ -74,18 +74,18 @@ public class OrderItemController {
     @Autowired
     private UserService userService;
 
+
     @PostMapping("/addItem")
-    public ResponseEntity<String> addItemToCart(@RequestParam Long id_Shoe, @RequestParam String size,
-            @RequestParam int cuantity, HttpServletRequest request) {
-        System.out.println("🚀 Inicio de la carga del ítem al carrito");
-
-        Principal principal = request.getUserPrincipal();
-        if (principal == null) {
-            System.out.println("❌ Error: Usuario no autenticado");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario no autenticado");
-        }
-
-        System.out.println("✅ Usuario autenticado: " + principal.getName());
+public ResponseEntity<String> addItemToCart(@RequestParam Long id_Shoe, @RequestParam String size, @RequestParam int cuantity, HttpServletRequest request) { 
+    System.out.println("🚀 Inicio de la carga del ítem al carrito");
+    
+    Principal principal = request.getUserPrincipal();
+    if (principal == null) {
+        System.out.println("❌ Error: Usuario no autenticado");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario no autenticado");
+    }
+    
+    System.out.println("✅ Usuario autenticado: " + principal.getName());
 
         Optional<User> usergetted = userService.findUserByUserName(principal.getName());
         if (!usergetted.isPresent()) {

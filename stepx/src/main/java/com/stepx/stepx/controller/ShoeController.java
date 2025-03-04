@@ -78,7 +78,6 @@ public class ShoeController {
 
         CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
 
-        // 🔥 Pasar el token a la plantilla para que esté disponible en el <head>
         model.addAttribute("token", csrfToken.getToken());
         model.addAttribute("headerName", csrfToken.getHeaderName());
 
@@ -105,7 +104,7 @@ public class ShoeController {
         boolean more = 0 < shoes.getTotalPages() - 1;
 
 
-        boolean isAuthenticated = request.getUserPrincipal() != null;
+        boolean isAuthenticated = request.getUserPrincipal() != null;//if its registered at least
         model.addAttribute("isAuthenticated", isAuthenticated);
 
         if (isAuthenticated) {
@@ -113,7 +112,6 @@ public class ShoeController {
             User user = userRepository.findByUsername(username).orElseThrow();
             model.addAttribute("username", user.getUsername());
             model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
-
         }
 
         model.addAttribute("shoes", shoes.getContent());
@@ -244,6 +242,18 @@ public class ShoeController {
         model.addAttribute("token", csrfToken.getToken());
         model.addAttribute("headerName", csrfToken.getHeaderName());
         
+
+        boolean isAuthenticated = request.getUserPrincipal() != null;
+        model.addAttribute("isAuthenticated", isAuthenticated);
+
+        if (isAuthenticated) {
+            String username = request.getUserPrincipal().getName();
+            User user = userRepository.findByUsername(username).orElseThrow();
+            model.addAttribute("username", user.getUsername());
+            model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
+
+        }
+
         Optional<Shoe> op = shoeService.getShoeById(id);
         Optional<Integer> stockS = shoeSizeStockService.getStockByShoeAndSize(id, "S");
         Optional<Integer> stockM = shoeSizeStockService.getStockByShoeAndSize(id, "M");
@@ -251,16 +261,6 @@ public class ShoeController {
         Optional<Integer> stockXL = shoeSizeStockService.getStockByShoeAndSize(id, "XL");
         List<Review> review = reviewService.getReviewsByShoe(id);
 
-        boolean isAuthenticated = request.getUserPrincipal() != null;
-        model.addAttribute("isAuthenticated", isAuthenticated);
-        String username = request.getUserPrincipal().getName();
-        User user = userRepository.findByUsername(username).orElseThrow();
-
-        if (isAuthenticated) {
-            model.addAttribute("username", user.getUsername());
-            model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
-
-        }
 
         // Convertir LocalDate a String en formato DD/MM/YYYY
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -289,17 +289,15 @@ public class ShoeController {
     public String getProductById(Model model, @PathVariable Long id, @RequestParam(required = false) String action,
             HttpServletRequest request) {
 
-        Optional<Shoe> product = shoeService.getShoeById(id);
-
-        boolean isAuthenticated = request.getUserPrincipal() != null;
-        model.addAttribute("isAuthenticated", isAuthenticated);
-        String username = request.getUserPrincipal().getName();
-        User user = userRepository.findByUsername(username).orElseThrow();
-
-        if (isAuthenticated) {
+        boolean isAuthenticated = request.getUserPrincipal() != null;//false if user doesnt exist(not registered)
+        model.addAttribute("isAuthenticated", isAuthenticated);//true if is registered at least
+        Optional<Shoe> product = shoeService.getShoeById(id);//obtain shoe
+            
+        if (isAuthenticated){
+            String username = request.getUserPrincipal().getName();
+            User user = userRepository.findByUsername(username).orElseThrow();
             model.addAttribute("username", user.getUsername());
-            model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
-
+            model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));//if user is admin or not
         }
 
         if (product.isEmpty()) {
@@ -313,7 +311,8 @@ public class ShoeController {
 
             return "partials/quick-view-modal";
 
-        } else if ("confirmation".equals(action)) {
+        }
+        else if ("confirmation".equals(action)) {
             // need a confirmation if the stock of the default size is 0
             Optional<Integer> stock = shoeSizeStockService.getStockByShoeAndSize(id, "M");
             if (stock.isPresent() && stock.get() == 0) {
@@ -321,9 +320,11 @@ public class ShoeController {
             }
             return "partials/cart-confirmation-view";
 
-        } else if ("delete".equals(action)) {
+        }
+         else if ("delete".equals(action)) {
             return "partials/deleteShoeModal";
-        } else {
+        } 
+        else {
             return "partials/error-modal";
         }
     }
@@ -386,31 +387,7 @@ public class ShoeController {
         return ResponseEntity.notFound().build();
     }
 
-    @GetMapping("/getByBrand") // first 9 shoes of same brand
-    public String getByBrand(@RequestParam String brand, Model model, HttpServletRequest request) {
-        boolean isAuthenticated = request.getUserPrincipal() != null;
-        model.addAttribute("isAuthenticated", isAuthenticated);
-        String username = request.getUserPrincipal().getName();
-        User user = userRepository.findByUsername(username).orElseThrow();
 
-        if (isAuthenticated) {
-            model.addAttribute("username", user.getUsername());
-            model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
-
-        }
-
-        try {
-            int currentPage = 0;
-            Page<Shoe> shoes = shoeService.getShoesByBrand(currentPage, brand);
-            boolean more = currentPage <= shoes.getTotalPages() - 1;
-            model.addAttribute("hasMoreShoes", more);
-            model.addAttribute("shoes", shoes.getContent());
-            return "partials/loadMoreShoe";
-        } catch (IllegalArgumentException e) {
-            System.err.println("Error: Marca no válida: " + brand);
-            return "error"; // Devuelve una vista de error si el Enum no es válido
-        }
-    }
 
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model, HttpServletRequest request) {
@@ -472,6 +449,33 @@ public class ShoeController {
         }
 
         return "redirect:/shop";
+    }
+
+    @GetMapping("/getByBrand") // first 9 shoes of same brand
+    public String getByBrand(@RequestParam String brand, Model model, HttpServletRequest request) {
+        try {
+            int currentPage = 0;
+            Page<Shoe> shoes = shoeService.getShoesByBrand(currentPage, brand);
+            boolean more = currentPage <= shoes.getTotalPages() - 1;
+            boolean isAuthenticated = request.getUserPrincipal() != null;
+            model.addAttribute("isAuthenticated", isAuthenticated);
+
+
+            if (isAuthenticated) {
+                String username = request.getUserPrincipal().getName();
+                User user = userRepository.findByUsername(username).orElseThrow();
+                model.addAttribute("username", user.getUsername());
+                model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
+    
+            }
+
+            model.addAttribute("hasMoreShoes", more);
+            model.addAttribute("shoes", shoes.getContent());
+            return "partials/loadMoreShoe";
+        } catch (IllegalArgumentException e) {
+            System.err.println("Error: Marca no válida: " + brand);
+            return "error"; // Devuelve una vista de error si el Enum no es válido
+        }
     }
 
     @GetMapping("/getByCategory") // first 9 shoes of same category
@@ -540,8 +544,7 @@ public class ShoeController {
             model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
 
         }
-
-
+        
         model.addAttribute("shoes", paginatedShoes.getContent());
         model.addAttribute("hasMoreShoes", more);
         return "partials/loadMoreShoe";
