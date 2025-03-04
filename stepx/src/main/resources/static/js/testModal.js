@@ -21,8 +21,20 @@ async function openModal(productId, action) {
 
 
 async function AddtoCart(id_Shoe, size, quantity) {
+
+    console.log(size)
+    console.log(quantity)
+    if (!size) {
+        alert("⚠️ Por favor selecciona un tamaño.");
+        return;
+    }
+
+    if (!quantity || isNaN(quantity) || quantity <= 0) {
+        alert("⚠️ Ingresa una cantidad válida.");
+        return;
+    }
     try {
-        
+
         console.log("Añadiendo producto al carrito:");
         console.log("ID:", id_Shoe);
         console.log("Size:", size);
@@ -51,22 +63,25 @@ async function AddtoCart(id_Shoe, size, quantity) {
             body: formData.toString(),
             credentials: "include"
         });
-        
+
         const responseText = await response.text();
         console.log("Respuesta del servidor:", responseText);
-        
+
         if (!response.ok) {
             alert("⚠️ Hubo un problema al agregar el producto, pero se intentará actualizar el carrito.");
         }
         console.log("Producto añadido con éxito");
 
         let modal = document.getElementById("modaltoggle");
-        let bootstrapModal = bootstrap.Modal.getInstance(modal);
-        bootstrapModal.hide();
-
+        if (modal) {
+            let bootstrapModal = bootstrap.Modal.getInstance(modal);
+            if (bootstrapModal) {
+                openCartModal();
+            }
+        }
+        openCartModal();
     } catch (error) {
         console.error("Error en la solicitud:", error);
-        alert("❌ Error al agregar al carrito.");
     }
 }
 
@@ -214,6 +229,26 @@ async function resetFilters(event) {
     } catch (error) {
         console.log("Error al restablecer los filtros", error);
     }
+}
+
+// Función para obtener la talla seleccionada
+function getSelectedSize() {
+    const selectedSizeElement = document.querySelector(".select-size-item.selected");
+    return selectedSizeElement ? selectedSizeElement.getAttribute("data-value") : null;
+}
+
+// Función para seleccionar talla al hacer clic
+document.querySelectorAll(".select-size-item").forEach(item => {
+    item.addEventListener("click", function (event) {
+        event.preventDefault();
+        document.querySelectorAll(".select-size-item").forEach(i => i.classList.remove("selected"));
+        this.classList.add("selected");
+    });
+});
+
+// Función para obtener la cantidad seleccionada
+function getQuantity() {
+    return document.querySelector(".quantity").value;
 }
 
 

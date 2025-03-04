@@ -237,6 +237,13 @@ public class ShoeController {
 
     @GetMapping("/single-product/{id}")
     public String showSingleProduct(Model model, @PathVariable Long id, HttpServletRequest request) {
+
+        CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
+
+        // 🔥 Pasar el token a la plantilla para que esté disponible en el <head>
+        model.addAttribute("token", csrfToken.getToken());
+        model.addAttribute("headerName", csrfToken.getHeaderName());
+        
         Optional<Shoe> op = shoeService.getShoeById(id);
         Optional<Integer> stockS = shoeSizeStockService.getStockByShoeAndSize(id, "S");
         Optional<Integer> stockM = shoeSizeStockService.getStockByShoeAndSize(id, "M");

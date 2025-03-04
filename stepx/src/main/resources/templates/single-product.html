@@ -11,6 +11,8 @@
   <meta name="author" content="TemplatesJungle">
   <meta name="keywords" content="Online Store">
   <meta name="description" content="Stylish - Shoes Online Store HTML Template">
+  <meta name="_csrf" content="{{token}}">
+  <meta name="_csrf_header" content="{{headerName}}" />
 
   <link rel="stylesheet" href="/css/vendor.css">
   <link rel="stylesheet" type="text/css" href="/css/style.css">
@@ -123,8 +125,11 @@
                   <div class="qty-button d-flex flex-wrap pt-3">
                     <button type="submit" class="btn btn-black text-uppercase me-3 mt-3 hvr-sweep-to-right">Buy
                       now</button>
-                    <button type="submit" name="add-to-cart" onclick="AddtoCart('{{id}}')" value="1269"
+                    <button type="submit" name="add-to-cart"
+                      onclick="AddtoCart('{{id}}', getSelectedSize(), getQuantity())" value="1269"
                       class="btn btn-outline-gray text-uppercase mt-3 hvr-sweep-to-right">Add to cart</button>
+
+
                   </div>
                 </div>
               </div>
@@ -146,6 +151,8 @@
               </div>
             </div>
           </div>
+
+
         </div>
       </div>
     </div>
@@ -236,7 +243,7 @@
                   <button type="submit" name="submit"
                     class="btn btn-dark btn-large text-uppercase w-100">Submit</button>
                 </form>
-                <input type="hidden" name="_csrf" value="{{token}}"/>
+                <input type="hidden" name="_csrf" value="{{token}}" />
               </div>
             </div>
           </div>
@@ -246,7 +253,7 @@
     {{/product}}
   </section>
 
-   <!-- quick view -->
+  <!-- quick view -->
   <div class="modal fade" id="modaltoggle" aria-hidden="true" tabindex="-1">
     <div class="modal-dialog modal-fullscreen-md-down modal-md modal-dialog-centered">
       <div class="modal-content">

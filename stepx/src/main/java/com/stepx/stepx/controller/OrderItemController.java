@@ -58,10 +58,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 @Controller
 @RequestMapping("/OrderItem")
 public class OrderItemController {
-    
+
     @Autowired
     private ShoeService shoeService;
-    
+
     @Autowired
     private ShoeSizeStockService shoeSizeStockService;
 
@@ -73,57 +73,59 @@ public class OrderItemController {
 
     @Autowired
     private UserService userService;
-    @PostMapping("/addItem")
-public ResponseEntity<String> addItemToCart(@RequestParam Long id_Shoe, @RequestParam String size, @RequestParam int cuantity, HttpServletRequest request) { 
-    System.out.println("🚀 Inicio de la carga del ítem al carrito");
-    
-    Principal principal = request.getUserPrincipal();
-    if (principal == null) {
-        System.out.println("❌ Error: Usuario no autenticado");
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario no autenticado");
-    }
-    
-    System.out.println("✅ Usuario autenticado: " + principal.getName());
 
-    Optional<User> usergetted = userService.findUserByUserName(principal.getName());
-    if (!usergetted.isPresent()) {
-        System.out.println("❌ Error: El usuario no existe");
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("El usuario no existe");
+    @PostMapping("/addItem")
+    public ResponseEntity<String> addItemToCart(@RequestParam Long id_Shoe, @RequestParam String size,
+            @RequestParam int cuantity, HttpServletRequest request) {
+        System.out.println("🚀 Inicio de la carga del ítem al carrito");
+
+        Principal principal = request.getUserPrincipal();
+        if (principal == null) {
+            System.out.println("❌ Error: Usuario no autenticado");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario no autenticado");
+        }
+
+        System.out.println("✅ Usuario autenticado: " + principal.getName());
+
+        Optional<User> usergetted = userService.findUserByUserName(principal.getName());
+        if (!usergetted.isPresent()) {
+            System.out.println("❌ Error: El usuario no existe");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("El usuario no existe");
+        }
+        User user = usergetted.get();
+
+        System.out.println("🔍 Buscando carrito del usuario...");
+        Optional<OrderShoes> cart_Optional = orderShoesService.getCartById(user.getId());
+
+        OrderShoes cart;
+        if (cart_Optional.isPresent()) {
+            cart = cart_Optional.get();
+        } else {
+            System.out.println("🛒 No se encontró carrito, creando uno nuevo...");
+            cart = orderShoesService.createCartForUser(user);
+        }
+
+        System.out.println("🔍 Buscando zapato con ID: " + id_Shoe);
+        Optional<Shoe> shoe_optional = shoeService.getShoeById(id_Shoe);
+        if (!shoe_optional.isPresent()) {
+            System.out.println("❌ Error: Zapato no encontrado");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("shoes not found");
+        }
+        Shoe shoe = shoe_optional.get();
+
+        System.out.println("🛒 Añadiendo zapato al carrito...");
+        Optional<OrderItem> orderItemOptional = orderItemService.findByCartAndShoeAndSize(user.getId(), id_Shoe, size);
+        OrderItem orderItem;
+        if (orderItemOptional.isPresent()) {
+            orderItem = orderItemOptional.get();
+            orderItem.setQuantity(orderItem.getQuantity() + 1);
+        } else {
+            orderItem = new OrderItem(cart, shoe, cuantity, size);
+        }
+        orderItemService.save(orderItem);
+
+        System.out.println("✅ Zapato añadido correctamente.");
+        return ResponseEntity.ok("Shoe added to your cart");
     }
-    User user = usergetted.get();
-    
-    System.out.println("🔍 Buscando carrito del usuario...");
-    Optional<OrderShoes> cart_Optional = orderShoesService.getCartById(user.getId());
-    
-    OrderShoes cart;
-    if(cart_Optional.isPresent()){
-        cart = cart_Optional.get();
-    } else {
-        System.out.println("🛒 No se encontró carrito, creando uno nuevo...");
-        cart = orderShoesService.createCartForUser(user);
-    }
-    
-    System.out.println("🔍 Buscando zapato con ID: " + id_Shoe);
-    Optional<Shoe> shoe_optional = shoeService.getShoeById(id_Shoe);
-    if(!shoe_optional.isPresent()){
-        System.out.println("❌ Error: Zapato no encontrado");
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("shoes not found");
-    }
-    Shoe shoe = shoe_optional.get();
-    
-    System.out.println("🛒 Añadiendo zapato al carrito...");
-    Optional<OrderItem> orderItemOptional = orderItemService.findByCartAndShoeAndSize(user.getId(), id_Shoe, size);
-    OrderItem orderItem;
-    if(orderItemOptional.isPresent()){
-        orderItem = orderItemOptional.get();
-        orderItem.setQuantity(orderItem.getQuantity() + 1);
-    } else {
-        orderItem = new OrderItem(cart, shoe, cuantity, size);
-    }
-    orderItemService.save(orderItem);
-    
-    System.out.println("✅ Zapato añadido correctamente.");
-    return ResponseEntity.ok("Shoe added to your cart");
-}
 
 }
