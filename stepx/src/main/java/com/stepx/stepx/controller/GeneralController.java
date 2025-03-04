@@ -67,6 +67,7 @@ public class GeneralController {
             User user = userRepository.findByUsername(username).orElseThrow();
 
             model.addAttribute("username", user.getUsername());
+            model.addAttribute("id",user.getId());
             model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN")); // Create boolean value for admin
                                                                         
 

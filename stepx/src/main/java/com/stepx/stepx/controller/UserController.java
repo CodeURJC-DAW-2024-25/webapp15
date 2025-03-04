@@ -141,7 +141,7 @@ public String sendCouponEmail(@RequestParam Long userId, RedirectAttributes redi
     }
     
     // Redirect back to the cart page
-    return "index";
+    return "redirect:/index";
 }
 
 

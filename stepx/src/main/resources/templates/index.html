@@ -68,6 +68,7 @@
       <div class="swiper-pagination"></div>
     </div>
   </section>
+  {{#isAuthenticated}}
   <section class="discount-coupon py-2 my-2 py-md-5 my-md-5">
     <div class="container">
       <div class="bg-gray coupon position-relative p-5">
@@ -81,21 +82,25 @@
           </div>
           <div class="col-lg-3 col-md-12">
             <div class="btn-wrap">
-              <a href="#" class="btn btn-black btn-medium text-uppercase hvr-sweep-to-right">Email me</a>
+              <form action="/user/send-coupon" method="get">
+                <input type="hidden" name="userId" value="{{id}}">
+                <button type="submit" class="btn btn-black btn-medium text-uppercase hvr-sweep-to-right" >
+                    Email Me
+                </button>
+                <input type="hidden" name="_csrf" value="{{token}}"/>
+            </form>
+            
+
             </div>
           </div>
         </div>
       </div>
     </div>
+    {{/isAuthenticated}}
 
-    <div class="coupon-section" style="margin-top: 20px; text-align: center;">
-      <form action="/user/send-coupon" method="get">
-          <input type="hidden" name="userId" value="1">
-          <button type="submit" class="btn btn-primary" style="background-color: #2c3e50; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer;">
-              Get 10% Discount Coupon
-          </button>
-          <input type="hidden" name="_csrf" value="{{token}}"/>
-      </form>
+
+    
+      
   </section>
   <section id="featured-products" class="product-store">
     <div class="container-md">
