@@ -279,8 +279,8 @@ public class DataInitializer implements CommandLineRunner {
 
                 Shoe shoe34 = new Shoe();
                 shoe34.setName("Adidas Campus Originals Grey");
-                shoe31.setDescription("A classic silhouette with a modern twist.");
-                shoe31.setLongDescription("The Adidas Campus 00s Beta brings retro vibes with a fresh update. Featuring a premium suede upper, a padded collar for all-day comfort, and a durable rubber outsole for enhanced traction. The signature 3-Stripes design adds an iconic touch, making this sneaker perfect for urban wear. Whether paired with casual or sporty outfits, its timeless aesthetic ensures a stylish and versatile look.");
+                shoe34.setDescription("A classic silhouette with a modern twist.");
+                shoe34.setLongDescription("The Adidas Campus 00s Beta brings retro vibes with a fresh update. Featuring a premium suede upper, a padded collar for all-day comfort, and a durable rubber outsole for enhanced traction. The signature 3-Stripes design adds an iconic touch, making this sneaker perfect for urban wear. Whether paired with casual or sporty outfits, its timeless aesthetic ensures a stylish and versatile look.");
                 shoe34.setPrice(new BigDecimal("80.00"));
                 shoe34.setBrand(Shoe.Brand.ADIDAS);
                 shoe34.setCategory(Shoe.Category.CASUAL);

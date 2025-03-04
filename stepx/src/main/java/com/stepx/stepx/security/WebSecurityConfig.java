@@ -61,7 +61,7 @@ public class WebSecurityConfig{
 			.requestMatchers( "/index", "/register-user", "/shop/**", "/shop/single-product/**", "/partials/**", "/**").permitAll()
             .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
             // PRIVATE PAGES
-            .requestMatchers("/profile","/OrderItem/addItem").hasAnyRole("USER", "ADMIN")
+            .requestMatchers("/profile","/OrderItem/addItem","/checkout/**").hasAnyRole("USER", "ADMIN")
             .requestMatchers("/edit-product/**", "/admin-pannel", "/create-product").hasAnyRole("ADMIN")
         )
         .formLogin(formLogin -> formLogin

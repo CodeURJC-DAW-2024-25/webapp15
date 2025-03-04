@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.core.io.Resource;
 
 import com.stepx.stepx.model.User;
+import com.stepx.stepx.repository.UserRepository;
 import com.stepx.stepx.model.Shoe;
 import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 import com.stepx.stepx.model.OrderItem;
@@ -47,6 +48,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import com.stepx.stepx.service.PdfService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.data.domain.Page;
@@ -70,6 +72,9 @@ public class CheckoutController {
 
     @Autowired
     private PdfService pdfService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @PostMapping("/downloadTicket")
     public void downloadTicket(
@@ -133,19 +138,24 @@ public class CheckoutController {
     }
 
 
-    @GetMapping("/{id_user}")
-    public String showCheckout(@PathVariable Long id_user, Model model) {
+    @GetMapping("/user")
+    public String showCheckout(HttpServletRequest request, Model model) {
 
-        Optional<User> usergetted = userService.findUserById(id_user);
-        if (!usergetted.isPresent()) {
+        boolean isAuthenticated=request.getUserPrincipal()!=null;
+        model.addAttribute("isAuthenticated", isAuthenticated);
+        if(isAuthenticated){
+            model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));       
+        }
+        User user=userRepository.findByUsername(request.getUserPrincipal().getName()).orElseThrow();
+
+        if (user==null) {
             model.addAttribute("setSubtotal", false);
             model.addAttribute("cartItems", false);
             return "checkout";
         }
 
-        Optional<OrderShoes> cart_Optional = orderShoesService.getCartById(id_user); // get the cart asosiated to the id
+        Optional<OrderShoes> cart_Optional = orderShoesService.getCartById(user.getId()); // get the cart asosiated to the id
         
-
         if(cart_Optional.isEmpty()){
             model.addAttribute("setSubtotal", false);
             model.addAttribute("cartItems", false);
@@ -198,17 +208,17 @@ public class CheckoutController {
 
     }
 
-    @GetMapping("/deleteItem/{id}/{id_user}")
-    public String DeleteItemCheckout(@PathVariable Long id, @PathVariable Long id_user, Model model) {
+    @GetMapping("/deleteItem/{id}")
+    public String DeleteItemCheckout(@PathVariable Long id, Model model,HttpServletRequest request) {
 
-        Optional<User> usergetted = userService.findUserById(id_user);
-        if (!usergetted.isPresent()) {
+        User user=userRepository.findByUsername(request.getUserPrincipal().getName()).orElseThrow();
+        if (user==null) {
             model.addAttribute("setSubtotal", false);
             model.addAttribute("cartItems", false);
             return "partials/checkout-itemsList";
         }
 
-        Optional<OrderShoes> cart_Optional = orderShoesService.getCartById(id_user); // get the cart asosiated to the id
+        Optional<OrderShoes> cart_Optional = orderShoesService.getCartById(user.getId()); // get the cart asosiated to the id
 
         OrderShoes cart=cart_Optional.get();
         if (cart.getLenghtOrderShoes()==0) {
@@ -217,13 +227,14 @@ public class CheckoutController {
             return "partials/checkout-itemsList";
         }
 
-        orderShoesService.deleteOrderItems(id_user, id);//delete the orderitem from the cart
+        orderShoesService.deleteOrderItems(user.getId(), id);//delete the orderitem from the cart
         orderShoesService.saveOrderShoes(cart);
 
         List<OrderItem> remainingItems= cart.getOrderItems();
         if (remainingItems.isEmpty()){
             model.addAttribute("setSubtotal", false);
             model.addAttribute("cartItems", false);
+            return "partials/checkout-itemsList";
         }
 
         List<Long> shoeIds = remainingItems.stream()
@@ -262,36 +273,37 @@ public class CheckoutController {
         return "partials/checkout-itemsList";
     }
 
+
     @PostMapping("/recalculate")
     public String Recalculate(@RequestParam List<Long> ids,
             @RequestParam List<Integer> quantities,
-            @RequestParam Long id_user,
-            Model model) {
+            Model model,
+            HttpServletRequest request) {
+       
+        boolean isAuthenticated=request.getUserPrincipal()!=null;
+        model.addAttribute("isAuthenticated", isAuthenticated);
+
+        User user=userRepository.findByUsername(request.getUserPrincipal().getName()).orElseThrow();
+        if (user==null) {
+            model.addAttribute("setSubtotal", false);
+            model.addAttribute("cartItems", false);
+            return "partials/checkout-itemsList";
+        }
 
         if (ids.isEmpty() || quantities.isEmpty()) {
             model.addAttribute("setSubtotal", false);
+            model.addAttribute("cartItems", false);
             return "partials/checkout-itemsList";
         }
-        //Making sure the quantify is at least 1
-        for (int i = 0; i < quantities.size(); i++) {
-            if (quantities.get(i) < 1) {
-                quantities.set(i, 1);
-            }
-        }
 
-        orderItemService.updateOrderItemsBatch(ids, quantities);
-
-        Optional<OrderShoes> cartOptional = orderShoesService.getCartById(id_user);
-        if (!cartOptional.isPresent()) {
+        Optional<OrderShoes> cartOptional = orderShoesService.getCartById(user.getId());
+        if (!cartOptional.isPresent() | cartOptional.get().getLenghtOrderShoes()==0) {
             model.addAttribute("setSubtotal", false);
+            model.addAttribute("cartItems", false);
             return "partials/checkout-itemsList";
         }
 
         OrderShoes cart = cartOptional.get();
-        if (cart.getLenghtOrderShoes() == 0) {
-            model.addAttribute("setSubtotal", false);
-            return "partials/checkout-itemsList";
-        }
 
         //Getting ID's List for every product in cart
         List<Long> shoeIds = cart.getOrderItems().stream()
@@ -302,6 +314,16 @@ public class CheckoutController {
         //getting all stocks in one optimized request
         Map<String, Integer> stockMap = shoeSizeStockService.getAllStocksForShoes(shoeIds);
 
+        for (int i = 0; i < ids.size(); i++) {
+            String stockKey = ids.get(i) + "_" + cart.getOrderItems().get(i).getSize();
+            int availableStock = stockMap.getOrDefault(stockKey, 0);
+        
+            if (quantities.get(i) > availableStock) {
+                quantities.set(i, availableStock);
+            }
+        }
+
+        orderItemService.updateOrderItemsBatch(ids, quantities);
         // Procesing all products in cart
         // updated
         List<Map<String, Object>> cartItems = new ArrayList<>();

@@ -20,10 +20,9 @@ function checkStockAvailability() {
 
 document.addEventListener("DOMContentLoaded", checkStockAvailability);
 
-async function recalculate(user_id) {
-    console.log("Recalculando carrito para usuario:", user_id);
+async function recalculate() {
 
-    let formData = new FormData(); // ✅ FormData funciona bien
+    let formData = new FormData();
 
     document.querySelectorAll(".quantity-input").forEach(input => {
         let id = input.getAttribute("data-id");
@@ -37,10 +36,6 @@ async function recalculate(user_id) {
         formData.append("ids", id);
         formData.append("quantities", quantity);
     });
-
-    formData.append("id_user", user_id);
-
-    console.log("📩 FormData enviado:", [...formData.entries()]); // 🔥 Depuración
 
     try {
         let response = await fetch(`/checkout/recalculate`, {
@@ -70,14 +65,14 @@ async function recalculate(user_id) {
 }
 
 
-async function deleteItemfromCart(idItem, idUser) {
-    if (!idItem || !idUser) {
+async function deleteItemfromCart(idItem) {
+    if (!idItem) {
         console.error("Error: idItem o idUser es undefined");
         return;
     }
 
     try {
-        const response = await fetch(`/checkout/deleteItem/${idItem}/${idUser}`, { method: 'GET' });
+        const response = await fetch(`/checkout/deleteItem/${idItem}`, { method: 'GET' });
 
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
