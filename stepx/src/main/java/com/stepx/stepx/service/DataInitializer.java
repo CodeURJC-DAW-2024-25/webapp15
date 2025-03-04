@@ -44,12 +44,13 @@ public class DataInitializer implements CommandLineRunner {
         private LocalDate date;
 
         public DataInitializer(ShoeRepository shoeRepository, ShoeSizeStockRepository shoeSizeStockRepository,
-                        ReviewRepository reviewRepository, UserRepository userRepository,OrderShoesRepository orderShoesRepository, PasswordEncoder passwordEncoder) {
+                        ReviewRepository reviewRepository, UserRepository userRepository,
+                        OrderShoesRepository orderShoesRepository, PasswordEncoder passwordEncoder) {
                 this.shoeRepository = shoeRepository;
                 this.shoeSizeStockRepository = shoeSizeStockRepository;
                 this.reviewRepository = reviewRepository;
                 this.userRepository = userRepository;
-                this.orderShoesRepository=orderShoesRepository;
+                this.orderShoesRepository = orderShoesRepository;
                 this.passwordEncoder = passwordEncoder;
         }
 
@@ -74,7 +75,8 @@ public class DataInitializer implements CommandLineRunner {
                 Shoe shoe31 = new Shoe();
                 shoe31.setName("Adidas Campus 00s Beta");
                 shoe31.setDescription("A classic silhouette with a modern twist.");
-                shoe31.setLongDescription("The Adidas Campus 00s Beta brings retro vibes with a fresh update. Featuring a premium suede upper, a padded collar for all-day comfort, and a durable rubber outsole for enhanced traction. The signature 3-Stripes design adds an iconic touch, making this sneaker perfect for urban wear. Whether paired with casual or sporty outfits, its timeless aesthetic ensures a stylish and versatile look.");
+                shoe31.setLongDescription(
+                                "The Adidas Campus 00s Beta brings retro vibes with a fresh update. Featuring a premium suede upper, a padded collar for all-day comfort, and a durable rubber outsole for enhanced traction. The signature 3-Stripes design adds an iconic touch, making this sneaker perfect for urban wear. Whether paired with casual or sporty outfits, its timeless aesthetic ensures a stylish and versatile look.");
                 shoe31.setPrice(new BigDecimal("120.00"));
                 shoe31.setBrand(Shoe.Brand.ADIDAS);
                 shoe31.setCategory(Shoe.Category.URBAN);
@@ -91,7 +93,8 @@ public class DataInitializer implements CommandLineRunner {
                 Shoe shoe46 = new Shoe();
                 shoe46.setName("Puma Anzarun Black");
                 shoe46.setDescription("Lightweight comfort meets sporty style.");
-                shoe46.setLongDescription("The Puma Anzarun Black is a sleek and versatile sneaker designed for everyday comfort and performance. Its breathable mesh upper ensures optimal airflow, keeping your feet cool and fresh. The EVA midsole provides lightweight cushioning, reducing impact with every step. A modern silhouette and subtle branding make it a perfect choice for workouts, casual outings, or relaxed streetwear looks.");
+                shoe46.setLongDescription(
+                                "The Puma Anzarun Black is a sleek and versatile sneaker designed for everyday comfort and performance. Its breathable mesh upper ensures optimal airflow, keeping your feet cool and fresh. The EVA midsole provides lightweight cushioning, reducing impact with every step. A modern silhouette and subtle branding make it a perfect choice for workouts, casual outings, or relaxed streetwear looks.");
                 shoe46.setPrice(new BigDecimal("76.00"));
                 shoe46.setBrand(Shoe.Brand.PUMA);
                 shoe46.setCategory(Shoe.Category.SPORT);
@@ -126,7 +129,8 @@ public class DataInitializer implements CommandLineRunner {
                 Shoe shoe16 = new Shoe();
                 shoe16.setName("NEW BALANCE 111");
                 shoe16.setDescription("A retro classic with modern comfort.");
-                shoe16.setLongDescription("The New Balance 111 is a perfect fusion of heritage design and contemporary comfort. Crafted with a soft suede and breathable mesh upper, this sneaker ensures optimal ventilation and durability. The cushioned EVA foam midsole delivers responsive support, while the durable rubber outsole provides excellent traction. A stylish and comfortable option for urban wear.");
+                shoe16.setLongDescription(
+                                "The New Balance 111 is a perfect fusion of heritage design and contemporary comfort. Crafted with a soft suede and breathable mesh upper, this sneaker ensures optimal ventilation and durability. The cushioned EVA foam midsole delivers responsive support, while the durable rubber outsole provides excellent traction. A stylish and comfortable option for urban wear.");
                 shoe16.setPrice(new BigDecimal("150.00"));
                 shoe16.setBrand(Shoe.Brand.NEW_BALANCE);
                 shoe16.setCategory(Shoe.Category.URBAN);
@@ -143,7 +147,8 @@ public class DataInitializer implements CommandLineRunner {
                 Shoe shoe32 = new Shoe();
                 shoe32.setName("Adidas Campus 00s Black");
                 shoe32.setDescription("Bold, timeless, and effortlessly stylish.");
-                shoe32.setLongDescription("The Adidas Campus 00s Black offers a premium suede upper, vintage-inspired detailing, and an ultra-comfortable fit. Designed for sneaker enthusiasts, this model maintains the original Campus DNA while introducing a fresh, urban edge. The durable rubber outsole ensures grip and longevity, making it the perfect sneaker for street-style lovers looking for a classic yet contemporary aesthetic.");
+                shoe32.setLongDescription(
+                                "The Adidas Campus 00s Black offers a premium suede upper, vintage-inspired detailing, and an ultra-comfortable fit. Designed for sneaker enthusiasts, this model maintains the original Campus DNA while introducing a fresh, urban edge. The durable rubber outsole ensures grip and longevity, making it the perfect sneaker for street-style lovers looking for a classic yet contemporary aesthetic.");
                 shoe32.setPrice(new BigDecimal("100.00"));
                 shoe32.setBrand(Shoe.Brand.ADIDAS);
                 shoe32.setCategory(Shoe.Category.URBAN);
@@ -160,7 +165,8 @@ public class DataInitializer implements CommandLineRunner {
                 Shoe shoe47 = new Shoe();
                 shoe47.setName("Puma Arizona Yellow Black");
                 shoe47.setDescription("Eye-catching colors with everyday comfort.");
-                shoe47.setLongDescription("The Puma Arizona Yellow Black stands out with its vibrant design and functional performance. Featuring a lightweight, breathable upper for maximum ventilation and a soft cushioned midsole for all-day support. The rubber outsole enhances traction and durability, making this sneaker an ideal choice for those who seek style and comfort in one package.");
+                shoe47.setLongDescription(
+                                "The Puma Arizona Yellow Black stands out with its vibrant design and functional performance. Featuring a lightweight, breathable upper for maximum ventilation and a soft cushioned midsole for all-day support. The rubber outsole enhances traction and durability, making this sneaker an ideal choice for those who seek style and comfort in one package.");
                 shoe47.setPrice(new BigDecimal("90.00"));
                 shoe47.setBrand(Shoe.Brand.PUMA);
                 shoe47.setCategory(Shoe.Category.CASUAL);
@@ -195,7 +201,8 @@ public class DataInitializer implements CommandLineRunner {
                 Shoe shoe17 = new Shoe();
                 shoe17.setName("New Balance 327");
                 shoe17.setDescription("A modern take on a vintage runner.");
-                shoe17.setLongDescription("The New Balance 327 reinvents the classic 70s runner with bold design elements and modern materials. Its lightweight suede and nylon upper ensure breathability and durability, while the oversized N logo gives it a unique and recognizable look. The aggressive tread outsole offers superior grip, making it a standout option for those who appreciate vintage aesthetics with a contemporary touch.");
+                shoe17.setLongDescription(
+                                "The New Balance 327 reinvents the classic 70s runner with bold design elements and modern materials. Its lightweight suede and nylon upper ensure breathability and durability, while the oversized N logo gives it a unique and recognizable look. The aggressive tread outsole offers superior grip, making it a standout option for those who appreciate vintage aesthetics with a contemporary touch.");
                 shoe17.setPrice(new BigDecimal("150.00"));
                 shoe17.setBrand(Shoe.Brand.NEW_BALANCE);
                 shoe17.setCategory(Shoe.Category.URBAN);
@@ -212,7 +219,8 @@ public class DataInitializer implements CommandLineRunner {
                 Shoe shoe33 = new Shoe();
                 shoe33.setName("Adidas Campus 00s Skyblue");
                 shoe33.setDescription("Fresh pastel tones for a stylish look.");
-                shoe33.setLongDescription("The Adidas Campus 00s Skyblue brings a refreshing pastel hue to this timeless silhouette. With its soft suede upper, cushioned midsole, and supportive design, this sneaker offers a balance of style and comfort. Whether worn casually or dressed up, its versatility makes it a must-have in any sneaker collection.");
+                shoe33.setLongDescription(
+                                "The Adidas Campus 00s Skyblue brings a refreshing pastel hue to this timeless silhouette. With its soft suede upper, cushioned midsole, and supportive design, this sneaker offers a balance of style and comfort. Whether worn casually or dressed up, its versatility makes it a must-have in any sneaker collection.");
                 shoe33.setPrice(new BigDecimal("90.00"));
                 shoe33.setBrand(Shoe.Brand.ADIDAS);
                 shoe33.setCategory(Shoe.Category.URBAN);
@@ -229,7 +237,8 @@ public class DataInitializer implements CommandLineRunner {
                 Shoe shoe48 = new Shoe();
                 shoe48.setName("Puma Disperse Tech");
                 shoe48.setDescription("Dynamic design for active lifestyles.");
-                shoe48.setLongDescription("The Puma Disperse Tech is built for those who embrace movement. Its breathable upper keeps your feet cool, while the cushioned midsole absorbs impact, providing comfort throughout the day. The lightweight design ensures effortless wear, making it an ideal choice for both training sessions and everyday activities.");
+                shoe48.setLongDescription(
+                                "The Puma Disperse Tech is built for those who embrace movement. Its breathable upper keeps your feet cool, while the cushioned midsole absorbs impact, providing comfort throughout the day. The lightweight design ensures effortless wear, making it an ideal choice for both training sessions and everyday activities.");
                 shoe48.setPrice(new BigDecimal("50.00"));
                 shoe48.setBrand(Shoe.Brand.PUMA);
                 shoe48.setCategory(Shoe.Category.SPORT);
@@ -246,7 +255,8 @@ public class DataInitializer implements CommandLineRunner {
                 Shoe shoe3 = new Shoe();
                 shoe3.setName("Nike AirForce 1 White-Grey");
                 shoe3.setDescription("The legendary AirForce 1, now in a sleek colorway.");
-                shoe3.setLongDescription("The Nike AirForce 1 White-Grey takes the iconic silhouette and updates it with a clean, modern color scheme. Made with premium leather for durability, it features Nike Air cushioning for superior comfort and shock absorption. The classic rubber outsole ensures optimal traction, making it perfect for both casual and streetwear outfits.");
+                shoe3.setLongDescription(
+                                "The Nike AirForce 1 White-Grey takes the iconic silhouette and updates it with a clean, modern color scheme. Made with premium leather for durability, it features Nike Air cushioning for superior comfort and shock absorption. The classic rubber outsole ensures optimal traction, making it perfect for both casual and streetwear outfits.");
                 shoe3.setPrice(new BigDecimal("150.00"));
                 shoe3.setBrand(Shoe.Brand.NIKE);
                 shoe3.setCategory(Shoe.Category.URBAN);
@@ -263,7 +273,8 @@ public class DataInitializer implements CommandLineRunner {
                 Shoe shoe18 = new Shoe();
                 shoe18.setName("New Balance 370");
                 shoe18.setDescription("Classic aesthetics meet modern comfort.");
-                shoe18.setLongDescription("The New Balance 370 offers a minimalistic design with a focus on all-day comfort. Featuring a soft upper for flexibility, a cushioned midsole for responsive support, and a durable outsole for long-lasting wear, this sneaker is perfect for urban explorers seeking a sleek and reliable option.");
+                shoe18.setLongDescription(
+                                "The New Balance 370 offers a minimalistic design with a focus on all-day comfort. Featuring a soft upper for flexibility, a cushioned midsole for responsive support, and a durable outsole for long-lasting wear, this sneaker is perfect for urban explorers seeking a sleek and reliable option.");
                 shoe18.setPrice(new BigDecimal("150.00"));
                 shoe18.setBrand(Shoe.Brand.NEW_BALANCE);
                 shoe18.setCategory(Shoe.Category.CASUAL);
@@ -280,7 +291,8 @@ public class DataInitializer implements CommandLineRunner {
                 Shoe shoe34 = new Shoe();
                 shoe34.setName("Adidas Campus Originals Grey");
                 shoe34.setDescription("A classic silhouette with a modern twist.");
-                shoe34.setLongDescription("The Adidas Campus 00s Beta brings retro vibes with a fresh update. Featuring a premium suede upper, a padded collar for all-day comfort, and a durable rubber outsole for enhanced traction. The signature 3-Stripes design adds an iconic touch, making this sneaker perfect for urban wear. Whether paired with casual or sporty outfits, its timeless aesthetic ensures a stylish and versatile look.");
+                shoe34.setLongDescription(
+                                "The Adidas Campus 00s Beta brings retro vibes with a fresh update. Featuring a premium suede upper, a padded collar for all-day comfort, and a durable rubber outsole for enhanced traction. The signature 3-Stripes design adds an iconic touch, making this sneaker perfect for urban wear. Whether paired with casual or sporty outfits, its timeless aesthetic ensures a stylish and versatile look.");
                 shoe34.setPrice(new BigDecimal("80.00"));
                 shoe34.setBrand(Shoe.Brand.ADIDAS);
                 shoe34.setCategory(Shoe.Category.CASUAL);
@@ -297,7 +309,8 @@ public class DataInitializer implements CommandLineRunner {
                 Shoe shoe49 = new Shoe();
                 shoe49.setName("Puma Flex Focus");
                 shoe49.setDescription("A flexible and lightweight sneaker for everyday wear.");
-                shoe49.setLongDescription("The Puma Flex Focus is designed to keep up with your daily activities, offering a breathable mesh upper for maximum airflow and comfort. Its cushioned footbed provides enhanced support, while the flexible sole ensures a natural range of motion. Whether you're hitting the gym, running errands, or just enjoying a casual day out, these sneakers will keep you comfortable and stylish.");
+                shoe49.setLongDescription(
+                                "The Puma Flex Focus is designed to keep up with your daily activities, offering a breathable mesh upper for maximum airflow and comfort. Its cushioned footbed provides enhanced support, while the flexible sole ensures a natural range of motion. Whether you're hitting the gym, running errands, or just enjoying a casual day out, these sneakers will keep you comfortable and stylish.");
                 shoe49.setPrice(new BigDecimal("70.00"));
                 shoe49.setBrand(Shoe.Brand.PUMA);
                 shoe49.setCategory(Shoe.Category.URBAN);
@@ -314,7 +327,8 @@ public class DataInitializer implements CommandLineRunner {
                 Shoe shoe4 = new Shoe();
                 shoe4.setName("NKairmax Black");
                 shoe4.setDescription("Sleek and comfortable for all-day wear.");
-                shoe4.setLongDescription("The Nike Air Max Black is built for both performance and casual wear. Its breathable mesh upper keeps your feet cool, while the iconic Air Max cushioning delivers superior impact absorption. A durable rubber outsole ensures excellent traction, making it a great choice for urban environments or active lifestyles.");
+                shoe4.setLongDescription(
+                                "The Nike Air Max Black is built for both performance and casual wear. Its breathable mesh upper keeps your feet cool, while the iconic Air Max cushioning delivers superior impact absorption. A durable rubber outsole ensures excellent traction, making it a great choice for urban environments or active lifestyles.");
                 shoe4.setPrice(new BigDecimal("150.00"));
                 shoe4.setBrand(Shoe.Brand.NIKE);
                 shoe4.setCategory(Shoe.Category.SPORT);
@@ -332,7 +346,8 @@ public class DataInitializer implements CommandLineRunner {
                 shoe19.setName("NB405");
                 shoe19.setDescription("NB405");
                 shoe19.setDescription("A comfortable sneaker for active lifestyles.");
-                shoe19.setLongDescription("The NB405 blends sporty aesthetics with premium cushioning for all-day comfort. Its breathable mesh upper allows optimal ventilation, while the soft foam midsole absorbs impact efficiently. The grippy outsole ensures stability, making this sneaker perfect for both casual outings and light physical activities.");
+                shoe19.setLongDescription(
+                                "The NB405 blends sporty aesthetics with premium cushioning for all-day comfort. Its breathable mesh upper allows optimal ventilation, while the soft foam midsole absorbs impact efficiently. The grippy outsole ensures stability, making this sneaker perfect for both casual outings and light physical activities.");
                 shoe19.setPrice(new BigDecimal("150.00"));
                 shoe19.setBrand(Shoe.Brand.NEW_BALANCE);
                 shoe19.setCategory(Shoe.Category.SPORT);
@@ -349,7 +364,8 @@ public class DataInitializer implements CommandLineRunner {
                 Shoe shoe35 = new Shoe();
                 shoe35.setName("Adidas Dame 9");
                 shoe35.setDescription("Basketball-inspired style for every day.");
-                shoe35.setLongDescription("The Adidas Dame 9 delivers high-performance support and street-ready style. Built for speed and agility, it features a lightweight mesh upper for breathability and a cushioned midsole for superior comfort. The grippy outsole provides excellent traction on and off the court, making it the perfect blend of functionality and fashion.");
+                shoe35.setLongDescription(
+                                "The Adidas Dame 9 delivers high-performance support and street-ready style. Built for speed and agility, it features a lightweight mesh upper for breathability and a cushioned midsole for superior comfort. The grippy outsole provides excellent traction on and off the court, making it the perfect blend of functionality and fashion.");
                 shoe35.setPrice(new BigDecimal("50.00"));
                 shoe35.setBrand(Shoe.Brand.ADIDAS);
                 shoe35.setCategory(Shoe.Category.SPORT);
@@ -366,7 +382,8 @@ public class DataInitializer implements CommandLineRunner {
                 Shoe shoe50 = new Shoe();
                 shoe50.setName("Puma Future Plat TT");
                 shoe50.setDescription("Futuristic design with premium comfort.");
-                shoe50.setLongDescription("The Puma Future Plat TT redefines sporty style with an innovative silhouette and high-performance materials. Its breathable upper ensures a snug fit, while the responsive midsole provides excellent energy return. A durable rubber outsole offers reliable grip, making it a versatile choice for both training and casual wear.");
+                shoe50.setLongDescription(
+                                "The Puma Future Plat TT redefines sporty style with an innovative silhouette and high-performance materials. Its breathable upper ensures a snug fit, while the responsive midsole provides excellent energy return. A durable rubber outsole offers reliable grip, making it a versatile choice for both training and casual wear.");
                 shoe50.setPrice(new BigDecimal("130.00"));
                 shoe50.setBrand(Shoe.Brand.PUMA);
                 shoe50.setCategory(Shoe.Category.SPORT);
@@ -383,7 +400,8 @@ public class DataInitializer implements CommandLineRunner {
                 Shoe shoe5 = new Shoe();
                 shoe5.setName("Nike AirForce 1 Black");
                 shoe5.setDescription("A bold take on the classic AF1.");
-                shoe5.setLongDescription("The Nike AirForce 1 Black brings a sleek and timeless look to the legendary silhouette. Constructed with premium leather for durability, it features Nike Air cushioning for superior comfort and shock absorption. The classic rubber outsole ensures optimal traction, making it perfect for both casual and streetwear outfits.");
+                shoe5.setLongDescription(
+                                "The Nike AirForce 1 Black brings a sleek and timeless look to the legendary silhouette. Constructed with premium leather for durability, it features Nike Air cushioning for superior comfort and shock absorption. The classic rubber outsole ensures optimal traction, making it perfect for both casual and streetwear outfits.");
                 shoe5.setPrice(new BigDecimal("150.00"));
                 shoe5.setBrand(Shoe.Brand.NIKE);
                 shoe5.setCategory(Shoe.Category.CASUAL);
@@ -400,7 +418,8 @@ public class DataInitializer implements CommandLineRunner {
                 Shoe shoe20 = new Shoe();
                 shoe20.setName("NB530");
                 shoe20.setDescription("Classic design with a modern edge.");
-                shoe20.setLongDescription("The NB530 seamlessly blends retro aesthetics with modern performance. Featuring a mix of breathable mesh and durable suede, this sneaker offers superior comfort and long-lasting wear. The cushioned midsole ensures responsive support, making it a great choice for all-day wear.");
+                shoe20.setLongDescription(
+                                "The NB530 seamlessly blends retro aesthetics with modern performance. Featuring a mix of breathable mesh and durable suede, this sneaker offers superior comfort and long-lasting wear. The cushioned midsole ensures responsive support, making it a great choice for all-day wear.");
                 shoe20.setPrice(new BigDecimal("150.00"));
                 shoe20.setBrand(Shoe.Brand.NEW_BALANCE);
                 shoe20.setCategory(Shoe.Category.URBAN);
@@ -417,7 +436,8 @@ public class DataInitializer implements CommandLineRunner {
                 Shoe shoe36 = new Shoe();
                 shoe36.setName("Adidas Gazelle Originals Green");
                 shoe36.setDescription("Vintage vibes with premium materials.");
-                shoe36.setLongDescription("The Adidas Gazelle Originals Green pays homage to the classic 90s sneaker with a premium suede upper, contrast detailing, and a durable rubber outsole. With a soft padded collar for extra comfort and a timeless silhouette, it remains a staple for sneaker enthusiasts looking for a mix of heritage and contemporary style.");
+                shoe36.setLongDescription(
+                                "The Adidas Gazelle Originals Green pays homage to the classic 90s sneaker with a premium suede upper, contrast detailing, and a durable rubber outsole. With a soft padded collar for extra comfort and a timeless silhouette, it remains a staple for sneaker enthusiasts looking for a mix of heritage and contemporary style.");
                 shoe36.setPrice(new BigDecimal("70.00"));
                 shoe36.setBrand(Shoe.Brand.ADIDAS);
                 shoe36.setCategory(Shoe.Category.CASUAL);
@@ -434,7 +454,8 @@ public class DataInitializer implements CommandLineRunner {
                 Shoe shoe51 = new Shoe();
                 shoe51.setName("Puma Palermo Brown");
                 shoe51.setDescription("A retro classic with a modern twist.");
-                shoe51.setLongDescription("The Puma Palermo Brown combines vintage aesthetics with modern comfort. Its suede upper provides a premium feel, while the cushioned midsole ensures a smooth ride. The signature gum sole adds traction and durability, making it a stylish choice for both casual and streetwear outfits.");
+                shoe51.setLongDescription(
+                                "The Puma Palermo Brown combines vintage aesthetics with modern comfort. Its suede upper provides a premium feel, while the cushioned midsole ensures a smooth ride. The signature gum sole adds traction and durability, making it a stylish choice for both casual and streetwear outfits.");
                 shoe51.setPrice(new BigDecimal("70.00"));
                 shoe51.setBrand(Shoe.Brand.PUMA);
                 shoe51.setCategory(Shoe.Category.CASUAL);
@@ -451,7 +472,8 @@ public class DataInitializer implements CommandLineRunner {
                 Shoe shoe6 = new Shoe();
                 shoe6.setName("Nike AirMax Dn");
                 shoe6.setDescription("Next-level Air cushioning for superior comfort.");
-                shoe6.setLongDescription("The Nike AirMax Dn takes comfort to a new level with its innovative dual-pressure Air cushioning system. Designed for maximum responsiveness, it delivers a smooth and springy ride. The breathable mesh upper ensures ventilation, while the sleek, modern silhouette makes it a must-have for sneaker lovers.");
+                shoe6.setLongDescription(
+                                "The Nike AirMax Dn takes comfort to a new level with its innovative dual-pressure Air cushioning system. Designed for maximum responsiveness, it delivers a smooth and springy ride. The breathable mesh upper ensures ventilation, while the sleek, modern silhouette makes it a must-have for sneaker lovers.");
                 shoe6.setPrice(new BigDecimal("90.00"));
                 shoe6.setBrand(Shoe.Brand.NIKE);
                 shoe6.setCategory(Shoe.Category.SPORT);
@@ -468,7 +490,8 @@ public class DataInitializer implements CommandLineRunner {
                 Shoe shoe21 = new Shoe();
                 shoe21.setName("NB550");
                 shoe21.setDescription("A timeless basketball-inspired sneaker.");
-                shoe21.setLongDescription("The New Balance 550 brings back the iconic 80s basketball sneaker with a fresh twist. Featuring a combination of leather and suede, this low-top silhouette delivers both durability and a premium look. The cushioned midsole ensures all-day comfort, while the rubber outsole provides excellent traction.");
+                shoe21.setLongDescription(
+                                "The New Balance 550 brings back the iconic 80s basketball sneaker with a fresh twist. Featuring a combination of leather and suede, this low-top silhouette delivers both durability and a premium look. The cushioned midsole ensures all-day comfort, while the rubber outsole provides excellent traction.");
                 shoe21.setPrice(new BigDecimal("150.00"));
                 shoe21.setBrand(Shoe.Brand.NEW_BALANCE);
                 shoe21.setCategory(Shoe.Category.SPORT);
@@ -1156,11 +1179,13 @@ public class DataInitializer implements CommandLineRunner {
 
                 try {
                         imageUser = loadImage("images/USERS/user_1.jpg");
-                        User user1 = new User("Gaby","baguim2323@gmail.com", passwordEncoder.encode("pass"), imageUser, "ADMIN", "USER");
+                        User user1 = new User("Gaby", "baguim2323@gmail.com", passwordEncoder.encode("pass"), imageUser,
+                                        "ADMIN", "USER");
                         userRepository.save(user1);
 
                         imageUser = loadImage("images/USERS/user_2.jpg");
-                        User user2 = new User("Gonzalo","gonzaluski@gmail.com", passwordEncoder.encode("pass"),imageUser, "USER");
+                        User user2 = new User("Gonzalo", "gonzaluski@gmail.com", passwordEncoder.encode("pass"),
+                                        imageUser, "USER");
                         userRepository.save(user2);
 
                 } catch (Exception e) {
@@ -1183,7 +1208,8 @@ public class DataInitializer implements CommandLineRunner {
 
                                         System.out.println("user1 present");
 
-                                        Review review1 = new Review(5, "Excelente producto", shoe1.get(), user1.get(), date);
+                                        Review review1 = new Review(5, "Excelente producto", shoe1.get(), user1.get(),
+                                                        date);
                                         reviewRepository.save(review1);
                                 } else {
 
@@ -1193,10 +1219,12 @@ public class DataInitializer implements CommandLineRunner {
                         if (shoe2.isPresent()) {
                                 if (user2.isPresent()) {
                                         System.out.println("usuario 2 inicializado");
-                                        Review review1 = new Review(5, "Me parece bien pero no me termina de convencer", shoe2.get(), user1.get(), date);
+                                        Review review1 = new Review(5, "Me parece bien pero no me termina de convencer",
+                                                        shoe2.get(), user1.get(), date);
                                         reviewRepository.save(review1);
 
-                                        Review review2 = new Review(5, "El producto me llego roto", shoe2.get(), user2.get(), date);
+                                        Review review2 = new Review(5, "El producto me llego roto", shoe2.get(),
+                                                        user2.get(), date);
                                         reviewRepository.save(review2);
                                 } else {
 
@@ -1208,49 +1236,79 @@ public class DataInitializer implements CommandLineRunner {
 
                 }
 
-                
         }
 
         private void initializeOrders() {
                 Optional<User> user1 = userRepository.findById(1L); // Gabi
                 Optional<User> user2 = userRepository.findById(2L); // Gonzalo
-            
+
                 if (user1.isPresent()) {
-                    User gabi = user1.get();
-                    createOrdersForUser(gabi, 10, "Processed");
+                        User gabi = user1.get();
+                        createOrdersForUser(gabi, 10, "Processed");
                 }
-            
+
                 if (user2.isPresent()) {
-                    User gonzalo = user2.get();
-                    createOrdersForUser(gonzalo, 12, "Processed");
+                        User gonzalo = user2.get();
+                        createOrdersForUser(gonzalo, 12, "Processed");
                 }
-            }
-            
-            private void createOrdersForUser(User user, int numberOfOrders, String state) {
+        }
+
+        private void createOrdersForUser(User user, int numberOfOrders, String state) {
                 LocalDate startDate = LocalDate.of(2025, 1, 1);
-            
+
                 for (int i = 0; i < numberOfOrders; i++) {
-                    OrderShoes order = new OrderShoes(user);
-                    order.setState(state);
-            
-                    // Generate a random date from 2025 year
-                    int month = (i % 12) + 1; 
-                    int day = (int) (Math.random() * 28) + 1; // Random day between 1 y 28
-                    LocalDate orderDate = LocalDate.of(2025, month, day);
-                    order.setDate(orderDate);
-            
-                    // Generate random summary between 50 and 300
-                    double randomSummary = 50 + Math.random() * 250; // Number between 50 and 300
-                    BigDecimal summary = BigDecimal.valueOf(randomSummary).setScale(2, BigDecimal.ROUND_HALF_UP); // Round two decimal places
-                    order.setSummary(summary);
-            
-                    orderShoesRepository.save(order);
-                    user.addOrderShoe(order);
-            
-                    System.out.println("Pedido creado para " + user.getUsername() + " con ID: " + order.getId() + 
-                                       ", fecha: " + orderDate + ", summary: " + summary);
+                        OrderShoes order = new OrderShoes(user);
+                        order.setState(state);
+
+                        // Generate a random date from 2025 year
+                        int month = (i % 12) + 1;
+                        int day = (int) (Math.random() * 28) + 1; // Random day between 1 y 28
+                        LocalDate orderDate = LocalDate.of(2025, month, day);
+                        order.setDate(orderDate);
+
+                        // Generate random summary between 50 and 300
+                        double randomSummary = 50 + Math.random() * 250; // Number between 50 and 300
+                        BigDecimal summary = BigDecimal.valueOf(randomSummary).setScale(2, BigDecimal.ROUND_HALF_UP); // Round
+                                                                                                                      // two
+                                                                                                                      // decimal
+                                                                                                                      // places
+                        order.setSummary(summary);
+                        orderShoesRepository.save(order);
+
+                        // Crear OrderItems para esta orden
+                        int numberOfItems = (int) (Math.random() * 3) + 1; // Generar entre 1 y 3 productos por pedido
+
+                        for (int j = 0; j < numberOfItems; j++) {
+                                // Seleccionar un producto (shoe) aleatorio. Esto puede ser modificado según tu
+                                // lógica.
+                                Optional<Shoe> randomShoe = shoeRepository
+                                                .findById((long) (Math.random() * shoeRepository.count()) + 1);
+
+                                if (randomShoe.isPresent()) {
+                                        Shoe shoe = randomShoe.get();
+
+                                        // Generar una cantidad aleatoria para el producto
+                                        int quantity = (int) (Math.random() * 5) + 1; // Entre 1 y 5 unidades
+
+                                        // Seleccionar una talla aleatoria para el producto
+                                        String size = generateRandomSize();
+
+                                        // Crear el OrderItem
+                                        order.addItem(shoe, quantity, size); // Asumiendo que addItem ya se encarga de
+                                                                             // agregar a orderItems
+                                }
+                        }
+
+                        user.addOrderShoe(order);
+
+                        System.out.println("Pedido creado para " + user.getUsername() + " con ID: " + order.getId() +
+                                        ", fecha: " + orderDate + ", summary: " + summary);
                 }
-            
+
                 userRepository.save(user);
+        }
+        private String generateRandomSize() {
+                String[] sizes = {"S", "M", "L", "XL"};
+                return sizes[(int) (Math.random() * sizes.length)];
             }
 }

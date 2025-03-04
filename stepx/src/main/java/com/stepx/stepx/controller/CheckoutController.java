@@ -2,6 +2,7 @@ package com.stepx.stepx.controller;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
@@ -20,6 +21,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,6 +57,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.security.core.Authentication;
 
 @Controller
 @RequestMapping("/checkout")
@@ -86,14 +91,36 @@ public class CheckoutController {
             @RequestParam String email,
             @RequestParam String address,
             @RequestParam String phone,
-            HttpServletResponse response
-    ) throws IOException {
+            HttpServletResponse response,
+            HttpServletRequest request) throws IOException {
         System.out.println("🔹 Recibiendo solicitud para descargar ticket con ID: " + orderId);
 
-        // Getting order from service
-        Optional<OrderShoes> orderOptional = orderShoesService.getCartById(1L);
+        boolean isAuthenticated = request.getUserPrincipal() != null;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!isAuthenticated) {
+            System.out.println("❌ Acceso denegado: Usuario no autenticado.");
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged in to download the ticket");
+            return;
+        }
+
+        // 2️⃣ Obtener el objeto `UserDetails`
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+        // 3️⃣ Obtener el usuario desde la base de datos (usando
+        // `userDetails.getUsername()` si necesitas buscarlo)
+        Optional<User> userOptional = userRepository.findByUsername(userDetails.getUsername());
+        if (!userOptional.isPresent()) {
+            System.out.println("❌ Error: Usuario no encontrado.");
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User not found");
+            return;
+        }
+        User user = userOptional.get();
+        Long userId = user.getId(); // Aquí ya tienes el ID correcto del usuario autenticado
+
+        // 4️⃣ Buscar la orden por ID y validar que pertenece al usuario autenticado
+        Optional<OrderShoes> orderOptional = orderShoesService.getCartById(userId);
         if (!orderOptional.isPresent()) {
-            System.out.println("❌ Error: Orden no encontrada con ID " + orderId);
+            System.out.println("❌ Error: Orden no encontrada con ID " + orderId + " para el usuario " + userId);
             response.sendError(HttpServletResponse.SC_NOT_FOUND, "Order not found");
             return;
         }
@@ -109,8 +136,8 @@ public class CheckoutController {
         order.setState("Processed");
         order.setActualDate();
         orderShoesService.saveOrderShoes(order);
-        
-        //Prearing data to send the template
+
+        // Prearing data to send the template
         Map<String, Object> data = new HashMap<>();
         data.put("customerName", firstName + " " + lastName);
         data.put("email", email);
@@ -137,57 +164,62 @@ public class CheckoutController {
         response.getOutputStream().write(pdfBytes);
     }
 
-
     @GetMapping("/user")
     public String showCheckout(HttpServletRequest request, Model model) {
 
-        boolean isAuthenticated=request.getUserPrincipal()!=null;
+        CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
+
+        model.addAttribute("token", csrfToken.getToken());
+        model.addAttribute("headerName", csrfToken.getHeaderName());
+
+        boolean isAuthenticated = request.getUserPrincipal() != null;
         model.addAttribute("isAuthenticated", isAuthenticated);
-        if(isAuthenticated){
-            model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));       
+        if (isAuthenticated) {
+            model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
         }
-        User user=userRepository.findByUsername(request.getUserPrincipal().getName()).orElseThrow();
+        User user = userRepository.findByUsername(request.getUserPrincipal().getName()).orElseThrow();
 
-        if (user==null) {
+        if (user == null) {
             model.addAttribute("setSubtotal", false);
             model.addAttribute("cartItems", false);
             return "checkout";
         }
 
-        Optional<OrderShoes> cart_Optional = orderShoesService.getCartById(user.getId()); // get the cart asosiated to the id
-        
-        if(cart_Optional.isEmpty()){
+        Optional<OrderShoes> cart_Optional = orderShoesService.getCartById(user.getId()); // get the cart asosiated to
+                                                                                          // the id
+
+        if (cart_Optional.isEmpty()) {
             model.addAttribute("setSubtotal", false);
             model.addAttribute("cartItems", false);
-            
+
             return "checkout";
         }
 
-        OrderShoes cart=cart_Optional.get();
+        OrderShoes cart = cart_Optional.get();
 
-        if(cart.getLenghtOrderShoes()==0){
+        if (cart.getLenghtOrderShoes() == 0) {
             model.addAttribute("setSubtotal", false);
             model.addAttribute("cartItems", false);
             model.addAttribute("id_orderShoe", cart.getId());
             return "checkout";
         }
 
-        //ids of all of orderitems from cart
+        // ids of all of orderitems from cart
         List<Long> shoeIds = cart.getOrderItems().stream()
-            .map(orderItem -> orderItem.getShoe().getId())
-            .distinct()
-            .collect(Collectors.toList());
+                .map(orderItem -> orderItem.getShoe().getId())
+                .distinct()
+                .collect(Collectors.toList());
 
-        //all of stocks in a single consult
+        // all of stocks in a single consult
         Map<String, Integer> stockMap = shoeSizeStockService.getAllStocksForShoes(shoeIds);
 
-        //process the information
-        List<Map<String,Object>> cartItems=new ArrayList<>();
-        for (OrderItem orderItem:cart.getOrderItems()){
-            Shoe shoe=orderItem.getShoe();
-            String stockKey=shoe.getId()+"_"+orderItem.getSize();
-            boolean stockAvailable=stockMap.getOrDefault(stockKey,0)>0;///if the stock is grater than 0
-                
+        // process the information
+        List<Map<String, Object>> cartItems = new ArrayList<>();
+        for (OrderItem orderItem : cart.getOrderItems()) {
+            Shoe shoe = orderItem.getShoe();
+            String stockKey = shoe.getId() + "_" + orderItem.getSize();
+            boolean stockAvailable = stockMap.getOrDefault(stockKey, 0) > 0;/// if the stock is grater than 0
+
             Map<String, Object> item = new HashMap<>();
             item.put("id", shoe.getId());
             item.put("name", shoe.getName());
@@ -199,7 +231,7 @@ public class CheckoutController {
             cartItems.add(item);
         }
 
-        BigDecimal total=orderShoesService.getTotalPriceExcludingOutOfStock(cart.getId());
+        BigDecimal total = orderShoesService.getTotalPriceExcludingOutOfStock(cart.getId());
         model.addAttribute("setSubtotal", true);
         model.addAttribute("total", total);
         model.addAttribute("cartItems", cartItems);
@@ -209,47 +241,48 @@ public class CheckoutController {
     }
 
     @GetMapping("/deleteItem/{id}")
-    public String DeleteItemCheckout(@PathVariable Long id, Model model,HttpServletRequest request) {
+    public String DeleteItemCheckout(@PathVariable Long id, Model model, HttpServletRequest request) {
 
-        User user=userRepository.findByUsername(request.getUserPrincipal().getName()).orElseThrow();
-        if (user==null) {
+        User user = userRepository.findByUsername(request.getUserPrincipal().getName()).orElseThrow();
+        if (user == null) {
             model.addAttribute("setSubtotal", false);
             model.addAttribute("cartItems", false);
             return "partials/checkout-itemsList";
         }
 
-        Optional<OrderShoes> cart_Optional = orderShoesService.getCartById(user.getId()); // get the cart asosiated to the id
+        Optional<OrderShoes> cart_Optional = orderShoesService.getCartById(user.getId()); // get the cart asosiated to
+                                                                                          // the id
 
-        OrderShoes cart=cart_Optional.get();
-        if (cart.getLenghtOrderShoes()==0) {
+        OrderShoes cart = cart_Optional.get();
+        if (cart.getLenghtOrderShoes() == 0) {
             model.addAttribute("setSubtotal", false);
             model.addAttribute("cartItems", false);
             return "partials/checkout-itemsList";
         }
 
-        orderShoesService.deleteOrderItems(user.getId(), id);//delete the orderitem from the cart
+        orderShoesService.deleteOrderItems(user.getId(), id);// delete the orderitem from the cart
         orderShoesService.saveOrderShoes(cart);
 
-        List<OrderItem> remainingItems= cart.getOrderItems();
-        if (remainingItems.isEmpty()){
+        List<OrderItem> remainingItems = cart.getOrderItems();
+        if (remainingItems.isEmpty()) {
             model.addAttribute("setSubtotal", false);
             model.addAttribute("cartItems", false);
             return "partials/checkout-itemsList";
         }
 
         List<Long> shoeIds = remainingItems.stream()
-            .map(orderItem -> orderItem.getShoe().getId())
-            .distinct()
-            .collect(Collectors.toList());
+                .map(orderItem -> orderItem.getShoe().getId())
+                .distinct()
+                .collect(Collectors.toList());
 
         Map<String, Integer> stockMap = shoeSizeStockService.getAllStocksForShoes(shoeIds);
-    
+
         List<Map<String, Object>> cartItems = new ArrayList<>();
         for (OrderItem orderItem : remainingItems) {
             Shoe shoe = orderItem.getShoe();
             String stockKey = shoe.getId() + "_" + orderItem.getSize();
             boolean stockAvailable = stockMap.getOrDefault(stockKey, 0) > 0;
-    
+
             Map<String, Object> item = new HashMap<>();
             item.put("id", shoe.getId());
             item.put("name", shoe.getName());
@@ -259,9 +292,9 @@ public class CheckoutController {
             item.put("id_orderItem", orderItem.getId());
             item.put("stock", stockAvailable);
             cartItems.add(item);
-        }    
+        }
 
-        BigDecimal total=orderShoesService.getTotalPriceExcludingOutOfStock(cart.getId());
+        BigDecimal total = orderShoesService.getTotalPriceExcludingOutOfStock(cart.getId());
         if (total == null) {
             total = BigDecimal.ZERO;
         }
@@ -273,18 +306,17 @@ public class CheckoutController {
         return "partials/checkout-itemsList";
     }
 
-
     @PostMapping("/recalculate")
     public String Recalculate(@RequestParam List<Long> ids,
             @RequestParam List<Integer> quantities,
             Model model,
             HttpServletRequest request) {
-       
-        boolean isAuthenticated=request.getUserPrincipal()!=null;
+
+        boolean isAuthenticated = request.getUserPrincipal() != null;
         model.addAttribute("isAuthenticated", isAuthenticated);
 
-        User user=userRepository.findByUsername(request.getUserPrincipal().getName()).orElseThrow();
-        if (user==null) {
+        User user = userRepository.findByUsername(request.getUserPrincipal().getName()).orElseThrow();
+        if (user == null) {
             model.addAttribute("setSubtotal", false);
             model.addAttribute("cartItems", false);
             return "partials/checkout-itemsList";
@@ -297,7 +329,7 @@ public class CheckoutController {
         }
 
         Optional<OrderShoes> cartOptional = orderShoesService.getCartById(user.getId());
-        if (!cartOptional.isPresent() | cartOptional.get().getLenghtOrderShoes()==0) {
+        if (!cartOptional.isPresent() | cartOptional.get().getLenghtOrderShoes() == 0) {
             model.addAttribute("setSubtotal", false);
             model.addAttribute("cartItems", false);
             return "partials/checkout-itemsList";
@@ -305,19 +337,19 @@ public class CheckoutController {
 
         OrderShoes cart = cartOptional.get();
 
-        //Getting ID's List for every product in cart
+        // Getting ID's List for every product in cart
         List<Long> shoeIds = cart.getOrderItems().stream()
                 .map(orderItem -> orderItem.getShoe().getId())
                 .distinct()
                 .collect(Collectors.toList());
 
-        //getting all stocks in one optimized request
+        // getting all stocks in one optimized request
         Map<String, Integer> stockMap = shoeSizeStockService.getAllStocksForShoes(shoeIds);
 
         for (int i = 0; i < ids.size(); i++) {
             String stockKey = ids.get(i) + "_" + cart.getOrderItems().get(i).getSize();
             int availableStock = stockMap.getOrDefault(stockKey, 0);
-        
+
             if (quantities.get(i) > availableStock) {
                 quantities.set(i, availableStock);
             }
