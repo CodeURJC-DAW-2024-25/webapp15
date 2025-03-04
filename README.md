@@ -119,5 +119,49 @@ This is the create user account screen. It presents a form where users can enter
 ![*Create Account*](readmeImg/12.png)
 
 
-## 💻 Screen Diagram:
+## 💻 Screen Navigation Diagram:
 ![ScreenDiagram](https://github.com/user-attachments/assets/3f66410c-e9bd-480b-ad75-75954291a3fc)
+
+### 📁 DIAGRAM WITH DATABASE ENTITIES
+
+## 🤝 PARTICIPATION
+
+### **Ronald Sebastian Silvera llimpe**
+(Description)
+| Nº    | Commits      | Files      |
+|:------------: |:------------:| :------------:|
+|1|   |   |
+|2|   |   |
+|3|   |   |
+|4|   |   |
+|5|   |   |
+
+### **Alexander Matias Pearson Huaycochea**
+(Description)
+| Nº    | Commits      | Files      |
+|:------------: |:------------:| :------------:|
+|1|   |   |
+|2|   |   |
+|3|   |   |
+|4|   |   |
+|5|   |   |
+
+### **Gabriel Miró-Granada Lluch**
+(Description)
+| Nº    | Commits      | Files      |
+|:------------: |:------------:| :------------:|
+|1|   |   |
+|2|   |   |
+|3|   |   |
+|4|   |   |
+|5|   |   |
+
+### **Elinee Nathaly Freites Muñoz**
+(Description)
+| Nº    | Commits      | Files      |
+|:------------: |:------------:| :------------:|
+|1|   |   |
+|2|   |   |
+|3|   |   |
+|4|   |   |
+|5|   |   |
