@@ -24,9 +24,12 @@ public void deleteById(Long id);
 
 public Optional<OrderItem> findById(Long id);
 
-@Modifying
+@Modifying(clearAutomatically = true)
 @Transactional
 @Query("UPDATE OrderItem oi SET oi.quantity = :quantity WHERE oi.id = :id")
 void updateOrderItemQuantity(@Param("id") Long id, @Param("quantity") Integer quantity);
 
+
+@Query("SELECT oi FROM OrderItem oi WHERE oi.orderShoes.id = :orderId")
+List<OrderItem> findByOrderId(@Param("orderId") Long orderId);
 }

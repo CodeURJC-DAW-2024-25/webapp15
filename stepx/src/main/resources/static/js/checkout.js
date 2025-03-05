@@ -21,7 +21,8 @@ function checkStockAvailability() {
 document.addEventListener("DOMContentLoaded", checkStockAvailability);
 
 async function recalculate() {
-
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute("content");
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute("content");
     let formData = new FormData();
 
     document.querySelectorAll(".quantity-input").forEach(input => {
@@ -40,7 +41,10 @@ async function recalculate() {
     try {
         let response = await fetch(`/checkout/recalculate`, {
             method: "POST",
-            body: formData
+            body: formData,
+            headers: {
+                [csrfHeader]: csrfToken // 🔹 Incluir el token CSRF en la solicitud
+            }
         });
 
         if (!response.ok) {

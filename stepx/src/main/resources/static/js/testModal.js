@@ -24,6 +24,27 @@ async function openModal(productId, action) {
     }
 }
 
+async function showOrderDetail(order_id) {
+    const detailsDiv = document.getElementById(order_id);
+    const button = document.querySelector(`button[onclick="showOrderDetail('${order_id}')"]`);
+    if (detailsDiv.innerHTML.trim() === "") {
+        try {
+            const response = await fetch(`/user/orderItems?id_order=${order_id}`);
+            if (!response.ok) {
+                throw new Error("Can't load items from order");
+            }
+            const items = await response.text();
+            detailsDiv.innerHTML = items;
+            button.textContent = "Close details";
+        } catch (error) {
+            console.error("Error at the request:", error);
+        }
+    } else {
+        detailsDiv.innerHTML = "";
+        button.textContent = "Show details";
+    }
+}
+
 
 async function AddtoCart(id_Shoe, size, quantity) {
 

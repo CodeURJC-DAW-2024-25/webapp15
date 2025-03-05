@@ -23,6 +23,7 @@ import com.stepx.stepx.model.OrderItem;
 import com.stepx.stepx.model.OrderShoes;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.csrf.CsrfToken;
 
 import com.stepx.stepx.model.Product;
 import com.stepx.stepx.model.User;
@@ -84,17 +85,32 @@ public class GeneralController {
 
     @GetMapping("/profile")
     public String profile(HttpServletRequest request, Model model) {
-        model.addAttribute("isAuthenticated", request.getUserPrincipal() != null);
+         CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
 
+        model.addAttribute("token", csrfToken.getToken());
+        model.addAttribute("headerName", csrfToken.getHeaderName());
+        
+        model.addAttribute("isAuthenticated", request.getUserPrincipal() != null);
         String username = request.getUserPrincipal().getName();
         User user = userRepository.findByUsername(username).orElseThrow();
-
         model.addAttribute("username", user.getUsername());
         model.addAttribute("email", user.getEmail());
         model.addAttribute("imageBlob", user.getImageUser());
-        ///{userId}/imageUser"
-        /// /{{user.id}}/imageUser
-        model.addAttribute("id", user.getId());
+        model.addAttribute("lastName", user.getLastName());
+        model.addAttribute("firstname", user.getFirstName());
+        model.addAttribute("user_id", user.getId());
+
+        //load all orders from user
+        List<OrderShoes>orderShoes=orderShoesService.getOrderShoesFinishedByUserId(user.getId());
+        if(orderShoes.size()==0){
+            model.addAttribute("orders", false);
+        }else{
+            model.addAttribute("orders", orderShoes);
+        }
+        
+        
+
+
         return "profile"; 
     }
 

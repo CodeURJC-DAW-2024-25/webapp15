@@ -14950,4 +14950,71 @@ fieldset:disabled .btn {
   }
 }
 
+.purchase-items {
+  max-height: 600px;
+  overflow-y: auto;
+  margin-bottom: 20px;
+}
+
+.purchase-items::-webkit-scrollbar {
+  width: 8px;
+}
+
+.purchase-items::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.purchase-items::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.purchase-items::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+@media (max-width: 768px) {
+  .purchase-item {
+    padding: 10px;
+  }
+  
+  .purchase-item .row > div {
+    margin-bottom: 8px;
+  }
+  
+  .purchase-item h3 {
+    font-size: 0.85rem !important;
+  }
+  
+  .purchase-item p, 
+  .purchase-item span {
+    font-size: 0.75rem !important;
+  }
+  
+  .purchase-item .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+  }
+  
+  .badge {
+    font-size: 0.7rem !important;
+  }
+}
+
+/* Ajustes para pantallas muy pequeñas */
+@media (max-width: 576px) {
+  .purchase-items {
+    max-height: 500px;
+  }
+  
+  .purchase-item {
+    padding: 8px;
+  }
+  
+  .purchase-item .btn-outline-gray {
+    width: 35px !important;
+    height: 35px !important;
+  }
+}
+
 /*# sourceMappingURL=bootstrap.min.css.map */

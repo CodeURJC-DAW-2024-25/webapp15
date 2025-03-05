@@ -54,4 +54,9 @@ public class OrderItemService {
             orderItemRepository.updateOrderItemQuantity(ids.get(i), quantities.get(i));
         }
     }
-}
+
+    public List<OrderItem> getOrderItemsByOrderId(Long orderId) {
+        return orderItemRepository.findByOrderId(orderId);
+    }
+
+}   

@@ -1161,6 +1161,8 @@ public class DataInitializer implements CommandLineRunner {
 
                         imageUser = loadImage("images/USERS/user_2.jpg");
                         User user2 = new User("Gonzalo","gonzaluski@gmail.com", passwordEncoder.encode("pass"),imageUser, "USER");
+                        user2.setFirstname("Raul Gonzalo");
+                        user2.setLastName("Gutierrez Peña");
                         userRepository.save(user2);
 
                 } catch (Exception e) {

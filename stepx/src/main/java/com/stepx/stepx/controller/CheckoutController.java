@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -140,6 +141,10 @@ public class CheckoutController {
 
     @GetMapping("/user")
     public String showCheckout(HttpServletRequest request, Model model) {
+        
+        CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
+        model.addAttribute("token", csrfToken.getToken());
+        model.addAttribute("headerName", csrfToken.getHeaderName());
 
         boolean isAuthenticated=request.getUserPrincipal()!=null;
         model.addAttribute("isAuthenticated", isAuthenticated);
@@ -324,6 +329,7 @@ public class CheckoutController {
         }
 
         orderItemService.updateOrderItemsBatch(ids, quantities);
+        cart=orderShoesService.getCartById(user.getId()).orElseThrow();
         // Procesing all products in cart
         // updated
         List<Map<String, Object>> cartItems = new ArrayList<>();
