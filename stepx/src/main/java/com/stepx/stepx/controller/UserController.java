@@ -18,6 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.stepx.stepx.model.User;
 import com.stepx.stepx.model.OrderShoes;
+import com.stepx.stepx.model.Shoe;
 import com.stepx.stepx.model.OrderItem;
 import com.stepx.stepx.service.EmailService;
 import com.stepx.stepx.service.OrderItemService;
@@ -115,7 +116,7 @@ public class UserController {
     }
 
    @GetMapping("/send-coupon")
-public String sendCouponEmail(@RequestParam Long userId, RedirectAttributes redirectAttributes) {
+    public String sendCouponEmail(@RequestParam Long userId, RedirectAttributes redirectAttributes) {
     try {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isPresent()) {
@@ -144,5 +145,25 @@ public String sendCouponEmail(@RequestParam Long userId, RedirectAttributes redi
     return "redirect:/index";
 }
 
+    @GetMapping("/orderItems")
+    public String getOrderItems(@RequestParam Long id_order,HttpServletRequest request,Model model) {
+        
+        List<OrderItem> orderItemsList=orderItemService.getOrderItemsByOrderId(id_order);
+        List<Map<String,Object>> cartItems=new ArrayList<>();
+        for (OrderItem orderItem:orderItemsList){
+            Shoe shoe=orderItem.getShoe();
+            Map<String, Object> item = new HashMap<>();
+            item.put("id_item", shoe.getId());
+            item.put("name", shoe.getName());
+            item.put("price", shoe.getPrice());
+            item.put("quantity", orderItem.getQuantity());
+            item.put("size", orderItem.getSize());
+            cartItems.add(item);
+        }
+        
+        model.addAttribute("cartItems", cartItems);
+        return "partials/profileOrderItems";
+    }
+    
 
 }

@@ -14,6 +14,8 @@ import java.util.Optional;
 
 @Repository
 public interface OrderShoesRepository extends JpaRepository<OrderShoes, Long> {
+    
+    
     @Query("SELECT o FROM OrderShoes o WHERE o.user.id = :userId AND o.state = 'notFinished'")
     Optional<OrderShoes> findCartById(@Param("userId") Long userId);
 
@@ -39,8 +41,7 @@ public interface OrderShoesRepository extends JpaRepository<OrderShoes, Long> {
 
 
     
-
+    @Query("SELECT o FROM OrderShoes o WHERE o.user.id = :userId AND o.state = 'Processed'")
+    List<OrderShoes> getOrderShoesFinishedByUserId(@Param("userId")Long userId);
     
-
-
 }

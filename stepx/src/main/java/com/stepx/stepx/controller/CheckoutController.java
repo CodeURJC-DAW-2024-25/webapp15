@@ -167,12 +167,7 @@ public class CheckoutController {
     @GetMapping("/user")
     public String showCheckout(HttpServletRequest request, Model model) {
 
-        CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
-
-        model.addAttribute("token", csrfToken.getToken());
-        model.addAttribute("headerName", csrfToken.getHeaderName());
-
-        boolean isAuthenticated = request.getUserPrincipal() != null;
+        boolean isAuthenticated=request.getUserPrincipal()!=null;
         model.addAttribute("isAuthenticated", isAuthenticated);
         if (isAuthenticated) {
             model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
@@ -356,6 +351,7 @@ public class CheckoutController {
         }
 
         orderItemService.updateOrderItemsBatch(ids, quantities);
+        cart=orderShoesService.getCartById(user.getId()).orElseThrow();
         // Procesing all products in cart
         // updated
         List<Map<String, Object>> cartItems = new ArrayList<>();

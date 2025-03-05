@@ -67,6 +67,11 @@ public class OrderItemService {
         }
     }
 
+    public List<OrderItem> getOrderItemsByOrderId(Long orderId) {
+        return orderItemRepository.findByOrderId(orderId);
+    }
+
+
     public List<Shoe> getBestSellingShoes(int limit) {
         List<Object[]> results = orderItemRepository.findBestSellingShoes(PageRequest.of(0, limit));
         return results.stream()
@@ -112,4 +117,4 @@ public class OrderItemService {
                 .collect(Collectors.toList());
         return recommendedShoes;
     }
-}
+}   
