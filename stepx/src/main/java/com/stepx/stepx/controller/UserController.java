@@ -142,7 +142,7 @@ public class UserController {
     }
     
     // Redirect back to the cart page
-    return "index";
+    return "redirect:/index";
 }
 
     @GetMapping("/orderItems")
