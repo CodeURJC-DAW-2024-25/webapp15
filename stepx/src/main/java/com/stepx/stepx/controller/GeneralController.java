@@ -71,18 +71,31 @@ public class GeneralController {
             User user = userRepository.findByUsername(username).orElseThrow();
 
             model.addAttribute("username", user.getUsername());
-            model.addAttribute("id",user.getId());
+            model.addAttribute("id", user.getId());
             model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN")); // Create boolean value for admin
 
+            // Obtener productos recomendados
+            List<Shoe> recommendedShoes = orderItemService.getRecommendedShoes(user.getId(), 1); // Limitar a 10                                                                  // recomendados
+            model.addAttribute("recommendedShoes", recommendedShoes);
+
+            if (recommendedShoes.isEmpty()) {
+                System.out.println("esta la lista  de productos recomendados esta vacia");
+                return "blog";
+    
+            } else {
+                Shoe shoe1 = recommendedShoes.get(0);
+                System.out.println(shoe1.getName());
+                model.addAttribute("bestSellingShoes", recommendedShoes);
+            }
+    
         }
 
-        List<Shoe> bestSellingShoes = orderItemService.getBestSellingShoes(5); // Mostrar los 5 más vendidos
+        List<Shoe> bestSellingShoes = orderItemService.getBestSellingShoes(10); // Mostrar los 5 más vendidos
         if (bestSellingShoes.isEmpty()) {
             System.out.println("esta la lista  de mejores products esta vacia");
             return "blog";
-            
+
         } else {
-            // Manejo del caso cuando la lista está vacía
             Shoe shoe1 = bestSellingShoes.get(0);
             System.out.println(shoe1.getName());
             model.addAttribute("bestSellingShoes", bestSellingShoes);

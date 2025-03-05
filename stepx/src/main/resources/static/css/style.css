@@ -1629,3 +1629,30 @@ a.text-hover:focus:after {
     padding: 15px !important;
   }
 }
+
+
+
+/* Estilos generales para los botones de navegación */
+.swiper-button-prev,
+.swiper-button-next {
+  color: rgb(0, 0, 0); /* Color del icono */
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+  transition: all 0.3s ease; /* Transición suave */
+}
+
+/* Efecto hover sobre los botones */
+.swiper-button-prev:hover,
+.swiper-button-next:hover {
+  color: #fa1818; /* Cambia el color del texto a blanco más brillante */
+  transform: scale(1.1); /* Aumenta el tamaño ligeramente */
+}
+
+/* Efecto al presionar el botón (activo) */
+.swiper-button-prev:active,
+.swiper-button-next:active {
+  transform: scale(0.95); /* Efecto de presión al hacer clic */
+}
