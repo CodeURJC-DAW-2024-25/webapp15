@@ -82,7 +82,7 @@ public class OrderItemService {
     // Obtener productos comprados por el usuario
     public List<Shoe> getPurchasedShoesByUser(Long userId) {
         // Obtener todas las órdenes del usuario
-        Optional<OrderShoes> orders = orderShoesRepository.findCartById(userId);
+        List<OrderShoes> orders = orderShoesRepository.getOrderShoesFinishedByUserId(userId);
         
         //System.out.println("Órdenes encontradas para el usuario: " + orders.size());  // Verificar el número de órdenes
     
