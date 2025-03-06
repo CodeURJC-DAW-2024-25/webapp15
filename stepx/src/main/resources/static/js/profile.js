@@ -127,3 +127,37 @@ function validateImage(file) {
 
   return true;
 }
+
+
+async function updateUserInformation() {
+  try{
+    const form = document.getElementById("user-profile-form");
+    
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute("content");
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute("content");
+    
+    let formData = new FormData(form);
+    
+    const response = await fetch('/user/updateInformation',{
+      method:"POST",
+      body:formData,
+      headers:{
+        [csrfHeader]:csrfToken,
+      }
+    })
+
+    if (!response.ok) {
+      throw new Error("Error al actualizar la información del usuario");
+    }
+    let info= await response.text();
+    form.innerHTML=info;
+    alert("your information has been updated")
+  }catch(error){
+    console.error('error: ', error)
+    alert("no se pudo actualizar la informacion del usuario")
+  }
+}

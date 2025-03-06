@@ -81,27 +81,26 @@
           <!-- Profile Information -->
           <div id="profile-info" class="profile-section bg-white p-4 rounded-3 mb-4">
             <h2 class="section-title mb-4">Profile Information</h2>
-            <form class="profile-form" id="user-profile-form" action="profile/update" method="post">
+            <form class="profile-form" id="user-profile-form" method="post">
               <div class="row">
                 <div class="col-md-6 mb-3">
                   <label class="form-label">First Name</label>
-                  <input type="text" class="form-control" name="firstName" value="{{firstname}}">
+                  <input type="text" class="form-control" name="firstName" value="{{firstname}}" required>
                 </div>
                 <div class="col-md-6 mb-3">
                   <label class="form-label">Last Name</label>
-                  <input type="text" class="form-control" name="lastName" value="{{lastName}}">
+                  <input type="text" class="form-control" name="lastName" value="{{lastName}}" required>
                 </div>
                 <div class="col-md-6 mb-3">
                   <label class="form-label">Username</label>
-                  <input type="text" class="form-control" name="username" value="{{username}}">
+                  <input type="text" class="form-control" name="username" value="{{username}}" required>
                 </div>
                 <div class="col-md-6 mb-3">
                   <label class="form-label">Email</label>
-                  <input type="email" class="form-control" name="email" value="{{email}}">
+                  <input type="email" class="form-control" name="email" value="{{email}}" required>
                 </div>
-                
                 <div class="col-12">
-                  <button type="submit" form="user-profile-form" class="btn btn-dark hvr-sweep-to-right">Save Changes</button>
+                  <button type="button" onclick="updateUserInformation()" class="btn btn-dark hvr-sweep-to-right">Save Changes</button>
                 </div>
               </div>
             </form>
