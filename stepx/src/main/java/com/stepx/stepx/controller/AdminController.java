@@ -32,10 +32,35 @@ import org.springframework.web.bind.annotation.RequestParam;
         
         @Autowired
         private OrderShoesRepository orderShoesRepository;
+        @Autowired
+        private UserRepository userRepository;
+        @Autowired
+        private ShoeRepository shoeRepository;
+      
       
         @GetMapping("/admin")
-    public String adminDashboard(Model model) throws JsonProcessingException {
+        public String adminDashboard(Model model) throws JsonProcessingException {
         
+            // Get total number of users
+        long userCount = userRepository.count();
+        model.addAttribute("userCount", userCount);
+
+        // Get total number of shoes
+        long shoeCount = shoeRepository.count();
+        model.addAttribute("shoeCount", shoeCount);
+
+        // Get total number of processed orders
+        long processedOrderCount = orderShoesRepository.countProcessedOrders();
+        model.addAttribute("processedOrderCount", processedOrderCount);
+
+
+        // Get total money gained from processed orders
+        BigDecimal totalMoneyGained = orderShoesRepository.getTotalMoneyGained();
+        model.addAttribute("totalMoneyGained", totalMoneyGained);
+
+
+
+
         // Get order counts by month from repository
         List<Map<String, Object>> orderCounts = orderShoesRepository.getOrderCountsByMonth();
         

@@ -43,6 +43,10 @@ public class OrderShoes {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @ManyToOne
+    @JoinColumn(name = "coupon_id")  // Foreign key to Coupon
+    private Coupon coupon;
+
     public OrderShoes(){}
 
     public OrderShoes(User user){
@@ -112,7 +116,13 @@ public class OrderShoes {
     public String getAddress() {
         return address;
     }
+    public Coupon getCoupon() {
+        return coupon;
+    }
 
+    public void setCoupon(Coupon coupon) {
+        this.coupon = coupon;
+    }
     public void setAddress(String address) {
         this.address = address;
     }
