@@ -41,5 +41,9 @@ public interface ShoeRepository extends JpaRepository<Shoe, Long> {
 
      @Query("SELECT SUM(price) FROM Shoe")
     BigDecimal sumOfAllPrices();
+
+    // Buscar por categoría o marca
+    @Query("SELECT s FROM Shoe s WHERE s.category = :category OR s.brand = :brand")
+    List<Shoe> findByCategoryOrBrand(@Param("category") Shoe.Category category, @Param("brand") Shoe.Brand brand);
     
 }
