@@ -78,4 +78,10 @@ public class ShoeService {
     public BigDecimal getTotalEarnings() {
         return shoeRepository.sumOfAllPrices();
     }
+
+    public long getTotalShoes() {
+        // FindAll() is gonna return all the shoes saved before
+        List<Shoe> shoes = shoeRepository.findAll();
+        return shoes.size();
+    }
 }

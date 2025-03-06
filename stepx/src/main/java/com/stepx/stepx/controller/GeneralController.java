@@ -1,6 +1,7 @@
 
 package com.stepx.stepx.controller;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -62,18 +64,45 @@ public class GeneralController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @GetMapping({ "/", "/index" })
-    public String showIndex(Model model, HttpServletRequest request) {
+
+    
+    @ModelAttribute
+    public void addAttributes(Model model, HttpServletRequest request){
         boolean isAuthenticated = request.getUserPrincipal() != null;
         model.addAttribute("isAuthenticated", isAuthenticated);
+        model.addAttribute("showError", false);
+
+        CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
+        model.addAttribute("token", csrfToken.getToken());
+        
+        model.addAttribute("headerName", csrfToken.getHeaderName());
+
+        if(isAuthenticated) {
+            String username = request.getUserPrincipal().getName();
+            model.addAttribute("username", username);
+
+            model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
+
+            User user = userRepository.findByUsername(username).orElseThrow();
+
+            model.addAttribute("id", user.getId());
+            model.addAttribute("email", user.getEmail());
+            model.addAttribute("imageBlob", user.getImageUser());
+            model.addAttribute("lastName", user.getLastName());
+            model.addAttribute("firstname", user.getFirstName());
+            model.addAttribute("user_id", user.getId());
+    
+            
+        }
+    }
+
+    @GetMapping({ "/", "/index" })
+    public String showIndex(Model model, HttpServletRequest request) {
+         boolean isAuthenticated = request.getUserPrincipal() != null;
 
         if (isAuthenticated) {
             String username = request.getUserPrincipal().getName();
             User user = userRepository.findByUsername(username).orElseThrow();
-
-            model.addAttribute("username", user.getUsername());
-            model.addAttribute("id", user.getId());
-            model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN")); // Create boolean value for admin
 
             // Obtener productos recomendados
             List<Shoe> recommendedShoes = orderItemService.getRecommendedShoes(user.getId(), 1); // Limitar a 10                                                                  // recomendados
@@ -105,29 +134,31 @@ public class GeneralController {
         return "index";
     }
 
+    
+
     @GetMapping("/login")
     public String login(Model model, HttpServletRequest request) {
         User user = (User) request.getAttribute("user");
         model.addAttribute("isAuthenticated", user != null);
-        return "index"; // Index, main page
+        return "index";
     }
 
     @GetMapping("/profile")
     public String profile(HttpServletRequest request, Model model) {
-         CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
+        //  CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
 
-        model.addAttribute("token", csrfToken.getToken());
-        model.addAttribute("headerName", csrfToken.getHeaderName());
+        // model.addAttribute("token", csrfToken.getToken());
+        // model.addAttribute("headerName", csrfToken.getHeaderName());
         
         model.addAttribute("isAuthenticated", request.getUserPrincipal() != null);
         String username = request.getUserPrincipal().getName();
         User user = userRepository.findByUsername(username).orElseThrow();
-        model.addAttribute("username", user.getUsername());
-        model.addAttribute("email", user.getEmail());
-        model.addAttribute("imageBlob", user.getImageUser());
-        model.addAttribute("lastName", user.getLastName());
-        model.addAttribute("firstname", user.getFirstName());
-        model.addAttribute("user_id", user.getId());
+        // model.addAttribute("username", user.getUsername());
+        // model.addAttribute("email", user.getEmail());
+        // model.addAttribute("imageBlob", user.getImageUser());
+        // model.addAttribute("lastName", user.getLastName());
+        // model.addAttribute("firstname", user.getFirstName());
+        // model.addAttribute("user_id", user.getId());
 
         //load all orders from user
         List<OrderShoes>orderShoes=orderShoesService.getOrderShoesFinishedByUserId(user.getId());
@@ -137,8 +168,6 @@ public class GeneralController {
             model.addAttribute("orders", orderShoes);
         }
         
-        
-
 
         return "profile"; 
     }
@@ -168,7 +197,7 @@ public class GeneralController {
     @GetMapping("/admin-pannel")
     public String showAdminPanel(Model model, HttpServletRequest request) {
         if (request.getUserPrincipal() == null || !request.isUserInRole("ROLE_ADMIN")) {
-            return "redirect:/index"; // Redirigir a la página principal si no es admin
+            return "redirect:/error-page?errorType=notValidPage"; // Redirigir a la página principal si no es admin
         }
         model.addAttribute("admin", true);
 
@@ -178,13 +207,21 @@ public class GeneralController {
     @GetMapping("/edit-product/{id}")
     public String showEditProduct(Model model, @PathVariable Long id, HttpServletRequest request) {
         model.addAttribute("product", productsService.getProductById(id));
-        model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
+        //model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
+        boolean admin = request.isUserInRole("ROLE_ADMIN");
+        if (!admin){
+            return "redirect:/error-page?errorType=notValidPage";
+        }
         return "edit-product";
     }
 
     @GetMapping("/create-product")
     public String showCreate(Model model, HttpServletRequest request) {
-        model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
+        //model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
+        boolean admin = request.isUserInRole("ROLE_ADMIN");
+        if (!admin){
+            return "redirect:/error-page?errorType=notValidPage";
+        }
         return "create-product";
 
     }
@@ -227,5 +264,25 @@ public class GeneralController {
 
         return "redirect:/index";
     }
+
+    @GetMapping("/error-page")
+    public String login(Model model, @RequestParam(value = "errorType", required = false) String errorType){
+        String message = null;
+        if (errorType != null) {
+            if (errorType.equals("greaterId")){
+                message = "Invalid product. Not found.";
+            }
+            else if (errorType.equals("notValidPage")){
+                message = "Not a valid page.";
+            }
+        }
+        else{
+            message = "An error occurred. Please try again.";
+        }
+
+        model.addAttribute("showError", true);
+        model.addAttribute("message", message);
+         return "index";
+    }    
 
 }
