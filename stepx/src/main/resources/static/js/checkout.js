@@ -26,12 +26,13 @@ async function recalculate() {
     let formData = new FormData();
 
     document.querySelectorAll(".quantity-input").forEach(input => {
-        let id = input.getAttribute("data-id");
+        let id = input.getAttribute("data-id"); // id_orderItem
         let quantity = parseInt(input.value, 10);
 
-        if (quantity < 1) {
-            quantity = 1;
-            input.value = 1; 
+        // 🔹 Si el usuario dejó el campo vacío, usamos el valor anterior o 1
+        if (isNaN(quantity) || input.value.trim() === "") {
+            quantity = input.dataset.previousValue ? parseInt(input.dataset.previousValue, 10) : 1;
+            input.value = quantity; // Rellenamos el input para que el usuario lo vea corregido
         }
 
         formData.append("ids", id);

@@ -17,7 +17,8 @@ public interface ShoeSizeStockRepository extends JpaRepository<ShoeSizeStock, Lo
     @Query("SELECT s.stock FROM ShoeSizeStock s WHERE s.shoe.id = :shoeid AND s.size = :size")
     Optional<Integer> findByShoeAndSize(Long shoeid, String size);
 
-    @Query("SELECT s FROM ShoeSizeStock s WHERE s.shoe.id IN :shoeIds")
-    List<ShoeSizeStock> findByShoeIds(@Param("shoeIds") List<Long> shoeIds);//all the stock in a single consult
+    @Query("SELECT s FROM ShoeSizeStock s WHERE s.shoe.id IN :shoeIds AND s.size IN :sizes")
+    List<ShoeSizeStock> findByShoeIdsAndSizes(@Param("shoeIds") List<Long> shoeIds, @Param("sizes") List<String> sizes);
+//all the stock in a single consult
 
 }

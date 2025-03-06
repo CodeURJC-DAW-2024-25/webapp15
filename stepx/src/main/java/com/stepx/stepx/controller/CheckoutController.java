@@ -38,8 +38,6 @@ import com.stepx.stepx.model.Shoe;
 import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 import com.stepx.stepx.model.OrderItem;
 import com.stepx.stepx.model.OrderShoes;
-import com.stepx.stepx.model.Review;
-import com.stepx.stepx.model.ShoeSizeStock;
 import com.stepx.stepx.service.OrderItemService;
 import com.stepx.stepx.service.OrderShoesService;
 import com.stepx.stepx.service.ProductsService;
@@ -166,7 +164,12 @@ public class CheckoutController {
 
     @GetMapping("/user")
     public String showCheckout(HttpServletRequest request, Model model) {
+       
+        CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
 
+        model.addAttribute("token", csrfToken.getToken());
+        model.addAttribute("headerName", csrfToken.getHeaderName());
+        
         boolean isAuthenticated=request.getUserPrincipal()!=null;
         model.addAttribute("isAuthenticated", isAuthenticated);
         if (isAuthenticated) {
@@ -204,9 +207,14 @@ public class CheckoutController {
                 .map(orderItem -> orderItem.getShoe().getId())
                 .distinct()
                 .collect(Collectors.toList());
+        //get all sizes list of orderitems
+        List<String> sizes = cart.getOrderItems().stream()
+        .map(OrderItem::getSize)
+        .distinct()
+        .collect(Collectors.toList());
 
-        // all of stocks in a single consult
-        Map<String, Integer> stockMap = shoeSizeStockService.getAllStocksForShoes(shoeIds);
+        //getting all stocks in one optimized request
+        Map<String, Integer> stockMap = shoeSizeStockService.getAllStocksForShoes(shoeIds, sizes);
 
         // process the information
         List<Map<String, Object>> cartItems = new ArrayList<>();
@@ -245,8 +253,7 @@ public class CheckoutController {
             return "partials/checkout-itemsList";
         }
 
-        Optional<OrderShoes> cart_Optional = orderShoesService.getCartById(user.getId()); // get the cart asosiated to
-                                                                                          // the id
+        Optional<OrderShoes> cart_Optional = orderShoesService.getCartById(user.getId()); // get the cart asosiated to the id
 
         OrderShoes cart = cart_Optional.get();
         if (cart.getLenghtOrderShoes() == 0) {
@@ -269,8 +276,15 @@ public class CheckoutController {
                 .map(orderItem -> orderItem.getShoe().getId())
                 .distinct()
                 .collect(Collectors.toList());
+        
+        //get all sizes list of orderitems
+        List<String> sizes = cart.getOrderItems().stream()
+        .map(OrderItem::getSize)
+        .distinct()
+        .collect(Collectors.toList());
 
-        Map<String, Integer> stockMap = shoeSizeStockService.getAllStocksForShoes(shoeIds);
+        //getting all stocks in one optimized request
+        Map<String, Integer> stockMap = shoeSizeStockService.getAllStocksForShoes(shoeIds, sizes);
 
         List<Map<String, Object>> cartItems = new ArrayList<>();
         for (OrderItem orderItem : remainingItems) {
@@ -302,85 +316,106 @@ public class CheckoutController {
     }
 
     @PostMapping("/recalculate")
-    public String Recalculate(@RequestParam List<Long> ids,
-            @RequestParam List<Integer> quantities,
-            Model model,
-            HttpServletRequest request) {
-
-        boolean isAuthenticated = request.getUserPrincipal() != null;
-        model.addAttribute("isAuthenticated", isAuthenticated);
-
+    public String Recalculate(@RequestParam(required = false) List<Long> ids,
+                              @RequestParam(required = false) List<Integer> quantities,
+                              Model model,
+                              HttpServletRequest request) {
+    
         User user = userRepository.findByUsername(request.getUserPrincipal().getName()).orElseThrow();
-        if (user == null) {
+        if (user == null || ids == null || quantities == null || ids.isEmpty() || quantities.isEmpty()) {
             model.addAttribute("setSubtotal", false);
             model.addAttribute("cartItems", false);
             return "partials/checkout-itemsList";
         }
-
-        if (ids.isEmpty() || quantities.isEmpty()) {
-            model.addAttribute("setSubtotal", false);
-            model.addAttribute("cartItems", false);
-            return "partials/checkout-itemsList";
-        }
-
+    
         Optional<OrderShoes> cartOptional = orderShoesService.getCartById(user.getId());
-        if (!cartOptional.isPresent() | cartOptional.get().getLenghtOrderShoes() == 0) {
+        if (!cartOptional.isPresent() || cartOptional.get().getLenghtOrderShoes() == 0) {
             model.addAttribute("setSubtotal", false);
             model.addAttribute("cartItems", false);
             return "partials/checkout-itemsList";
         }
-
+    
         OrderShoes cart = cartOptional.get();
-
-        // Getting ID's List for every product in cart
+    
+        //getting ID's List for every product in cart
         List<Long> shoeIds = cart.getOrderItems().stream()
                 .map(orderItem -> orderItem.getShoe().getId())
                 .distinct()
                 .collect(Collectors.toList());
-
-        // getting all stocks in one optimized request
-        Map<String, Integer> stockMap = shoeSizeStockService.getAllStocksForShoes(shoeIds);
-
-        for (int i = 0; i < ids.size(); i++) {
-            String stockKey = ids.get(i) + "_" + cart.getOrderItems().get(i).getSize();
+    
+        //getting all sizes list of orderItems
+        List<String> sizes = cart.getOrderItems().stream()
+                .map(OrderItem::getSize)
+                .distinct()
+                .collect(Collectors.toList());
+    
+        // Getting all stocks in one optimized request
+        Map<String, Integer> stockMap = shoeSizeStockService.getAllStocksForShoes(shoeIds, sizes);
+    
+        System.out.println("IDs pasados por parámetros: " + ids);
+        System.out.println("Cantidades pasadas por parámetro: " + quantities);
+        System.out.println("Mapa con los stocks disponibles: " + stockMap);
+    
+        List<Long> updatedIds = new ArrayList<>();
+        List<Integer> updatedQuantities = new ArrayList<>();
+    
+        for (OrderItem orderItem : cart.getOrderItems()) {
+            String stockKey = orderItem.getShoe().getId() + "_" + orderItem.getSize();
             int availableStock = stockMap.getOrDefault(stockKey, 0);
-
-            if (quantities.get(i) > availableStock) {
-                quantities.set(i, availableStock);
+    
+            //obtener índice del orderItem en la lista de IDs recibidos
+            int index = ids.indexOf(orderItem.getId());//se sibre entiende que existe pero es una buena comprobación
+    
+            //si el índice no existe o la cantidad es nula, usar el valor actual del OrderItem
+            int newQuantity = (index != -1 && quantities.get(index) != null) ? quantities.get(index) : orderItem.getQuantity();
+    
+            //validar que el número sea mayor a 0
+            if (newQuantity < 1) {
+                newQuantity = orderItem.getQuantity();
             }
+    
+            //si el nuevo valor es mayor al stock disponible, ajustar al stock máximo
+            if (newQuantity > availableStock) {
+                newQuantity = availableStock;
+            }
+    
+            updatedIds.add(orderItem.getId());
+            updatedQuantities.add(newQuantity);
         }
-
-        orderItemService.updateOrderItemsBatch(ids, quantities);
-        cart=orderShoesService.getCartById(user.getId()).orElseThrow();
+    
+        System.out.println("IDs a actualizar: " + updatedIds);
+        System.out.println("Cantidades a actualizar: " + updatedQuantities);
+    
+        orderItemService.updateOrderItemsBatch(updatedIds, updatedQuantities);
+    
+        cart = orderShoesService.getCartById(user.getId()).orElseThrow();
+    
         // Procesing all products in cart
-        // updated
         List<Map<String, Object>> cartItems = new ArrayList<>();
         for (OrderItem orderItem : cart.getOrderItems()) {
             Shoe shoe = orderItem.getShoe();
-            String stockKey = shoe.getId() + "_" + orderItem.getSize();
-            boolean stockAvailable = stockMap.getOrDefault(stockKey, 0) > 0;
-
+            boolean stockAvailable = orderItem.getQuantity() > 0;
             Map<String, Object> item = new HashMap<>();
             item.put("id", shoe.getId());
             item.put("name", shoe.getName());
             item.put("price", shoe.getPrice());
-            item.put("quantity", orderItem.getQuantity()); // Ya está actualizado
+            item.put("quantity", orderItem.getQuantity());
             item.put("size", orderItem.getSize());
             item.put("id_orderItem", orderItem.getId());
             item.put("stock", stockAvailable);
             cartItems.add(item);
         }
-
+    
         // Calculating new total
         BigDecimal total = orderShoesService.getTotalPriceExcludingOutOfStock(cart.getId());
-
+    
         // Send data to view
         model.addAttribute("setSubtotal", true);
         model.addAttribute("total", total);
         model.addAttribute("cartItems", cartItems);
         model.addAttribute("id_orderShoe", cart.getId());
-
+    
         return "partials/checkout-itemsList";
     }
-
+    
 }

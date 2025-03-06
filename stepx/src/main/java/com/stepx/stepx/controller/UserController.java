@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.sql.rowset.serial.SerialBlob;
+import javax.sql.rowset.serial.SerialException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.stepx.stepx.model.User;
@@ -32,9 +36,13 @@ import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
+import java.io.IOException;
 import java.security.Principal;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @Controller
 @RequestMapping("/user")
@@ -146,8 +154,7 @@ public class UserController {
 }
 
     @GetMapping("/orderItems")
-    public String getOrderItems(@RequestParam Long id_order,HttpServletRequest request,Model model) {
-        
+    public String getOrderItems(@RequestParam Long id_order,Model model) {
         List<OrderItem> orderItemsList=orderItemService.getOrderItemsByOrderId(id_order);
         List<Map<String,Object>> cartItems=new ArrayList<>();
         for (OrderItem orderItem:orderItemsList){
@@ -163,6 +170,24 @@ public class UserController {
         
         model.addAttribute("cartItems", cartItems);
         return "partials/profileOrderItems";
+    }
+    
+    @PostMapping("/upload-profile-image")
+    public String createShoe(@RequestParam(required = false) MultipartFile imageUser,HttpServletRequest request, Model model) throws IOException, SQLException  {
+        User user=userService.findUserByUserName(request.getUserPrincipal().getName()).orElseThrow();
+
+        if(imageUser==null){
+            return "no se ha encontrado una imagen para cargar la imagen";
+        }
+
+        if(imageUser!=null && !imageUser.isEmpty()){
+            user.setImageUser(new SerialBlob(imageUser.getBytes()));
+        }
+
+        userService.saveUser(user);
+        model.addAttribute("user", user);
+
+        return "partials/userImage";
     }
     
 
