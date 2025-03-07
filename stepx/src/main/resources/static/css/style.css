@@ -114,6 +114,11 @@ a {
   --bs-dropdown-link-active-bg: var(--bs-tertiary-bg);
 }
 
+/*Log Out Button for User*/
+#logout-button{
+  margin-top: 15px;
+}
+
 /* list group */
 .list-group-item {
   --bs-list-group-item-padding-x: 0;

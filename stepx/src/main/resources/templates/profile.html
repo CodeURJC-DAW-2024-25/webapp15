@@ -40,7 +40,6 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,900;1,900&family=Source+Sans+Pro:wght@400;600;700;900&display=swap"
     rel="stylesheet">
-
 </head>
 
 <body>
@@ -103,6 +102,10 @@
                   <button type="button" onclick="updateUserInformation()" class="btn btn-dark hvr-sweep-to-right">Save Changes</button>
                 </div>
               </div>
+            </form>
+            <form method="post" action="/logout">
+              <button type="submit" class="btn btn-dark hvr-sweep-to-right" id="logout-button">Log Out</button>
+              <input type="hidden" name="_csrf" value="{{token}}"/>
             </form>
           </div>
 
