@@ -105,7 +105,7 @@ public class GeneralController {
             User user = userRepository.findByUsername(username).get();
 
             // Obtener productos recomendados
-            List<Shoe> recommendedShoes = orderItemService.getRecommendedShoesForUser(user.getId(), 5);
+            List<Shoe> recommendedShoes = orderItemService.getRecommendedShoesForUser(user.getId(), 10);
             
 
             if (recommendedShoes.isEmpty()) {
