@@ -169,8 +169,6 @@ public class CheckoutController {
 
         model.addAttribute("token", csrfToken.getToken());
         model.addAttribute("headerName", csrfToken.getHeaderName());
-       
-        CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
 
         model.addAttribute("token", csrfToken.getToken());
         model.addAttribute("headerName", csrfToken.getHeaderName());

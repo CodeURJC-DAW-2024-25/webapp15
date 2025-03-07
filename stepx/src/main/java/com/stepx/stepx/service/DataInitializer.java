@@ -12,7 +12,6 @@ import com.stepx.stepx.repository.CouponRepository;
 import com.stepx.stepx.repository.OrderShoesRepository;
 import com.stepx.stepx.repository.ReviewRepository;
 import com.stepx.stepx.repository.UserRepository;
-import com.stepx.stepx.repositories.*;
 
 
 import java.util.List;
