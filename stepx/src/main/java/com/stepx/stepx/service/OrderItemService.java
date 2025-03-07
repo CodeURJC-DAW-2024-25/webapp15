@@ -84,7 +84,7 @@ public class OrderItemService {
 
     public List<Shoe.Brand> getBrandsFromLastOrder(Long userId) {
         // Obtener el último pedido del usuario
-        OrderShoes lastOrder = orderShoesRepository.findTopByUserIdOrderByDateDesc(userId);
+        OrderShoes lastOrder = orderShoesRepository.findTopByUserIdOrderByIdDesc(userId);
 
         if (lastOrder == null || lastOrder.getOrderItems().isEmpty()) {
             return new ArrayList<>();  // Si no hay último pedido o no tiene productos, devolver lista vacía

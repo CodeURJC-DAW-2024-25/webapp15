@@ -39,9 +39,9 @@ public interface OrderShoesRepository extends JpaRepository<OrderShoes, Long> {
     List<Map<String, Object>> getMoneyGainedByMonth();
 
 
-
-    OrderShoes findTopByUserIdOrderByDateDesc(Long userId);
-
+    // Encontrar el pedido con el ID más alto para un usuario
+    @Query("SELECT o FROM OrderShoes o WHERE o.user.id = :userId ORDER BY o.id DESC LIMIT 1")
+    OrderShoes findTopByUserIdOrderByIdDesc(@Param("userId") Long userId);
 
     
     @Query("SELECT o FROM OrderShoes o WHERE o.user.id = :userId AND o.state = 'Processed'")

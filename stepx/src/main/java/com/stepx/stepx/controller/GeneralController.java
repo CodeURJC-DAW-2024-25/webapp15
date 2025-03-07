@@ -117,7 +117,6 @@ public class GeneralController {
                 model.addAttribute("recommendedShoes", recommendedShoes);
                 model.addAttribute("hasRecommendedShoes", true);
             }
-    
         }
 
         List<Shoe> bestSellingShoes = orderItemService.getBestSellingShoes(10); // Mostrar los 5 más vendidos

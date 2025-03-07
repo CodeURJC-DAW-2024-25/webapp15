@@ -104,7 +104,7 @@ public class OrderShoesService {
     }
 
     public OrderShoes getLastOrder(Long userId) {
-        return orderShoesRepository.findTopByUserIdOrderByDateDesc(userId);
+        return orderShoesRepository.findTopByUserIdOrderByIdDesc(userId);
     }
 
     public List<Shoe.Brand> getBrandsFromLastOrder(Long userId) {
