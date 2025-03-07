@@ -83,7 +83,7 @@ public class GeneralController {
 
             model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
 
-            User user = userRepository.findByUsername(username).orElseThrow();
+            User user = userRepository.findByUsername(username).get();
 
             model.addAttribute("id", user.getId());
             model.addAttribute("email", user.getEmail());
@@ -98,24 +98,24 @@ public class GeneralController {
 
     @GetMapping({ "/", "/index" })
     public String showIndex(Model model, HttpServletRequest request) {
-         boolean isAuthenticated = request.getUserPrincipal() != null;
+        boolean isAuthenticated = request.getUserPrincipal() != null;
 
         if (isAuthenticated) {
             String username = request.getUserPrincipal().getName();
-            User user = userRepository.findByUsername(username).orElseThrow();
+            User user = userRepository.findByUsername(username).get();
 
             // Obtener productos recomendados
             List<Shoe> recommendedShoes = orderItemService.getRecommendedShoesForUser(user.getId(), 5);
-            model.addAttribute("recommendedShoes", recommendedShoes);
+            
 
             if (recommendedShoes.isEmpty()) {
                 System.out.println("esta la lista  de productos recomendados esta vacia");
-                return "blog";
+                model.addAttribute("recommendedShoes", false);
+                model.addAttribute("hasRecommendedShoes", false);
     
-            } else {
-                Shoe shoe1 = recommendedShoes.get(0);
-                System.out.println(shoe1.getName());
-                model.addAttribute("bestSellingShoes", recommendedShoes);
+            }else{
+                model.addAttribute("recommendedShoes", recommendedShoes);
+                model.addAttribute("hasRecommendedShoes", true);
             }
     
         }
@@ -123,11 +123,9 @@ public class GeneralController {
         List<Shoe> bestSellingShoes = orderItemService.getBestSellingShoes(10); // Mostrar los 5 más vendidos
         if (bestSellingShoes.isEmpty()) {
             System.out.println("esta la lista  de mejores products esta vacia");
-            return "blog";
+            model.addAttribute("bestSellingShoes", false);
 
         } else {
-            Shoe shoe1 = bestSellingShoes.get(0);
-            System.out.println(shoe1.getName());
             model.addAttribute("bestSellingShoes", bestSellingShoes);
         }
 

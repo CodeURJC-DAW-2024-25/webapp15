@@ -190,6 +190,7 @@
   </section>
 
   {{#isAuthenticated}}
+  {{#hasRecommendedShoes}}
   <section id="latest-products" class="product-store py-2 my-2 py-md-5 my-md-5 pt-0">
     <div class="container-md">
       <div class="display-header d-flex align-items-center justify-content-between">
@@ -198,6 +199,7 @@
           <a href="shop.html" class="d-inline-block text-uppercase text-hover fw-bold">View all</a>
         </div>
       </div>
+      
       <div class="product-content padding-small position-relative">
         <!-- Contenedor Swiper -->
         <div class="swiper-container">
@@ -227,6 +229,7 @@
       </div>
     </div>
   </section>
+  {{/hasRecommendedShoes}}
   {{/isAuthenticated}}
 
   <!-- q≥≤uick view -->

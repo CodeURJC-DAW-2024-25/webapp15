@@ -112,7 +112,7 @@ public class OrderItemService {
 
         // Buscar productos recomendados por marca, pero que el usuario no haya comprado
         List<Shoe> recommendedShoes = shoeRepository.findRecommendedShoesByBrandsExcludingPurchased(brands, userId);
-
+        System.out.println("Zapatos recomendados: " + recommendedShoes);
         // Limitar la cantidad de recomendaciones
         return recommendedShoes.stream().limit(limit).collect(Collectors.toList());
     }
