@@ -102,5 +102,22 @@ public class OrderShoesService {
     public List<OrderShoes> getOrderShoesFinishedByUserId(Long userId){
         return orderShoesRepository.getOrderShoesFinishedByUserId(userId);
     }
+
+    public OrderShoes getLastOrder(Long userId) {
+        return orderShoesRepository.findTopByUserIdOrderByDateDesc(userId);
+    }
+
+    public List<Shoe.Brand> getBrandsFromLastOrder(Long userId) {
+        OrderShoes lastOrder = getLastOrder(userId);
+        
+        if (lastOrder == null) {
+            return new ArrayList<>(); // No hay compras previas
+        }
+        
+        return lastOrder.getOrderItems().stream()
+                        .map(orderItem -> orderItem.getShoe().getBrand())
+                        .distinct()
+                        .collect(Collectors.toList());
+    }
     
 }

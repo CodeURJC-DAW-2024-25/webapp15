@@ -14,7 +14,10 @@ import java.util.Optional;
 
 @Repository
 public interface OrderShoesRepository extends JpaRepository<OrderShoes, Long> {
-    
+    @Query(value = "SELECT COUNT(*) FROM order_shoes WHERE state = 'Processed'", nativeQuery = true)
+    long countProcessedOrders();
+    @Query(value = "SELECT COALESCE(SUM(summary), 0) FROM order_shoes WHERE state = 'Processed'", nativeQuery = true)
+    BigDecimal getTotalMoneyGained();
     
     @Query("SELECT o FROM OrderShoes o WHERE o.user.id = :userId AND o.state = 'notFinished'")
     Optional<OrderShoes> findCartById(@Param("userId") Long userId);
@@ -35,6 +38,12 @@ public interface OrderShoesRepository extends JpaRepository<OrderShoes, Long> {
     @Query(value = "SELECT DATE_FORMAT(date, '%m') AS month, SUM(summary) AS total_money FROM order_shoes WHERE state = 'Processed' GROUP BY DATE_FORMAT(date, '%Y-%m') ORDER BY month", nativeQuery = true)
     List<Map<String, Object>> getMoneyGainedByMonth();
 
+
+
+    OrderShoes findTopByUserIdOrderByDateDesc(Long userId);
+
+
+    
     @Query("SELECT o FROM OrderShoes o WHERE o.user.id = :userId AND o.state = 'Processed'")
     List<OrderShoes> getOrderShoesFinishedByUserId(@Param("userId")Long userId);
     

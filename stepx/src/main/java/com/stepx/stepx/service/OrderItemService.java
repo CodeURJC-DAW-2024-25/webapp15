@@ -9,6 +9,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
+import java.util.Collections;
+import java.util.Set;
+import java.util.Objects;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -71,7 +74,6 @@ public class OrderItemService {
         return orderItemRepository.findByOrderId(orderId);
     }
 
-
     public List<Shoe> getBestSellingShoes(int limit) {
         List<Object[]> results = orderItemRepository.findBestSellingShoes(PageRequest.of(0, limit));
         return results.stream()
@@ -79,42 +81,40 @@ public class OrderItemService {
                 .collect(Collectors.toList());
     }
 
-    // Obtener productos comprados por el usuario
-    public List<Shoe> getPurchasedShoesByUser(Long userId) {
-        // Obtener todas las órdenes del usuario
-        List<OrderShoes> orders = orderShoesRepository.getOrderShoesFinishedByUserId(userId);
-        
-        //System.out.println("Órdenes encontradas para el usuario: " + orders.size());  // Verificar el número de órdenes
-    
-        // Obtener todos los OrderItem asociados a esas órdenes y mapearlos a productos (Shoe)
-        List<Shoe> purchasedShoes = orders.stream()
-                                          .flatMap(order -> order.getOrderItems().stream())
-                                          .map(OrderItem::getShoe)
-                                          .distinct() // Eliminar productos duplicados
-                                          .collect(Collectors.toList());
-        
-        System.out.println("Productos comprados: " + purchasedShoes.size());  // Verificar los productos comprados
-    
-        return purchasedShoes;
+
+    public List<Shoe.Brand> getBrandsFromLastOrder(Long userId) {
+        // Obtener el último pedido del usuario
+        OrderShoes lastOrder = orderShoesRepository.findTopByUserIdOrderByDateDesc(userId);
+
+        if (lastOrder == null || lastOrder.getOrderItems().isEmpty()) {
+            return new ArrayList<>();  // Si no hay último pedido o no tiene productos, devolver lista vacía
+        }
+
+        // Obtener las marcas de los zapatos de ese pedido
+        return lastOrder.getOrderItems().stream()
+                        .map(orderItem -> orderItem.getShoe().getBrand())
+                        .distinct()  // Para evitar marcas duplicadas
+                        .collect(Collectors.toList());
     }
 
     // Recomendación basada en la categoría y la marca de las compras anteriores
-    public List<Shoe> getRecommendedShoes(Long userId, int limit) {
-        List<Shoe> purchasedShoes = getPurchasedShoesByUser(userId);
 
-        // Agrupamos por categorías y marcas
-        List<Shoe> recommendedShoes = new ArrayList<>();
-        for (Shoe purchasedShoe : purchasedShoes) {
-            recommendedShoes.addAll(
-                    shoeRepository.findByCategoryOrBrand(purchasedShoe.getCategory(), purchasedShoe.getBrand()));
+    // En OrderItemService.java
+    public List<Shoe> getRecommendedShoesForUser(Long userId, int limit) {
+        // Obtener las marcas del último pedido del usuario
+        System.out.println("esto es unaprueba");
+        List<Shoe.Brand> brands = getBrandsFromLastOrder(userId);
+        System.out.println("Brands: " + brands);
+
+        if (brands.isEmpty()) {
+            return new ArrayList<>(); // No hay compras previas, no se pueden recomendar productos
         }
 
-        // Filtrar los productos ya comprados
-        recommendedShoes = recommendedShoes.stream()
-                .filter(shoe -> !purchasedShoes.contains(shoe))
-                .distinct()
-                .limit(limit) // Limitar la cantidad de recomendaciones
-                .collect(Collectors.toList());
-        return recommendedShoes;
+        // Buscar productos recomendados por marca, pero que el usuario no haya comprado
+        List<Shoe> recommendedShoes = shoeRepository.findRecommendedShoesByBrandsExcludingPurchased(brands, userId);
+
+        // Limitar la cantidad de recomendaciones
+        return recommendedShoes.stream().limit(limit).collect(Collectors.toList());
     }
-}   
+
+}
