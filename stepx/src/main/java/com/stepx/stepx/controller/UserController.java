@@ -197,71 +197,71 @@ public class UserController {
     }
     
     @PostMapping("/updateInformation")
-public String updateInformation(Model model, HttpServletRequest request, 
-    @RequestParam String firstName, 
-    @RequestParam String lastName, 
-    @RequestParam String username, 
-    @RequestParam String email) {
+    public String updateInformation(Model model, HttpServletRequest request, 
+        @RequestParam String firstName, 
+        @RequestParam String lastName, 
+        @RequestParam String username, 
+        @RequestParam String email) {
 
-    User user = userService.findUserByUserName(request.getUserPrincipal().getName()).orElseThrow();
-    //if username already exists
-    Optional<User> existingUser = userService.findUserByUserName(username);
-    if (existingUser.isPresent() && !existingUser.get().getUsername().equals(user.getUsername())) {
-        User tempUser = new User();//to mantein the information of the form
-        tempUser.setFirstname(firstName);
-        tempUser.setLastName(lastName);
-        tempUser.setUsername(username);
-        tempUser.setEmail(email);
-        model.addAttribute("user", tempUser);
-        model.addAttribute("uniqueUserName", false);
+        User user = userService.findUserByUserName(request.getUserPrincipal().getName()).orElseThrow();
+        //if username already exists
+        Optional<User> existingUser = userService.findUserByUserName(username);
+        if (existingUser.isPresent() && !existingUser.get().getUsername().equals(user.getUsername())) {
+            User tempUser = new User();//to mantein the information of the form
+            tempUser.setFirstname(firstName);
+            tempUser.setLastName(lastName);
+            tempUser.setUsername(username);
+            tempUser.setEmail(email);
+            model.addAttribute("user", tempUser);
+            model.addAttribute("uniqueUserName", false);
+            return "partials/newInformationUser";
+        }
+
+        boolean updated = false;
+
+        if (!user.getFirstName().equals(firstName)) {
+            user.setFirstname(firstName);
+            updated = true;
+        }
+        if (!user.getLastName().equals(lastName)) {
+            user.setLastName(lastName);
+            updated = true;
+        }
+        if (!user.getEmail().equals(email)) {
+            user.setEmail(email);
+            updated = true;
+        }
+        if (!user.getUsername().equals(username)) {
+            user.setUsername(username);
+            updated = true;
+        }
+
+        if (updated) {
+            userService.saveUser(user);
+        }
+
+        if (!user.getUsername().equals(request.getUserPrincipal().getName())) {
+            updateUserAuthentication(user);
+        }
+
+
+        Optional<User> userUpdated = userService.findUserByUserName(username);
+        model.addAttribute("user", userUpdated.get());
+        model.addAttribute("uniqueUserName", true);
+
         return "partials/newInformationUser";
     }
 
-    boolean updated = false;
-
-    if (!user.getFirstName().equals(firstName)) {
-        user.setFirstname(firstName);
-        updated = true;
+    private void updateUserAuthentication(User updatedUser) {
+        try {
+            UserDetails userDetails = repositoryUserDetailsService.loadUserByUsername(updatedUser.getUsername());
+            Authentication newAuth = new UsernamePasswordAuthenticationToken(userDetails,userDetails.getPassword(),userDetails.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(newAuth);
+            System.out.println("Autenticación actualizada con éxito para el usuario: " + updatedUser.getUsername());
+        } catch (UsernameNotFoundException e) {
+            System.err.println("Error al actualizar autenticación: " + e.getMessage());
+        }
     }
-    if (!user.getLastName().equals(lastName)) {
-        user.setLastName(lastName);
-        updated = true;
-    }
-    if (!user.getEmail().equals(email)) {
-        user.setEmail(email);
-        updated = true;
-    }
-    if (!user.getUsername().equals(username)) {
-        user.setUsername(username);
-        updated = true;
-    }
-
-    if (updated) {
-        userService.saveUser(user);
-    }
-
-    if (!user.getUsername().equals(request.getUserPrincipal().getName())) {
-        updateUserAuthentication(user);
-    }
-
-
-    Optional<User> userUpdated = userService.findUserByUserName(username);
-    model.addAttribute("user", userUpdated.get());
-    model.addAttribute("uniqueUserName", true);
-
-    return "partials/newInformationUser";
-}
-
-private void updateUserAuthentication(User updatedUser) {
-    try {
-        UserDetails userDetails = repositoryUserDetailsService.loadUserByUsername(updatedUser.getUsername());
-        Authentication newAuth = new UsernamePasswordAuthenticationToken(userDetails,userDetails.getPassword(),userDetails.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(newAuth);
-        System.out.println("Autenticación actualizada con éxito para el usuario: " + updatedUser.getUsername());
-    } catch (UsernameNotFoundException e) {
-        System.err.println("Error al actualizar autenticación: " + e.getMessage());
-    }
-}
 
 
 
