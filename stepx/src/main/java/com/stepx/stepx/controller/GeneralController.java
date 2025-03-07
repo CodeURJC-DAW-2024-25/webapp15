@@ -76,7 +76,7 @@ public class GeneralController {
             model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN")); // Create boolean value for admin
 
             // Obtener productos recomendados
-            List<Shoe> recommendedShoes = orderItemService.getRecommendedShoes(user.getId(), 1); // Limitar a 10                                                                  // recomendados
+            List<Shoe> recommendedShoes = orderItemService.getRecommendedShoesForUser(user.getId(), 5);
             model.addAttribute("recommendedShoes", recommendedShoes);
 
             if (recommendedShoes.isEmpty()) {

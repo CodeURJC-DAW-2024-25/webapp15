@@ -37,7 +37,7 @@ public interface OrderShoesRepository extends JpaRepository<OrderShoes, Long> {
 
 
 
-
+    OrderShoes findTopByUserIdOrderByDateDesc(Long userId);
 
 
     

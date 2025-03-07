@@ -42,4 +42,7 @@ void updateOrderItemQuantity(@Param("id") Long id, @Param("quantity") Integer qu
 
 @Query("SELECT oi FROM OrderItem oi WHERE oi.orderShoes.id = :orderId")
 List<OrderItem> findByOrderId(@Param("orderId") Long orderId);
+
+
+
 }
