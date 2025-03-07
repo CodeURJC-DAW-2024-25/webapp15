@@ -237,6 +237,11 @@ public class ShoeController {
     public String showSingleProduct(Model model, @PathVariable Long id, HttpServletRequest request) {
 
         CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
+        long maxItems = shoeService.getTotalShoes();
+
+        if (maxItems < id){
+            return "redirect:/error-page?errorType=greaterId";
+        }
 
         // 🔥 Pasar el token a la plantilla para que esté disponible en el <head>
         model.addAttribute("token", csrfToken.getToken());

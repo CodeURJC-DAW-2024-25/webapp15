@@ -38,13 +38,14 @@ public class ShoeSizeStockService {
         return shoeSizeStockRepository.findByShoeAndSize(shoeId, size);
     }
 
-    public Map<String, Integer> getAllStocksForShoes(List<Long> shoeIds) {
-        List<ShoeSizeStock> stocks = shoeSizeStockRepository.findByShoeIds(shoeIds);
+    public Map<String, Integer> getAllStocksForShoes(List<Long> shoeIds, List<String> sizes) {
+        List<ShoeSizeStock> stocks = shoeSizeStockRepository.findByShoeIdsAndSizes(shoeIds, sizes);
         return stocks.stream().collect(Collectors.toMap(
             stock -> stock.getShoe().getId() + "_" + stock.getSize(),
             ShoeSizeStock::getStock,
-            (existing,replacement)->existing
+            (existing, replacement) -> existing
         ));
     }
+    
 
 }

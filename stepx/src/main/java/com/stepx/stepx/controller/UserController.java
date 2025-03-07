@@ -4,9 +4,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.sql.rowset.serial.SerialBlob;
+import javax.sql.rowset.serial.SerialException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.stepx.stepx.model.User;
@@ -27,14 +36,19 @@ import com.stepx.stepx.service.ShoeService;
 import com.stepx.stepx.service.ShoeSizeStockService;
 import com.stepx.stepx.service.UserService;
 import com.stepx.stepx.repository.UserRepository;
+import com.stepx.stepx.security.RepositoryUserDetailsService;
 
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
+import java.io.IOException;
 import java.security.Principal;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @Controller
 @RequestMapping("/user")
@@ -61,6 +75,9 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private RepositoryUserDetailsService repositoryUserDetailsService;
+    
     @GetMapping("/cart")
     public String getCartUser(HttpServletRequest  request, Model model) {
         
@@ -140,14 +157,10 @@ public class UserController {
         redirectAttributes.addAttribute("sent", "false");
         redirectAttributes.addAttribute("message", "Error: " + e.getMessage());
     }
-    
-    // Redirect back to the cart page
     return "redirect:/index";
 }
-
     @GetMapping("/orderItems")
-    public String getOrderItems(@RequestParam Long id_order,HttpServletRequest request,Model model) {
-        
+    public String getOrderItems(@RequestParam Long id_order,Model model) {
         List<OrderItem> orderItemsList=orderItemService.getOrderItemsByOrderId(id_order);
         List<Map<String,Object>> cartItems=new ArrayList<>();
         for (OrderItem orderItem:orderItemsList){
@@ -165,5 +178,92 @@ public class UserController {
         return "partials/profileOrderItems";
     }
     
+    @PostMapping("/upload-profile-image")
+    public String uploadProfilePicture(@RequestParam(required = false) MultipartFile imageUser,HttpServletRequest request, Model model) throws IOException, SQLException  {
+        User user=userService.findUserByUserName(request.getUserPrincipal().getName()).orElseThrow();
+
+        if(imageUser==null){
+            return "no se ha encontrado una imagen para cargar la imagen";
+        }
+
+        if(imageUser!=null && !imageUser.isEmpty()){
+            user.setImageUser(new SerialBlob(imageUser.getBytes()));
+        }
+
+        userService.saveUser(user);
+        model.addAttribute("user", user);
+
+        return "partials/userImage";
+    }
+    
+    @PostMapping("/updateInformation")
+public String updateInformation(Model model, HttpServletRequest request, 
+    @RequestParam String firstName, 
+    @RequestParam String lastName, 
+    @RequestParam String username, 
+    @RequestParam String email) {
+
+    User user = userService.findUserByUserName(request.getUserPrincipal().getName()).orElseThrow();
+    //if username already exists
+    Optional<User> existingUser = userService.findUserByUserName(username);
+    if (existingUser.isPresent() && !existingUser.get().getUsername().equals(user.getUsername())) {
+        User tempUser = new User();//to mantein the information of the form
+        tempUser.setFirstname(firstName);
+        tempUser.setLastName(lastName);
+        tempUser.setUsername(username);
+        tempUser.setEmail(email);
+        model.addAttribute("user", tempUser);
+        model.addAttribute("uniqueUserName", false);
+        return "partials/newInformationUser";
+    }
+
+    boolean updated = false;
+
+    if (!user.getFirstName().equals(firstName)) {
+        user.setFirstname(firstName);
+        updated = true;
+    }
+    if (!user.getLastName().equals(lastName)) {
+        user.setLastName(lastName);
+        updated = true;
+    }
+    if (!user.getEmail().equals(email)) {
+        user.setEmail(email);
+        updated = true;
+    }
+    if (!user.getUsername().equals(username)) {
+        user.setUsername(username);
+        updated = true;
+    }
+
+    if (updated) {
+        userService.saveUser(user);
+    }
+
+    if (!user.getUsername().equals(request.getUserPrincipal().getName())) {
+        updateUserAuthentication(user);
+    }
+
+
+    Optional<User> userUpdated = userService.findUserByUserName(username);
+    model.addAttribute("user", userUpdated.get());
+    model.addAttribute("uniqueUserName", true);
+
+    return "partials/newInformationUser";
+}
+
+private void updateUserAuthentication(User updatedUser) {
+    try {
+        UserDetails userDetails = repositoryUserDetailsService.loadUserByUsername(updatedUser.getUsername());
+        Authentication newAuth = new UsernamePasswordAuthenticationToken(userDetails,userDetails.getPassword(),userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(newAuth);
+        System.out.println("Autenticación actualizada con éxito para el usuario: " + updatedUser.getUsername());
+    } catch (UsernameNotFoundException e) {
+        System.err.println("Error al actualizar autenticación: " + e.getMessage());
+    }
+}
+
+
+
 
 }

@@ -1,7 +1,10 @@
 package com.stepx.stepx.service;
 
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -53,6 +56,8 @@ public class UserService {
         userRepository.save(newUser);
     }
 
-
+    public void saveUser(User user){
+        userRepository.save(user);
+    }
 
 }
