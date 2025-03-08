@@ -142,24 +142,30 @@ public class GeneralController {
         return "index";
     }
 
-    @GetMapping("/profile")
-    public String profile(HttpServletRequest request, Model model) throws JsonProcessingException {
-        model.addAttribute("isAuthenticated", request.getUserPrincipal() != null);
-        String username = request.getUserPrincipal().getName();
-        User user = userRepository.findByUsername(username).orElseThrow();
+   @GetMapping("/profile")
+public String profile(HttpServletRequest request, Model model) throws JsonProcessingException {
+    CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
+    model.addAttribute("token", csrfToken.getToken());
+    model.addAttribute("headerName", csrfToken.getHeaderName());
+    
+    model.addAttribute("isAuthenticated", request.getUserPrincipal() != null);
+    String username = request.getUserPrincipal().getName();
+    User user = userRepository.findByUsername(username).orElseThrow();
 
-        CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
-        model.addAttribute("token", csrfToken.getToken());
-
-        model.addAttribute("headerName", csrfToken.getHeaderName());
-
-        // Load all orders from user
-        List<OrderShoes> orderShoes = orderShoesService.getOrderShoesFinishedByUserId(user.getId());
-        if (orderShoes.size() == 0) {
-            model.addAttribute("orders", false);
-        } else {
-            model.addAttribute("orders", orderShoes);
+    // Load all orders from user
+    List<OrderShoes> orderShoes = orderShoesService.getOrderShoesFinishedByUserId(user.getId());
+    if (orderShoes.size() == 0) {
+        model.addAttribute("orders", false);
+        model.addAttribute("hasmoreorders", false);
+    } else {
+        List<OrderShoes> displayedOrders = orderShoes.stream().limit(5).toList();
+        model.addAttribute("orders", displayedOrders);
+        if (orderShoes.size()>5) {  
+            model.addAttribute("hasmoreorders", true);
+        }else{
+            model.addAttribute("hasmoreorders", false);
         }
+    }
 
         // Get monthly spending data for the user
         List<Map<String, Object>> monthlySpending = orderShoesRepository.getMonthlySpendingByUserId(user.getId());
@@ -207,6 +213,21 @@ public class GeneralController {
         model.addAttribute("updateBanner", true);
         return "profile";
     }
+
+    @GetMapping("/profile/orders")
+    public String loadMoreOrders(@RequestParam int page,HttpServletRequest request,Model model) {
+        User user=userService.findUserByUserName(request.getUserPrincipal().getName()).orElseThrow();
+        Long userId=user.getId();
+        List<OrderShoes>nextOrders=orderShoesService.getPagedOrdersByUserId(page,userId);
+        if(nextOrders.size()==0){
+            model.addAttribute("oders", false);
+            return "partials/ordersProfile";
+        }
+        model.addAttribute("orders", nextOrders);
+        return "partials/ordersProfile";
+    }
+    
+
 
     @GetMapping("/styles")
     public String showStyles(Model model) {

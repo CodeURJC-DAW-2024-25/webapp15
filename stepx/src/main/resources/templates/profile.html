@@ -122,7 +122,7 @@
           <!-- Purchase History -->
           <div id="purchase-history" class="profile-section bg-white p-4 rounded-3">
             <h2 class="section-title mb-4">Purchase History</h2>
-            <div class="purchase-items" style="max-height: 600px; overflow-y: auto; margin-bottom: 20px;">
+            <div class="purchase-items" style="max-height: 600px; overflow-y: auto; margin-bottom: 20px;" id="ordersDiv">
               {{#orders}}
               <!-- Purchase Item -->
               <div class="purchase-item border-bottom pb-3 mb-3">
@@ -177,6 +177,13 @@
               </div>
               {{/orders}}
             </div>
+
+            {{#hasmoreorders}}
+            <div class="col-12" style="display: flex; justify-content: center;">
+              <button type="button" onclick="loadMoreOrders()" class="btn btn-dark hvr-sweep-to-right" style="width: 70%;" id="loadMoreBtn">Load More Orders</button>
+            </div>
+            {{/hasmoreorders}}
+
           </div>
 
 

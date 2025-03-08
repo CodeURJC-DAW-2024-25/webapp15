@@ -57,7 +57,7 @@ public class WebSecurityConfig{
 			.requestMatchers( "/index", "/register-user", "/shop/**", "/shop/single-product/**", "/partials/**", "/createAccount").permitAll()
             .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
             // PRIVATE PAGES
-			.requestMatchers("/profile").hasAnyRole("USER", "ADMIN")
+			.requestMatchers("/profile","/profile/orders").hasAnyRole("USER", "ADMIN")
             .requestMatchers("/OrderItem/addItem","/checkout/**","/user/**").hasAnyRole("USER")
             .requestMatchers("/edit-product/**", "/admin", "/create-product").hasAnyRole("ADMIN")
         )
