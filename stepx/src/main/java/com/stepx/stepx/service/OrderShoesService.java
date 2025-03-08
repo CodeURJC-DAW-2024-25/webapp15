@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -118,6 +119,24 @@ public class OrderShoesService {
                         .map(orderItem -> orderItem.getShoe().getBrand())
                         .distinct()
                         .collect(Collectors.toList());
+    }
+    
+    public void processOrder(OrderShoes order) {
+        // Mapa con shoeId -> (size -> cantidad a descontar)
+        Map<Long, Map<String, Integer>> stockUpdates = new HashMap<>();
+
+        for (OrderItem item : order.getOrderItems()) {
+            Long shoeId = item.getShoe().getId();
+            String size = item.getSize();
+            int quantity = item.getQuantity();
+
+            stockUpdates
+                .computeIfAbsent(shoeId, k -> new HashMap<>())
+                .merge(size, quantity, Integer::sum);
+        }
+
+        // Llamamos al servicio para actualizar el stock en lote
+        shoeSizeStockService.updateStock(stockUpdates);
     }
     
 }

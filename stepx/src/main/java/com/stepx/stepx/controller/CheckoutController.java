@@ -133,7 +133,11 @@ public class CheckoutController {
         order.setNumerPhone(phone);
         order.setState("Processed");
         order.setActualDate();
+        order.setSummary(order.getTotalPrice());
+        orderShoesService.processOrder(order);//update stock of shoes
         orderShoesService.saveOrderShoes(order);
+
+        
 
         // Prearing data to send the template
         Map<String, Object> data = new HashMap<>();
@@ -166,9 +170,6 @@ public class CheckoutController {
     public String showCheckout(HttpServletRequest request, Model model) {
 
         CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
-
-        model.addAttribute("token", csrfToken.getToken());
-        model.addAttribute("headerName", csrfToken.getHeaderName());
 
         model.addAttribute("token", csrfToken.getToken());
         model.addAttribute("headerName", csrfToken.getHeaderName());

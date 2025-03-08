@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
+import jakarta.transaction.Transactional;
 import com.stepx.stepx.model.ShoeSizeStock;
 
 import com.stepx.stepx.repository.ShoeSizeStockRepository;
@@ -47,5 +47,16 @@ public class ShoeSizeStockService {
         ));
     }
     
+    @Transactional
+    public void updateStock(Map<Long, Map<String, Integer>> stockUpdates) {
+        for (Map.Entry<Long, Map<String, Integer>> entry : stockUpdates.entrySet()) {
+            Long shoeId = entry.getKey();
+            for (Map.Entry<String, Integer> sizeEntry : entry.getValue().entrySet()) {
+                String size = sizeEntry.getKey();
+                int quantity = sizeEntry.getValue();
+                shoeSizeStockRepository.reduceStock(shoeId, size, quantity);
+            }
+        }
+    }
 
 }
