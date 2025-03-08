@@ -133,6 +133,7 @@ public class CheckoutController {
         order.setNumerPhone(phone);
         order.setState("Processed");
         order.setActualDate();
+        order.setSummary(order.getTotalPrice());
         orderShoesService.saveOrderShoes(order);
 
         // Prearing data to send the template

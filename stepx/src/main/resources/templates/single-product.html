@@ -191,7 +191,8 @@
                 <div class="col-lg-6 d-flex flex-wrap"> <!-- All the container for 1 review -->
                   <div class="col-md-2 me-3 mb-3">
                     <div class="image-wrapper mb-3">
-                      <img src="/shop/{{user.id}}/imageUser" alt="review" class="rounded-circle" style="width: 75px; height: 75px; object-fit: cover;">
+                      <img src="/shop/{{user.id}}/imageUserReview" alt="review" class="rounded-circle"
+                        style="width: 75px; height: 75px; object-fit: cover;">
                     </div>
                   </div>
                   <div class="col-md-8">
@@ -235,10 +236,10 @@
                     <textarea class="form-control" placeholder="Write your review here" name="description"
                       required></textarea>
                   </div>
+                  <input type="hidden" name="_csrf" value="{{token}}">
                   <button type="submit" name="submit"
                     class="btn btn-dark btn-large text-uppercase w-100">Submit</button>
                 </form>
-                <input type="hidden" name="_csrf" value="{{token}}" />
               </div>
             </div>
           </div>

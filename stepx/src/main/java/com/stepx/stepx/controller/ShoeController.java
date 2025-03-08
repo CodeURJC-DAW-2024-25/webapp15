@@ -392,6 +392,34 @@ public class ShoeController {
         return ResponseEntity.notFound().build();
     }
 
+    //se creo uno nuevo porque en el anterior saca la imagen del perfil de usuario actual.
+    @GetMapping("/{userId}/imageUserReview")
+    public ResponseEntity<Resource> getProfileImageForReview(@PathVariable Long userId, Model model,
+            HttpServletRequest request) {
+        Optional<User> userOptional = userService.findUserById(userId);
+        
+
+        if (userOptional.isPresent()) {
+            // User user = userOptional.get();
+            User user = userRepository.findByUsername(userOptional.get().getUsername()).orElseThrow();
+            Blob image = user.getImageUser(); // Asegúrate de tener este método en User
+
+            if (image != null) {
+                try {
+                    Resource file = new InputStreamResource(image.getBinaryStream());
+                    return ResponseEntity.ok()
+                            .header(HttpHeaders.CONTENT_TYPE, "image/jpg")
+                            .contentLength(image.length())
+                            .body(file);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return ResponseEntity.notFound().build();
+    }
+
 
 
     @GetMapping("/edit/{id}")
