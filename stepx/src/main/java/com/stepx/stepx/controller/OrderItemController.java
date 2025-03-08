@@ -105,6 +105,8 @@ public class OrderItemController {
             cart = orderShoesService.createCartForUser(user);
         }
 
+
+
         System.out.println("🔍 Buscando zapato con ID: " + id_Shoe);
         Optional<Shoe> shoe_optional = shoeService.getShoeById(id_Shoe);
         if (!shoe_optional.isPresent()) {
@@ -112,12 +114,27 @@ public class OrderItemController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("shoes not found");
         }
         Shoe shoe = shoe_optional.get();
+        //obtain stock of that shoe
+        Optional<Integer>stockShoe_Optional=shoeSizeStockService.getStockByShoeAndSize(id_Shoe, size);
+        Integer stock=stockShoe_Optional.get();
+        
+        if (stock==null) {
+            cuantity=0;
+        }
 
         System.out.println("🛒 Añadiendo zapato al carrito...");
         Optional<OrderItem> orderItemOptional = orderItemService.findByCartAndShoeAndSize(user.getId(), id_Shoe, size);
         OrderItem orderItem;
+         //confirmation if quantity is <1 or >stock
+        if (cuantity<1) {
+            cuantity=1;
+        }
+        if (cuantity>=stock) {
+            cuantity=stock;
+        }
+        
         if (orderItemOptional.isPresent()) {
-            orderItem = orderItemOptional.get();
+            orderItem = orderItemOptional.get();     
             orderItem.setQuantity(orderItem.getQuantity() + 1);
         } else {
             orderItem = new OrderItem(cart, shoe, cuantity, size);

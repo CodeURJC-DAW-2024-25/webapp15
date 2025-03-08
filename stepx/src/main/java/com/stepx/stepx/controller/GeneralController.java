@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mysql.cj.x.protobuf.MysqlxCrud.Order;
 import com.stepx.stepx.model.OrderItem;
 import com.stepx.stepx.model.OrderShoes;
@@ -30,7 +32,7 @@ import org.springframework.security.web.csrf.CsrfToken;
 import com.stepx.stepx.model.Product;
 import com.stepx.stepx.model.Shoe;
 import com.stepx.stepx.model.User;
-import com.stepx.stepx.repository.UserRepository;
+import com.stepx.stepx.repository.*;
 import com.stepx.stepx.service.OrderItemService;
 import com.stepx.stepx.service.OrderShoesService;
 
@@ -53,10 +55,16 @@ public class GeneralController {
     private UserRepository userRepository;
 
     @Autowired
+    private ObjectMapper objectMapper;
+    
+    @Autowired
     private UserService userService;
 
     @Autowired
     private OrderShoesService orderShoesService;
+
+    @Autowired
+    private OrderShoesRepository orderShoesRepository;
 
     @Autowired
     private OrderItemService orderItemService;
@@ -140,34 +148,55 @@ public class GeneralController {
         return "index";
     }
 
-    @GetMapping("/profile")
-    public String profile(HttpServletRequest request, Model model) {
-        //  CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
+   @GetMapping("/profile")
+public String profile(HttpServletRequest request, Model model) throws JsonProcessingException {
+    model.addAttribute("isAuthenticated", request.getUserPrincipal() != null);
+    String username = request.getUserPrincipal().getName();
+    User user = userRepository.findByUsername(username).orElseThrow();
 
-        // model.addAttribute("token", csrfToken.getToken());
-        // model.addAttribute("headerName", csrfToken.getHeaderName());
-        
-        model.addAttribute("isAuthenticated", request.getUserPrincipal() != null);
-        String username = request.getUserPrincipal().getName();
-        User user = userRepository.findByUsername(username).orElseThrow();
-        // model.addAttribute("username", user.getUsername());
-        // model.addAttribute("email", user.getEmail());
-        // model.addAttribute("imageBlob", user.getImageUser());
-        // model.addAttribute("lastName", user.getLastName());
-        // model.addAttribute("firstname", user.getFirstName());
-        // model.addAttribute("user_id", user.getId());
-
-        //load all orders from user
-        List<OrderShoes>orderShoes=orderShoesService.getOrderShoesFinishedByUserId(user.getId());
-        if(orderShoes.size()==0){
-            model.addAttribute("orders", false);
-        }else{
-            model.addAttribute("orders", orderShoes);
-        }
-        
-
-        return "profile"; 
+    // Load all orders from user
+    List<OrderShoes> orderShoes = orderShoesService.getOrderShoesFinishedByUserId(user.getId());
+    if (orderShoes.size() == 0) {
+        model.addAttribute("orders", false);
+    } else {
+        model.addAttribute("orders", orderShoes);
     }
+
+    // Get monthly spending data for the user
+    List<Map<String, Object>> monthlySpending = orderShoesRepository.getMonthlySpendingByUserId(user.getId());
+
+    // Prepare data for the chart
+    Map<String, Object> chartData = new HashMap<>();
+    String[] monthNames = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+    Double[] spendingData = new Double[12];
+
+    // Initialize with zeros
+    for (int i = 0; i < 12; i++) {
+        spendingData[i] = 0.0;
+    }
+
+    // Fill in the actual spending data
+    for (Map<String, Object> entry : monthlySpending) {
+        String monthStr = (String) entry.get("month");
+        Number amount = (Number) entry.get("total_spent");
+        Double totalSpent = amount != null ? amount.doubleValue() : 0.0;
+
+        // Convert month string to zero-based index
+        int monthIndex = Integer.parseInt(monthStr) - 1;
+        if (monthIndex >= 0 && monthIndex < 12) {
+            spendingData[monthIndex] = totalSpent;
+        }
+    }
+
+    chartData.put("labels", monthNames);
+    chartData.put("data", spendingData);
+
+    // Convert to JSON and pass to the view
+    String chartDataJson = objectMapper.writeValueAsString(chartData);
+    model.addAttribute("spendingData", "var spendingData = " + chartDataJson + ";");
+
+    return "profile";
+}
 
     @GetMapping("/profile/update")
     public String profileUpdate(
