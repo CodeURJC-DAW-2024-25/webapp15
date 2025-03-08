@@ -54,11 +54,12 @@ public class WebSecurityConfig{
 		http
 			.authorizeHttpRequests(authorize -> authorize
 			// PUBLIC PAGES
-			.requestMatchers( "/index", "/register-user", "/shop/**", "/shop/single-product/**", "/partials/**", "/**").permitAll()
+			.requestMatchers( "/index", "/register-user", "/shop/**", "/shop/single-product/**", "/partials/**").permitAll()
             .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
             // PRIVATE PAGES
-            .requestMatchers("/profile","/OrderItem/addItem","/checkout/**","/user/**").hasAnyRole("USER", "ADMIN")
-            .requestMatchers("/edit-product/**", "/admin-pannel", "/create-product").hasAnyRole("ADMIN")
+			.requestMatchers("/profile").hasAnyRole("USER", "ADMIN")
+            .requestMatchers("/OrderItem/addItem","/checkout/**","/user/**").hasAnyRole("USER")
+            .requestMatchers("/edit-product/**", "/admin", "/create-product").hasAnyRole("ADMIN")
         )
         .formLogin(formLogin -> formLogin
             .loginPage("/login")
