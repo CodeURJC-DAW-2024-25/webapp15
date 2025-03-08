@@ -102,7 +102,6 @@ public class OrderShoesService {
     public List<OrderShoes> getOrderShoesFinishedByUserId(Long userId){
         return orderShoesRepository.getOrderShoesFinishedByUserId(userId);
     }
-
     public OrderShoes getLastOrder(Long userId) {
         return orderShoesRepository.findTopByUserIdOrderByIdDesc(userId);
     }
