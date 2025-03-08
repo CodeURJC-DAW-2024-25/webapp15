@@ -15,6 +15,8 @@ import java.util.stream.Collectors;
 
 import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.stepx.stepx.model.OrderItem;
@@ -102,6 +104,10 @@ public class OrderShoesService {
 
     public List<OrderShoes> getOrderShoesFinishedByUserId(Long userId){
         return orderShoesRepository.getOrderShoesFinishedByUserId(userId);
+    }
+
+    public List<OrderShoes>getPagedOrdersByUserId(int pageStart,Long userId){
+        return orderShoesRepository.getPagedOrdersByUserId(userId,PageRequest.of(pageStart, 5));
     }
     public OrderShoes getLastOrder(Long userId) {
         return orderShoesRepository.findTopByUserIdOrderByIdDesc(userId);

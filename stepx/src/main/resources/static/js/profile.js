@@ -116,3 +116,24 @@ async function updateUserInformation() {
     alert("no se pudo actualizar la informacion del usuario")
   }
 }
+
+let PageOrders=0;
+async function loadMoreOrders() {
+  try{
+    PageOrders++;
+    const response = await fetch(`/profile/orders?page=${PageOrders}`);
+    const data= await response.text();
+    let ordersDiv=document.getElementById("ordersDiv");
+    ordersDiv.innerHTML+=data;
+    if (String(data).includes("No more orders available.")) {
+      let loadMoreButton = document.getElementById("loadMoreBtn");
+      if (loadMoreButton) {
+        loadMoreButton.style.display = "none";
+      }
+    }
+  }catch(error){
+  console.log("error triying to load orders: ",error)
+}  
+}
+window.loadMoreOrders = loadMoreOrders;
+console.log("profile.js ha sido cargado correctamente.");

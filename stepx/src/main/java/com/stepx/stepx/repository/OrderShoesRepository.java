@@ -1,5 +1,6 @@
 package com.stepx.stepx.repository;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -45,7 +46,11 @@ List<Map<String, Object>> getMonthlySpendingByUserId(@Param("userId") Long userI
     OrderShoes findTopByUserIdOrderByIdDesc(@Param("userId") Long userId);
 
     
-    @Query("SELECT o FROM OrderShoes o WHERE o.user.id = :userId AND o.state = 'Processed'")
-    List<OrderShoes> getOrderShoesFinishedByUserId(@Param("userId")Long userId);
+    @Query("SELECT o FROM OrderShoes o WHERE o.user.id = :userId AND o.state = 'Processed' ORDER BY o.id DESC")
+    List<OrderShoes> getOrderShoesFinishedByUserId(@Param("userId") Long userId);
+
+    @Query("SELECT o FROM OrderShoes o WHERE o.user.id = :userId AND o.state = 'Processed' ORDER BY o.id DESC")
+    List<OrderShoes> getPagedOrdersByUserId(@Param("userId") Long userId, Pageable pageable);
+        
     
 }
