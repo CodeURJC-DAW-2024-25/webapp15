@@ -1,21 +1,17 @@
  package com.stepx.stepx.security;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import com.stepx.stepx.controller.CustomAuthenticationSuccessHandler;
-
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 
 
@@ -58,11 +54,12 @@ public class WebSecurityConfig{
 		http
 			.authorizeHttpRequests(authorize -> authorize
 			// PUBLIC PAGES
-			.requestMatchers( "/index", "/register-user", "/shop/**", "/shop/single-product/**", "/partials/**", "/**").permitAll()
+			.requestMatchers( "/index", "/register-user", "/shop/**", "/shop/single-product/**", "/partials/**").permitAll()
             .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
             // PRIVATE PAGES
-            .requestMatchers("/profile","/OrderItem/addItem","/checkout/**","/user/**").hasAnyRole("USER", "ADMIN")
-            .requestMatchers("/edit-product/**", "/admin-pannel", "/create-product").hasAnyRole("ADMIN")
+			.requestMatchers("/profile").hasAnyRole("USER", "ADMIN")
+            .requestMatchers("/OrderItem/addItem","/checkout/**","/user/**").hasAnyRole("USER")
+            .requestMatchers("/edit-product/**", "/admin", "/create-product").hasAnyRole("ADMIN")
         )
         .formLogin(formLogin -> formLogin
             .loginPage("/login")
@@ -72,6 +69,9 @@ public class WebSecurityConfig{
         ) 
         .logout(logout -> logout
 			.logoutSuccessUrl("/index")
+			.logoutUrl("/logout")
+			.invalidateHttpSession(true) 
+            .deleteCookies("JSESSIONID")
             .permitAll()
         );
 

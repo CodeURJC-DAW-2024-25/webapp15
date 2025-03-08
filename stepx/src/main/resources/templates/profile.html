@@ -12,17 +12,20 @@
   <meta name="keywords" content="Online Store, Profile">
   <meta name="description" content="Profile Settings - Stylish Shoes Online Store">
 
-  <meta name="_csrf" content="{{token}}"/>
-  <meta name="_csrf_header" content="{{headerName}}"/>
-  
+  <meta name="_csrf" content="{{token}}" />
+  <meta name="_csrf_header" content="{{headerName}}" />
+
   <link rel="stylesheet" href="/css/vendor.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 
   <link rel="stylesheet" type="text/css" href="/css/style.css">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,900;1,900&family=Source+Sans+Pro:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,900;1,900&family=Source+Sans+Pro:wght@400;600;700;900&display=swap"
+    rel="stylesheet">
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -40,7 +43,6 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,900;1,900&family=Source+Sans+Pro:wght@400;600;700;900&display=swap"
     rel="stylesheet">
-
 </head>
 
 <body>
@@ -54,23 +56,26 @@
           <div class="profile-sidebar bg-gray p-4 rounded-3">
             <div class="profile-image text-center mb-4">
               <div class="image-wrapper mb-3" id="user-image">
-                <img src="/shop/{{user_id}}/imageUser" alt="Profile Picture" class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
+                <img src="/shop/{{user_id}}/imageUser" alt="Profile Picture" class="rounded-circle"
+                  style="width: 150px; height: 150px; object-fit: cover;">
               </div>
               <form>
                 <input type="file" id="photoInput" style="display: none;" accept="image/*">
-                <button type="button" onclick="handleChangePhoto()" class="btn btn-outline-dark btn-sm">Change Photo</button>
+                <button type="button" onclick="handleChangePhoto()" class="btn btn-outline-dark btn-sm">Change
+                  Photo</button>
               </form>
-             
+
             </div>
             <div class="profile-nav">
               <ul class="list-unstyled">
                 <li class="mb-2">
                   <a href="#profile-info" class="d-block p-2 bg-white rounded active">Profile Information</a>
                 </li>
+                {{^admin}}
                 <li class="mb-2">
                   <a href="#purchase-history" class="d-block p-2 text-dark">Purchase History</a>
                 </li>
-               
+                {{/admin}}
               </ul>
             </div>
           </div>
@@ -83,6 +88,7 @@
             <h2 class="section-title mb-4">Profile Information</h2>
             <form class="profile-form" id="user-profile-form" method="post">
               <div class="row">
+                {{^admin}}
                 <div class="col-md-6 mb-3">
                   <label class="form-label">First Name</label>
                   <input type="text" class="form-control" name="firstName" value="{{firstname}}" required>
@@ -91,6 +97,7 @@
                   <label class="form-label">Last Name</label>
                   <input type="text" class="form-control" name="lastName" value="{{lastName}}" required>
                 </div>
+                {{/admin}}
                 <div class="col-md-6 mb-3">
                   <label class="form-label">Username</label>
                   <input type="text" class="form-control" name="username" value="{{username}}" required>
@@ -100,94 +107,137 @@
                   <input type="email" class="form-control" name="email" value="{{email}}" required>
                 </div>
                 <div class="col-12">
-                  <button type="button" onclick="updateUserInformation()" class="btn btn-dark hvr-sweep-to-right">Save Changes</button>
+                  <button type="button" onclick="updateUserInformation()" class="btn btn-dark hvr-sweep-to-right">Save
+                    Changes</button>
                 </div>
               </div>
             </form>
+            <form method="post" action="/logout">
+              <button type="submit" class="btn btn-dark hvr-sweep-to-right" id="logout-button">Log Out</button>
+              <input type="hidden" name="_csrf" value="{{token}}" />
+            </form>
           </div>
+          {{^admin}}
 
-          
-         <!-- Purchase History -->
-        <div id="purchase-history" class="profile-section bg-white p-4 rounded-3">
-          <h2 class="section-title mb-4">Purchase History</h2>
-          <div class="purchase-items" style="max-height: 600px; overflow-y: auto; margin-bottom: 20px;">
-            {{#orders}}
-            <!-- Purchase Item -->
-            <div class="purchase-item border-bottom pb-3 mb-3">
-              <div class="row g-2 align-items-center">
-                <!-- Order ID and Date -->
-                <div class="col-12 col-sm-6 col-md-4">
-                  <h3 class="fs-6 mb-1" style="font-size: 0.9rem !important;">Order Id: {{id}}</h3>
-                  <p class="text-muted mb-0" style="font-size: 0.8rem;">Date: {{date}}</p>
+          <!-- Purchase History -->
+          <div id="purchase-history" class="profile-section bg-white p-4 rounded-3">
+            <h2 class="section-title mb-4">Purchase History</h2>
+            <div class="purchase-items" style="max-height: 600px; overflow-y: auto; margin-bottom: 20px;">
+              {{#orders}}
+              <!-- Purchase Item -->
+              <div class="purchase-item border-bottom pb-3 mb-3">
+                <div class="row g-2 align-items-center">
+                  <!-- Order ID and Date -->
+                  <div class="col-12 col-sm-6 col-md-4">
+                    <h3 class="fs-6 mb-1" style="font-size: 0.9rem !important;">Order Id: {{id}}</h3>
+                    <p class="text-muted mb-0" style="font-size: 0.8rem;">Date: {{date}}</p>
+                  </div>
+
+                  <!-- Summary -->
+                  <div class="col-6 col-sm-6 col-md-3">
+                    <span class="fw-bold" style="font-size: 0.9rem;">Summary: {{summary}}</span>
+                  </div>
+
+                  <!-- State -->
+                  <div class="col-6 col-sm-6 col-md-2">
+                    <span class="badge bg-success" style="font-size: 0.8rem;">{{state}}</span>
+                  </div>
+
+                  <!-- Download Button -->
+                  <div class="col-6 col-sm-6 col-md-1 text-center">
+                    <button type="submit" name="add-to-cart" value="1269" class="btn btn-outline-gray text-uppercase"
+                      style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid rgb(223, 220, 220); padding: 0;">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20"
+                        fill="currentColor">
+                        <path
+                          d="M5 20h14a1 1 0 0 0 0-2H5a1 1 0 0 0 0 2zm7-2a1 1 0 0 0 .71-.29l5-5a1 1 0 0 0-1.42-1.42L13 13.59V4a1 1 0 0 0-2 0v9.59L7.71 11.3a1 1 0 1 0-1.42 1.42l5 5A1 1 0 0 0 12 18z" />
+                      </svg>
+                    </button>
+                  </div>
+
+                  <!-- Show Details Button -->
+                  <div class="col-6 col-sm-6 col-md-2">
+                    <button onclick="showOrderDetail('{{id}}')" class="btn btn-dark btn-sm hvr-sweep-to-right w-100"
+                      style="font-size: 0.8rem; padding: 0.375rem 0.75rem;">
+                      Show details
+                    </button>
+                  </div>
                 </div>
-
-                <!-- Summary -->
-                <div class="col-6 col-sm-6 col-md-3">
-                  <span class="fw-bold" style="font-size: 0.9rem;">Summary: {{summary}}</span>
-                </div>
-
-                <!-- State -->
-                <div class="col-6 col-sm-6 col-md-2">
-                  <span class="badge bg-success" style="font-size: 0.8rem;">{{state}}</span>
-                </div>
-
-                <!-- Download Button -->
-                <div class="col-6 col-sm-6 col-md-1 text-center">
-                  <button type="submit" name="add-to-cart" value="1269" class="btn btn-outline-gray text-uppercase"
-                    style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid rgb(223, 220, 220); padding: 0;">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                      <path
-                        d="M5 20h14a1 1 0 0 0 0-2H5a1 1 0 0 0 0 2zm7-2a1 1 0 0 0 .71-.29l5-5a1 1 0 0 0-1.42-1.42L13 13.59V4a1 1 0 0 0-2 0v9.59L7.71 11.3a1 1 0 1 0-1.42 1.42l5 5A1 1 0 0 0 12 18z" />
-                    </svg>
-                  </button>
-                </div>
-
-                <!-- Show Details Button -->
-                <div class="col-6 col-sm-6 col-md-2">
-                  <button onclick="showOrderDetail('{{id}}')" class="btn btn-dark btn-sm hvr-sweep-to-right w-100"
-                    style="font-size: 0.8rem; padding: 0.375rem 0.75rem;">
-                    Show details
-                  </button>
+                <div id="{{id}}" class="mt-2">
                 </div>
               </div>
-              <div id="{{id}}" class="mt-2">
+              {{/orders}}
+
+              {{^orders}}
+              <div style="text-align: center;">
+                <p>No orders made yet</p>
+              </div>
+              {{/orders}}
+            </div>
+          </div>
+
+
+          <!-- Chart Section -->
+          <div class="row">
+            <div class="col-12">
+              <div class="card flex-fill">
+                <div class="card-header">
+                  <h3 class="card-title mb-0">Your Monthly Spending</h3>
+                </div>
+                <div class="card-body py-3">
+                  <div class="chart chart-sm">
+                    <canvas id="chartjs-spending"></canvas>
+                  </div>
+                </div>
               </div>
             </div>
-            {{/orders}}
-
-            {{^orders}}
-            <div style="text-align: center;">
-              <p>No orders made yet</p>
-            </div>
-            {{/orders}}
           </div>
-        </div>
 
-        <div class="chart-container-profile">
-          <h3>Your Shopping History</h3>
-          <canvas id="spendingChart"></canvas>
+
+
         </div>
-        
-        
-        <!-- Pagination -->
-        <nav class="mt-4">
-          <ul class="pagination justify-content-center">
-            <li class="page-item disabled">
-              <a class="page-link" href="#" tabindex="-1">Previous</a>
-            </li>
-            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item">
-              <a class="page-link" href="#">Next</a>
-            </li>
-          </ul>
-        </nav>
       </div>
-    </div>
   </section>
+  {{/admin}}
 
-   <!-- quick view -->
+  {{#admin}}
+  <div class="d-flex gap-4 justify-content-center flex-wrap">
+    <!-- First div for stadistics -->
+    <div class="dashboard-card text-center p-4 rounded-3 shadow-sm bg-white">
+      <div class="icon-container mb-3">
+        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 3v18h18" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M7 14L10 10L13 15L17 9" stroke="#000" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" />
+          <circle cx="17" cy="9" r="1.5" fill="#000" />
+          <circle cx="13" cy="15" r="1.5" fill="#000" />
+          <circle cx="10" cy="10" r="1.5" fill="#000" />
+          <circle cx="7" cy="14" r="1.5" fill="#000" />
+        </svg>
+      </div>
+      <h4 class="fw-bold mb-2">View Statistics</h4>
+      <p class="text-muted mb-3">Check the latest store performance and trends.</p>
+      <a href="/admin" class="btn btn-dark hvr-sweep-to-right" id="button-admin-profile">Go to Stats</a>
+    </div>
+
+    <!-- Second div for Editing in shop -->
+    <div class="dashboard-card text-center p-4 rounded-3 shadow-sm bg-white">
+      <div class="icon-container mb-3">
+        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 20h9" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4L16.5 3.5z" stroke="#000" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </div>
+      <h4 class="fw-bold mb-2">Edit Products</h4>
+      <p class="text-muted mb-3">Modify, delete or add products</p>
+      <a href="/shop" class="btn btn-dark hvr-sweep-to-right" id="button-admin-profile">Edit Now</a>
+    </div>
+  </div>
+
+  {{/admin}}
+
+  <!-- quick view -->
   <div class="modal fade" id="modaltoggle" aria-hidden="true" tabindex="-1">
     <div class="modal-dialog modal-fullscreen-md-down modal-md modal-dialog-centered">
       <div class="modal-content">
@@ -197,19 +247,70 @@
       </div>
     </div>
   </div>
-<!-- / quick view -->
+  <!-- / quick view -->
 
   <!-- Include your footer here -->
   {{>footer}}
-  
+
+  <script>
+  {{{spendingData}}}
+  </script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // Create the spending chart
+      var ctx = document.getElementById("chartjs-spending").getContext("2d");
+
+      new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: spendingData.labels,
+          datasets: [{
+            label: "Money Spent ($)",
+            data: spendingData.data,
+            backgroundColor: "rgba(75, 192, 192, 0.8)",
+            borderColor: "rgba(75, 192, 192, 1)",
+            borderWidth: 1
+          }]
+        },
+        options: {
+          maintainAspectRatio: false,
+          legend: {
+            display: true,
+            position: 'top'
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: function (value, index, values) {
+                  return '$' + value.toLocaleString();
+                }
+              }
+            }
+          },
+          plugins: {
+            tooltip: {
+              callbacks: {
+                label: function (context) {
+                  return '$' + context.raw.toLocaleString();
+                }
+              }
+            }
+          }
+        }
+      });
+    });
+  </script>
+
   <script src="/js/jquery-1.11.0.min.js"></script>
   <script src="/js/plugins.js"></script>
   <script src="/js/script.js"></script>
   <script src="/js/profile.js"></script>
 
 
-  
-    
+
+
 </body>
 
 

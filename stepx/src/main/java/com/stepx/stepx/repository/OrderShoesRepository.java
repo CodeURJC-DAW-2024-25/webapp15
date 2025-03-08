@@ -31,7 +31,8 @@ public interface OrderShoesRepository extends JpaRepository<OrderShoes, Long> {
     """)
     BigDecimal getTotalPriceExcludingOutOfStock(@Param("cartId") Long cartId);
 
-    
+    @Query(value = "SELECT DATE_FORMAT(date, '%m') AS month, SUM(summary) AS total_spent FROM order_shoes WHERE user_id = :userId AND state = 'Processed' GROUP BY DATE_FORMAT(date, '%Y-%m') ORDER BY month", nativeQuery = true)
+List<Map<String, Object>> getMonthlySpendingByUserId(@Param("userId") Long userId);
     @Query(value = "SELECT DATE_FORMAT(date, '%m') AS month, COUNT(*) AS orders_count FROM order_shoes WHERE state = 'Processed' GROUP BY DATE_FORMAT(date, '%Y-%m') ORDER BY month", nativeQuery = true)
     List<Map<String, Object>> getOrderCountsByMonth();
 
@@ -39,9 +40,9 @@ public interface OrderShoesRepository extends JpaRepository<OrderShoes, Long> {
     List<Map<String, Object>> getMoneyGainedByMonth();
 
 
-
-    OrderShoes findTopByUserIdOrderByDateDesc(Long userId);
-
+    // Encontrar el pedido con el ID más alto para un usuario
+    @Query("SELECT o FROM OrderShoes o WHERE o.user.id = :userId ORDER BY o.id DESC LIMIT 1")
+    OrderShoes findTopByUserIdOrderByIdDesc(@Param("userId") Long userId);
 
     
     @Query("SELECT o FROM OrderShoes o WHERE o.user.id = :userId AND o.state = 'Processed'")

@@ -135,6 +135,7 @@ public class CheckoutController {
         order.setActualDate();
         order.setSummary(order.getTotalPrice());
         orderShoesService.processOrder(order);//update stock of shoes
+        order.setSummary(order.getTotalPrice());
         orderShoesService.saveOrderShoes(order);
 
         

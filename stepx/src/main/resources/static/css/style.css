@@ -114,6 +114,37 @@ a {
   --bs-dropdown-link-active-bg: var(--bs-tertiary-bg);
 }
 
+/*Log Out Button for User*/
+#logout-button{
+  margin-top: 15px;
+}
+
+/*Stadistics Option for Admin Profile*/
+.dashboard-card {
+  max-width: 300px;
+  margin: auto;
+  text-align: center;
+  border-radius: 12px;
+  transition: transform 0.2s ease-in-out;
+  margin-top: 10%;
+  margin-bottom: 10%;
+  background: white;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.icon-container svg {
+  display: block;
+  margin: auto;
+  opacity: 0.2;
+}
+
+/*end of stadistics option for profile admin*/
+
 /* list group */
 .list-group-item {
   --bs-list-group-item-padding-x: 0;
