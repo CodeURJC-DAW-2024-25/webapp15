@@ -48,6 +48,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.security.web.csrf.CsrfToken;
+
 @Controller
 @RequestMapping("/shop")
 public class ShoeController {
@@ -103,8 +104,7 @@ public class ShoeController {
         Page<Shoe> shoes = shoeService.getNineShoes(0);
         boolean more = 0 < shoes.getTotalPages() - 1;
 
-
-        boolean isAuthenticated = request.getUserPrincipal() != null;//if its registered at least
+        boolean isAuthenticated = request.getUserPrincipal() != null;// if its registered at least
         model.addAttribute("isAuthenticated", isAuthenticated);
 
         if (isAuthenticated) {
@@ -239,14 +239,13 @@ public class ShoeController {
         CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
         long maxItems = shoeService.getTotalShoes();
 
-        if (maxItems < id){
+        if (maxItems < id) {
             return "redirect:/error-page?errorType=greaterId";
         }
 
         // 🔥 Pasar el token a la plantilla para que esté disponible en el <head>
         model.addAttribute("token", csrfToken.getToken());
         model.addAttribute("headerName", csrfToken.getHeaderName());
-        
 
         boolean isAuthenticated = request.getUserPrincipal() != null;
         model.addAttribute("isAuthenticated", isAuthenticated);
@@ -265,7 +264,6 @@ public class ShoeController {
         Optional<Integer> stockL = shoeSizeStockService.getStockByShoeAndSize(id, "L");
         Optional<Integer> stockXL = shoeSizeStockService.getStockByShoeAndSize(id, "XL");
         List<Review> review = reviewService.getReviewsByShoe(id);
-
 
         // Convertir LocalDate a String en formato DD/MM/YYYY
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -294,15 +292,15 @@ public class ShoeController {
     public String getProductById(Model model, @PathVariable Long id, @RequestParam(required = false) String action,
             HttpServletRequest request) {
 
-        boolean isAuthenticated = request.getUserPrincipal() != null;//false if user doesnt exist(not registered)
-        model.addAttribute("isAuthenticated", isAuthenticated);//true if is registered at least
-        Optional<Shoe> product = shoeService.getShoeById(id);//obtain shoe
-            
-        if (isAuthenticated){
+        boolean isAuthenticated = request.getUserPrincipal() != null;// false if user doesnt exist(not registered)
+        model.addAttribute("isAuthenticated", isAuthenticated);// true if is registered at least
+        Optional<Shoe> product = shoeService.getShoeById(id);// obtain shoe
+
+        if (isAuthenticated) {
             String username = request.getUserPrincipal().getName();
             User user = userRepository.findByUsername(username).orElseThrow();
             model.addAttribute("username", user.getUsername());
-            model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));//if user is admin or not
+            model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));// if user is admin or not
         }
 
         if (product.isEmpty()) {
@@ -316,8 +314,7 @@ public class ShoeController {
 
             return "partials/quick-view-modal";
 
-        }
-        else if ("confirmation".equals(action)) {
+        } else if ("confirmation".equals(action)) {
             // need a confirmation if the stock of the default size is 0
             Optional<Integer> stock = shoeSizeStockService.getStockByShoeAndSize(id, "M");
             if (stock.isPresent() && stock.get() == 0) {
@@ -325,11 +322,9 @@ public class ShoeController {
             }
             return "partials/cart-confirmation-view";
 
-        }
-         else if ("delete".equals(action)) {
+        } else if ("delete".equals(action)) {
             return "partials/deleteShoeModal";
-        } 
-        else {
+        } else {
             return "partials/error-modal";
         }
     }
@@ -392,12 +387,12 @@ public class ShoeController {
         return ResponseEntity.notFound().build();
     }
 
-    //se creo uno nuevo porque en el anterior saca la imagen del perfil de usuario actual.
+    // se creo uno nuevo porque en el anterior saca la imagen del perfil de usuario
+    // actual.
     @GetMapping("/{userId}/imageUserReview")
     public ResponseEntity<Resource> getProfileImageForReview(@PathVariable Long userId, Model model,
             HttpServletRequest request) {
         Optional<User> userOptional = userService.findUserById(userId);
-        
 
         if (userOptional.isPresent()) {
             // User user = userOptional.get();
@@ -419,8 +414,6 @@ public class ShoeController {
 
         return ResponseEntity.notFound().build();
     }
-
-
 
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model, HttpServletRequest request) {
@@ -493,13 +486,12 @@ public class ShoeController {
             boolean isAuthenticated = request.getUserPrincipal() != null;
             model.addAttribute("isAuthenticated", isAuthenticated);
 
-
             if (isAuthenticated) {
                 String username = request.getUserPrincipal().getName();
                 User user = userRepository.findByUsername(username).orElseThrow();
                 model.addAttribute("username", user.getUsername());
                 model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
-    
+
             }
 
             model.addAttribute("hasMoreShoes", more);
@@ -512,7 +504,7 @@ public class ShoeController {
     }
 
     @GetMapping("/getByCategory") // first 9 shoes of same category
-    public String getByCategory(@RequestParam String category, Model model,  HttpServletRequest request) {
+    public String getByCategory(@RequestParam String category, Model model, HttpServletRequest request) {
         try {
             int currentPage = 0;
             Page<Shoe> shoes = shoeService.getShoesByCategory(currentPage, category);
@@ -541,10 +533,10 @@ public class ShoeController {
     }
 
     @GetMapping("/loadMoreShoesByBrand")
-    public String getMoreByBrand(@RequestParam String brand, Model model, @RequestParam int currentPage, HttpServletRequest request) {
+    public String getMoreByBrand(@RequestParam String brand, Model model, @RequestParam int currentPage,
+            HttpServletRequest request) {
         Page<Shoe> paginatedShoe = shoeService.getShoesPaginatedByBrand(currentPage, brand);
         boolean more = currentPage < paginatedShoe.getTotalPages() - 1;
-
 
         boolean isAuthenticated = request.getUserPrincipal() != null;
         model.addAttribute("isAuthenticated", isAuthenticated);
@@ -563,7 +555,8 @@ public class ShoeController {
     }
 
     @GetMapping("/loadMoreShoesByCategory")
-    public String loadMoreShoesByCategory(@RequestParam String category, @RequestParam int currentPage, Model model, HttpServletRequest request) {
+    public String loadMoreShoesByCategory(@RequestParam String category, @RequestParam int currentPage, Model model,
+            HttpServletRequest request) {
         Page<Shoe> paginatedShoes = shoeService.getShoesPaginatedByCategory(currentPage, category);
         boolean more = currentPage < paginatedShoes.getTotalPages() - 1;
 
@@ -577,7 +570,7 @@ public class ShoeController {
             model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
 
         }
-        
+
         model.addAttribute("shoes", paginatedShoes.getContent());
         model.addAttribute("hasMoreShoes", more);
         return "partials/loadMoreShoe";
@@ -615,4 +608,38 @@ public class ShoeController {
         return "redirect:/shop/single-product/{id}";
 
     }
+
+    @GetMapping("/{productId}/deleteReview/{id}") // es el id de la review no del shoe
+    public String deleteReview(@PathVariable Long productId,@PathVariable Long id, Model model, HttpServletRequest request) {
+
+        boolean isAuthenticated = request.getUserPrincipal() != null;
+        model.addAttribute("isAuthenticated", isAuthenticated);
+        String username = request.getUserPrincipal().getName();
+        User user = userRepository.findByUsername(username).orElseThrow();
+
+        if (isAuthenticated) {
+            model.addAttribute("username", user.getUsername());
+            model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
+        }
+
+        reviewService.deleteReview(id);
+
+
+
+        List<Review> review = reviewService.getReviewsByShoe(productId);
+        // Convertir LocalDate a String en formato DD/MM/YYYY
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        review.forEach(reviews -> {
+            reviews.setFormattedDate(reviews.getDate().format(formatter));
+        });
+        
+        if (review != null) {
+            model.addAttribute("review", review);
+            return "partials/singleProduct-reviewList";
+        }  
+        return "error";
+
+        
+    }
+
 }

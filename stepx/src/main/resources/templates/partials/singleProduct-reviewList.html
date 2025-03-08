@@ -1,0 +1,37 @@
+<div class="review-box d-flex flex-wrap">
+    {{#review}}
+    <div class="col-lg-6 d-flex flex-wrap"> <!-- All the container for 1 review -->
+        <div class="col-md-2 me-3 mb-3">
+            <div class="image-wrapper mb-3">
+                <img src="/shop/{{user.id}}/imageUserReview" alt="review" class="rounded-circle"
+                    style="width: 75px; height: 75px; object-fit: cover;">
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="review-content">
+                <div class="rating-container d-flex align-items-center mb-3">
+                    <!--PICKS STARS FROM GETSTARS(IT IS NOT CALLED FROM ANYWHERE, SPRNG MAKE IT BY ITSELF)-->
+                    <div class="rating">
+                        {{#stars}}
+                        <i class="fa-solid fa-star"></i>
+                        {{/stars}}
+                    </div>
+                </div>
+                <div class="review-header">
+                    <span class="author-name">{{user.username}}</span>
+                    <span class="review-date">{{formattedDate}}</span>
+
+                </div>
+                <p id="textReview">{{description}}</p>
+
+                {{#admin}}
+                <button id="deleteReviewButton" onclick="deleteReview('{{shoe.id}}','{{id}}')"
+                    style="padding-top: 30px;">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+                {{/admin}}
+            </div>
+        </div>
+    </div>
+    {{/review}}
+</div>

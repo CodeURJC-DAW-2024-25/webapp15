@@ -28,3 +28,28 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
+async function deleteReview(productId,idItem) {
+    if (!idItem) {
+        console.error("Error: idItem o idUser es undefined");
+        return;
+    }else{
+        console.error("Esta es la review con id: " + idItem);
+    }
+
+    try {
+        const response = await fetch(`/shop/${productId}/deleteReview/${idItem}`, { method: 'GET' });
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const result = await response.text();
+        console.log("✅ Respuesta del servidor:", result);
+
+        document.getElementById("ReviewsList").innerHTML = result;
+
+
+    } catch (error) {
+        console.error("Error al eliminar el item:", error);
+    }
+}
