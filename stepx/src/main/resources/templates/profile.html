@@ -66,10 +66,11 @@
                 <li class="mb-2">
                   <a href="#profile-info" class="d-block p-2 bg-white rounded active">Profile Information</a>
                 </li>
+                {{^admin}}
                 <li class="mb-2">
                   <a href="#purchase-history" class="d-block p-2 text-dark">Purchase History</a>
                 </li>
-               
+                {{/admin}}
               </ul>
             </div>
           </div>
@@ -82,6 +83,7 @@
             <h2 class="section-title mb-4">Profile Information</h2>
             <form class="profile-form" id="user-profile-form" method="post">
               <div class="row">
+                {{^admin}}
                 <div class="col-md-6 mb-3">
                   <label class="form-label">First Name</label>
                   <input type="text" class="form-control" name="firstName" value="{{firstname}}" required>
@@ -90,6 +92,7 @@
                   <label class="form-label">Last Name</label>
                   <input type="text" class="form-control" name="lastName" value="{{lastName}}" required>
                 </div>
+                {{/admin}}
                 <div class="col-md-6 mb-3">
                   <label class="form-label">Username</label>
                   <input type="text" class="form-control" name="username" value="{{username}}" required>
@@ -108,7 +111,7 @@
               <input type="hidden" name="_csrf" value="{{token}}"/>
             </form>
           </div>
-
+          {{^admin}}
           
          <!-- Purchase History -->
         <div id="purchase-history" class="profile-section bg-white p-4 rounded-3">
@@ -172,6 +175,7 @@
         </div>
         
         
+        
         <!-- Pagination -->
         <nav class="mt-4">
           <ul class="pagination justify-content-center">
@@ -189,6 +193,42 @@
       </div>
     </div>
   </section>
+  {{/admin}}
+
+  {{#admin}}
+  <div class="d-flex gap-4 justify-content-center flex-wrap">
+    <!-- First div for stadistics -->
+    <div class="dashboard-card text-center p-4 rounded-3 shadow-sm bg-white">
+      <div class="icon-container mb-3">
+        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 3v18h18" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M7 14L10 10L13 15L17 9" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="17" cy="9" r="1.5" fill="#000"/>
+          <circle cx="13" cy="15" r="1.5" fill="#000"/>
+          <circle cx="10" cy="10" r="1.5" fill="#000"/>
+          <circle cx="7" cy="14" r="1.5" fill="#000"/>
+        </svg>
+      </div>
+      <h4 class="fw-bold mb-2">View Statistics</h4>
+      <p class="text-muted mb-3">Check the latest store performance and trends.</p>
+      <a href="/admin" class="btn btn-dark hvr-sweep-to-right" id="button-admin-profile">Go to Stats</a>
+    </div>
+  
+    <!-- Second div for Editing in shop -->
+    <div class="dashboard-card text-center p-4 rounded-3 shadow-sm bg-white">
+      <div class="icon-container mb-3">
+        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 20h9" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4L16.5 3.5z" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h4 class="fw-bold mb-2">Edit Products</h4>
+      <p class="text-muted mb-3">Modify, delete or add products</p>
+      <a href="/shop" class="btn btn-dark hvr-sweep-to-right" id="button-admin-profile">Edit Now</a>
+    </div>
+  </div>
+  
+  {{/admin}}
 
    <!-- quick view -->
   <div class="modal fade" id="modaltoggle" aria-hidden="true" tabindex="-1">
