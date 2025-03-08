@@ -29,6 +29,16 @@ public class ReviewService {
     public void save(Review review) {
         reviewRepository.save(review);
     }
+    public void deleteReview(Long id) {
+        Optional<Review> reviewOptional = reviewRepository.findById(id);
+
+        if (reviewOptional.isPresent()) {
+            reviewRepository.deleteById(id);
+            System.out.println("✅ Review con ID " + id + " eliminada correctamente.");
+        } else {
+            System.out.println("⚠️ No se encontró la review con ID " + id);
+        }
+    }
 
     
 
