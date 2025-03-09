@@ -143,5 +143,9 @@ public class OrderShoesService {
         // Llamamos al servicio para actualizar el stock en lote
         shoeSizeStockService.updateStock(stockUpdates);
     }
+    //debvuelve la orden por id
+    public Optional<OrderShoes> getOrderById(Long orderId) {
+        return orderShoesRepository.findById(orderId);
+    }
     
 }

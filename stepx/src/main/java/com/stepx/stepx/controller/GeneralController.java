@@ -46,7 +46,7 @@ public class GeneralController {
 
     @Autowired
     private ObjectMapper objectMapper;
-    
+
     @Autowired
     private UserService userService;
 
@@ -65,17 +65,17 @@ public class GeneralController {
 
     
     @ModelAttribute
-    public void addAttributes(Model model, HttpServletRequest request){
+    public void addAttributes(Model model, HttpServletRequest request) {
         boolean isAuthenticated = request.getUserPrincipal() != null;
         model.addAttribute("isAuthenticated", isAuthenticated);
         model.addAttribute("showError", false);
 
         CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
         model.addAttribute("token", csrfToken.getToken());
-        
+
         model.addAttribute("headerName", csrfToken.getHeaderName());
 
-        if(isAuthenticated) {
+        if (isAuthenticated) {
             String username = request.getUserPrincipal().getName();
             model.addAttribute("username", username);
 
@@ -89,8 +89,7 @@ public class GeneralController {
             model.addAttribute("lastName", user.getLastName());
             model.addAttribute("firstname", user.getFirstName());
             model.addAttribute("user_id", user.getId());
-    
-            
+
         }
     }
 
@@ -104,14 +103,13 @@ public class GeneralController {
 
             // Obtener productos recomendados
             List<Shoe> recommendedShoes = orderItemService.getRecommendedShoesForUser(user.getId(), 10);
-            
 
             if (recommendedShoes.isEmpty()) {
                 System.out.println("esta la lista  de productos recomendados esta vacia");
                 model.addAttribute("recommendedShoes", false);
                 model.addAttribute("hasRecommendedShoes", false);
-    
-            }else{
+
+            } else {
                 model.addAttribute("recommendedShoes", recommendedShoes);
                 model.addAttribute("hasRecommendedShoes", true);
             }
@@ -128,8 +126,6 @@ public class GeneralController {
 
         return "index";
     }
-
-    
 
     @GetMapping("/login")
     public String login(Model model, HttpServletRequest request) {
@@ -163,41 +159,41 @@ public String profile(HttpServletRequest request, Model model) throws JsonProces
         }
     }
 
-    // Get monthly spending data for the user
-    List<Map<String, Object>> monthlySpending = orderShoesRepository.getMonthlySpendingByUserId(user.getId());
+        // Get monthly spending data for the user
+        List<Map<String, Object>> monthlySpending = orderShoesRepository.getMonthlySpendingByUserId(user.getId());
 
-    // Prepare data for the chart
-    Map<String, Object> chartData = new HashMap<>();
-    String[] monthNames = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
-    Double[] spendingData = new Double[12];
+        // Prepare data for the chart
+        Map<String, Object> chartData = new HashMap<>();
+        String[] monthNames = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+        Double[] spendingData = new Double[12];
 
-    // Initialize with zeros
-    for (int i = 0; i < 12; i++) {
-        spendingData[i] = 0.0;
-    }
-
-    // Fill in the actual spending data
-    for (Map<String, Object> entry : monthlySpending) {
-        String monthStr = (String) entry.get("month");
-        Number amount = (Number) entry.get("total_spent");
-        Double totalSpent = amount != null ? amount.doubleValue() : 0.0;
-
-        // Convert month string to zero-based index
-        int monthIndex = Integer.parseInt(monthStr) - 1;
-        if (monthIndex >= 0 && monthIndex < 12) {
-            spendingData[monthIndex] = totalSpent;
+        // Initialize with zeros
+        for (int i = 0; i < 12; i++) {
+            spendingData[i] = 0.0;
         }
+
+        // Fill in the actual spending data
+        for (Map<String, Object> entry : monthlySpending) {
+            String monthStr = (String) entry.get("month");
+            Number amount = (Number) entry.get("total_spent");
+            Double totalSpent = amount != null ? amount.doubleValue() : 0.0;
+
+            // Convert month string to zero-based index
+            int monthIndex = Integer.parseInt(monthStr) - 1;
+            if (monthIndex >= 0 && monthIndex < 12) {
+                spendingData[monthIndex] = totalSpent;
+            }
+        }
+
+        chartData.put("labels", monthNames);
+        chartData.put("data", spendingData);
+
+        // Convert to JSON and pass to the view
+        String chartDataJson = objectMapper.writeValueAsString(chartData);
+        model.addAttribute("spendingData", "var spendingData = " + chartDataJson + ";");
+
+        return "profile";
     }
-
-    chartData.put("labels", monthNames);
-    chartData.put("data", spendingData);
-
-    // Convert to JSON and pass to the view
-    String chartDataJson = objectMapper.writeValueAsString(chartData);
-    model.addAttribute("spendingData", "var spendingData = " + chartDataJson + ";");
-
-    return "profile";
-}
 
     @GetMapping("/profile/update")
     public String profileUpdate(
@@ -249,7 +245,7 @@ public String profile(HttpServletRequest request, Model model) throws JsonProces
     @GetMapping("/edit-product/{id}")
     public String showEditProduct(Model model, @PathVariable Long id, HttpServletRequest request) {
         model.addAttribute("product", productsService.getProductById(id));
-        //model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
+        // model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
         boolean admin = request.isUserInRole("ROLE_ADMIN");
         if (!admin){
             return "redirect:/errorPage?errorType=notValidPage";
@@ -259,7 +255,7 @@ public String profile(HttpServletRequest request, Model model) throws JsonProces
 
     @GetMapping("/create-product")
     public String showCreate(Model model, HttpServletRequest request) {
-        //model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
+        // model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
         boolean admin = request.isUserInRole("ROLE_ADMIN");
         if (!admin){
             return "redirect:/errorPage?errorType=notValidPage";

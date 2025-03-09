@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,6 +33,7 @@ import com.stepx.stepx.model.OrderItem;
 import com.stepx.stepx.service.EmailService;
 import com.stepx.stepx.service.OrderItemService;
 import com.stepx.stepx.service.OrderShoesService;
+import com.stepx.stepx.service.PdfService;
 import com.stepx.stepx.service.ShoeService;
 import com.stepx.stepx.service.ShoeSizeStockService;
 import com.stepx.stepx.service.UserService;
@@ -40,6 +42,7 @@ import com.stepx.stepx.security.RepositoryUserDetailsService;
 
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
@@ -59,6 +62,9 @@ public class UserController {
     
     @Autowired
     private ShoeSizeStockService shoeSizeStockService;
+
+    @Autowired
+    private PdfService pdfService;
 
     @Autowired
     private OrderItemService orderItemService;
@@ -261,6 +267,76 @@ public class UserController {
         } catch (UsernameNotFoundException e) {
             System.err.println("Error al actualizar autenticación: " + e.getMessage());
         }
+    }
+
+
+    @PostMapping("/downloadTicket/{orderId}")
+    public void downloadTicketFromprofile(
+            @PathVariable Long orderId,
+            HttpServletResponse response,
+            HttpServletRequest request) throws IOException {
+        System.out.println("🔹 Recibiendo solicitud para descargar ticket con ID: " + orderId);
+
+        boolean isAuthenticated = request.getUserPrincipal() != null;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        
+        //printear
+        System.out.println("el numero de la orden a descargar es: "+ orderId);
+
+        if (!isAuthenticated) {
+            System.out.println("❌ Acceso denegado: Usuario no autenticado.");
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged in to download the ticket");
+            return;
+        }
+
+        // 2️⃣ Obtener el objeto `UserDetails`
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+        // 3️⃣ Obtener el usuario desde la base de datos (usando
+        // `userDetails.getUsername()` si necesitas buscarlo)
+        Optional<User> userOptional = userRepository.findByUsername(userDetails.getUsername());
+        if (!userOptional.isPresent()) {
+            System.out.println("❌ Error: Usuario no encontrado.");
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User not found");
+            return;
+        }
+        User user = userOptional.get();
+        Long userId = user.getId(); // Aquí ya tienes el ID correcto del usuario autenticado
+
+        // 4️⃣ Buscar la orden por ID y validar que pertenece al usuario autenticado
+        Optional<OrderShoes> orderOptional = orderShoesService.getOrderById(orderId);
+        if (!orderOptional.isPresent()) {
+            System.out.println("❌ Error: Orden no encontrada con ID " + orderId + " para el usuario " + userId);
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Order not found");
+            return;
+        }
+        
+        OrderShoes order = orderOptional.get();
+        // Prearing data to send the template
+        Map<String, Object> data = new HashMap<>();
+        data.put("customerName", order.getFirstName() + " " + order.getSecondName());
+        data.put("email", order.getEmail());
+        data.put("address", order.getAddress());
+        data.put("phone", order.getNumerPhone());
+        data.put("country", order.getCountry());
+        data.put("coupon", order.getCuponUsed() != null ? order.getCuponUsed() : "No coupon applied");
+        data.put("date", order.getDate());
+        data.put("products", order.getOrderItems());
+        data.put("total", order.getTotalPrice());
+
+        System.out.println("🔹 Generando PDF...");
+        byte[] pdfBytes = pdfService.generatePdfFromOrder(data);
+
+        if (pdfBytes == null || pdfBytes.length == 0) {
+            System.out.println("❌ Error: El PDF está vacío o no se generó correctamente.");
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error generating PDF");
+            return;
+        }
+
+        System.out.println("✅ PDF generado correctamente. Enviando respuesta...");
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Disposition", "attachment; filename=ticket.pdf");
+        response.getOutputStream().write(pdfBytes);
     }
 
 
