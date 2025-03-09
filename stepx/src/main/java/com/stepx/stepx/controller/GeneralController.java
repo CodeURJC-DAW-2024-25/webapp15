@@ -64,68 +64,74 @@ public class GeneralController {
 
 
     
-    @ModelAttribute
-    public void addAttributes(Model model, HttpServletRequest request) {
-        boolean isAuthenticated = request.getUserPrincipal() != null;
-        model.addAttribute("isAuthenticated", isAuthenticated);
-        model.addAttribute("showError", false);
+@ModelAttribute
+public void addAttributes(Model model, HttpServletRequest request) {
+    boolean isAuthenticated = request.getUserPrincipal() != null;
+    model.addAttribute("isAuthenticated", isAuthenticated);
+    model.addAttribute("showError", false);
 
-        CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
-        model.addAttribute("token", csrfToken.getToken());
+    CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
+    model.addAttribute("token", csrfToken.getToken());
 
-        model.addAttribute("headerName", csrfToken.getHeaderName());
+    model.addAttribute("headerName", csrfToken.getHeaderName());
 
-        if (isAuthenticated) {
-            String username = request.getUserPrincipal().getName();
-            model.addAttribute("username", username);
+    if (isAuthenticated) {
+        String username = request.getUserPrincipal().getName();
+        model.addAttribute("username", username);
 
-            model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
+        model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
 
-            User user = userRepository.findByUsername(username).get();
+        User user = userRepository.findByUsername(username).get();
 
-            model.addAttribute("id", user.getId());
-            model.addAttribute("email", user.getEmail());
-            model.addAttribute("imageBlob", user.getImageUser());
-            model.addAttribute("lastName", user.getLastName());
-            model.addAttribute("firstname", user.getFirstName());
-            model.addAttribute("user_id", user.getId());
+        model.addAttribute("id", user.getId());
+        model.addAttribute("email", user.getEmail());
+        model.addAttribute("imageBlob", user.getImageUser());
+        model.addAttribute("lastName", user.getLastName());
+        model.addAttribute("firstname", user.getFirstName());
+        model.addAttribute("user_id", user.getId());
 
-        }
     }
+}
 
-    @GetMapping({ "/", "/index" })
-    public String showIndex(Model model, HttpServletRequest request) {
-        boolean isAuthenticated = request.getUserPrincipal() != null;
+@GetMapping({ "/", "/index" })
+public String showIndex(Model model, HttpServletRequest request) {
+    boolean isAuthenticated = request.getUserPrincipal() != null;
 
-        if (isAuthenticated) {
-            String username = request.getUserPrincipal().getName();
-            User user = userRepository.findByUsername(username).get();
+    // Catch the error parameter
+    String error = request.getParameter("error");
+    model.addAttribute("loginError", error != null);
 
-            // Obtener productos recomendados
+    if (isAuthenticated) {
+        String username = request.getUserPrincipal().getName();
+        User user = userRepository.findByUsername(username).orElse(null);
+
+        if (user != null) {
+            // get recommended shoes
             List<Shoe> recommendedShoes = orderItemService.getRecommendedShoesForUser(user.getId(), 10);
 
             if (recommendedShoes.isEmpty()) {
-                System.out.println("esta la lista  de productos recomendados esta vacia");
+                System.out.println("La lista de productos recomendados está vacía");
                 model.addAttribute("recommendedShoes", false);
                 model.addAttribute("hasRecommendedShoes", false);
-
             } else {
                 model.addAttribute("recommendedShoes", recommendedShoes);
                 model.addAttribute("hasRecommendedShoes", true);
             }
         }
-
-        List<Shoe> bestSellingShoes = orderItemService.getBestSellingShoes(10); // Mostrar los 5 más vendidos
-        if (bestSellingShoes.isEmpty()) {
-            System.out.println("esta la lista  de mejores products esta vacia");
-            model.addAttribute("bestSellingShoes", false);
-
-        } else {
-            model.addAttribute("bestSellingShoes", bestSellingShoes);
-        }
-
-        return "index";
     }
+
+    // Getting mbest seller products
+    List<Shoe> bestSellingShoes = orderItemService.getBestSellingShoes(10);
+    if (bestSellingShoes.isEmpty()) {
+        System.out.println("La lista de mejores productos está vacía");
+        model.addAttribute("bestSellingShoes", false);
+    } else {
+        model.addAttribute("bestSellingShoes", bestSellingShoes);
+    }
+
+    return "index";
+}
+
 
     @GetMapping("/login")
     public String login(Model model, HttpServletRequest request) {
@@ -245,7 +251,6 @@ public String profile(HttpServletRequest request, Model model) throws JsonProces
     @GetMapping("/edit-product/{id}")
     public String showEditProduct(Model model, @PathVariable Long id, HttpServletRequest request) {
         model.addAttribute("product", productsService.getProductById(id));
-        // model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
         boolean admin = request.isUserInRole("ROLE_ADMIN");
         if (!admin){
             return "redirect:/errorPage?errorType=notValidPage";
@@ -255,7 +260,6 @@ public String profile(HttpServletRequest request, Model model) throws JsonProces
 
     @GetMapping("/create-product")
     public String showCreate(Model model, HttpServletRequest request) {
-        // model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
         boolean admin = request.isUserInRole("ROLE_ADMIN");
         if (!admin){
             return "redirect:/errorPage?errorType=notValidPage";

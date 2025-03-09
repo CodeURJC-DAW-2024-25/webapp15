@@ -179,4 +179,12 @@
     initProductQty();
   });
 
+  document.addEventListener("DOMContentLoaded", function() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.has("error")) {
+        var loginModal = new bootstrap.Modal(document.getElementById("modallogin"));
+        loginModal.show();
+    }
+});
+
 })(jQuery);

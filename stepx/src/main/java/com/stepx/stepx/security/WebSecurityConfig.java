@@ -64,7 +64,7 @@ public class WebSecurityConfig{
         .formLogin(formLogin -> formLogin
             .loginPage("/login")
             .defaultSuccessUrl("/index", true)
-            .failureUrl("/login?error=true")  // Redirect to main paige in case of error
+            .failureUrl("/?error=true")  // Redirect to main paige in case of error
             .permitAll()
         ) 
         .logout(logout -> logout
