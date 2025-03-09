@@ -1,17 +1,13 @@
 
 package com.stepx.stepx.controller;
 
-import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,20 +18,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.mysql.cj.x.protobuf.MysqlxCrud.Order;
-import com.stepx.stepx.model.OrderItem;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stepx.stepx.model.OrderShoes;
-
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.csrf.CsrfToken;
-
-import com.stepx.stepx.model.Product;
 import com.stepx.stepx.model.Shoe;
 import com.stepx.stepx.model.User;
-import com.stepx.stepx.repository.*;
+import com.stepx.stepx.repository.OrderShoesRepository;
+import com.stepx.stepx.repository.UserRepository;
 import com.stepx.stepx.service.OrderItemService;
 import com.stepx.stepx.service.OrderShoesService;
-
 import com.stepx.stepx.service.ProductsService;
 import com.stepx.stepx.service.ShoeService;
 import com.stepx.stepx.service.UserService;
@@ -249,7 +239,7 @@ public String profile(HttpServletRequest request, Model model) throws JsonProces
     @GetMapping("/admin-pannel")
     public String showAdminPanel(Model model, HttpServletRequest request) {
         if (request.getUserPrincipal() == null || !request.isUserInRole("ROLE_ADMIN")) {
-            return "redirect:/error-page?errorType=notValidPage"; // Redirigir a la página principal si no es admin
+            return "redirect:/errorPage?errorType=notValidPage"; // Redirigir a la página principal si no es admin
         }
         model.addAttribute("admin", true);
 
@@ -262,7 +252,7 @@ public String profile(HttpServletRequest request, Model model) throws JsonProces
         //model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
         boolean admin = request.isUserInRole("ROLE_ADMIN");
         if (!admin){
-            return "redirect:/error-page?errorType=notValidPage";
+            return "redirect:/errorPage?errorType=notValidPage";
         }
         return "edit-product";
     }
@@ -272,7 +262,7 @@ public String profile(HttpServletRequest request, Model model) throws JsonProces
         //model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
         boolean admin = request.isUserInRole("ROLE_ADMIN");
         if (!admin){
-            return "redirect:/error-page?errorType=notValidPage";
+            return "redirect:/errorPage?errorType=notValidPage";
         }
         return "create-product";
 
@@ -317,24 +307,21 @@ public String profile(HttpServletRequest request, Model model) throws JsonProces
         return "redirect:/index";
     }
 
-    @GetMapping("/error-page")
-    public String login(Model model, @RequestParam(value = "errorType", required = false) String errorType){
-        String message = null;
+    @GetMapping("/errorPage")
+    public String errorShow(Model model, @RequestParam(value = "errorType", required = false) String errorType){
+         String message = null;
         if (errorType != null) {
             if (errorType.equals("greaterId")){
-                message = "Invalid product. Not found.";
-            }
-            else if (errorType.equals("notValidPage")){
-                message = "Not a valid page.";
-            }
-        }
-        else{
-            message = "An error occurred. Please try again.";
-        }
+                 message = "Invalid product. Not found.";
+         }
+         else if (errorType.equals("notValidPage")){
+                 message = "Not a valid page.";
+             }
+         }
 
         model.addAttribute("showError", true);
-        model.addAttribute("message", message);
-         return "index";
+        model.addAttribute("error", message);
+         return "errorPage"; 
     }    
 
 }

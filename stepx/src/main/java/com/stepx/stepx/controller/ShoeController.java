@@ -4,50 +4,41 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-
-import java.time.LocalDate;
 
 import javax.sql.rowset.serial.SerialBlob;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.core.io.Resource;
-
-import com.stepx.stepx.model.User;
-import com.stepx.stepx.repository.UserRepository;
-import com.stepx.stepx.model.Shoe;
-import com.fasterxml.jackson.annotation.JsonCreator.Mode;
-import com.stepx.stepx.model.Review;
-import com.stepx.stepx.model.ShoeSizeStock;
-import com.stepx.stepx.service.ProductsService;
-import com.stepx.stepx.service.ShoeService;
-import com.stepx.stepx.service.ReviewService;
-import com.stepx.stepx.service.UserService;
-
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-
-import com.stepx.stepx.service.ShoeSizeStockService;
-
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.security.web.csrf.CsrfToken;
+import com.stepx.stepx.model.Review;
+import com.stepx.stepx.model.Shoe;
+import com.stepx.stepx.model.ShoeSizeStock;
+import com.stepx.stepx.model.User;
+import com.stepx.stepx.repository.UserRepository;
+import com.stepx.stepx.service.ProductsService;
+import com.stepx.stepx.service.ReviewService;
+import com.stepx.stepx.service.ShoeService;
+import com.stepx.stepx.service.ShoeSizeStockService;
+import com.stepx.stepx.service.UserService;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("/shop")
@@ -235,17 +226,17 @@ public class ShoeController {
 
     @GetMapping("/single-product/{id}")
     public String showSingleProduct(Model model, @PathVariable Long id, HttpServletRequest request) {
-
+       
         CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
+        model.addAttribute("token", csrfToken.getToken());
+        model.addAttribute("headerName", csrfToken.getHeaderName());
+
+        
         long maxItems = shoeService.getTotalShoes();
 
         if (maxItems < id) {
-            return "redirect:/error-page?errorType=greaterId";
+            return "redirect:/errorPage?errorType=greaterId";
         }
-
-        // 🔥 Pasar el token a la plantilla para que esté disponible en el <head>
-        model.addAttribute("token", csrfToken.getToken());
-        model.addAttribute("headerName", csrfToken.getHeaderName());
 
         boolean isAuthenticated = request.getUserPrincipal() != null;
         model.addAttribute("isAuthenticated", isAuthenticated);

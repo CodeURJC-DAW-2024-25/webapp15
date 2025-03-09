@@ -54,7 +54,7 @@ public class WebSecurityConfig{
 		http
 			.authorizeHttpRequests(authorize -> authorize
 			// PUBLIC PAGES
-			.requestMatchers( "/index", "/register-user", "/shop/**", "/shop/single-product/**", "/partials/**", "/createAccount").permitAll()
+			.requestMatchers( "/index", "/register-user", "/shop/**", "/shop/single-product/**", "/partials/**", "/createAccount", "/errorPage").permitAll()
             .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
             // PRIVATE PAGES
 			.requestMatchers("/profile","/profile/orders").hasAnyRole("USER", "ADMIN")
