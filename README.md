@@ -159,7 +159,13 @@ This is the create user account screen. It presents a form where users can enter
 |5|   |   |
 
 ### **Gabriel Miró-Granada Lluch**
-(Description)
+Se ha encargado de:
+- Todas las funciones del admin como crear producto, editar producto, eliminar producto
+- La implementación del sistema de cupones
+- La implementación de un sistema de correo que manda al usuario un cupón de descuento
+- El panel del administrador con datos y gráficos
+- Gráficas del perfil del usuario para ver sus gastos
+
 | Nº    | Commits      | Files      |
 |:------------: |:------------:| :------------:|
 |1|   |   |
