@@ -299,7 +299,10 @@ public class ShoeController {
             model.addAttribute("product", shoe);
             if (reviews != null) {
                 model.addAttribute("review", reviews);
+                model.addAttribute("hasReviews", true);
 
+            }else{
+                model.addAttribute("hasReviews", false);
             }
             return "single-product";
 

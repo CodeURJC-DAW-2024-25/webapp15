@@ -86,3 +86,4 @@ async function loadMoreReviews(shoeId) {
 }
 
 window.loadMoreReviews = loadMoreReviews;
+//loadMoreReviewsButtom

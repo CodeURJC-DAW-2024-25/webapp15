@@ -225,8 +225,15 @@
                   
                   </div>
                   {{/review}}
+                  {{^review}}
+                  <div class="col-lg-12" style="display: flex; justify-content: center;">
+                    <div class="review-content">
+                      <p>No reviews yet</p>
+                    </div>
+                    {{/review}}
                 </div>
               </div>
+              {{#hasReviews}}
               <div id="loadMoreReviewsButtom">
                 <div class="btn-wrap">
                     <button class="btn btn-black btn-medium text-uppercase hvr-sweep-to-right" style="margin-bottom: 30px;" onclick="loadMoreReviews('{{id}}')">
@@ -234,6 +241,7 @@
                     </button>
                 </div>
               </div>
+              {{/hasReviews}}
               <div class="add-review mt-5">
                 <h3>Add a review</h3>
                 <p>Your personal information will not be published. Required fields are marked *</p>
