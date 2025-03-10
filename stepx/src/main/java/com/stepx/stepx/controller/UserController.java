@@ -313,7 +313,7 @@ public class UserController {
         data.put("coupon", order.getCuponUsed() != null ? order.getCuponUsed() : "No coupon applied");
         data.put("date", order.getDate());
         data.put("products", order.getOrderItems());
-        data.put("total", order.getTotalPrice());
+        data.put("total", order.getSummary());
 
         System.out.println("🔹 Generating PDF...");
         byte[] pdfBytes = pdfService.generatePdfFromOrder(data);

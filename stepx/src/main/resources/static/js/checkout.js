@@ -102,3 +102,46 @@ async function deleteItemfromCart(idItem) {
     }
 
 }
+document.addEventListener("DOMContentLoaded", function() {
+    const couponInput = document.querySelector('input[name="coupon"]');
+    const applyCouponButton = document.createElement('button');
+    applyCouponButton.textContent = 'Apply Coupon';
+    applyCouponButton.classList.add('btn','btn-red', 'hvr-sweep-to-right', 'dark-sweep');
+    applyCouponButton.type = 'button';
+    applyCouponButton.onclick = applyCoupon;
+
+    const couponSection = document.querySelector('.coupon-section');
+    couponSection.appendChild(applyCouponButton);
+});
+
+async function applyCoupon() {
+    const couponCode = document.querySelector('input[name="coupon"]').value;
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute("content");
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute("content");
+
+    try {
+        const response = await fetch('/checkout/applyCoupon', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                [csrfHeader]: csrfToken
+            },
+            body: JSON.stringify({ coupon: couponCode })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        if (result.success) {
+            alert('Coupon applied successfully!');
+            document.querySelector('.total-price').textContent = result.newTotal;
+        } else {
+            alert('Invalid coupon code.');
+        }
+    } catch (error) {
+        console.error('Error applying coupon:', error);
+        alert('Error applying coupon.');
+    }
+}

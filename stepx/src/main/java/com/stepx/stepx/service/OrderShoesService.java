@@ -102,6 +102,8 @@ public class OrderShoesService {
         return totalPrice;
     }
 
+    
+
     public List<OrderShoes> getOrderShoesFinishedByUserId(Long userId){
         return orderShoesRepository.getOrderShoesFinishedByUserId(userId);
     }

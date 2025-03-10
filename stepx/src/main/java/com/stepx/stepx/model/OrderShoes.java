@@ -44,8 +44,8 @@ public class OrderShoes {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "coupon_id")  // Foreign key to Coupon
-    private Coupon coupon;
+    @JoinColumn(name = "coupon_id")
+    private Coupon coupon;  
 
     public OrderShoes(){}
 

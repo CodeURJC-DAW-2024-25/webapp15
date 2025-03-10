@@ -20,5 +20,6 @@ import org.springframework.data.domain.Pageable;
 @Repository
 public interface CouponRepository extends JpaRepository<Coupon, Long> {
 
+    Optional<Coupon> findByCode(String code);
 
 }
