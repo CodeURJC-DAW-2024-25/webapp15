@@ -61,7 +61,8 @@
                 <div class="input-group">
                   <input type="text" name="coupon" class="form-control ps-3 text-input"
                     placeholder="Enter your coupon code">
-                  
+                </div>
+                <div id="cuponError">
                 </div>
               </div>
 
@@ -96,8 +97,10 @@
                 <input type="tel" class="form-control ps-3 text-input" id="phone" name="phone"
                   placeholder="Enter your Phone Number" required>
               </div>
+
               <input type="hidden" name="_csrf" value="{{token}}">
-              <button type="submit" class="btn btn-red hvr-sweep-to-right dark-sweep w-100">Continue with Order</button>
+              <button type="submit" class="btn btn-red hvr-sweep-to-right dark-sweep w-100" id="continueButtom">Continue with Order</button>
+              
             </form>
           </div>
         </div>
@@ -171,10 +174,10 @@
                 {{/cartItems}}
               </div>
 
-              {{#setSubtotal}}
-              <button type="submit" class="btn btn-red hvr-sweep-to-right dark-sweep w-100"
+              {{#stocskAvailable}}
+              <button type="submit" class="btn btn-red hvr-sweep-to-right dark-sweep w-100" id="recalculateButtom"
                 onclick="recalculate()">Recalculate</button>
-              {{/setSubtotal}}
+              {{/stocskAvailable}}
               <!-- total -->
               <div class="mt-4 pt-4 border-top">
                 <div class="d-flex justify-content-between mb-2">
@@ -188,11 +191,11 @@
                     {{^setSubtotal}}0.00${{/setSubtotal}}</span>
                 </div>
                 {{#setSubtotal}}
-                <div class="d-flex justify-content-between mt-3 pt-3 border-top">
+                <div class="d-flex justify-content-between mt-3 pt-3 border-top" id="finalSummary">
                   <span class="h5">Total:</span>
-                  <span class="h5">{{total}} $</span>
-                  {{/setSubtotal}}
+                  <span class="h5">{{total}} $</span> 
                 </div>
+                {{/setSubtotal}}
               </div>
             </div>
           </div>

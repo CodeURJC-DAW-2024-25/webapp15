@@ -104,7 +104,7 @@ public class CheckoutController {
             System.out.println("❌ Acceso denegado: Usuario no autenticado.");
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged in to download the ticket");
             return;
-        }
+        }   
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         Optional<User> userOptional = userRepository.findByUsername(userDetails.getUsername());
@@ -125,7 +125,6 @@ public class CheckoutController {
 
         OrderShoes order = orderOptional.get();
         order.setCountry(country);
-        order.setCuponUsed(coupon);
         order.setFirstName(firstName);
         order.setSecondName(lastName);
         order.setEmail(email);
@@ -137,14 +136,18 @@ public class CheckoutController {
         // Apply coupon discount if valid
         BigDecimal totalPrice = order.getTotalPrice();
         if (coupon != null && !coupon.isEmpty()) {
-            Optional<Coupon> couponOptional = couponRepository.findByCode(coupon);
+            Optional<Coupon> couponOptional = couponRepository.findByCodeAndId(coupon,user.getId());
             if (couponOptional.isPresent() && couponOptional.get().getUser().getId().equals(userId)) {
                 BigDecimal discount = couponOptional.get().getDiscount();
                 totalPrice = totalPrice.multiply(discount).abs();
+                order.setCuponUsed(coupon);
+            }else{
+                order.setCuponUsed("No coupon applied");
             }
+        }else{
+            order.setCuponUsed("No coupon applied");
         }
         order.setSummary(totalPrice);
-
         orderShoesService.saveOrderShoes(order);
 
         // Prepare data for the PDF
@@ -175,45 +178,37 @@ public class CheckoutController {
     }
 
     @PostMapping("/applyCoupon")
-    @ResponseBody
-    public Map<String, Object> applyCoupon(@RequestBody Map<String, String> body, HttpServletRequest request) {
-        Map<String, Object> response = new HashMap<>();
-        String couponCode = body.get("coupon");
+    public String applyCoupon(@RequestParam String coupon, HttpServletRequest request,Model model) {
 
         boolean isAuthenticated = request.getUserPrincipal() != null;
         if (!isAuthenticated) {
-            response.put("success", false);
-            response.put("message", "User not authenticated");
-            return response;
+            return "redirect:/errorPage";
         }
 
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Optional<User> userOptional = userRepository.findByUsername(userDetails.getUsername());
-        if (!userOptional.isPresent()) {
-            response.put("success", false);
-            response.put("message", "User not found");
-            return response;
+        if (!userOptional.isPresent()) {  
+            return "redirect:/errorPage";
         }
 
         User user = userOptional.get();
-        Optional<Coupon> couponOptional = couponRepository.findByCode(couponCode);
-        if (couponOptional.isPresent() && couponOptional.get().getUser().getId().equals(user.getId())) {
-            BigDecimal discount = couponOptional.get().getDiscount();
-            Optional<OrderShoes> orderOptional = orderShoesService.getCartById(user.getId());
-            if (orderOptional.isPresent()) {
+        Optional<Coupon> couponOptional = couponRepository.findByCodeAndId(coupon,user.getId());//get coupon
+        Optional<OrderShoes> orderOptional = orderShoesService.getCartById(user.getId());
+        if (orderOptional.isPresent()) {
+            if (couponOptional.isPresent()) {
+                BigDecimal discount = couponOptional.get().getDiscount();
                 OrderShoes order = orderOptional.get();
                 BigDecimal totalPrice = order.getTotalPrice().multiply(discount);
-                order.setSummary(totalPrice);
-                orderShoesService.saveOrderShoes(order);
-                response.put("success", true);
-                response.put("newTotal", totalPrice);
-                return response;
+                model.addAttribute("apply", true);
+                model.addAttribute("Summary", totalPrice);
+                return "partials/finalSummary";
+            }else{
+                model.addAttribute("error", true);
+                return "partials/errorCoupon";
             }
         }
+        return "redirect:/errorPage";
 
-        response.put("success", false);
-        response.put("message", "Invalid coupon code");
-        return response;
     }
 
     @GetMapping("/user")
@@ -233,6 +228,7 @@ public class CheckoutController {
 
         if (user == null) {
             model.addAttribute("setSubtotal", false);
+            model.addAttribute("stocskAvailable", false);
             model.addAttribute("cartItems", false);
             return "checkout";
         }
@@ -242,6 +238,7 @@ public class CheckoutController {
 
         if (cart_Optional.isEmpty()) {
             model.addAttribute("setSubtotal", false);
+            model.addAttribute("stocskAvailable", false);
             model.addAttribute("cartItems", false);
 
             return "checkout";
@@ -269,14 +266,14 @@ public class CheckoutController {
 
         // getting all stocks in one optimized request
         Map<String, Integer> stockMap = shoeSizeStockService.getAllStocksForShoes(shoeIds, sizes);
-
+        boolean stocskAvailable=true;
         // process the information
         List<Map<String, Object>> cartItems = new ArrayList<>();
         for (OrderItem orderItem : cart.getOrderItems()) {
             Shoe shoe = orderItem.getShoe();
             String stockKey = shoe.getId() + "_" + orderItem.getSize();
             boolean stockAvailable = stockMap.getOrDefault(stockKey, 0) > 0;/// if the stock is grater than 0
-
+            stocskAvailable=stocskAvailable && stockAvailable;
             Map<String, Object> item = new HashMap<>();
             item.put("id", shoe.getId());
             item.put("name", shoe.getName());
@@ -289,6 +286,7 @@ public class CheckoutController {
         }
 
         BigDecimal total = orderShoesService.getTotalPriceExcludingOutOfStock(cart.getId());
+        model.addAttribute("stocskAvailable", stocskAvailable);
         model.addAttribute("setSubtotal", true);
         model.addAttribute("total", total);
         model.addAttribute("cartItems", cartItems);
@@ -303,6 +301,7 @@ public class CheckoutController {
         User user = userRepository.findByUsername(request.getUserPrincipal().getName()).orElseThrow();
         if (user == null) {
             model.addAttribute("setSubtotal", false);
+            model.addAttribute("stocskAvailable", false);
             model.addAttribute("cartItems", false);
             return "partials/checkout-itemsList";
         }
@@ -313,6 +312,7 @@ public class CheckoutController {
         OrderShoes cart = cart_Optional.get();
         if (cart.getLenghtOrderShoes() == 0) {
             model.addAttribute("setSubtotal", false);
+            model.addAttribute("stocskAvailable", false);
             model.addAttribute("cartItems", false);
             return "partials/checkout-itemsList";
         }
@@ -323,6 +323,7 @@ public class CheckoutController {
         List<OrderItem> remainingItems = cart.getOrderItems();
         if (remainingItems.isEmpty()) {
             model.addAttribute("setSubtotal", false);
+            model.addAttribute("stocskAvailable", false);
             model.addAttribute("cartItems", false);
             return "partials/checkout-itemsList";
         }
@@ -340,13 +341,13 @@ public class CheckoutController {
 
         // getting all stocks in one optimized request
         Map<String, Integer> stockMap = shoeSizeStockService.getAllStocksForShoes(shoeIds, sizes);
-
+        boolean stocskAvailable=true;
         List<Map<String, Object>> cartItems = new ArrayList<>();
         for (OrderItem orderItem : remainingItems) {
             Shoe shoe = orderItem.getShoe();
             String stockKey = shoe.getId() + "_" + orderItem.getSize();
             boolean stockAvailable = stockMap.getOrDefault(stockKey, 0) > 0;
-
+            stocskAvailable=stocskAvailable && stockAvailable;//to verify if all the products are available
             Map<String, Object> item = new HashMap<>();
             item.put("id", shoe.getId());
             item.put("name", shoe.getName());
@@ -362,6 +363,7 @@ public class CheckoutController {
         if (total == null) {
             total = BigDecimal.ZERO;
         }
+        model.addAttribute("stocskAvailable", stocskAvailable);
         model.addAttribute("setSubtotal", true);
         model.addAttribute("total", total);
         model.addAttribute("cartItems", cartItems);
@@ -379,6 +381,7 @@ public class CheckoutController {
         User user = userRepository.findByUsername(request.getUserPrincipal().getName()).orElseThrow();
         if (user == null || ids == null || quantities == null || ids.isEmpty() || quantities.isEmpty()) {
             model.addAttribute("setSubtotal", false);
+            model.addAttribute("stocskAvailable", false);
             model.addAttribute("cartItems", false);
             return "partials/checkout-itemsList";
         }
@@ -386,6 +389,7 @@ public class CheckoutController {
         Optional<OrderShoes> cartOptional = orderShoesService.getCartById(user.getId());
         if (!cartOptional.isPresent() || cartOptional.get().getLenghtOrderShoes() == 0) {
             model.addAttribute("setSubtotal", false);
+            model.addAttribute("stocskAvailable", false);
             model.addAttribute("cartItems", false);
             return "partials/checkout-itemsList";
         }
@@ -446,12 +450,13 @@ public class CheckoutController {
         orderItemService.updateOrderItemsBatch(updatedIds, updatedQuantities);
 
         cart = orderShoesService.getCartById(user.getId()).orElseThrow();
-
+        boolean stocskAvailable=true;
         // Procesing all products in cart
         List<Map<String, Object>> cartItems = new ArrayList<>();
         for (OrderItem orderItem : cart.getOrderItems()) {
             Shoe shoe = orderItem.getShoe();
             boolean stockAvailable = orderItem.getQuantity() > 0;
+            stocskAvailable=stocskAvailable && stockAvailable;//to verify if all the products are available
             Map<String, Object> item = new HashMap<>();
             item.put("id", shoe.getId());
             item.put("name", shoe.getName());
@@ -467,6 +472,7 @@ public class CheckoutController {
         BigDecimal total = orderShoesService.getTotalPriceExcludingOutOfStock(cart.getId());
 
         // Send data to view
+        model.addAttribute("stocskAvailable", stocskAvailable);
         model.addAttribute("setSubtotal", true);
         model.addAttribute("total", total);
         model.addAttribute("cartItems", cartItems);

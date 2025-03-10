@@ -275,25 +275,6 @@ public String profile(HttpServletRequest request, Model model) throws JsonProces
 
     }
 
-/*
- public Blob loadImage(String imagePath) {
-                try {
-                        Resource resource = new ClassPathResource(imagePath);
-                        if (!resource.exists()) {
-                                System.out.println("Error: No se encontró la imagen en la ruta especificada.");
-                                return null;
-                        }
-                        try (InputStream inputStream = resource.getInputStream()) {
-                                byte[] imageBytes = inputStream.readAllBytes();
-                                return new SerialBlob(imageBytes);
-                        }
-                } catch (IOException | SQLException e) {
-                        e.printStackTrace();
-                        return null;
-                }
-        }
-
-*/ 
 
     @PostMapping("/createAccount")
     public String createUser(
@@ -309,14 +290,14 @@ public String profile(HttpServletRequest request, Model model) throws JsonProces
 
         // Validate match emails
         if (!email.equals(emailRepeated)) {
-            redirectAttributes.addFlashAttribute("error", "❌ Los correos electrónicos no coinciden.");
+            redirectAttributes.addFlashAttribute("error", "❌ Emails do not match.");
             return "redirect:/register-user";
         }
 
         // Verigy email and user exists
         if (userRepository.findByUsername(username).isPresent() /** || userRepository.findByEmail(email).isPresent() */
         ) {
-            redirectAttributes.addFlashAttribute("error", "❌ El nombre de usuario ya está en uso.");
+            redirectAttributes.addFlashAttribute("error", "❌ Username is already in use.");
             return "redirect:/register-user";
         }
 
@@ -332,7 +313,6 @@ public String profile(HttpServletRequest request, Model model) throws JsonProces
         try {
             Resource resource = new ClassPathResource("static/images/defaultProfilePicture.jpg");
             if (!resource.exists()) {
-                System.out.println("Error: No se encontró la imagen en la ruta especificada.");
                 defaultUserImage=null;
             }
             try (InputStream inputStream = resource.getInputStream()) {

@@ -1,34 +1,40 @@
 // 🔹 Check the stock and deactivate the button if there are products out of stock
-function checkStockAvailability() {
-    const checkoutButton = document.getElementById("checkoutButton");
-    const stockWarning = document.getElementById("stockWarning");
+function checkStockAvailability(responseText) {
+    const checkoutButton = document.getElementById("continueButtom");
+    const stockWarning = document.getElementById("recalculateButtom");
+    console.log(responseText);
+    // Asegurarse de que hay elementos antes de buscar stock
+    let hasOutOfStockItems = false;
 
-    if (!checkoutButton || !stockWarning) return; 
-
-    // Find if there is any <p> element with the text "No stock available"
-    const hasOutOfStockItems = Array.from(document.querySelectorAll(".order-item p"))
-        .some(p => p.textContent.trim() === "No stock available");
+    // 🔹 Si tenemos el responseText, verificamos directamente el contenido
+    if (responseText.includes("<p>No stock available</p>")) {
+        hasOutOfStockItems = true;
+    }else{
+        hasOutOfStockItems = false;
+    }
+        
 
     if (hasOutOfStockItems) {
         checkoutButton.disabled = true;
-        stockWarning.style.display = "block";
+        stockWarning.style.display = "none";
     } else {
         checkoutButton.disabled = false;
-        stockWarning.style.display = "none";
+        stockWarning.style.display = "block";
     }
 }
 
-document.addEventListener("DOMContentLoaded", checkStockAvailability);
+
 
 async function recalculate() {
     const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute("content");
     const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute("content");
     let formData = new FormData();
+    let resultado;
 
     document.querySelectorAll(".quantity-input").forEach(input => {
         let id = input.getAttribute("data-id"); // id_orderItem
         let quantity = parseInt(input.value, 10);
-
+        
         // 🔹 If the user left the field empty, we use the previous value or 1
         if (isNaN(quantity) || input.value.trim() === "") {
             quantity = input.dataset.previousValue ? parseInt(input.dataset.previousValue, 10) : 1;
@@ -53,6 +59,7 @@ async function recalculate() {
         }
 
         let result = await response.text();
+        resultado=result;
         document.getElementById("CartItemsList").innerHTML = result;
 
         if (typeof window.initProductQty === "function") {
@@ -60,13 +67,11 @@ async function recalculate() {
         } else {
             console.error("initProductQty no está disponible.");
         }
-
-        // 🔹 Check stock after recalculation
-        checkStockAvailability();
-
+        //checkStockAvailability(resultado);
     } catch (error) {
         alert("Something bad happened while trying to recalculate.");
     }
+    
 }
 
 
@@ -84,8 +89,6 @@ async function deleteItemfromCart(idItem) {
         }
 
         const result = await response.text();
-        console.log("✅ Response from server:", result);
-
         document.getElementById("CartItemsList").innerHTML = result;
 
         if (typeof window.initProductQty === "function") {
@@ -95,13 +98,14 @@ async function deleteItemfromCart(idItem) {
         }
 
         // 🔹 Check stock after deleting a product
-        checkStockAvailability();
+        //checkStockAvailability(result);
 
     } catch (error) {
         console.error("Error deleting item:", error);
     }
 
 }
+
 document.addEventListener("DOMContentLoaded", function() {
     const couponInput = document.querySelector('input[name="coupon"]');
     const applyCouponButton = document.createElement('button');
@@ -118,28 +122,35 @@ async function applyCoupon() {
     const couponCode = document.querySelector('input[name="coupon"]').value;
     const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute("content");
     const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute("content");
-
+    const form=new FormData();
+    form.append("coupon",couponCode);
     try {
         const response = await fetch('/checkout/applyCoupon', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
                 [csrfHeader]: csrfToken
             },
-            body: JSON.stringify({ coupon: couponCode })
+            body:form
         });
 
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
-        const result = await response.json();
-        if (result.success) {
-            alert('Coupon applied successfully!');
-            document.querySelector('.total-price').textContent = result.newTotal;
-        } else {
-            alert('Invalid coupon code.');
+        const result = await response.text();
+        console.log(result);
+        if(result.includes('<p style="color: red; font-style:italic;">coupon does not exist</p>')){
+            const error=document.getElementById("cuponError");
+            error.innerHTML=result;
+        }else{
+            document.querySelectorAll(".btn-link.text-danger").forEach(button => {button.style.display = "none";});
+            document.getElementById("recalculateButtom").style.display = "none";
+            const summarydiv=document.getElementById("finalSummary");
+            summarydiv.innerHTML=result;
         }
+    
+        
+        
     } catch (error) {
         console.error('Error applying coupon:', error);
         alert('Error applying coupon.');
