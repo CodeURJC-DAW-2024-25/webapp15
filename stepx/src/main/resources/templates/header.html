@@ -104,23 +104,6 @@
   </svg>
 </div>
 
-<div class="search-box bg-dark position-relative">
-  <div class="search-wrap">
-    <div class="close-button">
-      <svg class="close" style="fill: white;">
-        <use xlink:href="#close"></use>
-      </svg>
-    </div>
-    <form id="search-form" class="text-lg-center text-md-left pt-3" action="index.html" method="get">
-      <input type="text" class="search-input" placeholder="Search...">
-      <svg class="search">
-        <use xlink:href="#search"></use>
-      </svg>
-      <input type="hidden" name="_csrf" value="{{token}}"/>
-    </form>
-  </div>
-</div>
-
 
 <div class="modal fade" id="modallong" tabindex="-1" aria-modal="true" role="dialog">
   <div class="modal-dialog modal-fullscreen-md-down modal-md modal-dialog-centered">
@@ -144,8 +127,16 @@
         <div class="login-detail">
           <div class="login-form p-0">
             <div class="col-lg-12 mx-auto">
+
+              {{#loginError}}
+              <div class="alert alert-danger text-center">
+                Incorrect username or password. Please try again.
+              </div>
+              {{/loginError}}
+
+
               <form id="login-form" action="/login" method="post">
-                <input type="text" name="username" placeholder="Username or Email Address *"
+                <input type="text" name="username" placeholder="Username *"
                   class="mb-3 ps-3 text-input">
                 <input type="password" name="password" placeholder="Password" class="ps-3 text-input">
                 
@@ -257,14 +248,7 @@
         
         {{/admin}}
         {{/isAuthenticated}}
-          
-          <li>
-            <a href="#" class="search-item border-0" data-bs-toggle="collapse" data-bs-target="#search-box" aria-label="Toggle navigation">
-              <svg class="search" width="24" height="24">
-                <use xlink:href="#search"></use>
-              </svg>
-            </a>
-          </li>
+
         </ul>
       </div>
 

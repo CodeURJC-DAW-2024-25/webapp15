@@ -36,8 +36,16 @@
                     <div class="login-detail">
                         <div class="login-form p-0">
                             <div class="col-lg-12 mx-auto">
+
+                                {{#loginError}}
+                                <div class="alert alert-danger text-center">
+                                  Incorrect username or password. Please try again.
+                                </div>
+                                {{/loginError}}
+                  
+                  
                                 <form id="login-form" action="/login" method="post">
-                                    <input type="text" name="username" placeholder="Username or Email Address *"
+                                    <input type="text" name="username" placeholder="Username *"
                                         class="mb-3 ps-3 text-input">
                                     <input type="password" name="password" placeholder="Password"
                                         class="ps-3 text-input">
@@ -143,6 +151,7 @@
                                 <button type="submit" class="btn btn-red hvr-sweep-to-right dark-sweep">Publish Shoe</button>
                                 <button type="button" class="btn btn-outline-gray hvr-sweep-to-right dark-sweep">Cancel</button>
                             </div>
+                            <input type="hidden" name="_csrf" value="{{token}}"/>
                         </form>
                     </div>
                 </div>

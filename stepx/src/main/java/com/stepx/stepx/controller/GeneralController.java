@@ -1,17 +1,17 @@
 
 package com.stepx.stepx.controller;
 
-import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.HashMap;
-
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,25 +22,25 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.mysql.cj.x.protobuf.MysqlxCrud.Order;
-import com.stepx.stepx.model.OrderItem;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.stepx.stepx.model.Coupon;
 import com.stepx.stepx.model.OrderShoes;
-
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.csrf.CsrfToken;
-
-import com.stepx.stepx.model.Product;
 import com.stepx.stepx.model.Shoe;
 import com.stepx.stepx.model.User;
-import com.stepx.stepx.repository.*;
+import com.stepx.stepx.repository.OrderShoesRepository;
+import com.stepx.stepx.repository.UserRepository;
+import com.stepx.stepx.repository.CouponRepository;
 import com.stepx.stepx.service.OrderItemService;
 import com.stepx.stepx.service.OrderShoesService;
-
 import com.stepx.stepx.service.ProductsService;
 import com.stepx.stepx.service.ShoeService;
 import com.stepx.stepx.service.UserService;
 
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import jakarta.servlet.http.HttpServletRequest;
+import javax.sql.rowset.serial.SerialBlob;
+import java.sql.Blob;
 
 @Controller
 public class GeneralController {
@@ -53,6 +53,9 @@ public class GeneralController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private CouponRepository couponRepository;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -72,68 +75,76 @@ public class GeneralController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @ModelAttribute
-    public void addAttributes(Model model, HttpServletRequest request) {
-        boolean isAuthenticated = request.getUserPrincipal() != null;
-        model.addAttribute("isAuthenticated", isAuthenticated);
-        model.addAttribute("showError", false);
 
-        CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
-        model.addAttribute("token", csrfToken.getToken());
+    
+@ModelAttribute
+public void addAttributes(Model model, HttpServletRequest request) {
+    boolean isAuthenticated = request.getUserPrincipal() != null;
+    model.addAttribute("isAuthenticated", isAuthenticated);
+    model.addAttribute("showError", false);
 
-        model.addAttribute("headerName", csrfToken.getHeaderName());
+    CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
+    model.addAttribute("token", csrfToken.getToken());
 
-        if (isAuthenticated) {
-            String username = request.getUserPrincipal().getName();
-            model.addAttribute("username", username);
+    model.addAttribute("headerName", csrfToken.getHeaderName());
 
-            model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
+    if (isAuthenticated) {
+        String username = request.getUserPrincipal().getName();
+        model.addAttribute("username", username);
 
-            User user = userRepository.findByUsername(username).get();
+        model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
 
-            model.addAttribute("id", user.getId());
-            model.addAttribute("email", user.getEmail());
-            model.addAttribute("imageBlob", user.getImageUser());
-            model.addAttribute("lastName", user.getLastName());
-            model.addAttribute("firstname", user.getFirstName());
-            model.addAttribute("user_id", user.getId());
+        User user = userRepository.findByUsername(username).get();
 
-        }
+        model.addAttribute("id", user.getId());
+        model.addAttribute("email", user.getEmail());
+        model.addAttribute("imageBlob", user.getImageUser());
+        model.addAttribute("lastName", user.getLastName());
+        model.addAttribute("firstname", user.getFirstName());
+        model.addAttribute("user_id", user.getId());
+
     }
+}
 
-    @GetMapping({ "/", "/index" })
-    public String showIndex(Model model, HttpServletRequest request) {
-        boolean isAuthenticated = request.getUserPrincipal() != null;
+@GetMapping({ "/", "/index" })
+public String showIndex(Model model, HttpServletRequest request) {
+    boolean isAuthenticated = request.getUserPrincipal() != null;
 
-        if (isAuthenticated) {
-            String username = request.getUserPrincipal().getName();
-            User user = userRepository.findByUsername(username).get();
+    // Catch the error parameter
+    String error = request.getParameter("error");
+    model.addAttribute("loginError", error != null);
 
-            // Obtener productos recomendados
+    if (isAuthenticated) {
+        String username = request.getUserPrincipal().getName();
+        User user = userRepository.findByUsername(username).orElse(null);
+
+        if (user != null) {
+            // get recommended shoes
             List<Shoe> recommendedShoes = orderItemService.getRecommendedShoesForUser(user.getId(), 10);
 
             if (recommendedShoes.isEmpty()) {
-                System.out.println("esta la lista  de productos recomendados esta vacia");
+                System.out.println("La lista de productos recomendados está vacía");
                 model.addAttribute("recommendedShoes", false);
                 model.addAttribute("hasRecommendedShoes", false);
-
             } else {
                 model.addAttribute("recommendedShoes", recommendedShoes);
                 model.addAttribute("hasRecommendedShoes", true);
             }
         }
-
-        List<Shoe> bestSellingShoes = orderItemService.getBestSellingShoes(10); // Mostrar los 5 más vendidos
-        if (bestSellingShoes.isEmpty()) {
-            System.out.println("esta la lista  de mejores products esta vacia");
-            model.addAttribute("bestSellingShoes", false);
-
-        } else {
-            model.addAttribute("bestSellingShoes", bestSellingShoes);
-        }
-
-        return "index";
     }
+
+    // Getting mbest seller products
+    List<Shoe> bestSellingShoes = orderItemService.getBestSellingShoes(10);
+    if (bestSellingShoes.isEmpty()) {
+        System.out.println("La lista de mejores productos está vacía");
+        model.addAttribute("bestSellingShoes", false);
+    } else {
+        model.addAttribute("bestSellingShoes", bestSellingShoes);
+    }
+
+    return "index";
+}
+
 
     @GetMapping("/login")
     public String login(Model model, HttpServletRequest request) {
@@ -243,7 +254,7 @@ public String profile(HttpServletRequest request, Model model) throws JsonProces
     @GetMapping("/admin-pannel")
     public String showAdminPanel(Model model, HttpServletRequest request) {
         if (request.getUserPrincipal() == null || !request.isUserInRole("ROLE_ADMIN")) {
-            return "redirect:/error-page?errorType=notValidPage"; // Redirigir a la página principal si no es admin
+            return "redirect:/errorPage?errorType=notValidPage"; // Redirigir a la página principal si no es admin
         }
         model.addAttribute("admin", true);
 
@@ -253,24 +264,23 @@ public String profile(HttpServletRequest request, Model model) throws JsonProces
     @GetMapping("/edit-product/{id}")
     public String showEditProduct(Model model, @PathVariable Long id, HttpServletRequest request) {
         model.addAttribute("product", productsService.getProductById(id));
-        // model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
         boolean admin = request.isUserInRole("ROLE_ADMIN");
-        if (!admin) {
-            return "redirect:/error-page?errorType=notValidPage";
+        if (!admin){
+            return "redirect:/errorPage?errorType=notValidPage";
         }
         return "edit-product";
     }
 
     @GetMapping("/create-product")
     public String showCreate(Model model, HttpServletRequest request) {
-        // model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
         boolean admin = request.isUserInRole("ROLE_ADMIN");
-        if (!admin) {
-            return "redirect:/error-page?errorType=notValidPage";
+        if (!admin){
+            return "redirect:/errorPage?errorType=notValidPage";
         }
         return "create-product";
 
     }
+
 
     @PostMapping("/createAccount")
     public String createUser(
@@ -286,14 +296,14 @@ public String profile(HttpServletRequest request, Model model) throws JsonProces
 
         // Validate match emails
         if (!email.equals(emailRepeated)) {
-            redirectAttributes.addFlashAttribute("error", "❌ Los correos electrónicos no coinciden.");
+            redirectAttributes.addFlashAttribute("error", "❌ Emails do not match.");
             return "redirect:/register-user";
         }
 
         // Verigy email and user exists
         if (userRepository.findByUsername(username).isPresent() /** || userRepository.findByEmail(email).isPresent() */
         ) {
-            redirectAttributes.addFlashAttribute("error", "❌ El nombre de usuario ya está en uso.");
+            redirectAttributes.addFlashAttribute("error", "❌ Username is already in use.");
             return "redirect:/register-user";
         }
 
@@ -304,29 +314,48 @@ public String profile(HttpServletRequest request, Model model) throws JsonProces
         User newUser = new User(username, email, encodedPassword, null, "USER");
         newUser.setLastName(lastName);
         newUser.setFirstname(firstName);
-
+        //load default image
+        Blob defaultUserImage;
+        try {
+            Resource resource = new ClassPathResource("static/images/defaultProfilePicture.jpg");
+            if (!resource.exists()) {
+                defaultUserImage=null;
+            }
+            try (InputStream inputStream = resource.getInputStream()) {
+                byte[] imageBytes = inputStream.readAllBytes();
+                defaultUserImage=new SerialBlob(imageBytes);
+            }
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
+            defaultUserImage=null;
+        }
+        newUser.setImageUser(defaultUserImage);
         // Saving in data
         userRepository.save(newUser);
-
+        
+        Coupon coupon = new Coupon();
+        coupon.setCode("STEPXDISCOUNT10");
+        coupon.setDiscount(new BigDecimal("0.9"));  // Representing a discount of 10% 
+        coupon.setUser(newUser);
+        couponRepository.save(coupon);
         return "redirect:/index";
     }
 
-    @GetMapping("/error-page")
-    public String login(Model model, @RequestParam(value = "errorType", required = false) String errorType) {
-        String message = null;
+    @GetMapping("/errorPage")
+    public String errorShow(Model model, @RequestParam(value = "errorType", required = false) String errorType){
+         String message = null;
         if (errorType != null) {
-            if (errorType.equals("greaterId")) {
-                message = "Invalid product. Not found.";
-            } else if (errorType.equals("notValidPage")) {
-                message = "Not a valid page.";
-            }
-        } else {
-            message = "An error occurred. Please try again.";
+            if (errorType.equals("greaterId")){
+                 message = "Invalid product. Not found.";
+         }
+         else if (errorType.equals("notValidPage")){
+                 message = "Not a valid page.";
+             }
         }
 
         model.addAttribute("showError", true);
-        model.addAttribute("message", message);
-        return "index";
-    }
+        model.addAttribute("error", message);
+         return "errorPage"; 
+    }    
 
 }

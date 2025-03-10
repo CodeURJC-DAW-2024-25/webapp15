@@ -1,17 +1,19 @@
 package com.stepx.stepx.controller;
 
+import java.io.IOException;
+import java.security.Principal;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import javax.sql.rowset.serial.SerialBlob;
-import javax.sql.rowset.serial.SerialException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,14 +24,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.stepx.stepx.model.User;
+import com.stepx.stepx.model.OrderItem;
 import com.stepx.stepx.model.OrderShoes;
 import com.stepx.stepx.model.Shoe;
-import com.stepx.stepx.model.OrderItem;
+import com.stepx.stepx.model.User;
+import com.stepx.stepx.repository.UserRepository;
+import com.stepx.stepx.security.RepositoryUserDetailsService;
 import com.stepx.stepx.service.EmailService;
 import com.stepx.stepx.service.OrderItemService;
 import com.stepx.stepx.service.OrderShoesService;
@@ -37,20 +40,9 @@ import com.stepx.stepx.service.PdfService;
 import com.stepx.stepx.service.ShoeService;
 import com.stepx.stepx.service.ShoeSizeStockService;
 import com.stepx.stepx.service.UserService;
-import com.stepx.stepx.repository.UserRepository;
-import com.stepx.stepx.security.RepositoryUserDetailsService;
 
-import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-
-import java.io.IOException;
-import java.security.Principal;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import org.springframework.web.bind.annotation.RequestBody;
 
 
 @Controller
@@ -88,7 +80,7 @@ public class UserController {
     public String getCartUser(HttpServletRequest  request, Model model) {
         
         Principal principal = request.getUserPrincipal();
-        System.out.println("nombre del ususario con la sesión actual "+principal.getName());
+        System.out.println("name of the user with the current session "+principal.getName());
         if (principal != null) {
             System.out.println("Usuario autenticado: " + principal.getName());
         }
@@ -96,7 +88,7 @@ public class UserController {
         // Existing cart code
         Optional<User> usergetted = userService.findUserByUserName(principal.getName());
         if (!usergetted.isPresent()) {
-            System.out.println("el usuario buscado no existe");
+            System.out.println("The user does not exist");
         }
         User user = usergetted.get();
 
@@ -263,9 +255,9 @@ public class UserController {
             UserDetails userDetails = repositoryUserDetailsService.loadUserByUsername(updatedUser.getUsername());
             Authentication newAuth = new UsernamePasswordAuthenticationToken(userDetails,userDetails.getPassword(),userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(newAuth);
-            System.out.println("Autenticación actualizada con éxito para el usuario: " + updatedUser.getUsername());
+            System.out.println("Authentication successfully updated for user: " + updatedUser.getUsername());
         } catch (UsernameNotFoundException e) {
-            System.err.println("Error al actualizar autenticación: " + e.getMessage());
+            System.err.println("Error updating the authentication: " + e.getMessage());
         }
     }
 
@@ -275,38 +267,37 @@ public class UserController {
             @PathVariable Long orderId,
             HttpServletResponse response,
             HttpServletRequest request) throws IOException {
-        System.out.println("🔹 Recibiendo solicitud para descargar ticket con ID: " + orderId);
+        System.out.println("🔹 Receiving request to download ticket with ID: " + orderId);
 
         boolean isAuthenticated = request.getUserPrincipal() != null;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         
         //printear
-        System.out.println("el numero de la orden a descargar es: "+ orderId);
+        System.out.println("The number of the order to download is: "+ orderId);
 
         if (!isAuthenticated) {
-            System.out.println("❌ Acceso denegado: Usuario no autenticado.");
+            System.out.println("❌ Access denied: User not authenticated.");
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged in to download the ticket");
             return;
         }
 
-        // 2️⃣ Obtener el objeto `UserDetails`
+        // 2️⃣ Get the `UserDetails` object
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
-        // 3️⃣ Obtener el usuario desde la base de datos (usando
-        // `userDetails.getUsername()` si necesitas buscarlo)
+        // 3️⃣ Get the user from the database (using
+        // `userDetails.getUsername()` if you need to look it up)
         Optional<User> userOptional = userRepository.findByUsername(userDetails.getUsername());
         if (!userOptional.isPresent()) {
-            System.out.println("❌ Error: Usuario no encontrado.");
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User not found");
             return;
         }
         User user = userOptional.get();
-        Long userId = user.getId(); // Aquí ya tienes el ID correcto del usuario autenticado
+        Long userId = user.getId(); // Here you already have the correct ID of the authenticated user
 
-        // 4️⃣ Buscar la orden por ID y validar que pertenece al usuario autenticado
+        // 4️⃣ Search for the order by ID and validate that it belongs to the authenticated user
         Optional<OrderShoes> orderOptional = orderShoesService.getOrderById(orderId);
         if (!orderOptional.isPresent()) {
-            System.out.println("❌ Error: Orden no encontrada con ID " + orderId + " para el usuario " + userId);
+            System.out.println("❌ Error: Order not found with ID " + orderId + " for the user " + userId);
             response.sendError(HttpServletResponse.SC_NOT_FOUND, "Order not found");
             return;
         }
@@ -322,18 +313,18 @@ public class UserController {
         data.put("coupon", order.getCuponUsed() != null ? order.getCuponUsed() : "No coupon applied");
         data.put("date", order.getDate());
         data.put("products", order.getOrderItems());
-        data.put("total", order.getTotalPrice());
+        data.put("total", order.getSummary());
 
-        System.out.println("🔹 Generando PDF...");
+        System.out.println("🔹 Generating PDF...");
         byte[] pdfBytes = pdfService.generatePdfFromOrder(data);
 
         if (pdfBytes == null || pdfBytes.length == 0) {
-            System.out.println("❌ Error: El PDF está vacío o no se generó correctamente.");
+            System.out.println("❌ Error: The PDF is empty or was not generated correctly.");
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error generating PDF");
             return;
         }
 
-        System.out.println("✅ PDF generado correctamente. Enviando respuesta...");
+        System.out.println("✅ PDF generated successfully. Sending response...");
         response.setContentType("application/pdf");
         response.setHeader("Content-Disposition", "attachment; filename=ticket.pdf");
         response.getOutputStream().write(pdfBytes);

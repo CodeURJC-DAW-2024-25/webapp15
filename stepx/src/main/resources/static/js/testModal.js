@@ -51,12 +51,12 @@ async function AddtoCart(id_Shoe, size, quantity) {
     console.log(size)
     console.log(quantity)
     if (!size) {
-        alert("⚠️ Por favor selecciona un tamaño.");
+        alert("⚠️ Please select a valid size");
         return;
     }
 
     if (!quantity || isNaN(quantity) || quantity <= 0) {
-        alert("⚠️ Ingresa una cantidad válida.");
+        alert("⚠️ Input a valid numeric value");
         return;
     }
     try {
@@ -93,9 +93,9 @@ async function AddtoCart(id_Shoe, size, quantity) {
         console.log("Respuesta del servidor:", responseText);
 
         if (!response.ok) {
-            alert("⚠️ Hubo un problema al agregar el producto, pero se intentará actualizar el carrito.");
+            alert("⚠️ There was an issue adding the product, we are going to try to update your cart");
         }
-        console.log("Producto añadido con éxito");
+        console.log("Product added succesfully");
 
         let modal = document.getElementById("modaltoggle");
         if (modal) {
@@ -106,7 +106,7 @@ async function AddtoCart(id_Shoe, size, quantity) {
         }
         openCartModal();
     } catch (error) {
-        console.error("Error en la solicitud:", error);
+        console.error("Error in request:", error);
     }
 }
 
@@ -123,7 +123,7 @@ async function searchByBrand(event, brand) {
     try {
         const response = await fetch(`/shop/getByBrand?brand=${brand}`);
         if (!response.ok) {
-            throw new Error("error en la solicitud" + response.status);
+            throw new Error("error in request" + response.status);
         }
 
         const shoebybrand = await response.text();
@@ -132,7 +132,7 @@ async function searchByBrand(event, brand) {
         document.getElementById("loadMoreButtom").style.display = "block";
 
     } catch (error) {
-        console.log("error al buscar por marcas");
+        console.log("error trying to look for brands");
     }
 
 }
@@ -147,7 +147,7 @@ async function searchByCategory(event, category) {
     try {
         const response = await fetch(`/shop/getByCategory?category=${category}`);
         if (!response.ok) {
-            throw new Error("error en la solicitud" + response.status);
+            throw new Error("error in request" + response.status);
         }
         const shoebycatagory = await response.text();
         document.getElementById("shoes").innerHTML = shoebycatagory;
@@ -160,36 +160,36 @@ async function searchByCategory(event, category) {
 
 async function openCartModal() {
     try {
-        const response = await fetch(`/user/cart`); // Ruta para obtener los productos del carrito
+        const response = await fetch(`/user/cart`); // Route to obtain the products from the cart
 
         if (!response.ok) {
-            throw new Error("Error al cargar el carrito: " + response.status);
+            throw new Error("Error ocurred adding to cart: " + response.status);
         }
 
         const cartContent = await response.text();
         document.getElementById("modal-body-content").innerHTML = cartContent;
 
-        // Obtener el modal y verificar si ya existe una instancia
+        // Get the modal and check if an instance already exists
         let modalElement = document.getElementById("modaltoggle");
         let myModal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
 
-        // Asegurar que no haya restos de aria-hidden que bloqueen el cierre
+        // Ensure that there are no aria-hidden remains blocking the closure
         modalElement.removeAttribute("aria-hidden");
 
         myModal.show();
 
-        // Evento para restablecer el foco al cerrar y evitar que el fondo quede bloqueado
+        // Event to reset focus on close and prevent background from being blocked
         modalElement.addEventListener("hidden.bs.modal", () => {
-            document.activeElement.blur(); // Quitar el foco del botón de cierre
+            document.activeElement.blur(); // Remove focus from the close button
         });
 
     } catch (error) {
-        console.error("Error en la solicitud:", error);
+        console.error("Error in request:", error);
     }
 }
 
 function DownloadTicket(orderId) {
-    fetch(`/checkout/downloadTicket?orderId=${orderId}`)// Ajustamos la URL
+    fetch(`/checkout/downloadTicket?orderId=${orderId}`)// Adjusting the URL
         .then(response => {
             if (!response.ok) {
                 throw new Error("Error generating PDF.");
@@ -213,9 +213,9 @@ function DownloadTicket(orderId) {
 
 async function loadMore() {
     try {
-        currentPage++ // Aumentamos la página
+        currentPage++ // We increase the page
 
-        let url = `/shop/loadMoreShoes/?currentPage=${currentPage}`; // URL por defecto
+        let url = `/shop/loadMoreShoes/?currentPage=${currentPage}`; // URL by default
 
         if (selectedBrand !== null) {
             url = `/shop/loadMoreShoesByBrand?currentPage=${currentPage}&brand=${selectedBrand}`;
@@ -231,7 +231,7 @@ async function loadMore() {
         }
 
         let shoesDiv = document.getElementById("shoes");
-        shoesDiv.innerHTML += resp; // Agregar más productos
+        shoesDiv.innerHTML += resp; // Adding more products
 
     } catch (error) {
         console.error("Error at trying to load 3 more shoes: ", error)
@@ -252,17 +252,17 @@ async function resetFilters(event) {
         document.getElementById("loadMoreButtom").style.display = 'block';
 
     } catch (error) {
-        console.log("Error al restablecer los filtros", error);
+        console.log("Error refreshinf filters by default: ", error);
     }
 }
 
-// Función para obtener la talla seleccionada
+// Function to obtain the selected size
 function getSelectedSize() {
     const selectedSizeElement = document.querySelector(".select-size-item.selected");
     return selectedSizeElement ? selectedSizeElement.getAttribute("data-value") : null;
 }
 
-// Función para seleccionar talla al hacer clic
+// Size selection function by clicking
 document.querySelectorAll(".select-size-item").forEach(item => {
     item.addEventListener("click", function (event) {
         event.preventDefault();
@@ -271,7 +271,7 @@ document.querySelectorAll(".select-size-item").forEach(item => {
     });
 });
 
-// Función para obtener la cantidad seleccionada
+// Function to get the selected quantity
 function getQuantity() {
     return document.querySelector(".quantity").value;
 }

@@ -20,5 +20,8 @@ import org.springframework.data.domain.Pageable;
 @Repository
 public interface CouponRepository extends JpaRepository<Coupon, Long> {
 
+    @Query("SELECT c FROM Coupon c WHERE c.code = :code AND c.id = :id")
+    Optional<Coupon> findByCodeAndId(@Param("code") String code, @Param("id") Long id);
+
 
 }

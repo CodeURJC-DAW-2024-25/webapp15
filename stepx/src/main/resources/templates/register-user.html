@@ -34,10 +34,6 @@
           <div class="product-image-container">
             <img src="/images/NikeShoePurple.png" alt="Shoe" class="img-fluid rounded" id="currentProductImage"
               style="max-width: 100%; height: auto;">
-            <div class="image-preview mt-3" id="imagePreview" style="display: none;">
-              <h4 class="mb-3">New Image Preview</h4>
-              <img id="previewImage" src="#" alt="Preview" style="max-width: 100%; height: auto;" class="rounded">
-            </div>
           </div>
         </div>
 
@@ -49,7 +45,7 @@
                 <div class="alert alert-danger" role="alert">
                   <strong>{{error}}</strong>
                 </div>
-                {{/error}}
+            {{/error}}
             <form id="edit-product-form" action="/createAccount" method="POST">
               <div class="mb-3">
                 <label for="username" class="form-label">Username</label>
@@ -97,23 +93,6 @@
     </div>
   </section>
 
-  <script>
-    function previewImage(input) {
-      const preview = document.getElementById('imagePreview');
-      const previewImg = document.getElementById('previewImage');
-
-      if (input.files && input.files[0]) {
-        const reader = new FileReader();
-
-        reader.onload = function (e) {
-          previewImg.src = e.target.result;
-          preview.style.display = 'block';
-        }
-
-        reader.readAsDataURL(input.files[0]);
-      }
-    }
-  </script>
   <script src="/js/jquery-1.11.0.min.js"></script>
   <script src="/js/plugins.js"></script>
   <script src="/js/script.js"></script>
