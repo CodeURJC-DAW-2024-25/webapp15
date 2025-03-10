@@ -679,9 +679,9 @@ public void addAttributes(Model model, HttpServletRequest request) {
         
     }
 
-    @GetMapping("/single-product/loadMoreReviews")
+    @PostMapping("/single-product/loadMoreReviews")
     public String loadMoreReviews(@RequestParam int page, @RequestParam Long shoeId, Model model) {
-        int limit = 2; // Número de reseñas a cargar
+    int limit = 2; // Número de reseñas a cargar
     List<Review> reviews = reviewService.getPagedReviewsByShoeId(shoeId, page, limit);
     model.addAttribute("review", reviews);
 

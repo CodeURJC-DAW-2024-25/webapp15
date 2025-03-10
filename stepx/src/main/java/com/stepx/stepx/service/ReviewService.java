@@ -43,9 +43,10 @@ public class ReviewService {
     }
 
     public List<Review> getPagedReviewsByShoeId(Long shoeId, int page, int limit) {
-        //Pageable pageable = ;  // Paginación con 'limit' reseñas por página
-        return reviewRepository.findByShoeId(shoeId, PageRequest.of(page, limit)).getContent();  // Asegúrate de usar 'getContent' para obtener las reseñas
+        Pageable pageable = PageRequest.of(page, limit);  // Asegura que 'page' comience en 0
+        return reviewRepository.findByShoeId(shoeId, pageable).getContent();
     }
+    
 
     
 

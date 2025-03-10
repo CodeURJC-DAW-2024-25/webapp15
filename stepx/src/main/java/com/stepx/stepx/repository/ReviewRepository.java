@@ -20,6 +20,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     void deleteById(Long id);
 
     // Obtener reviews paginadas por el ID del zapato (shoe)
+    
     Page<Review> findByShoeId(Long shoeId, Pageable pageable);
 
 }

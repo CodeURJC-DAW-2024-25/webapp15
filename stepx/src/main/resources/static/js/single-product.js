@@ -58,9 +58,21 @@ async function deleteReview(productId,idItem) {
 let pageReviews = 0;
 
 async function loadMoreReviews(shoeId) {
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute("content");
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute("content");
     try {
         pageReviews++;
-        const response = await fetch(`/shop/single-product/loadMoreReviews?page=${pageReviews}&shoeId=${shoeId}`);
+        let formDATA = new FormData();
+        formDATA.append("page", pageReviews);
+        formDATA.append("shoeId", shoeId);
+        
+        const response = await fetch(`/shop/single-product/loadMoreReviews`,{
+            method: 'POST',
+            body: formDATA,
+            headers: {
+                [csrfHeader]: csrfToken
+            }
+        });
         
         const data = await response.text();
         console.log(data);

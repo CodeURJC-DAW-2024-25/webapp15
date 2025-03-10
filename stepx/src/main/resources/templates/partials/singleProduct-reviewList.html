@@ -19,19 +19,18 @@
                 </div>
                 <div class="review-header">
                     <span class="author-name">{{user.username}}</span>
-                    <span class="review-date">{{formattedDate}}</span>
-
+                    <span class="review-date">{{date}}</span>
                 </div>
                 <p id="textReview">{{description}}</p>
-
-                {{#admin}}
-                <button id="deleteReviewButton" onclick="deleteReview('{{shoe.id}}','{{id}}')"
-                    style="padding-top: 30px;">
-                    <i class="fa-solid fa-trash"></i>
-                </button>
-                {{/admin}}
+    
             </div>
+            {{#admin}}
+            <button id="deleteReviewButton" onclick="deleteReview('{{shoe.id}}','{{id}}')" style="padding-top: 30px;">
+                <i class="fa-solid fa-trash"></i>
+            </button>
+            {{/admin}}
         </div>
+    
     </div>
     {{/review}}
 </div>

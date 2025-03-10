@@ -189,8 +189,8 @@
               </ul>
             </div>
             <div class="tab-pane fade padding-small" id="nav-review" role="tabpanel" aria-labelledby="nav-review-tab">
-              <div >
-                <div  id="ReviewsList" class="review-box d-flex flex-wrap">
+              <div  id="ReviewsList">
+                <div class="review-box d-flex flex-wrap">
                   {{#review}}
                   <div class="col-lg-6 d-flex flex-wrap"> <!-- All the container for 1 review -->
                     <div class="col-md-2 me-3 mb-3">
@@ -211,10 +211,10 @@
                         </div>
                         <div class="review-header">
                           <span class="author-name">{{user.username}}</span>
-                          <span class="review-date">{{formattedDate}}</span>
+                          <span class="review-date">{{date}}</span>
                         </div>
                         <p id="textReview">{{description}}</p>
-
+                  
                       </div>
                       {{#admin}}
                       <button id="deleteReviewButton" onclick="deleteReview('{{shoe.id}}','{{id}}')" style="padding-top: 30px;">
@@ -222,7 +222,7 @@
                       </button>
                       {{/admin}}
                     </div>
-
+                  
                   </div>
                   {{/review}}
                 </div>

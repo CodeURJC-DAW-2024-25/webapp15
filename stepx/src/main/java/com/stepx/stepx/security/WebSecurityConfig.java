@@ -54,10 +54,10 @@ public class WebSecurityConfig{
 		http
 			.authorizeHttpRequests(authorize -> authorize
 			// PUBLIC PAGES
-			.requestMatchers( "/index", "/register-user", "/shop/**", "/shop/single-product/**", "/partials/**", "/createAccount", "/errorPage").permitAll()
+			.requestMatchers( "/index", "/register-user", "/shop/**", "/partials/**", "/createAccount", "/errorPage").permitAll()
             .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
             // PRIVATE PAGES
-			.requestMatchers("/profile","/profile/orders").hasAnyRole("USER", "ADMIN")
+			.requestMatchers("/profile","/profile/orders", "/shop/single-product/loadMoreReviews").hasAnyRole("USER", "ADMIN")
             .requestMatchers("/OrderItem/addItem","/checkout/**","/user/**").hasAnyRole("USER")
             .requestMatchers("/edit-product/**", "/admin", "/create-product").hasAnyRole("ADMIN")
         )
