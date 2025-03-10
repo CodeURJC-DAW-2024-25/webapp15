@@ -21,6 +21,7 @@ import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -65,6 +66,35 @@ public class ShoeController {
         return new String();
     }
 
+    @ModelAttribute
+public void addAttributes(Model model, HttpServletRequest request) {
+    boolean isAuthenticated = request.getUserPrincipal() != null;
+    model.addAttribute("isAuthenticated", isAuthenticated);
+    model.addAttribute("showError", false);
+
+    CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
+    model.addAttribute("token", csrfToken.getToken());
+
+    model.addAttribute("headerName", csrfToken.getHeaderName());
+
+    if (isAuthenticated) {
+        String username = request.getUserPrincipal().getName();
+        model.addAttribute("username", username);
+
+        model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
+
+        User user = userRepository.findByUsername(username).get();
+
+        model.addAttribute("id", user.getId());
+        model.addAttribute("email", user.getEmail());
+        model.addAttribute("imageBlob", user.getImageUser());
+        model.addAttribute("lastName", user.getLastName());
+        model.addAttribute("firstname", user.getFirstName());
+        model.addAttribute("user_id", user.getId());
+
+    }
+}
+
     @GetMapping()
     public String showShop(Model model, HttpServletRequest request) {
 
@@ -78,13 +108,13 @@ public class ShoeController {
         boolean isAuthenticated = request.getUserPrincipal() != null;
         model.addAttribute("isAuthenticated", isAuthenticated);
 
-        if (isAuthenticated) {
-            String username = request.getUserPrincipal().getName();
-            User user = userRepository.findByUsername(username).orElseThrow();
-            model.addAttribute("username", user.getUsername());
-            model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
+        // if (isAuthenticated) {
+        //     String username = request.getUserPrincipal().getName();
+        //     User user = userRepository.findByUsername(username).orElseThrow();
+        //     model.addAttribute("username", user.getUsername());
+        //     model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
 
-        }
+        // }
         model.addAttribute("shoes", shoes.getContent());
         model.addAttribute("hasMoreShoes", more);
         return "shop";
@@ -107,7 +137,7 @@ public class ShoeController {
 
         model.addAttribute("shoes", shoes.getContent());
         model.addAttribute("hasMoreShoes", more);
-        return "partials/loadMoreShoe"; // ¡Devuelve solo la parte de los productos!
+        return "partials/loadMoreShoe"; // Return only part of the products!
     }
 
     @PostMapping("/create")
@@ -124,15 +154,15 @@ public class ShoeController {
             HttpServletRequest request, Model model) throws IOException, SQLException {
 
         boolean isAuthenticated = request.getUserPrincipal() != null;
-        model.addAttribute("isAuthenticated", isAuthenticated);
-        String username = request.getUserPrincipal().getName();
-        User user = userRepository.findByUsername(username).orElseThrow();
+        // model.addAttribute("isAuthenticated", isAuthenticated);
+        // String username = request.getUserPrincipal().getName();
+        // User user = userRepository.findByUsername(username).orElseThrow();
 
-        if (isAuthenticated) {
-            model.addAttribute("username", user.getUsername());
-            model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
+        // if (isAuthenticated) {
+        //     model.addAttribute("username", user.getUsername());
+        //     model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
 
-        }
+        // }
         // Create a new Shoe object
         Shoe shoe = new Shoe();
         shoe.setName(name);
@@ -239,7 +269,7 @@ public class ShoeController {
         }
 
         boolean isAuthenticated = request.getUserPrincipal() != null;
-        model.addAttribute("isAuthenticated", isAuthenticated);
+        //model.addAttribute("isAuthenticated", isAuthenticated);
 
         if (isAuthenticated) {
             String username = request.getUserPrincipal().getName();
@@ -328,13 +358,13 @@ public class ShoeController {
         boolean isAuthenticated = request.getUserPrincipal() != null;
         model.addAttribute("isAuthenticated", isAuthenticated);
 
-        if (isAuthenticated) {
-            String username = request.getUserPrincipal().getName();
-            User user = userRepository.findByUsername(username).orElseThrow();
-            model.addAttribute("username", user.getUsername());
-            model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
+        // if (isAuthenticated) {
+        //     String username = request.getUserPrincipal().getName();
+        //     User user = userRepository.findByUsername(username).orElseThrow();
+        //     model.addAttribute("username", user.getUsername());
+        //     model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
 
-        }
+        // }
 
         model.addAttribute("hasMoreShoes", more);
         model.addAttribute("shoes", shoePage.getContent());
@@ -352,11 +382,11 @@ public class ShoeController {
         String username = request.getUserPrincipal().getName();
         User user = userRepository.findByUsername(username).orElseThrow();
 
-        if (isAuthenticated) {
-            model.addAttribute("username", user.getUsername());
-            model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
+        // if (isAuthenticated) {
+        //     model.addAttribute("username", user.getUsername());
+        //     model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
 
-        }
+        // }
 
         if (userOptional.isPresent()) {
             // User user = userOptional.get();
@@ -435,11 +465,11 @@ public class ShoeController {
         String username = request.getUserPrincipal().getName();
         User user = userRepository.findByUsername(username).orElseThrow();
 
-        if (isAuthenticated) {
-            model.addAttribute("username", user.getUsername());
-            model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
+        // if (isAuthenticated) {
+        //     model.addAttribute("username", user.getUsername());
+        //     model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
 
-        }
+        // }
 
         Optional<Shoe> op = shoeService.getShoeById(id);
         if (op.isPresent()) {
@@ -504,13 +534,13 @@ public class ShoeController {
             boolean isAuthenticated = request.getUserPrincipal() != null;
             model.addAttribute("isAuthenticated", isAuthenticated);
 
-            if (isAuthenticated) {
-                String username = request.getUserPrincipal().getName();
-                User user = userRepository.findByUsername(username).orElseThrow();
-                model.addAttribute("username", user.getUsername());
-                model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
+            // if (isAuthenticated) {
+            //     String username = request.getUserPrincipal().getName();
+            //     User user = userRepository.findByUsername(username).orElseThrow();
+            //     model.addAttribute("username", user.getUsername());
+            //     model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
 
-            }
+            // }
 
             model.addAttribute("shoes", shoes.getContent());
             model.addAttribute("hasMoreShoes", more);
@@ -532,13 +562,13 @@ public class ShoeController {
         boolean isAuthenticated = request.getUserPrincipal() != null;
         model.addAttribute("isAuthenticated", isAuthenticated);
 
-        if (isAuthenticated) {
-            String username = request.getUserPrincipal().getName();
-            User user = userRepository.findByUsername(username).orElseThrow();
-            model.addAttribute("username", user.getUsername());
-            model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
+        // if (isAuthenticated) {
+        //     String username = request.getUserPrincipal().getName();
+        //     User user = userRepository.findByUsername(username).orElseThrow();
+        //     model.addAttribute("username", user.getUsername());
+        //     model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
 
-        }
+        // }
 
         model.addAttribute("shoes", paginatedShoe.getContent());
         model.addAttribute("hasMoreShoes", more);
@@ -579,11 +609,11 @@ public class ShoeController {
         String username = request.getUserPrincipal().getName();
         User user = userRepository.findByUsername(username).orElseThrow();
 
-        if (isAuthenticated) {
-            model.addAttribute("username", user.getUsername());
-            model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
+        // if (isAuthenticated) {
+        //     model.addAttribute("username", user.getUsername());
+        //     model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
 
-        }
+        // }
         // Buscar el zapato y usuario en la base de datos
         Shoe shoe = shoeService.getShoeById(id).orElseThrow(() -> new RuntimeException("Shoe not found"));
 

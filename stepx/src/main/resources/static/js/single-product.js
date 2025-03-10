@@ -20,10 +20,10 @@ document.addEventListener("DOMContentLoaded", function () {
         item.addEventListener("click", function (event) {
             event.preventDefault();
 
-            // Eliminar la clase 'selected' de todas las opciones
+            // Remove 'selected' class from all options
             items.forEach(el => el.classList.remove("selected"));
 
-            // Agregar la clase 'selected' a la opción clickeada
+            // Add 'selected' class to the clicked option
             this.classList.add("selected");
         });
     });
@@ -34,7 +34,7 @@ async function deleteReview(productId,idItem) {
         console.error("Error: idItem o idUser es undefined");
         return;
     }else{
-        console.error("Esta es la review con id: " + idItem);
+        console.error("This is the review with the ID : " + idItem);
     }
 
     try {
@@ -44,12 +44,12 @@ async function deleteReview(productId,idItem) {
         }
 
         const result = await response.text();
-        console.log("✅ Respuesta del servidor:", result);
+        console.log("✅ Response from server:", result);
 
         document.getElementById("ReviewsList").innerHTML = result;
 
 
     } catch (error) {
-        console.error("Error al eliminar el item:", error);
+        console.error("Error ocurred deleting an item:", error);
     }
 }

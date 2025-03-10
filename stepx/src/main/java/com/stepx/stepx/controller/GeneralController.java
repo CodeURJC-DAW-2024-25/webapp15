@@ -317,7 +317,7 @@ public String profile(HttpServletRequest request, Model model) throws JsonProces
          else if (errorType.equals("notValidPage")){
                  message = "Not a valid page.";
              }
-         }
+        }
 
         model.addAttribute("showError", true);
         model.addAttribute("error", message);

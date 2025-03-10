@@ -1,11 +1,11 @@
-// 🔹 Verifica el stock y desactiva el botón si hay productos sin stock
+// 🔹 Check the stock and deactivate the button if there are products out of stock
 function checkStockAvailability() {
     const checkoutButton = document.getElementById("checkoutButton");
     const stockWarning = document.getElementById("stockWarning");
 
-    if (!checkoutButton || !stockWarning) return; // Evitar errores si los elementos no existen
+    if (!checkoutButton || !stockWarning) return; 
 
-    // Buscar si hay algún elemento <p> con el texto "No stock available"
+    // Find if there is any <p> element with the text "No stock available"
     const hasOutOfStockItems = Array.from(document.querySelectorAll(".order-item p"))
         .some(p => p.textContent.trim() === "No stock available");
 
@@ -29,10 +29,10 @@ async function recalculate() {
         let id = input.getAttribute("data-id"); // id_orderItem
         let quantity = parseInt(input.value, 10);
 
-        // 🔹 Si el usuario dejó el campo vacío, usamos el valor anterior o 1
+        // 🔹 If the user left the field empty, we use the previous value or 1
         if (isNaN(quantity) || input.value.trim() === "") {
             quantity = input.dataset.previousValue ? parseInt(input.dataset.previousValue, 10) : 1;
-            input.value = quantity; // Rellenamos el input para que el usuario lo vea corregido
+            input.value = quantity; // We fill in the input so that the user sees it corrected
         }
 
         formData.append("ids", id);
@@ -44,7 +44,7 @@ async function recalculate() {
             method: "POST",
             body: formData,
             headers: {
-                [csrfHeader]: csrfToken // 🔹 Incluir el token CSRF en la solicitud
+                [csrfHeader]: csrfToken // 🔹 Include the CSRF token in the request
             }
         });
 
@@ -61,7 +61,7 @@ async function recalculate() {
             console.error("initProductQty no está disponible.");
         }
 
-        // 🔹 Verificar stock después de recalcular
+        // 🔹 Check stock after recalculation
         checkStockAvailability();
 
     } catch (error) {
@@ -84,20 +84,21 @@ async function deleteItemfromCart(idItem) {
         }
 
         const result = await response.text();
-        console.log("✅ Respuesta del servidor:", result);
+        console.log("✅ Response from server:", result);
 
         document.getElementById("CartItemsList").innerHTML = result;
 
         if (typeof window.initProductQty === "function") {
             window.initProductQty();
         } else {
-            console.error("initProductQty no está disponible. Verifica si script.js fue cargado.");
+            console.error("initProductQty is not available. Please check if script.js was loaded.");
         }
 
-        // 🔹 Verificar stock después de eliminar un producto
+        // 🔹 Check stock after deleting a product
         checkStockAvailability();
 
     } catch (error) {
-        console.error("Error al eliminar el item:", error);
+        console.error("Error deleting item:", error);
     }
+
 }
