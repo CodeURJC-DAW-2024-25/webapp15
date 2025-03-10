@@ -263,13 +263,15 @@ public class ShoeController {
         Optional<Integer> stockM = shoeSizeStockService.getStockByShoeAndSize(id, "M");
         Optional<Integer> stockL = shoeSizeStockService.getStockByShoeAndSize(id, "L");
         Optional<Integer> stockXL = shoeSizeStockService.getStockByShoeAndSize(id, "XL");
-        List<Review> review = reviewService.getReviewsByShoe(id);
+        int initialReviewsCount = 2;
+        
+        List<Review> reviews = reviewService.getPagedReviewsByShoeId(id, 0, initialReviewsCount);
+        
 
         // Convertir LocalDate a String en formato DD/MM/YYYY
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        review.forEach(reviews -> {
-            reviews.setFormattedDate(reviews.getDate().format(formatter));
-        });
+    reviews.forEach(review -> review.setFormattedDate(review.getDate().format(formatter)));
+
 
         if (op.isPresent()) {
             Shoe shoe = op.get();
@@ -278,8 +280,8 @@ public class ShoeController {
             model.addAttribute("stockL", stockL.orElse(0) == 0);
             model.addAttribute("stockXL", stockXL.orElse(0) == 0);
             model.addAttribute("product", shoe);
-            if (review != null) {
-                model.addAttribute("review", review);
+            if (reviews != null) {
+                model.addAttribute("review", reviews);
 
             }
             return "single-product";
@@ -605,7 +607,7 @@ public class ShoeController {
         // Saving the review
         reviewService.save(review);
 
-        return "redirect:/shop/single-product/{id}";
+        return "redirect:/shop/single-product/" + id + "?page=0";
 
     }
 
@@ -640,6 +642,15 @@ public class ShoeController {
         return "error";
 
         
+    }
+
+    @GetMapping("/single-product/loadMoreReviews")
+    public String loadMoreReviews(@RequestParam int page, @RequestParam Long shoeId, Model model) {
+        int limit = 2; // Número de reseñas a cargar
+    List<Review> reviews = reviewService.getPagedReviewsByShoeId(shoeId, page, limit);
+    model.addAttribute("review", reviews);
+
+    return "partials/singleProduct-reviewList";
     }
 
 }

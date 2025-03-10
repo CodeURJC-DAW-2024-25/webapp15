@@ -53,3 +53,32 @@ async function deleteReview(productId,idItem) {
         console.error("Error al eliminar el item:", error);
     }
 }
+
+
+let pageReviews = 0;
+
+async function loadMoreReviews(shoeId) {
+    try {
+        pageReviews++;
+        const response = await fetch(`/shop/single-product/loadMoreReviews?page=${pageReviews}&shoeId=${shoeId}`);
+        
+        const data = await response.text();
+        console.log(data);
+        let reviewsDiv = document.getElementById("ReviewsList");
+
+        // Agregar las nuevas reseñas al contenedor
+        reviewsDiv.innerHTML += data;
+
+        // Ocultar botón si ya no hay más reseñas disponibles
+        if (String(data).includes("No more reviews available.")) {
+            let loadMoreButton = document.getElementById("loadMoreReviewsButtom");
+            if (loadMoreButton) {
+                loadMoreButton.style.display = "none";
+            }
+        }
+    } catch (error) {
+        console.log("Error trying to load reviews: ", error);
+    }
+}
+
+window.loadMoreReviews = loadMoreReviews;

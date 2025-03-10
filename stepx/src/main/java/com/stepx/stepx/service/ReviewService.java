@@ -1,9 +1,11 @@
 package com.stepx.stepx.service;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.springframework.data.domain.Pageable;
 
 import com.stepx.stepx.model.Shoe;
 import com.stepx.stepx.model.Review;
@@ -39,6 +41,13 @@ public class ReviewService {
             System.out.println("⚠️ No se encontró la review con ID " + id);
         }
     }
+
+    public List<Review> getPagedReviewsByShoeId(Long shoeId, int page, int limit) {
+        //Pageable pageable = ;  // Paginación con 'limit' reseñas por página
+        return reviewRepository.findByShoeId(shoeId, PageRequest.of(page, limit)).getContent();  // Asegúrate de usar 'getContent' para obtener las reseñas
+    }
+
+    
 
     
 

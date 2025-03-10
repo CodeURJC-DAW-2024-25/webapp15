@@ -186,8 +186,8 @@
               </ul>
             </div>
             <div class="tab-pane fade padding-small" id="nav-review" role="tabpanel" aria-labelledby="nav-review-tab">
-              <div id="ReviewsList">
-                <div class="review-box d-flex flex-wrap">
+              <div >
+                <div  id="ReviewsList" class="review-box d-flex flex-wrap">
                   {{#review}}
                   <div class="col-lg-6 d-flex flex-wrap"> <!-- All the container for 1 review -->
                     <div class="col-md-2 me-3 mb-3">
@@ -222,6 +222,13 @@
 
                   </div>
                   {{/review}}
+                </div>
+              </div>
+              <div id="loadMoreReviewsButtom">
+                <div class="btn-wrap">
+                    <button class="btn btn-black btn-medium text-uppercase hvr-sweep-to-right" style="margin-bottom: 30px;" onclick="loadMoreReviews('{{id}}')">
+                        More Reviews
+                    </button>
                 </div>
               </div>
               <div class="add-review mt-5">
