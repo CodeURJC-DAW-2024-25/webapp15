@@ -154,15 +154,15 @@ public void addAttributes(Model model, HttpServletRequest request) {
             HttpServletRequest request, Model model) throws IOException, SQLException {
 
         boolean isAuthenticated = request.getUserPrincipal() != null;
-        // model.addAttribute("isAuthenticated", isAuthenticated);
-        // String username = request.getUserPrincipal().getName();
-        // User user = userRepository.findByUsername(username).orElseThrow();
+         model.addAttribute("isAuthenticated", isAuthenticated);
+         String username = request.getUserPrincipal().getName();
+         User user = userRepository.findByUsername(username).orElseThrow();
 
-        // if (isAuthenticated) {
-        //     model.addAttribute("username", user.getUsername());
-        //     model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
+         if (isAuthenticated) {
+             model.addAttribute("username", user.getUsername());
+             model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
 
-        // }
+         }
         // Create a new Shoe object
         Shoe shoe = new Shoe();
         shoe.setName(name);
