@@ -1,6 +1,5 @@
 package com.stepx.stepx.repository;
 
-import com.stepx.stepx.model.Shoe;
 import com.stepx.stepx.model.ShoeSizeStock;
 
 import java.util.List;
@@ -21,11 +20,11 @@ public interface ShoeSizeStockRepository extends JpaRepository<ShoeSizeStock, Lo
 
     @Query("SELECT s FROM ShoeSizeStock s WHERE s.shoe.id IN :shoeIds AND s.size IN :sizes")
     List<ShoeSizeStock> findByShoeIdsAndSizes(@Param("shoeIds") List<Long> shoeIds, @Param("sizes") List<String> sizes);
-//all the stock in a single consult
+    // all the stock in a single consult
 
     @Modifying
     @Transactional
     @Query("UPDATE ShoeSizeStock s SET s.stock = s.stock - :quantity " +
-           "WHERE s.shoe.id = :shoeId AND s.size = :size AND s.stock >= :quantity")
+            "WHERE s.shoe.id = :shoeId AND s.size = :size AND s.stock >= :quantity")
     int reduceStock(@Param("shoeId") Long shoeId, @Param("size") String size, @Param("quantity") int quantity);
 }

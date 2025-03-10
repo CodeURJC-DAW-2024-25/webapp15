@@ -14,7 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @Table(name = "users")
-public class User implements UserDetails{
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -61,13 +61,11 @@ public class User implements UserDetails{
     private String encodedPassword;
 
     @ElementCollection(fetch = FetchType.EAGER)
-	private List<String> roles = new ArrayList<>();
-
+    private List<String> roles = new ArrayList<>();
 
     // Relation between orders shopping
-    @OneToMany(mappedBy = "user", cascade=CascadeType.ALL,orphanRemoval = false,fetch = FetchType.EAGER)
-    private List<OrderShoes> orders =new ArrayList<>();
-
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = false, fetch = FetchType.EAGER)
+    private List<OrderShoes> orders = new ArrayList<>();
 
     @Column(nullable = false, unique = true)
     private String username;
@@ -78,10 +76,10 @@ public class User implements UserDetails{
     public User() {
     }
 
-    public User(String username,String email,String encodedPassword, Blob imageUser, String ... roles) {
+    public User(String username, String email, String encodedPassword, Blob imageUser, String... roles) {
         this.username = username;
         this.imageUser = imageUser;
-        this.email=email;
+        this.email = email;
         this.encodedPassword = encodedPassword;
         this.roles = Arrays.asList(roles);
     }
@@ -89,18 +87,21 @@ public class User implements UserDetails{
     public Long getId() {
         return id;
     }
-    
+
     public String getUsername() {
         return username;
     }
+
     public String getEmail() {
         return email;
     }
 
     public void setUsername(String username) {
         this.username = username;
-        
-    }public void setEmail(String email) {
+
+    }
+
+    public void setEmail(String email) {
         this.email = email;
     }
 
@@ -120,26 +121,24 @@ public class User implements UserDetails{
         this.roles = roles;
     }
 
-    public boolean isAdmin(){
+    public boolean isAdmin() {
         return roles.contains("ADMIN") || roles.contains("ROLES_ADMIN");
     }
 
-    public boolean isRegularUser(){
+    public boolean isRegularUser() {
         return roles.contains("USER") || roles.contains("ROLES_USER");
     }
 
     public static Object builder() {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'builder'");
     }
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
-            for (String role : roles) {
-                authorities.add(new SimpleGrantedAuthority(role));
-            }
+        for (String role : roles) {
+            authorities.add(new SimpleGrantedAuthority(role));
+        }
         return authorities;
     }
 
@@ -148,14 +147,12 @@ public class User implements UserDetails{
         return encodedPassword;
     }
 
-
-
     @Override
     public String toString() {
         return "User [id=" + id + ", username=" + username + "]";
     }
 
-    public void addOrderShoe(OrderShoes orderShoes){
+    public void addOrderShoe(OrderShoes orderShoes) {
         this.orders.add(orderShoes);
     }
 }

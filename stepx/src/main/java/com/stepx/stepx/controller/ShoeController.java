@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,7 +32,6 @@ import com.stepx.stepx.model.Shoe;
 import com.stepx.stepx.model.ShoeSizeStock;
 import com.stepx.stepx.model.User;
 import com.stepx.stepx.repository.UserRepository;
-import com.stepx.stepx.service.ProductsService;
 import com.stepx.stepx.service.ReviewService;
 import com.stepx.stepx.service.ShoeService;
 import com.stepx.stepx.service.ShoeSizeStockService;
@@ -44,8 +42,6 @@ import jakarta.servlet.http.HttpServletRequest;
 @Controller
 @RequestMapping("/shop")
 public class ShoeController {
-    @Autowired
-    private ProductsService productsService;
 
     @Autowired
     private ReviewService reviewService;
@@ -67,33 +63,33 @@ public class ShoeController {
     }
 
     @ModelAttribute
-public void addAttributes(Model model, HttpServletRequest request) {
-    boolean isAuthenticated = request.getUserPrincipal() != null;
-    model.addAttribute("isAuthenticated", isAuthenticated);
-    model.addAttribute("showError", false);
+    public void addAttributes(Model model, HttpServletRequest request) {
+        boolean isAuthenticated = request.getUserPrincipal() != null;
+        model.addAttribute("isAuthenticated", isAuthenticated);
+        model.addAttribute("showError", false);
 
-    CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
-    model.addAttribute("token", csrfToken.getToken());
+        CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
+        model.addAttribute("token", csrfToken.getToken());
 
-    model.addAttribute("headerName", csrfToken.getHeaderName());
+        model.addAttribute("headerName", csrfToken.getHeaderName());
 
-    if (isAuthenticated) {
-        String username = request.getUserPrincipal().getName();
-        model.addAttribute("username", username);
+        if (isAuthenticated) {
+            String username = request.getUserPrincipal().getName();
+            model.addAttribute("username", username);
 
-        model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
+            model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
 
-        User user = userRepository.findByUsername(username).get();
+            User user = userRepository.findByUsername(username).get();
 
-        model.addAttribute("id", user.getId());
-        model.addAttribute("email", user.getEmail());
-        model.addAttribute("imageBlob", user.getImageUser());
-        model.addAttribute("lastName", user.getLastName());
-        model.addAttribute("firstname", user.getFirstName());
-        model.addAttribute("user_id", user.getId());
+            model.addAttribute("id", user.getId());
+            model.addAttribute("email", user.getEmail());
+            model.addAttribute("imageBlob", user.getImageUser());
+            model.addAttribute("lastName", user.getLastName());
+            model.addAttribute("firstname", user.getFirstName());
+            model.addAttribute("user_id", user.getId());
 
+        }
     }
-}
 
     @GetMapping()
     public String showShop(Model model, HttpServletRequest request) {
@@ -108,13 +104,6 @@ public void addAttributes(Model model, HttpServletRequest request) {
         boolean isAuthenticated = request.getUserPrincipal() != null;
         model.addAttribute("isAuthenticated", isAuthenticated);
 
-        // if (isAuthenticated) {
-        //     String username = request.getUserPrincipal().getName();
-        //     User user = userRepository.findByUsername(username).orElseThrow();
-        //     model.addAttribute("username", user.getUsername());
-        //     model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
-
-        // }
         model.addAttribute("shoes", shoes.getContent());
         model.addAttribute("hasMoreShoes", more);
         return "shop";
@@ -154,15 +143,15 @@ public void addAttributes(Model model, HttpServletRequest request) {
             HttpServletRequest request, Model model) throws IOException, SQLException {
 
         boolean isAuthenticated = request.getUserPrincipal() != null;
-         model.addAttribute("isAuthenticated", isAuthenticated);
-         String username = request.getUserPrincipal().getName();
-         User user = userRepository.findByUsername(username).orElseThrow();
+        model.addAttribute("isAuthenticated", isAuthenticated);
+        String username = request.getUserPrincipal().getName();
+        User user = userRepository.findByUsername(username).orElseThrow();
 
-         if (isAuthenticated) {
-             model.addAttribute("username", user.getUsername());
-             model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
+        if (isAuthenticated) {
+            model.addAttribute("username", user.getUsername());
+            model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
 
-         }
+        }
         // Create a new Shoe object
         Shoe shoe = new Shoe();
         shoe.setName(name);
@@ -184,7 +173,7 @@ public void addAttributes(Model model, HttpServletRequest request) {
         }
 
         shoeService.saveShoe(shoe);
-        
+
         ShoeSizeStock stock1 = new ShoeSizeStock();
         stock1.setShoe(shoe);
         stock1.setSize("S");
@@ -270,12 +259,11 @@ public void addAttributes(Model model, HttpServletRequest request) {
 
     @GetMapping("/single-product/{id}")
     public String showSingleProduct(Model model, @PathVariable Long id, HttpServletRequest request) {
-       
+
         CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
         model.addAttribute("token", csrfToken.getToken());
         model.addAttribute("headerName", csrfToken.getHeaderName());
 
-        
         long maxItems = shoeService.getTotalShoes();
 
         if (maxItems < id) {
@@ -283,7 +271,7 @@ public void addAttributes(Model model, HttpServletRequest request) {
         }
 
         boolean isAuthenticated = request.getUserPrincipal() != null;
-        //model.addAttribute("isAuthenticated", isAuthenticated);
+        // model.addAttribute("isAuthenticated", isAuthenticated);
 
         if (isAuthenticated) {
             String username = request.getUserPrincipal().getName();
@@ -299,9 +287,8 @@ public void addAttributes(Model model, HttpServletRequest request) {
         Optional<Integer> stockL = shoeSizeStockService.getStockByShoeAndSize(id, "L");
         Optional<Integer> stockXL = shoeSizeStockService.getStockByShoeAndSize(id, "XL");
         int initialReviewsCount = 2;
-        
-        List<Review> reviews = reviewService.getPagedReviewsByShoeId(id, 0, initialReviewsCount);
 
+        List<Review> reviews = reviewService.getPagedReviewsByShoeId(id, 0, initialReviewsCount);
 
         if (op.isPresent()) {
             Shoe shoe = op.get();
@@ -369,14 +356,6 @@ public void addAttributes(Model model, HttpServletRequest request) {
         boolean isAuthenticated = request.getUserPrincipal() != null;
         model.addAttribute("isAuthenticated", isAuthenticated);
 
-        // if (isAuthenticated) {
-        //     String username = request.getUserPrincipal().getName();
-        //     User user = userRepository.findByUsername(username).orElseThrow();
-        //     model.addAttribute("username", user.getUsername());
-        //     model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
-
-        // }
-
         model.addAttribute("hasMoreShoes", more);
         model.addAttribute("shoes", shoePage.getContent());
 
@@ -393,15 +372,8 @@ public void addAttributes(Model model, HttpServletRequest request) {
         String username = request.getUserPrincipal().getName();
         User user = userRepository.findByUsername(username).orElseThrow();
 
-        // if (isAuthenticated) {
-        //     model.addAttribute("username", user.getUsername());
-        //     model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
-
-        // }
-
         if (userOptional.isPresent()) {
-            // User user = userOptional.get();
-            Blob image = user.getImageUser(); // Asegúrate de tener este método en User
+            Blob image = user.getImageUser();
 
             if (image != null) {
                 try {
@@ -419,17 +391,15 @@ public void addAttributes(Model model, HttpServletRequest request) {
         return ResponseEntity.notFound().build();
     }
 
-    // se creo uno nuevo porque en el anterior saca la imagen del perfil de usuario
-    // actual.
+
     @GetMapping("/{userId}/imageUserReview")
     public ResponseEntity<Resource> getProfileImageForReview(@PathVariable Long userId, Model model,
             HttpServletRequest request) {
         Optional<User> userOptional = userService.findUserById(userId);
 
         if (userOptional.isPresent()) {
-            // User user = userOptional.get();
             User user = userRepository.findByUsername(userOptional.get().getUsername()).orElseThrow();
-            Blob image = user.getImageUser(); // Asegúrate de tener este método en User
+            Blob image = user.getImageUser(); 
 
             if (image != null) {
                 try {
@@ -473,14 +443,6 @@ public void addAttributes(Model model, HttpServletRequest request) {
 
         boolean isAuthenticated = request.getUserPrincipal() != null;
         model.addAttribute("isAuthenticated", isAuthenticated);
-        String username = request.getUserPrincipal().getName();
-        User user = userRepository.findByUsername(username).orElseThrow();
-
-        // if (isAuthenticated) {
-        //     model.addAttribute("username", user.getUsername());
-        //     model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
-
-        // }
 
         Optional<Shoe> op = shoeService.getShoeById(id);
         if (op.isPresent()) {
@@ -530,8 +492,7 @@ public void addAttributes(Model model, HttpServletRequest request) {
             model.addAttribute("shoes", shoes.getContent());
             return "partials/loadMoreShoe";
         } catch (IllegalArgumentException e) {
-            System.err.println("Error: Marca no válida: " + brand);
-            return "error"; // Devuelve una vista de error si el Enum no es válido
+            return "error";
         }
     }
 
@@ -544,14 +505,6 @@ public void addAttributes(Model model, HttpServletRequest request) {
 
             boolean isAuthenticated = request.getUserPrincipal() != null;
             model.addAttribute("isAuthenticated", isAuthenticated);
-
-            // if (isAuthenticated) {
-            //     String username = request.getUserPrincipal().getName();
-            //     User user = userRepository.findByUsername(username).orElseThrow();
-            //     model.addAttribute("username", user.getUsername());
-            //     model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
-
-            // }
 
             model.addAttribute("shoes", shoes.getContent());
             model.addAttribute("hasMoreShoes", more);
@@ -572,14 +525,6 @@ public void addAttributes(Model model, HttpServletRequest request) {
 
         boolean isAuthenticated = request.getUserPrincipal() != null;
         model.addAttribute("isAuthenticated", isAuthenticated);
-
-        // if (isAuthenticated) {
-        //     String username = request.getUserPrincipal().getName();
-        //     User user = userRepository.findByUsername(username).orElseThrow();
-        //     model.addAttribute("username", user.getUsername());
-        //     model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
-
-        // }
 
         model.addAttribute("shoes", paginatedShoe.getContent());
         model.addAttribute("hasMoreShoes", more);
@@ -610,29 +555,21 @@ public void addAttributes(Model model, HttpServletRequest request) {
 
     @PostMapping("/submit/{id}")
     public String publishReview(
-            @PathVariable Long id, // ID del zapato
+            @PathVariable Long id, // ID of the shoe
             @RequestParam("rating") int rating,
             @RequestParam String description, Model model, HttpServletRequest request
-    // @RequestParam Long userId // ID del usuario
     ) {
         boolean isAuthenticated = request.getUserPrincipal() != null;
         model.addAttribute("isAuthenticated", isAuthenticated);
         String username = request.getUserPrincipal().getName();
         User user = userRepository.findByUsername(username).orElseThrow();
 
-        // if (isAuthenticated) {
-        //     model.addAttribute("username", user.getUsername());
-        //     model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
-
-        // }
-        // Buscar el zapato y usuario en la base de datos
+        // search the shoe by id
         Shoe shoe = shoeService.getShoeById(id).orElseThrow(() -> new RuntimeException("Shoe not found"));
-
-        // AQUI FALTA ENCONTRAR EL USUARIO ACTUAL Y PONERLO // usuario actual
         LocalDate date;
         date = LocalDate.now();
         // Create new review
-        Review review = new Review(rating, description, shoe, user, date);// el null reemplazar por el usuario
+        Review review = new Review(rating, description, shoe, user, date);
 
         // Saving the review
         reviewService.save(review);
@@ -641,8 +578,9 @@ public void addAttributes(Model model, HttpServletRequest request) {
 
     }
 
-    @GetMapping("/{productId}/deleteReview/{id}") // es el id de la review no del shoe
-    public String deleteReview(@PathVariable Long productId,@PathVariable Long id, Model model, HttpServletRequest request) {
+    @GetMapping("/{productId}/deleteReview/{id}")
+    public String deleteReview(@PathVariable Long productId, @PathVariable Long id, Model model,
+            HttpServletRequest request) {
 
         boolean isAuthenticated = request.getUserPrincipal() != null;
         model.addAttribute("isAuthenticated", isAuthenticated);
@@ -660,19 +598,18 @@ public void addAttributes(Model model, HttpServletRequest request) {
         if (review != null) {
             model.addAttribute("review", review);
             return "partials/singleProduct-reviewList";
-        }  
+        }
         return "error";
 
-        
     }
 
     @PostMapping("/single-product/loadMoreReviews")
     public String loadMoreReviews(@RequestParam int page, @RequestParam Long shoeId, Model model) {
-    int limit = 2; // Número de reseñas a cargar
-    List<Review> reviews = reviewService.getPagedReviewsByShoeId(shoeId, page, limit);
-    model.addAttribute("review", reviews);
+        int limit = 2;
+        List<Review> reviews = reviewService.getPagedReviewsByShoeId(shoeId, page, limit);
+        model.addAttribute("review", reviews);
 
-    return "partials/singleProduct-reviewList";
+        return "partials/singleProduct-reviewList";
     }
 
 }

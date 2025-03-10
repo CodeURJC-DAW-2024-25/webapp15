@@ -33,7 +33,6 @@ import com.stepx.stepx.repository.CouponRepository;
 import com.stepx.stepx.service.OrderItemService;
 import com.stepx.stepx.service.OrderShoesService;
 import com.stepx.stepx.service.ProductsService;
-import com.stepx.stepx.service.ShoeService;
 import com.stepx.stepx.service.UserService;
 
 import org.springframework.core.io.ClassPathResource;
@@ -47,9 +46,6 @@ public class GeneralController {
 
     @Autowired
     private ProductsService productsService;
-
-    @Autowired
-    private ShoeService shoeService;
 
     @Autowired
     private UserRepository userRepository;
@@ -75,76 +71,71 @@ public class GeneralController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @ModelAttribute
+    public void addAttributes(Model model, HttpServletRequest request) {
+        boolean isAuthenticated = request.getUserPrincipal() != null;
+        model.addAttribute("isAuthenticated", isAuthenticated);
+        model.addAttribute("showError", false);
 
-    
-@ModelAttribute
-public void addAttributes(Model model, HttpServletRequest request) {
-    boolean isAuthenticated = request.getUserPrincipal() != null;
-    model.addAttribute("isAuthenticated", isAuthenticated);
-    model.addAttribute("showError", false);
+        CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
+        model.addAttribute("token", csrfToken.getToken());
 
-    CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
-    model.addAttribute("token", csrfToken.getToken());
+        model.addAttribute("headerName", csrfToken.getHeaderName());
 
-    model.addAttribute("headerName", csrfToken.getHeaderName());
+        if (isAuthenticated) {
+            String username = request.getUserPrincipal().getName();
+            model.addAttribute("username", username);
 
-    if (isAuthenticated) {
-        String username = request.getUserPrincipal().getName();
-        model.addAttribute("username", username);
+            model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
 
-        model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
+            User user = userRepository.findByUsername(username).get();
 
-        User user = userRepository.findByUsername(username).get();
+            model.addAttribute("id", user.getId());
+            model.addAttribute("email", user.getEmail());
+            model.addAttribute("imageBlob", user.getImageUser());
+            model.addAttribute("lastName", user.getLastName());
+            model.addAttribute("firstname", user.getFirstName());
+            model.addAttribute("user_id", user.getId());
 
-        model.addAttribute("id", user.getId());
-        model.addAttribute("email", user.getEmail());
-        model.addAttribute("imageBlob", user.getImageUser());
-        model.addAttribute("lastName", user.getLastName());
-        model.addAttribute("firstname", user.getFirstName());
-        model.addAttribute("user_id", user.getId());
-
-    }
-}
-
-@GetMapping({ "/", "/index" })
-public String showIndex(Model model, HttpServletRequest request) {
-    boolean isAuthenticated = request.getUserPrincipal() != null;
-
-    // Catch the error parameter
-    String error = request.getParameter("error");
-    model.addAttribute("loginError", error != null);
-
-    if (isAuthenticated) {
-        String username = request.getUserPrincipal().getName();
-        User user = userRepository.findByUsername(username).orElse(null);
-
-        if (user != null) {
-            // get recommended shoes
-            List<Shoe> recommendedShoes = orderItemService.getRecommendedShoesForUser(user.getId(), 10);
-
-            if (recommendedShoes.isEmpty()) {
-                System.out.println("La lista de productos recomendados está vacía");
-                model.addAttribute("recommendedShoes", false);
-                model.addAttribute("hasRecommendedShoes", false);
-            } else {
-                model.addAttribute("recommendedShoes", recommendedShoes);
-                model.addAttribute("hasRecommendedShoes", true);
-            }
         }
     }
 
-    // Getting mbest seller products
-    List<Shoe> bestSellingShoes = orderItemService.getBestSellingShoes(10);
-    if (bestSellingShoes.isEmpty()) {
-        System.out.println("La lista de mejores productos está vacía");
-        model.addAttribute("bestSellingShoes", false);
-    } else {
-        model.addAttribute("bestSellingShoes", bestSellingShoes);
+    @GetMapping({ "/", "/index" })
+    public String showIndex(Model model, HttpServletRequest request) {
+        boolean isAuthenticated = request.getUserPrincipal() != null;
+
+        // Catch the error parameter
+        String error = request.getParameter("error");
+        model.addAttribute("loginError", error != null);
+
+        if (isAuthenticated) {
+            String username = request.getUserPrincipal().getName();
+            User user = userRepository.findByUsername(username).orElse(null);
+
+            if (user != null) {
+                // get recommended shoes
+                List<Shoe> recommendedShoes = orderItemService.getRecommendedShoesForUser(user.getId(), 10);
+
+                if (recommendedShoes.isEmpty()) {
+                    model.addAttribute("recommendedShoes", false);
+                    model.addAttribute("hasRecommendedShoes", false);
+                } else {
+                    model.addAttribute("recommendedShoes", recommendedShoes);
+                    model.addAttribute("hasRecommendedShoes", true);
+                }
+            }
+        }
+
+        // Getting mbest seller products
+        List<Shoe> bestSellingShoes = orderItemService.getBestSellingShoes(10);
+        if (bestSellingShoes.isEmpty()) {
+            model.addAttribute("bestSellingShoes", false);
+        } else {
+            model.addAttribute("bestSellingShoes", bestSellingShoes);
+        }
+
+        return "index";
     }
-
-    return "index";
-}
-
 
     @GetMapping("/login")
     public String login(Model model, HttpServletRequest request) {
@@ -153,30 +144,30 @@ public String showIndex(Model model, HttpServletRequest request) {
         return "index";
     }
 
-   @GetMapping("/profile")
-public String profile(HttpServletRequest request, Model model) throws JsonProcessingException {
-    CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
-    model.addAttribute("token", csrfToken.getToken());
-    model.addAttribute("headerName", csrfToken.getHeaderName());
-    
-    model.addAttribute("isAuthenticated", request.getUserPrincipal() != null);
-    String username = request.getUserPrincipal().getName();
-    User user = userRepository.findByUsername(username).orElseThrow();
+    @GetMapping("/profile")
+    public String profile(HttpServletRequest request, Model model) throws JsonProcessingException {
+        CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
+        model.addAttribute("token", csrfToken.getToken());
+        model.addAttribute("headerName", csrfToken.getHeaderName());
 
-    // Load all orders from user
-    List<OrderShoes> orderShoes = orderShoesService.getOrderShoesFinishedByUserId(user.getId());
-    if (orderShoes.size() == 0) {
-        model.addAttribute("orders", false);
-        model.addAttribute("hasmoreorders", false);
-    } else {
-        List<OrderShoes> displayedOrders = orderShoes.stream().limit(5).toList();
-        model.addAttribute("orders", displayedOrders);
-        if (orderShoes.size()>5) {  
-            model.addAttribute("hasmoreorders", true);
-        }else{
+        model.addAttribute("isAuthenticated", request.getUserPrincipal() != null);
+        String username = request.getUserPrincipal().getName();
+        User user = userRepository.findByUsername(username).orElseThrow();
+
+        // Load all orders from user
+        List<OrderShoes> orderShoes = orderShoesService.getOrderShoesFinishedByUserId(user.getId());
+        if (orderShoes.size() == 0) {
+            model.addAttribute("orders", false);
             model.addAttribute("hasmoreorders", false);
+        } else {
+            List<OrderShoes> displayedOrders = orderShoes.stream().limit(5).toList();
+            model.addAttribute("orders", displayedOrders);
+            if (orderShoes.size() > 5) {
+                model.addAttribute("hasmoreorders", true);
+            } else {
+                model.addAttribute("hasmoreorders", false);
+            }
         }
-    }
 
         // Get monthly spending data for the user
         List<Map<String, Object>> monthlySpending = orderShoesRepository.getMonthlySpendingByUserId(user.getId());
@@ -226,19 +217,17 @@ public String profile(HttpServletRequest request, Model model) throws JsonProces
     }
 
     @GetMapping("/profile/orders")
-    public String loadMoreOrders(@RequestParam int page,HttpServletRequest request,Model model) {
-        User user=userService.findUserByUserName(request.getUserPrincipal().getName()).orElseThrow();
-        Long userId=user.getId();
-        List<OrderShoes>nextOrders=orderShoesService.getPagedOrdersByUserId(page,userId);
-        if(nextOrders.size()==0){
+    public String loadMoreOrders(@RequestParam int page, HttpServletRequest request, Model model) {
+        User user = userService.findUserByUserName(request.getUserPrincipal().getName()).orElseThrow();
+        Long userId = user.getId();
+        List<OrderShoes> nextOrders = orderShoesService.getPagedOrdersByUserId(page, userId);
+        if (nextOrders.size() == 0) {
             model.addAttribute("oders", false);
             return "partials/ordersProfile";
         }
         model.addAttribute("orders", nextOrders);
         return "partials/ordersProfile";
     }
-    
-
 
     @GetMapping("/styles")
     public String showStyles(Model model) {
@@ -265,7 +254,7 @@ public String profile(HttpServletRequest request, Model model) throws JsonProces
     public String showEditProduct(Model model, @PathVariable Long id, HttpServletRequest request) {
         model.addAttribute("product", productsService.getProductById(id));
         boolean admin = request.isUserInRole("ROLE_ADMIN");
-        if (!admin){
+        if (!admin) {
             return "redirect:/errorPage?errorType=notValidPage";
         }
         return "edit-product";
@@ -274,13 +263,12 @@ public String profile(HttpServletRequest request, Model model) throws JsonProces
     @GetMapping("/create-product")
     public String showCreate(Model model, HttpServletRequest request) {
         boolean admin = request.isUserInRole("ROLE_ADMIN");
-        if (!admin){
+        if (!admin) {
             return "redirect:/errorPage?errorType=notValidPage";
         }
         return "create-product";
 
     }
-
 
     @PostMapping("/createAccount")
     public String createUser(
@@ -314,48 +302,47 @@ public String profile(HttpServletRequest request, Model model) throws JsonProces
         User newUser = new User(username, email, encodedPassword, null, "USER");
         newUser.setLastName(lastName);
         newUser.setFirstname(firstName);
-        //load default image
+        // load default image
         Blob defaultUserImage;
         try {
             Resource resource = new ClassPathResource("static/images/defaultProfilePicture.jpg");
             if (!resource.exists()) {
-                defaultUserImage=null;
+                defaultUserImage = null;
             }
             try (InputStream inputStream = resource.getInputStream()) {
                 byte[] imageBytes = inputStream.readAllBytes();
-                defaultUserImage=new SerialBlob(imageBytes);
+                defaultUserImage = new SerialBlob(imageBytes);
             }
         } catch (IOException | SQLException e) {
             e.printStackTrace();
-            defaultUserImage=null;
+            defaultUserImage = null;
         }
         newUser.setImageUser(defaultUserImage);
         // Saving in data
         userRepository.save(newUser);
-        
+
         Coupon coupon = new Coupon();
         coupon.setCode("STEPXDISCOUNT10");
-        coupon.setDiscount(new BigDecimal("0.9"));  // Representing a discount of 10% 
+        coupon.setDiscount(new BigDecimal("0.9")); // Representing a discount of 10%
         coupon.setUser(newUser);
         couponRepository.save(coupon);
         return "redirect:/index";
     }
 
     @GetMapping("/errorPage")
-    public String errorShow(Model model, @RequestParam(value = "errorType", required = false) String errorType){
-         String message = null;
+    public String errorShow(Model model, @RequestParam(value = "errorType", required = false) String errorType) {
+        String message = null;
         if (errorType != null) {
-            if (errorType.equals("greaterId")){
-                 message = "Invalid product. Not found.";
-         }
-         else if (errorType.equals("notValidPage")){
-                 message = "Not a valid page.";
-             }
+            if (errorType.equals("greaterId")) {
+                message = "Invalid product. Not found.";
+            } else if (errorType.equals("notValidPage")) {
+                message = "Not a valid page.";
+            }
         }
 
         model.addAttribute("showError", true);
         model.addAttribute("error", message);
-         return "errorPage"; 
-    }    
+        return "errorPage";
+    }
 
 }

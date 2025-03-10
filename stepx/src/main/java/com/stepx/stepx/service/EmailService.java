@@ -22,21 +22,21 @@ public class EmailService {
 
     @Autowired
     private JavaMailSender javaMailSender;
-    
+
     public void sendEmail(String toEmail, String subject, Map<String, Object> model) throws MessagingException {
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-        
+
         helper.setFrom("stepx@shop.es");
         helper.setTo(toEmail);
         helper.setSubject(subject);
-        
+
         String content = getEmailContent(model);
         helper.setText(content, true);
-        
+
         javaMailSender.send(message);
     }
-    
+
     private String getEmailContent(Map<String, Object> model) {
         try {
             InputStream inputStream = new ClassPathResource("templates/email.html").getInputStream();

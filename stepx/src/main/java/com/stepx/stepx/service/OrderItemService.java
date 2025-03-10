@@ -1,24 +1,16 @@
 package com.stepx.stepx.service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicLong;
+
 import java.util.stream.Collectors;
-import java.util.Collections;
-import java.util.Set;
-import java.util.Objects;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.stepx.stepx.model.OrderItem;
-import com.stepx.stepx.model.Product;
 import com.stepx.stepx.model.Shoe;
 import com.stepx.stepx.model.OrderShoes;
 import com.stepx.stepx.repository.OrderItemRepository;
@@ -77,43 +69,31 @@ public class OrderItemService {
     public List<Shoe> getBestSellingShoes(int limit) {
         List<Object[]> results = orderItemRepository.findBestSellingShoes(PageRequest.of(0, limit));
         return results.stream()
-                .map(result -> (Shoe) result[0]) // Extraemos solo el objeto Shoe
+                .map(result -> (Shoe) result[0]) // extract only shoe object
                 .collect(Collectors.toList());
     }
 
-
     public List<Shoe.Brand> getBrandsFromLastOrder(Long userId) {
-        // Obtener el último pedido del usuario
+        // obtain last order of user
         OrderShoes lastOrder = orderShoesRepository.findTopByUserIdOrderByIdDesc(userId);
 
         if (lastOrder == null || lastOrder.getOrderItems().isEmpty()) {
-            return new ArrayList<>();  // Si no hay último pedido o no tiene productos, devolver lista vacía
+            return new ArrayList<>();
         }
 
-        // Obtener las marcas de los zapatos de ese pedido
+        //get brands from shoes of that order
         return lastOrder.getOrderItems().stream()
-                        .map(orderItem -> orderItem.getShoe().getBrand())
-                        .distinct()  // Para evitar marcas duplicadas
-                        .collect(Collectors.toList());
+                .map(orderItem -> orderItem.getShoe().getBrand())
+                .distinct() // to not repeat brands
+                .collect(Collectors.toList());
     }
 
-    // Recomendación basada en la categoría y la marca de las compras anteriores
-
-    // En OrderItemService.java
     public List<Shoe> getRecommendedShoesForUser(Long userId, int limit) {
-        // Obtener las marcas del último pedido del usuario
-        System.out.println("esto es unaprueba");
         List<Shoe.Brand> brands = getBrandsFromLastOrder(userId);
-        System.out.println("Brands: " + brands);
-
         if (brands.isEmpty()) {
-            return new ArrayList<>(); // No hay compras previas, no se pueden recomendar productos
+            return new ArrayList<>();
         }
-
-        // Buscar productos recomendados por marca, pero que el usuario no haya comprado
         List<Shoe> recommendedShoes = shoeRepository.findRecommendedShoesByBrandsExcludingPurchased(brands, userId);
-        System.out.println("Zapatos recomendados: " + recommendedShoes);
-        // Limitar la cantidad de recomendaciones
         return recommendedShoes.stream().limit(limit).collect(Collectors.toList());
     }
 

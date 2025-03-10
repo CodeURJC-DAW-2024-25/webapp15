@@ -1,4 +1,4 @@
- package com.stepx.stepx.security;
+package com.stepx.stepx.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,16 +13,14 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import com.stepx.stepx.controller.CustomAuthenticationSuccessHandler;
 
-
-
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig{
-    
-	//@Autowired
-    private RepositoryUserDetailsService userDetailsService;
+public class WebSecurityConfig {
 
-	public WebSecurityConfig(RepositoryUserDetailsService userDetailsService){
+	// @Autowired
+	private RepositoryUserDetailsService userDetailsService;
+
+	public WebSecurityConfig(RepositoryUserDetailsService userDetailsService) {
 		this.userDetailsService = userDetailsService;
 	}
 
@@ -36,44 +34,44 @@ public class WebSecurityConfig{
 		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
 
 		authProvider.setUserDetailsService(userDetailsService);
-		authProvider.setPasswordEncoder(passwordEncoder()); 
+		authProvider.setPasswordEncoder(passwordEncoder());
 
 		return authProvider;
 	}
 
 	@Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-        return authConfig.getAuthenticationManager();
-    }
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+		return authConfig.getAuthenticationManager();
+	}
 
-    
 	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http, CustomAuthenticationSuccessHandler successHandler) throws Exception {
-		
-		http.authenticationProvider(authenticationProvider());	
+	public SecurityFilterChain filterChain(HttpSecurity http, CustomAuthenticationSuccessHandler successHandler)
+			throws Exception {
+
+		http.authenticationProvider(authenticationProvider());
 		http
-			.authorizeHttpRequests(authorize -> authorize
-			// PUBLIC PAGES
-			.requestMatchers( "/index", "/register-user", "/shop/**", "/partials/**", "/createAccount", "/errorPage").permitAll()
-            .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
-            // PRIVATE PAGES
-			.requestMatchers("/profile","/profile/orders", "/shop/single-product/loadMoreReviews").hasAnyRole("USER", "ADMIN")
-            .requestMatchers("/OrderItem/addItem","/checkout/**","/user/**").hasAnyRole("USER")
-            .requestMatchers("/edit-product/**", "/admin", "/create-product").hasAnyRole("ADMIN")
-        )
-        .formLogin(formLogin -> formLogin
-            .loginPage("/login")
-            .defaultSuccessUrl("/index", true)
-            .failureUrl("/?error=true")  // Redirect to main paige in case of error
-            .permitAll()
-        ) 
-        .logout(logout -> logout
-			.logoutSuccessUrl("/index")
-			.logoutUrl("/logout")
-			.invalidateHttpSession(true) 
-            .deleteCookies("JSESSIONID")
-            .permitAll()
-        );
+				.authorizeHttpRequests(authorize -> authorize
+						// PUBLIC PAGES
+						.requestMatchers("/index", "/register-user", "/shop/**", "/partials/**", "/createAccount",
+								"/errorPage")
+						.permitAll()
+						.requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
+						// PRIVATE PAGES
+						.requestMatchers("/profile", "/profile/orders", "/shop/single-product/loadMoreReviews")
+						.hasAnyRole("USER", "ADMIN")
+						.requestMatchers("/OrderItem/addItem", "/checkout/**", "/user/**").hasAnyRole("USER")
+						.requestMatchers("/edit-product/**", "/admin", "/create-product","/shop/delete/**").hasAnyRole("ADMIN"))
+				.formLogin(formLogin -> formLogin
+						.loginPage("/login")
+						.defaultSuccessUrl("/index", true)
+						.failureUrl("/?error=true") // Redirect to main paige in case of error
+						.permitAll())
+				.logout(logout -> logout
+						.logoutSuccessUrl("/index")
+						.logoutUrl("/logout")
+						.invalidateHttpSession(true)
+						.deleteCookies("JSESSIONID")
+						.permitAll());
 
 		return http.build();
 	}

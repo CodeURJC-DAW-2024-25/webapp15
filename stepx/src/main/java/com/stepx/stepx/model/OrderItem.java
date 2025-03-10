@@ -1,9 +1,5 @@
 package com.stepx.stepx.model;
 
-import java.sql.Date;
-import java.time.LocalDate;
-import java.util.stream.Collectors;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,17 +7,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.TemporalType;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import jakarta.persistence.Transient;
 
 @Entity
 public class OrderItem {
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,18 +19,19 @@ public class OrderItem {
     @JoinColumn(name = "order_id")
     private OrderShoes orderShoes;
 
-    @ManyToOne// Makes the same table could have many orders with the same shoe product, if i put one to one the shoe ID cannot repeat)
+    @ManyToOne // Makes the same table could have many orders with the same shoe product, if i
+               // put one to one the shoe ID cannot repeat)
     @JoinColumn(name = "shoe_id")
     private Shoe shoe;
 
     @Column(nullable = false)
-    private int quantity;  // Quantity of product
+    private int quantity; // Quantity of product
 
     @Column(nullable = false)
-    private String size;   // Size shoe
+    private String size; // Size shoe
 
-    
-    public OrderItem() {}
+    public OrderItem() {
+    }
 
     public OrderItem(OrderShoes orderShoes, Shoe shoe, int quantity, String size) {
         this.orderShoes = orderShoes;
@@ -50,7 +39,6 @@ public class OrderItem {
         this.quantity = quantity;
         this.size = size;
     }
-
 
     public Long getId() {
         return id;
@@ -92,5 +80,4 @@ public class OrderItem {
         this.size = size;
     }
 
-    
 }

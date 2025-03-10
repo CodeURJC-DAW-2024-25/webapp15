@@ -14,31 +14,26 @@ import java.util.Map;
 @Service
 public class PdfService {
 
-    // Genera el PDF a partir de los datos de la orden
+    //generate the PDF from the order data
     public byte[] generatePdfFromOrder(Map<String, Object> orderData) {
         String htmlContent = renderHtmlTemplate(orderData);
 
-        // Imprimir el HTML generado para depuración
-        System.out.println("📄 HTML generado:\n" + htmlContent);
-
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-            // Renderizar el PDF con ITextRenderer
+            //renderize the PDF with ITextRenderer
             ITextRenderer renderer = new ITextRenderer();
 
-            // Establecer la base URL para las imágenes (la ruta base dentro del classpath)
-            // Aquí es donde indicas que las imágenes están en el directorio "static"
+            //stablish the base URL for the images (the base path inside the classpath)
             renderer.getSharedContext().setBaseURL("classpath:/static/");
 
-            // Establecer el documento HTML para el PDF
+            //stablish the HTML document for the PDF
             renderer.setDocumentFromString(htmlContent);
 
-            // Realizar el layout del PDF
             renderer.layout();
 
-            // Crear el PDF en el OutputStream
+            //create the PDF in the OutputStream
             renderer.createPDF(outputStream);
 
-            // Devolver el contenido del PDF como un array de bytes
+            // return content of the PDF as a byte array
             return outputStream.toByteArray();
         } catch (Exception e) {
             e.printStackTrace();
@@ -46,22 +41,21 @@ public class PdfService {
         }
     }
 
-    // Renderiza la plantilla HTML con los datos proporcionados
+    
     private String renderHtmlTemplate(Map<String, Object> orderData) {
         try {
-            // Cargar la plantilla HTML desde el classpath
+            //load the HTML template from the classpath
             ClassPathResource resource = new ClassPathResource("templates/ticket.html");
 
-            // Verificar si el archivo existe
+            //verify if the file exists
             if (!resource.exists()) {
-                System.out.println("❌ Error: La plantilla no fue encontrada en 'src/main/resources/templates/'");
-                throw new RuntimeException("Plantilla HTML no encontrada");
+                throw new RuntimeException("HTML template not found");
             }
 
             InputStream templateStream = resource.getInputStream();
             InputStreamReader reader = new InputStreamReader(templateStream, StandardCharsets.UTF_8);
 
-            // Usar Mustache para procesar la plantilla
+            //use mustache to process the template
             MustacheFactory mf = new DefaultMustacheFactory();
             Mustache mustache = mf.compile(reader, "ticket");
 
@@ -69,7 +63,7 @@ public class PdfService {
             mustache.execute(writer, orderData);
             return writer.toString();
         } catch (IOException e) {
-            throw new RuntimeException("❌ No se pudo cargar la plantilla HTML", e);
+            throw new RuntimeException("❌ Can not load HTML template", e);
         }
     }
 }

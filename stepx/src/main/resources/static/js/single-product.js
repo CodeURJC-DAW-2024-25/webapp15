@@ -42,12 +42,8 @@ async function deleteReview(productId,idItem) {
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
-
         const result = await response.text();
-        console.log("✅ Response from server:", result);
-
         document.getElementById("ReviewsList").innerHTML = result;
-
 
     } catch (error) {
         console.error("Error ocurred deleting an item:", error);
@@ -75,13 +71,9 @@ async function loadMoreReviews(shoeId) {
         });
         
         const data = await response.text();
-        console.log(data);
         let reviewsDiv = document.getElementById("ReviewsList");
-
-        // Agregar las nuevas reseñas al contenedor
         reviewsDiv.innerHTML += data;
 
-        // Ocultar botón si ya no hay más reseñas disponibles
         if (String(data).includes("No more reviews available.")) {
             let loadMoreButton = document.getElementById("loadMoreReviewsButtom");
             if (loadMoreButton) {
@@ -89,7 +81,7 @@ async function loadMoreReviews(shoeId) {
             }
         }
     } catch (error) {
-        console.log("Error trying to load reviews: ", error);
+        console.error("Error loading reviews", error);
     }
 }
 

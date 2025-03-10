@@ -1,17 +1,12 @@
 package com.stepx.stepx.model;
 
-import java.sql.Date;
 import java.time.LocalDate;
-import java.util.stream.Collectors;
-import java.time.LocalDate;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
-
 
 @Entity
 public class OrderShoes {
@@ -27,9 +22,8 @@ public class OrderShoes {
     @OneToMany(mappedBy = "orderShoes", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>(); // Before it was like orderShoes, fixed to orderItems
 
-
     private String cuponUsed;
-    //From checkout form
+    // From checkout form
     private String country;
     private String firstName;
     private String secondName;
@@ -45,12 +39,13 @@ public class OrderShoes {
 
     @ManyToOne
     @JoinColumn(name = "coupon_id")
-    private Coupon coupon;  
+    private Coupon coupon;
 
-    public OrderShoes(){}
+    public OrderShoes() {
+    }
 
-    public OrderShoes(User user){
-        this.user=user;
+    public OrderShoes(User user) {
+        this.user = user;
     }
 
     public Long getId() {
@@ -116,6 +111,7 @@ public class OrderShoes {
     public String getAddress() {
         return address;
     }
+
     public Coupon getCoupon() {
         return coupon;
     }
@@ -123,6 +119,7 @@ public class OrderShoes {
     public void setCoupon(Coupon coupon) {
         this.coupon = coupon;
     }
+
     public void setAddress(String address) {
         this.address = address;
     }
@@ -160,8 +157,8 @@ public class OrderShoes {
     }
 
     public void addItem(Shoe shoe, int quantity, String size) {
-        //Check if the she already exists with the same size at the order
-        for (OrderItem item : orderItems ) {
+        // Check if the she already exists with the same size at the order
+        for (OrderItem item : orderItems) {
             if (item.getShoe().equals(shoe) && item.getSize().equals(size)) {
                 item.setQuantity(item.getQuantity() + quantity);
                 return;
@@ -169,26 +166,26 @@ public class OrderShoes {
         }
 
         OrderItem newItem = new OrderItem(this, shoe, quantity, size);
-        orderItems .add(newItem);
+        orderItems.add(newItem);
     }
 
-    public int getLenghtOrderShoes(){
+    public int getLenghtOrderShoes() {
         return this.orderItems.size();
     }
-    
-    public List<OrderItem> getOrderItems(){
+
+    public List<OrderItem> getOrderItems() {
         return this.orderItems;
     }
 
-    public BigDecimal getTotalPrice(){
-        BigDecimal total=BigDecimal.ZERO;
+    public BigDecimal getTotalPrice() {
+        BigDecimal total = BigDecimal.ZERO;
 
-        for(OrderItem item:this.orderItems){
-            BigDecimal itemTotal=item.getShoe().getPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
-            total=total.add(itemTotal);
+        for (OrderItem item : this.orderItems) {
+            BigDecimal itemTotal = item.getShoe().getPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
+            total = total.add(itemTotal);
         }
 
         return total;
     }
-    
+
 }

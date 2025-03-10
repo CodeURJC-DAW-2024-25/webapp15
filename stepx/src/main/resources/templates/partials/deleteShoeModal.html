@@ -15,7 +15,8 @@
         <form action="/shop/delete/{{id}}" method="post">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
           <button type="submit" class="btn btn-danger">Delete</button>
+          <input type="hidden" name="_csrf" value="{{token}}"/>
         </form>
-        <input type="hidden" name="_csrf" value="{{token}}"/>
+       
       </div>
 {{/product}}

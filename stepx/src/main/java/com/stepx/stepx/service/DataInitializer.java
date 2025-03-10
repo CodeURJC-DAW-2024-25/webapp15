@@ -5,14 +5,12 @@ import java.sql.Blob;
 
 import com.stepx.stepx.model.*;
 
-
 import com.stepx.stepx.repository.ShoeRepository;
 import com.stepx.stepx.repository.ShoeSizeStockRepository;
 import com.stepx.stepx.repository.CouponRepository;
 import com.stepx.stepx.repository.OrderShoesRepository;
 import com.stepx.stepx.repository.ReviewRepository;
 import com.stepx.stepx.repository.UserRepository;
-
 
 import java.util.List;
 import java.util.Optional;
@@ -48,14 +46,15 @@ public class DataInitializer implements CommandLineRunner {
 
         public DataInitializer(ShoeRepository shoeRepository, ShoeSizeStockRepository shoeSizeStockRepository,
                         ReviewRepository reviewRepository, UserRepository userRepository,
-                        OrderShoesRepository orderShoesRepository, PasswordEncoder passwordEncoder, CouponRepository couponRepository) {
+                        OrderShoesRepository orderShoesRepository, PasswordEncoder passwordEncoder,
+                        CouponRepository couponRepository) {
                 this.shoeRepository = shoeRepository;
                 this.shoeSizeStockRepository = shoeSizeStockRepository;
                 this.reviewRepository = reviewRepository;
                 this.userRepository = userRepository;
                 this.orderShoesRepository = orderShoesRepository;
                 this.passwordEncoder = passwordEncoder;
-                this.couponRepository =couponRepository;
+                this.couponRepository = couponRepository;
         }
 
         @Override
@@ -1159,15 +1158,12 @@ public class DataInitializer implements CommandLineRunner {
                         stock4.setStock(10);
                         shoeSizeStockRepository.save(stock4);
                 }
-
-                System.out.println("Sample data initialized successfully!");
         }
 
         public Blob loadImage(String imagePath) {
                 try {
                         Resource resource = new ClassPathResource(imagePath);
                         if (!resource.exists()) {
-                                System.out.println("Error: No se encontró la imagen en la ruta especificada.");
                                 return null;
                         }
                         try (InputStream inputStream = resource.getInputStream()) {
@@ -1189,7 +1185,8 @@ public class DataInitializer implements CommandLineRunner {
                         userRepository.save(user1);
 
                         imageUser = loadImage("images/USERS/user_2.jpg");
-                        User user2 = new User("Gonzalo","gonzaluski@gmail.com", passwordEncoder.encode("pass"),imageUser, "USER");
+                        User user2 = new User("Gonzalo", "gonzaluski@gmail.com", passwordEncoder.encode("pass"),
+                                        imageUser, "USER");
                         user2.setFirstname("Raul Gonzalo");
                         user2.setLastName("Gutierrez Peña");
                         userRepository.save(user2);
@@ -1200,7 +1197,7 @@ public class DataInitializer implements CommandLineRunner {
         }
 
         private void initializeReviews() {
-                // creamos un usuario de prueba.
+                // create an instance of user
                 try {
 
                         Optional<Shoe> shoe1 = shoeRepository.findById(1L);
@@ -1212,8 +1209,6 @@ public class DataInitializer implements CommandLineRunner {
                         if (shoe1.isPresent()) {
                                 if (user1.isPresent()) {
 
-                                        System.out.println("user1 present");
-
                                         Review review1 = new Review(5, "Excelente producto", shoe1.get(), user1.get(),
                                                         date);
                                         reviewRepository.save(review1);
@@ -1224,7 +1219,6 @@ public class DataInitializer implements CommandLineRunner {
                         }
                         if (shoe2.isPresent()) {
                                 if (user2.isPresent()) {
-                                        System.out.println("usuario 2 inicializado");
                                         Review review1 = new Review(5, "Me parece bien pero no me termina de convencer",
                                                         shoe2.get(), user1.get(), date);
                                         reviewRepository.save(review1);
@@ -1313,44 +1307,41 @@ public class DataInitializer implements CommandLineRunner {
 
                 userRepository.save(user);
         }
-        private String generateRandomSize() {
-                String[] sizes = {"S", "M", "L", "XL"};
-                return sizes[(int) (Math.random() * sizes.length)];
-            }
 
-        private void createCoupons(){
+        private String generateRandomSize() {
+                String[] sizes = { "S", "M", "L", "XL" };
+                return sizes[(int) (Math.random() * sizes.length)];
+        }
+
+        private void createCoupons() {
                 Optional<User> user1 = userRepository.findById(1L); // Gabi
                 Optional<User> user2 = userRepository.findById(2L); // Gonzalo
 
                 User gabi = user1.get();
                 User gonzalo = user2.get();
 
-
                 Optional<OrderShoes> order11 = orderShoesRepository.findById(1L); // Gabi
                 Optional<OrderShoes> order2 = orderShoesRepository.findById(10L); // Gonzalo
-              
-                OrderShoes order1 = order11.get(); 
-                
+
+                OrderShoes order1 = order11.get();
+
                 // Create the first coupon
-        Coupon coupon1 = new Coupon();
-        coupon1.setCode("STEPXDISCOUNT10");
-        coupon1.setDiscount(new BigDecimal("0.9"));  // Representing a discount of 10% 
-        coupon1.setUser(gabi);
-        
-        
-        // Create the second coupon
-        Coupon coupon2 = new Coupon();
-        coupon2.setCode("STEPXDISCOUNT15");
-        coupon2.setDiscount(new BigDecimal("0.85")); 
-        coupon2.setUser(gonzalo);
-       
-       
+                Coupon coupon1 = new Coupon();
+                coupon1.setCode("STEPXDISCOUNT10");
+                coupon1.setDiscount(new BigDecimal("0.9")); // Representing a discount of 10%
+                coupon1.setUser(gabi);
 
-        // Persist the coupons in the database
-        couponRepository.save(coupon1);
-        couponRepository.save(coupon2);
+                // Create the second coupon
+                Coupon coupon2 = new Coupon();
+                coupon2.setCode("STEPXDISCOUNT15");
+                coupon2.setDiscount(new BigDecimal("0.85"));
+                coupon2.setUser(gonzalo);
 
-        order1.setCoupon(coupon1);
+                // Persist the coupons in the database
+                couponRepository.save(coupon1);
+                couponRepository.save(coupon2);
+
+                order1.setCoupon(coupon1);
 
         }
 }

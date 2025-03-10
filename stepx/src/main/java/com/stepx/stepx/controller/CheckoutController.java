@@ -2,8 +2,6 @@ package com.stepx.stepx.controller;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.security.Principal;
-import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -11,8 +9,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,15 +21,11 @@ import com.stepx.stepx.model.*;
 import com.stepx.stepx.repository.*;
 import com.stepx.stepx.service.*;
 
-import org.springframework.data.domain.Page;
-import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequestMapping("/checkout")
 public class CheckoutController {
 
-    @Autowired
-    private UserService userService;
 
     @Autowired
     private OrderShoesService orderShoesService;

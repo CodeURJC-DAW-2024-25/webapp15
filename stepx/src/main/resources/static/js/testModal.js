@@ -48,8 +48,6 @@ async function showOrderDetail(order_id) {
 
 async function AddtoCart(id_Shoe, size, quantity) {
 
-    console.log(size)
-    console.log(quantity)
     if (!size) {
         alert("⚠️ Please select a valid size");
         return;
@@ -60,24 +58,13 @@ async function AddtoCart(id_Shoe, size, quantity) {
         return;
     }
     try {
-
-        console.log("Añadiendo producto al carrito:");
-        console.log("ID:", id_Shoe);
-        console.log("Size:", size);
-        console.log("Quantity:", quantity);
-
         const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute("content");
         const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute("content");
-
-        console.log("CSRF Token:", csrfToken);
-        console.log("CSRF Header:", csrfHeader);
 
         const formData = new URLSearchParams();
         formData.append("id_Shoe", id_Shoe);
         formData.append("size", size);
         formData.append("cuantity", quantity);
-
-        console.log("Datos enviados:", formData.toString());
 
         const response = await fetch("/OrderItem/addItem", {
             method: "POST",
@@ -90,12 +77,10 @@ async function AddtoCart(id_Shoe, size, quantity) {
         });
 
         const responseText = await response.text();
-        console.log("Respuesta del servidor:", responseText);
 
         if (!response.ok) {
             alert("⚠️ There was an issue adding the product, we are going to try to update your cart");
         }
-        console.log("Product added succesfully");
 
         let modal = document.getElementById("modaltoggle");
         if (modal) {
@@ -109,8 +94,6 @@ async function AddtoCart(id_Shoe, size, quantity) {
         console.error("Error in request:", error);
     }
 }
-
-
 
 
 //first 9 of brand
@@ -132,9 +115,8 @@ async function searchByBrand(event, brand) {
         document.getElementById("loadMoreButtom").style.display = "block";
 
     } catch (error) {
-        console.log("error trying to look for brands");
+        console.error("error trying to load from brands")
     }
-
 }
 
 //first 9 of category(check)
@@ -154,7 +136,7 @@ async function searchByCategory(event, category) {
         document.getElementById("loadMoreButtom").style.display = 'block';
 
     } catch (error) {
-        console.log("error trying to load from categories")
+        console.error("error trying to load from categories")
     }
 }
 
@@ -252,7 +234,7 @@ async function resetFilters(event) {
         document.getElementById("loadMoreButtom").style.display = 'block';
 
     } catch (error) {
-        console.log("Error refreshinf filters by default: ", error);
+        alert("Error trying to reset filters");
     }
 }
 

@@ -37,23 +37,14 @@ import com.stepx.stepx.service.EmailService;
 import com.stepx.stepx.service.OrderItemService;
 import com.stepx.stepx.service.OrderShoesService;
 import com.stepx.stepx.service.PdfService;
-import com.stepx.stepx.service.ShoeService;
-import com.stepx.stepx.service.ShoeSizeStockService;
 import com.stepx.stepx.service.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-
 @Controller
 @RequestMapping("/user")
 public class UserController {
-    
-    @Autowired
-    private ShoeService shoeService;
-    
-    @Autowired
-    private ShoeSizeStockService shoeSizeStockService;
 
     @Autowired
     private PdfService pdfService;
@@ -69,26 +60,25 @@ public class UserController {
 
     @Autowired
     private EmailService emailService;
-    
+
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private RepositoryUserDetailsService repositoryUserDetailsService;
-    
+
     @GetMapping("/cart")
-    public String getCartUser(HttpServletRequest  request, Model model) {
-        
+    public String getCartUser(HttpServletRequest request, Model model) {
+
         Principal principal = request.getUserPrincipal();
-        System.out.println("name of the user with the current session "+principal.getName());
-        if (principal != null) {
-            System.out.println("Usuario autenticado: " + principal.getName());
+        if (principal == null) {
+            throw new RuntimeException("User not found");
         }
 
         // Existing cart code
         Optional<User> usergetted = userService.findUserByUserName(principal.getName());
         if (!usergetted.isPresent()) {
-            System.out.println("The user does not exist");
+            throw new RuntimeException("User not registered");
         }
         User user = usergetted.get();
 
@@ -96,15 +86,15 @@ public class UserController {
         Optional<OrderShoes> cart_Optional = orderShoesService.getCartById(user.getId());
         OrderShoes cart;
 
-        if(cart_Optional.isPresent()) {
+        if (cart_Optional.isPresent()) {
             cart = cart_Optional.get();
-            if(cart.getLenghtOrderShoes() == 0) {
+            if (cart.getLenghtOrderShoes() == 0) {
                 model.addAttribute("setSubtotal", false);
                 model.addAttribute("empty", true);
             } else {
-                List<Map<String,Object>> cartItems = new ArrayList<>();
-                for(OrderItem orderItem : cart.getOrderItems()) {
-                    Map<String,Object> item = new HashMap<>();
+                List<Map<String, Object>> cartItems = new ArrayList<>();
+                for (OrderItem orderItem : cart.getOrderItems()) {
+                    Map<String, Object> item = new HashMap<>();
                     item.put("id", orderItem.getShoe().getId());
                     item.put("name", orderItem.getShoe().getName());
                     item.put("price", orderItem.getShoe().getPrice());
@@ -123,46 +113,45 @@ public class UserController {
             model.addAttribute("setSubtotal", false);
             model.addAttribute("empty", true);
         }
-        
-        // Add user ID to the model for the coupon button
-        //model.addAttribute("userId", user.getId());
-        
+
         return "partials/quick-view-cart-modal";
     }
 
-   @GetMapping("/send-coupon")
+    @GetMapping("/send-coupon")
     public String sendCouponEmail(@RequestParam Long userId, RedirectAttributes redirectAttributes) {
-    try {
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            String toEmail = user.getEmail();
-            String subject = "Your Special Coupon from StepX";
+        try {
+            Optional<User> optionalUser = userRepository.findById(userId);
+            if (optionalUser.isPresent()) {
+                User user = optionalUser.get();
+                String toEmail = user.getEmail();
+                String subject = "Your Special Coupon from StepX";
 
-            Map<String, Object> templateModel = new HashMap<>();
-            templateModel.put("username", user.getUsername());
-            
-            // This will either send a real email or log a mock email based on the configuration
-            emailService.sendEmail(toEmail, subject, templateModel);
-            
-            redirectAttributes.addAttribute("sent", "true");
-            redirectAttributes.addAttribute("message", "Coupon sent to your email: " + toEmail);
-        } else {
+                Map<String, Object> templateModel = new HashMap<>();
+                templateModel.put("username", user.getUsername());
+
+                // This will either send a real email or log a mock email based on the
+                // configuration
+                emailService.sendEmail(toEmail, subject, templateModel);
+
+                redirectAttributes.addAttribute("sent", "true");
+                redirectAttributes.addAttribute("message", "Coupon sent to your email: " + toEmail);
+            } else {
+                redirectAttributes.addAttribute("sent", "false");
+                redirectAttributes.addAttribute("message", "User not found");
+            }
+        } catch (Exception e) {
             redirectAttributes.addAttribute("sent", "false");
-            redirectAttributes.addAttribute("message", "User not found");
+            redirectAttributes.addAttribute("message", "Error: " + e.getMessage());
         }
-    } catch (Exception e) {
-        redirectAttributes.addAttribute("sent", "false");
-        redirectAttributes.addAttribute("message", "Error: " + e.getMessage());
+        return "redirect:/index";
     }
-    return "redirect:/index";
-}
+
     @GetMapping("/orderItems")
-    public String getOrderItems(@RequestParam Long id_order,Model model) {
-        List<OrderItem> orderItemsList=orderItemService.getOrderItemsByOrderId(id_order);
-        List<Map<String,Object>> cartItems=new ArrayList<>();
-        for (OrderItem orderItem:orderItemsList){
-            Shoe shoe=orderItem.getShoe();
+    public String getOrderItems(@RequestParam Long id_order, Model model) {
+        List<OrderItem> orderItemsList = orderItemService.getOrderItemsByOrderId(id_order);
+        List<Map<String, Object>> cartItems = new ArrayList<>();
+        for (OrderItem orderItem : orderItemsList) {
+            Shoe shoe = orderItem.getShoe();
             Map<String, Object> item = new HashMap<>();
             item.put("id_item", shoe.getId());
             item.put("name", shoe.getName());
@@ -171,20 +160,21 @@ public class UserController {
             item.put("size", orderItem.getSize());
             cartItems.add(item);
         }
-        
+
         model.addAttribute("cartItems", cartItems);
         return "partials/profileOrderItems";
     }
-    
-    @PostMapping("/upload-profile-image")
-    public String uploadProfilePicture(@RequestParam(required = false) MultipartFile imageUser,HttpServletRequest request, Model model) throws IOException, SQLException  {
-        User user=userService.findUserByUserName(request.getUserPrincipal().getName()).orElseThrow();
 
-        if(imageUser==null){
-            return "no se ha encontrado una imagen para cargar la imagen";
+    @PostMapping("/upload-profile-image")
+    public String uploadProfilePicture(@RequestParam(required = false) MultipartFile imageUser,
+            HttpServletRequest request, Model model) throws IOException, SQLException {
+        User user = userService.findUserByUserName(request.getUserPrincipal().getName()).orElseThrow();
+
+        if (imageUser == null) {
+            return "do not found an image to load";
         }
 
-        if(imageUser!=null && !imageUser.isEmpty()){
+        if (imageUser != null && !imageUser.isEmpty()) {
             user.setImageUser(new SerialBlob(imageUser.getBytes()));
         }
 
@@ -193,19 +183,19 @@ public class UserController {
 
         return "partials/userImage";
     }
-    
+
     @PostMapping("/updateInformation")
-    public String updateInformation(Model model, HttpServletRequest request, 
-        @RequestParam String firstName, 
-        @RequestParam String lastName, 
-        @RequestParam String username, 
-        @RequestParam String email) {
+    public String updateInformation(Model model, HttpServletRequest request,
+            @RequestParam String firstName,
+            @RequestParam String lastName,
+            @RequestParam String username,
+            @RequestParam String email) {
 
         User user = userService.findUserByUserName(request.getUserPrincipal().getName()).orElseThrow();
-        //if username already exists
+        // if username already exists
         Optional<User> existingUser = userService.findUserByUserName(username);
         if (existingUser.isPresent() && !existingUser.get().getUsername().equals(user.getUsername())) {
-            User tempUser = new User();//to mantein the information of the form
+            User tempUser = new User();// to mantain the information of the form
             tempUser.setFirstname(firstName);
             tempUser.setLastName(lastName);
             tempUser.setUsername(username);
@@ -242,7 +232,6 @@ public class UserController {
             updateUserAuthentication(user);
         }
 
-
         Optional<User> userUpdated = userService.findUserByUserName(username);
         model.addAttribute("user", userUpdated.get());
         model.addAttribute("uniqueUserName", true);
@@ -253,30 +242,24 @@ public class UserController {
     private void updateUserAuthentication(User updatedUser) {
         try {
             UserDetails userDetails = repositoryUserDetailsService.loadUserByUsername(updatedUser.getUsername());
-            Authentication newAuth = new UsernamePasswordAuthenticationToken(userDetails,userDetails.getPassword(),userDetails.getAuthorities());
+            Authentication newAuth = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(),
+                    userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(newAuth);
-            System.out.println("Authentication successfully updated for user: " + updatedUser.getUsername());
         } catch (UsernameNotFoundException e) {
-            System.err.println("Error updating the authentication: " + e.getMessage());
+           throw new RuntimeException("User not found");
         }
     }
-
 
     @PostMapping("/downloadTicket/{orderId}")
     public void downloadTicketFromprofile(
             @PathVariable Long orderId,
             HttpServletResponse response,
             HttpServletRequest request) throws IOException {
-        System.out.println("🔹 Receiving request to download ticket with ID: " + orderId);
 
         boolean isAuthenticated = request.getUserPrincipal() != null;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        
-        //printear
-        System.out.println("The number of the order to download is: "+ orderId);
 
         if (!isAuthenticated) {
-            System.out.println("❌ Access denied: User not authenticated.");
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged in to download the ticket");
             return;
         }
@@ -291,17 +274,15 @@ public class UserController {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User not found");
             return;
         }
-        User user = userOptional.get();
-        Long userId = user.getId(); // Here you already have the correct ID of the authenticated user
 
-        // 4️⃣ Search for the order by ID and validate that it belongs to the authenticated user
+        // 4️⃣ Search for the order by ID and validate that it belongs to the
+        // authenticated user
         Optional<OrderShoes> orderOptional = orderShoesService.getOrderById(orderId);
         if (!orderOptional.isPresent()) {
-            System.out.println("❌ Error: Order not found with ID " + orderId + " for the user " + userId);
             response.sendError(HttpServletResponse.SC_NOT_FOUND, "Order not found");
             return;
         }
-        
+
         OrderShoes order = orderOptional.get();
         // Prearing data to send the template
         Map<String, Object> data = new HashMap<>();
@@ -315,22 +296,16 @@ public class UserController {
         data.put("products", order.getOrderItems());
         data.put("total", order.getSummary());
 
-        System.out.println("🔹 Generating PDF...");
         byte[] pdfBytes = pdfService.generatePdfFromOrder(data);
 
         if (pdfBytes == null || pdfBytes.length == 0) {
-            System.out.println("❌ Error: The PDF is empty or was not generated correctly.");
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error generating PDF");
             return;
         }
 
-        System.out.println("✅ PDF generated successfully. Sending response...");
         response.setContentType("application/pdf");
         response.setHeader("Content-Disposition", "attachment; filename=ticket.pdf");
         response.getOutputStream().write(pdfBytes);
     }
-
-
-
 
 }

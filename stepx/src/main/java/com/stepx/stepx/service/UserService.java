@@ -4,14 +4,10 @@ package com.stepx.stepx.service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import com.stepx.stepx.model.User;
 import com.mysql.cj.jdbc.Blob;
-import com.stepx.stepx.model.Review;
 
 import com.stepx.stepx.repository.UserRepository;
 
@@ -27,10 +23,6 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    //public List<Review> getReviews(long id) {
-      //  return reviewRepository.findById(id);
-    //}
-
     public Optional<User> findUserById(Long userId) {
         return userRepository.findById(userId);
     }
@@ -45,7 +37,7 @@ public class UserService {
         Optional<User> userOpt = userRepository.findByUsername(username);
         if (userOpt.isPresent()) {
             User user = userOpt.get();
-            return passwordEncoder.matches(password, user.getEncodedPassword()); // ✅ Ahora funciona
+            return passwordEncoder.matches(password, user.getEncodedPassword());
         }
         return false;
     }

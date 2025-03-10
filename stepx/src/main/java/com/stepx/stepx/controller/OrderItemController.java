@@ -1,59 +1,24 @@
 package com.stepx.stepx.controller;
 
-import java.io.IOException;
-import java.math.BigDecimal;
 import java.security.Principal;
-import java.sql.Blob;
-import java.sql.SQLException;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
-
-import java.time.LocalDate;
-
-import javax.sql.rowset.serial.SerialBlob;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import com.stepx.stepx.repository.ShoeSizeStockRepository;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.core.io.Resource;
-
 import com.stepx.stepx.model.User;
 import com.stepx.stepx.model.Shoe;
-import com.stepx.stepx.model.Shoe.Brand;
-import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 import com.stepx.stepx.model.OrderItem;
 import com.stepx.stepx.model.OrderShoes;
-import com.stepx.stepx.model.Review;
-import com.stepx.stepx.model.ShoeSizeStock;
 import com.stepx.stepx.service.OrderItemService;
 import com.stepx.stepx.service.OrderShoesService;
-import com.stepx.stepx.service.ProductsService;
 import com.stepx.stepx.service.ShoeService;
-import com.stepx.stepx.service.ReviewService;
 import com.stepx.stepx.service.UserService;
-
 import jakarta.servlet.http.HttpServletRequest;
-
 import com.stepx.stepx.service.ShoeSizeStockService;
-
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
-
-import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 @RequestMapping("/OrderItem")
@@ -77,71 +42,58 @@ public class OrderItemController {
     @PostMapping("/addItem")
     public ResponseEntity<String> addItemToCart(@RequestParam Long id_Shoe, @RequestParam String size,
             @RequestParam int cuantity, HttpServletRequest request) {
-        System.out.println("🚀 Inicio de la carga del ítem al carrito");
 
         Principal principal = request.getUserPrincipal();
         if (principal == null) {
-            System.out.println("❌ Error: Usuario no autenticado");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario no autenticado");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuer not logged in");
         }
-
-        System.out.println("✅ Usuario autenticado: " + principal.getName());
 
         Optional<User> usergetted = userService.findUserByUserName(principal.getName());
         if (!usergetted.isPresent()) {
-            System.out.println("❌ Error: El usuario no existe");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("El usuario no existe");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
         User user = usergetted.get();
 
-        System.out.println("🔍 Buscando carrito del usuario...");
         Optional<OrderShoes> cart_Optional = orderShoesService.getCartById(user.getId());
 
         OrderShoes cart;
         if (cart_Optional.isPresent()) {
             cart = cart_Optional.get();
         } else {
-            System.out.println("🛒 No se encontró carrito, creando uno nuevo...");
             cart = orderShoesService.createCartForUser(user);
         }
 
-
-
-        System.out.println("🔍 Buscando zapato con ID: " + id_Shoe);
         Optional<Shoe> shoe_optional = shoeService.getShoeById(id_Shoe);
         if (!shoe_optional.isPresent()) {
-            System.out.println("❌ Error: Zapato no encontrado");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("shoes not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Shoes not found");
         }
         Shoe shoe = shoe_optional.get();
-        //obtain stock of that shoe
-        Optional<Integer>stockShoe_Optional=shoeSizeStockService.getStockByShoeAndSize(id_Shoe, size);
-        Integer stock=stockShoe_Optional.get();
-        
-        if (stock==null) {
-            cuantity=0;
+        // obtain stock of that shoe
+        Optional<Integer> stockShoe_Optional = shoeSizeStockService.getStockByShoeAndSize(id_Shoe, size);
+        Integer stock = stockShoe_Optional.get();
+
+        if (stock == null) {
+            cuantity = 0;
         }
 
-        System.out.println("🛒 Añadiendo zapato al carrito...");
         Optional<OrderItem> orderItemOptional = orderItemService.findByCartAndShoeAndSize(user.getId(), id_Shoe, size);
         OrderItem orderItem;
-         //confirmation if quantity is <1 or >stock
-        if (cuantity<1) {
-            cuantity=1;
+        // confirmation if quantity is <1 or >stock
+        if (cuantity < 1) {
+            cuantity = 1;
         }
-        if (cuantity>=stock) {
-            cuantity=stock;
+        if (stock!=null && cuantity >= stock) {
+            cuantity = stock;
         }
-        
+
         if (orderItemOptional.isPresent()) {
-            orderItem = orderItemOptional.get();     
+            orderItem = orderItemOptional.get();
             orderItem.setQuantity(orderItem.getQuantity() + 1);
         } else {
             orderItem = new OrderItem(cart, shoe, cuantity, size);
         }
         orderItemService.save(orderItem);
 
-        System.out.println("✅ Zapato añadido correctamente.");
         return ResponseEntity.ok("Shoe added to your cart");
     }
 

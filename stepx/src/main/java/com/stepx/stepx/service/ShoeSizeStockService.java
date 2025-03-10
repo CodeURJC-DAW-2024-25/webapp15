@@ -11,7 +11,6 @@ import com.stepx.stepx.model.ShoeSizeStock;
 
 import com.stepx.stepx.repository.ShoeSizeStockRepository;
 
-
 @Service
 public class ShoeSizeStockService {
 
@@ -41,12 +40,11 @@ public class ShoeSizeStockService {
     public Map<String, Integer> getAllStocksForShoes(List<Long> shoeIds, List<String> sizes) {
         List<ShoeSizeStock> stocks = shoeSizeStockRepository.findByShoeIdsAndSizes(shoeIds, sizes);
         return stocks.stream().collect(Collectors.toMap(
-            stock -> stock.getShoe().getId() + "_" + stock.getSize(),
-            ShoeSizeStock::getStock,
-            (existing, replacement) -> existing
-        ));
+                stock -> stock.getShoe().getId() + "_" + stock.getSize(),
+                ShoeSizeStock::getStock,
+                (existing, replacement) -> existing));
     }
-    
+
     @Transactional
     public void updateStock(Map<Long, Map<String, Integer>> stockUpdates) {
         for (Map.Entry<Long, Map<String, Integer>> entry : stockUpdates.entrySet()) {

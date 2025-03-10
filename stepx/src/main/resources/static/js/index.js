@@ -1,7 +1,7 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const productSwipers = document.querySelectorAll('.product-store .swiper-container');
-    
-    productSwipers.forEach(function(swiperElement) {
+
+    productSwipers.forEach(function (swiperElement) {
         new Swiper(swiperElement, {
             slidesPerView: 5,
             spaceBetween: 20,

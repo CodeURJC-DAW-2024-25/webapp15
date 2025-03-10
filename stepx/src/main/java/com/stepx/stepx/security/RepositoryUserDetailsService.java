@@ -14,9 +14,6 @@ import org.springframework.stereotype.Service;
 import com.stepx.stepx.model.User;
 import com.stepx.stepx.repository.UserRepository;
 
-
-
-
 @Service
 public class RepositoryUserDetailsService implements UserDetailsService {
 
@@ -24,23 +21,22 @@ public class RepositoryUserDetailsService implements UserDetailsService {
 	private UserRepository userRepository;
 
 	public RepositoryUserDetailsService(UserRepository userRepository) {
-        this.userRepository = userRepository; //requests in databse
-    }
+		this.userRepository = userRepository; // requests in databse
+	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		User user = userRepository.findByUsername(username)
-		.orElseThrow(() -> {
-			return new UsernameNotFoundException("User not found");
-		});
+				.orElseThrow(() -> {
+					return new UsernameNotFoundException("User not found");
+				});
 
-		
-		List<GrantedAuthority> roles = new ArrayList<>();//spring grantedAuthority
+		List<GrantedAuthority> roles = new ArrayList<>();// spring grantedAuthority
 		for (String role : user.getRoles()) {
-			roles.add(new SimpleGrantedAuthority("ROLE_" + role));//spring waits until roles start as ROLE_ 
+			roles.add(new SimpleGrantedAuthority("ROLE_" + role));// spring waits until roles start as ROLE_
 		}
 
-		return new org.springframework.security.core.userdetails.User(user.getUsername(), 
+		return new org.springframework.security.core.userdetails.User(user.getUsername(),
 				user.getEncodedPassword(), roles);
 
 	}
