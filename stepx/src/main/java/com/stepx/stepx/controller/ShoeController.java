@@ -183,14 +183,28 @@ public void addAttributes(Model model, HttpServletRequest request) {
             shoe.setImage3(new SerialBlob(image3.getBytes()));
         }
 
-        // Save the shoe to the database
         shoeService.saveShoe(shoe);
-
-        ShoeSizeStock stock = new ShoeSizeStock();
-        stock.setShoe(shoe);
-        stock.setSize("M");
-        stock.setStock(10);
-        shoeSizeStockService.saveStock(stock);
+        
+        ShoeSizeStock stock1 = new ShoeSizeStock();
+        stock1.setShoe(shoe);
+        stock1.setSize("S");
+        stock1.setStock(10);
+        shoeSizeStockService.saveStock(stock1);
+        ShoeSizeStock stock2 = new ShoeSizeStock();
+        stock2.setShoe(shoe);
+        stock2.setSize("M");
+        stock2.setStock(10);
+        shoeSizeStockService.saveStock(stock2);
+        ShoeSizeStock stock3 = new ShoeSizeStock();
+        stock3.setShoe(shoe);
+        stock3.setSize("L");
+        stock3.setStock(10);
+        shoeSizeStockService.saveStock(stock3);
+        ShoeSizeStock stock4 = new ShoeSizeStock();
+        stock4.setShoe(shoe);
+        stock4.setSize("XL");
+        stock4.setStock(10);
+        shoeSizeStockService.saveStock(stock4);
 
         return "redirect:/shop"; // Redirect to shop page after creation
     }
