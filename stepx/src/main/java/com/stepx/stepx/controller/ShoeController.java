@@ -301,11 +301,6 @@ public void addAttributes(Model model, HttpServletRequest request) {
         int initialReviewsCount = 2;
         
         List<Review> reviews = reviewService.getPagedReviewsByShoeId(id, 0, initialReviewsCount);
-        
-
-        // Convertir LocalDate a String en formato DD/MM/YYYY
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    reviews.forEach(review -> review.setFormattedDate(review.getDate().format(formatter)));
 
 
         if (op.isPresent()) {
@@ -661,15 +656,7 @@ public void addAttributes(Model model, HttpServletRequest request) {
 
         reviewService.deleteReview(id);
 
-
-
         List<Review> review = reviewService.getReviewsByShoe(productId);
-        // Convertir LocalDate a String en formato DD/MM/YYYY
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        review.forEach(reviews -> {
-            reviews.setFormattedDate(reviews.getDate().format(formatter));
-        });
-        
         if (review != null) {
             model.addAttribute("review", review);
             return "partials/singleProduct-reviewList";

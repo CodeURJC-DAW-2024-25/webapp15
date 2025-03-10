@@ -34,9 +34,6 @@ public class Review {
 
     private String description;
 
-    @Transient
-    private String formattedDate;
-
     @Column(name = "date")
     private LocalDate date;
 
@@ -104,10 +101,6 @@ public class Review {
 
     public void setRating(int rating) {
         this.rating = rating;
-    }
-
-    public void setFormattedDate(String formattedDate) {
-        this.formattedDate = formattedDate;
     }
 
     public LocalDate getDate() {
