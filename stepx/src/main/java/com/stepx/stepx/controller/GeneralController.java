@@ -1,6 +1,9 @@
 
 package com.stepx.stepx.controller;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +33,11 @@ import com.stepx.stepx.service.ProductsService;
 import com.stepx.stepx.service.ShoeService;
 import com.stepx.stepx.service.UserService;
 
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import jakarta.servlet.http.HttpServletRequest;
+import javax.sql.rowset.serial.SerialBlob;
+import java.sql.Blob;
 
 @Controller
 public class GeneralController {
@@ -268,6 +275,26 @@ public String profile(HttpServletRequest request, Model model) throws JsonProces
 
     }
 
+/*
+ public Blob loadImage(String imagePath) {
+                try {
+                        Resource resource = new ClassPathResource(imagePath);
+                        if (!resource.exists()) {
+                                System.out.println("Error: No se encontró la imagen en la ruta especificada.");
+                                return null;
+                        }
+                        try (InputStream inputStream = resource.getInputStream()) {
+                                byte[] imageBytes = inputStream.readAllBytes();
+                                return new SerialBlob(imageBytes);
+                        }
+                } catch (IOException | SQLException e) {
+                        e.printStackTrace();
+                        return null;
+                }
+        }
+
+*/ 
+
     @PostMapping("/createAccount")
     public String createUser(
             @RequestParam String username,
@@ -300,7 +327,23 @@ public String profile(HttpServletRequest request, Model model) throws JsonProces
         User newUser = new User(username, email, encodedPassword, null, "USER");
         newUser.setLastName(lastName);
         newUser.setFirstname(firstName);
-
+        //load default image
+        Blob defaultUserImage;
+        try {
+            Resource resource = new ClassPathResource("static/images/defaultProfilePicture.jpg");
+            if (!resource.exists()) {
+                System.out.println("Error: No se encontró la imagen en la ruta especificada.");
+                defaultUserImage=null;
+            }
+            try (InputStream inputStream = resource.getInputStream()) {
+                byte[] imageBytes = inputStream.readAllBytes();
+                defaultUserImage=new SerialBlob(imageBytes);
+            }
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
+            defaultUserImage=null;
+        }
+        newUser.setImageUser(defaultUserImage);
         // Saving in data
         userRepository.save(newUser);
 
