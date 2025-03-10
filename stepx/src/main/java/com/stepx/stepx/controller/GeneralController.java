@@ -3,6 +3,7 @@ package com.stepx.stepx.controller;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
@@ -22,11 +23,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.stepx.stepx.model.Coupon;
 import com.stepx.stepx.model.OrderShoes;
 import com.stepx.stepx.model.Shoe;
 import com.stepx.stepx.model.User;
 import com.stepx.stepx.repository.OrderShoesRepository;
 import com.stepx.stepx.repository.UserRepository;
+import com.stepx.stepx.repository.CouponRepository;
 import com.stepx.stepx.service.OrderItemService;
 import com.stepx.stepx.service.OrderShoesService;
 import com.stepx.stepx.service.ProductsService;
@@ -50,6 +53,9 @@ public class GeneralController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private CouponRepository couponRepository;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -326,7 +332,12 @@ public String profile(HttpServletRequest request, Model model) throws JsonProces
         newUser.setImageUser(defaultUserImage);
         // Saving in data
         userRepository.save(newUser);
-
+        
+        Coupon coupon = new Coupon();
+        coupon.setCode("STEPXDISCOUNT10");
+        coupon.setDiscount(new BigDecimal("0.9"));  // Representing a discount of 10% 
+        coupon.setUser(newUser);
+        couponRepository.save(coupon);
         return "redirect:/index";
     }
 
