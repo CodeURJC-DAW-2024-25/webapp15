@@ -87,6 +87,7 @@
               <strong class="fs-5 fw-bold">${{price}}</strong>
             </div>
             <p>{{shortdescription}}</p>
+            {{#isAuthenticated}}
             <div class="cart-wrap padding-small">
               <div class="swatch product-select" data-option-index="1">
                 <h5 class="widget-title text-decoration-underline pe-2">Size:</h5>
@@ -132,6 +133,10 @@
                 </div>
               </div>
             </div>
+            {{/isAuthenticated}}
+            {{^isAuthenticated}}
+            <a href="login" data-bs-toggle="modal" data-bs-target="#modallogin" class="btn btn-red hvr-sweep-to-right dark-sweep w-100" style="margin-top: 30px; margin-bottom: 30px;">Login to buy</a>
+            {{/isAuthenticated}}
             <div class="meta-product padding-small" style="padding-top: 5px">
               <div class="meta-item d-flex align-items-baseline">
                 <h5 class="widget-title text-decoration-underline pe-2">Category:</h5>
