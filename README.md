@@ -204,11 +204,11 @@ Has been responsible for:
 
 | Nº    | Commits      | Files      |
 |:------------: |:------------:| :------------:|
-|1| [Email implementation](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/bb087411399af8999dca232f176a34c25b1fe6c1)  | EmailService.java UserController.java |
-|2|  [Admin Pannel Charts](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/e81744fed282c0b704215b48a2eb11f8eef2be93) |  AdminController.java admin.js  |
-|3|  [Edit Product](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/c4831c1175befbdc520db862728c32015a6a99f2) | ShoeController.java edit-product.html  |
-|4|  [Coupon](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/608891eb0b7712fe855ff97469557d8b174f210b) | OrderShoes.java GeneralController.java UserController.java  |
-|5|   [Create Product](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/ade7c6384b2868b59ef31288b4dcf12cbfb95773) |Shoe.java ShoeController.java ShoeSizeStock.java|
+|1| [Email implementation](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/bb087411399af8999dca232f176a34c25b1fe6c1)  | [EmailService](https://github.com/CodeURJC-DAW-2024-25/webapp15/blob/main/backend/src/main/java/com/stepx/stepx/service/EmailService.java) |
+|2|  [Admin Pannel Charts](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/e81744fed282c0b704215b48a2eb11f8eef2be93) |  [AdminController](https://github.com/CodeURJC-DAW-2024-25/webapp15/blob/main/backend/src/main/java/com/stepx/stepx/controller/AdminController.java) |
+|3|  [Edit Product](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/c4831c1175befbdc520db862728c32015a6a99f2) | [ShoeController](https://github.com/CodeURJC-DAW-2024-25/webapp15/blob/main/backend/src/main/java/com/stepx/stepx/controller/ShoeController.java)  |
+|4|  [Coupon](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/608891eb0b7712fe855ff97469557d8b174f210b) | [CheckOutController](https://github.com/CodeURJC-DAW-2024-25/webapp15/blame/main/backend/src/main/java/com/stepx/stepx/controller/CheckoutController.java) |
+|5|   [Create Product](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/ade7c6384b2868b59ef31288b4dcf12cbfb95773) | [ShoeController](https://github.com/CodeURJC-DAW-2024-25/webapp15/blob/main/backend/src/main/java/com/stepx/stepx/controller/ShoeController.java)|
 
 ### **Elinee Nathalie Freites Muñoz**
 She taked care of:
