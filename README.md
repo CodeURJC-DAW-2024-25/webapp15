@@ -82,15 +82,17 @@ The shop page is responsible for showcasing the available products, with the opt
 ![shop](https://github.com/user-attachments/assets/0c847b01-0a2d-4a9d-9de1-e9cb6ad6443e)
 
 
-### **Edict Product Screen**:
+### **Edit Product Screen**:
 The edit product tab is only available to administrator-type users. On this page, there is a form filled with the product's information (name, description, images, etc.).
 
-![*descripctor*](readmeImg/08.jpeg)
+![editProductBig](https://github.com/user-attachments/assets/e7bda4f4-55b1-45f7-96e5-e1f4ac6010e2)
+
 
 ### **Create Product Screen**:
 Similarly to the edit item tab, the create item tab is available only to users who are administrators. This form contains the same fields as the form on the edit item tab. Both pages are accessed by clicking the respective buttons available within the shop.
 
-![*descripctor*](readmeImg/09.jpeg)
+![createProductBig](https://github.com/user-attachments/assets/8afbbba9-c1f2-4dd3-b5a4-af1b0f42675e)
+
 
 ### **Check-Out**:
 The checkout screen allows users to complete their purchase by entering their shipping information, such as country, name, email, address and telephone, in addition to applying discount coupons. It also shows an order summary with product list, image, adjustable quantity, subtotal, shipping cost and automatically calculated total. Includes a "Continue with Order" button to complete the purchase. Its design is clear and functional, facilitating data validation and order adjustment in real time.
@@ -135,6 +137,8 @@ This is the create user account screen. It presents a form where users can enter
 
 
 ### 📁 DIAGRAM WITH DATABASE ENTITIES
+![bbddDiagram](https://github.com/user-attachments/assets/b832332f-41a3-44d3-8b97-ac9e46afdfc9)
+
 
 ## 🤝 PARTICIPATION
 
@@ -175,11 +179,19 @@ Se ha encargado de:
 |5|   |   |
 
 ### **Elinee Nathalie Freites Muñoz**
-(Description)
+She taked care of:
+- All functions related to login modal, verify account, error banner over modal and log out.
+- Confirmation Modal Cart for adding a product with a Default size to general cart.
+- Error page with specific message of error.
+- All security implementation.
+- Mustache customized appareance of icons according to type of access (admin, registered user, unregistered user).
+- Screen Diagram
+- Controller
+
 | Nº    | Commits      | Files      |
 |:------------: |:------------:| :------------:|
-|1|   |   |
-|2|   |   |
-|3|   |   |
-|4|   |   |
-|5|   |   |
+|1| [First steps to security](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/8f2b8f478831e4a16f2f1f3095974ca401f5c142)  | [CustomAuthenticationHandler.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/8f2b8f478831e4a16f2f1f3095974ca401f5c142#diff-484e31e659fc3d1354b67d38cdb9801064a9956160387e4070a569c915203ed2), [RepositoryUserDetailsService.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/8f2b8f478831e4a16f2f1f3095974ca401f5c142#diff-4dd92a3c29279a93e723f8c5f65c3c51b1f484f507897231eeb88722805d7f06), [WebSecurityConfig.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/8f2b8f478831e4a16f2f1f3095974ca401f5c142#diff-afe69edd6222e7e65d2bb6b71595c8552dcfae71960189821e2c3ef03d1dcd82)  |
+|2| [Erase Review Button and cart in register-user](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/ef0bd92dd1acff442228f1b49a54581397aee302)  | [register-user.html](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/ef0bd92dd1acff442228f1b49a54581397aee302#diff-b962943a2b27b11adcf93c62e1d507e6a5bd36c0a4da4781867171e2f1b48019), [style.css](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/ef0bd92dd1acff442228f1b49a54581397aee302#diff-b78be019f1dc6d57753ea900c3805b114cd53ab7c0db836cc081836df1b99b7a)  |
+|3| [Basic models and methods](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/4a259f5aca21f629e328d9687e069b2630e412f9)  |  [Order.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/4a259f5aca21f629e328d9687e069b2630e412f9#diff-6a5acb2862a6376464e361451a8439d404d4e40c84cb5d891a42810a114e3e1f), [Review.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/4a259f5aca21f629e328d9687e069b2630e412f9#diff-54d0c4c5893b8fcd5bdda62be4f4579e86509ee52cf9f3389b32cc50b7b67637), [Product.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/4a259f5aca21f629e328d9687e069b2630e412f9#diff-fa9d1510459b7b6725310216de1db9c0fc9effb6d7db2b719d8a62505bc8705f) |
+|4| [Product Model and Update of Dependencies on POM](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/d841688b9ecff65c02cc1ce119926e4b723a12bc)  | [pom.xml](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/d841688b9ecff65c02cc1ce119926e4b723a12bc#diff-6d4453014b5a08ac36c00c4084a5d01489c56aad5fa973f41f07155f03f55b71), [Product.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/d841688b9ecff65c02cc1ce119926e4b723a12bc#diff-fa9d1510459b7b6725310216de1db9c0fc9effb6d7db2b719d8a62505bc8705f)  |
+|5| [Change of images, adding form for sign up and fixing access to form](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/bc22a09f0900906141381e6e451b12e83360ada3)   |  [index.html](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/bc22a09f0900906141381e6e451b12e83360ada3#diff-0eb547304658805aad788d320f10bf1f292797b5e6d745a3bf617584da017051), [profile.html](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/bc22a09f0900906141381e6e451b12e83360ada3#diff-f32cee85e87bd5c9da57ae49c3534d8ce4795276f4f02d27b4b3486d9ec2bcea), [admin-pannel.html](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/bc22a09f0900906141381e6e451b12e83360ada3#diff-b215324cf8b37b3fa1addbb1e3c2431969d5dee009f50272ec4419a4e49e6ddb) |
