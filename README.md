@@ -153,30 +153,31 @@ This is the create user account screen. It presents a form where users can enter
 |5|   |   |
 
 ### **Alexander Matias Pearson Huaycochea**
-(Description)
+I have been in charge of some functionalities for the administrator such as creating products through a form, on the other hand I was in charge of developing functionalities for both registered and non-registered users, such as the best-selling products on the website, recommended products, as well as we have all the functionality of the comments of a product, such as creating, showing and deleting comments with AJAX. Likewise, I was in charge of implementing an external tool that facilitates the download of PDF as a sales ticket for the user.
+
 | Nº    | Commits      | Files      |
 |:------------: |:------------:| :------------:|
-|1|   |   |
-|2|   |   |
-|3|   |   |
-|4|   |   |
-|5|   |   |
+|1| [Reviews Working](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/2ed97de31d110ee97657e80da562d2461344e13c)  | Review.java ReviewRepository.java ReviewService.java |
+|2| [PDF functionality](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/7b7b9d87e3b27c58934fd72474015c70bf2b1db9)  | pdfService.java CheckoutController.java checkout.html |
+|3| [Recommendation algorithm](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/888f9bdb9e9195c48a15689b0e28a3f451a179f1)  | ShoeController.java GeneralController.java OrderShoe.java index.html |
+|4| [Add product with size](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/f3be19cc6f319fc18bae5a0e0359099d8767f372)  | OrderItemController.java ShoeController.java Single-product.html|
+|5| [Register User in Database](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/917b10e1db39af9ee0a219cc807946a854d1c67e)  | GeneralController.java register-user.html|
 
 ### **Gabriel Miró-Granada Lluch**
-Se ha encargado de:
-- Todas las funciones del admin como crear producto, editar producto, eliminar producto
-- La implementación del sistema de cupones
-- La implementación de un sistema de correo que manda al usuario un cupón de descuento
-- El panel del administrador con datos y gráficos
-- Gráficas del perfil del usuario para ver sus gastos
+Has been responsible for:
+- All admin functions such as creating products, editing products, and deleting products.
+- The implementation of the coupon system.
+- The implementation of an email system that sends the user a discount coupon.
+- The admin panel with data and charts.
+- User profile charts to view their spending.
 
 | Nº    | Commits      | Files      |
 |:------------: |:------------:| :------------:|
-|1|   |   |
-|2|   |   |
-|3|   |   |
-|4|   |   |
-|5|   |   |
+|1| [Email implementation](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/bb087411399af8999dca232f176a34c25b1fe6c1)  | EmailService.java UserController.java |
+|2|  [Admin Pannel Charts](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/e81744fed282c0b704215b48a2eb11f8eef2be93) |  AdminController.java admin.js  |
+|3|  [Edit Product](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/c4831c1175befbdc520db862728c32015a6a99f2) | ShoeController.java edit-product.html  |
+|4|  [Coupon](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/608891eb0b7712fe855ff97469557d8b174f210b) | OrderShoes.java GeneralController.java UserController.java  |
+|5|   [Create Product](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/ade7c6384b2868b59ef31288b4dcf12cbfb95773) |Shoe.java ShoeController.java ShoeSizeStock.java|
 
 ### **Elinee Nathalie Freites Muñoz**
 She taked care of:
