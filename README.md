@@ -139,6 +139,10 @@ This is the create user account screen. It presents a form where users can enter
 ### 📁 DIAGRAM WITH DATABASE ENTITIES
 ![bbddDiagram](https://github.com/user-attachments/assets/b832332f-41a3-44d3-8b97-ac9e46afdfc9)
 
+### 📁 CLASS AND TEMPLATES DIAGRAM
+
+![ClassDiagram](https://github.com/user-attachments/assets/5d9561c6-43cd-4be9-99e4-6c6396bd0fab)
+
 ## PHASE 1:
 ### EXECUTION INSTRUCTIONS:
 1. **Clone the repository**:
@@ -214,7 +218,7 @@ She taked care of:
 - All security implementation.
 - Mustache customized appareance of icons according to type of access (admin, registered user, unregistered user).
 - Screen Diagram
-- Controller
+- Class and Templates Diagram
 
 | Nº    | Commits      | Files      |
 |:------------: |:------------:| :------------:|
