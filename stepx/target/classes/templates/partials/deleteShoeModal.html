@@ -1,0 +1,21 @@
+<!-- Modal for Confirmation -->
+{{#product}}
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel-{{id}}">Confirm Deletion</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete "{{name}}"? This action cannot be undone.
+      </div>
+      <div class="image-holder">
+        <img src="/shop/{{id}}/image/1" alt="Shoes" style="width: 100%;max-height: 100%;">
+      </div>
+      <div class="modal-footer">
+        <!-- Form for Deletion  id="deleteConfirmationModal-{{id}}" -->
+        <form action="/shop/delete/{{id}}" method="post">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+        <input type="hidden" name="_csrf" value="{{token}}"/>
+      </div>
+{{/product}}

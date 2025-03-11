@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+  <title>Stylish - Shoes Online Store HTML Template</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="author" content="TemplatesJungle">
+  <meta name="keywords" content="Online Store">
+  <meta name="description" content="Stylish - Shoes Online Store HTML Template">
+
+  <meta name="_csrf" content="{{token}}"/>
+  <meta name="_csrf_header" content="{{headerName}}"/>
+  
+  <link rel="stylesheet" href="/css/vendor.css">
+  <link rel="stylesheet" type="text/css" href="/css/style.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,900;1,900&family=Source+Sans+Pro:wght@400;600;700;900&display=swap"
+    rel="stylesheet">
+  <!--style of the images in this page -->
+  <meta name="_csrf" content="{{token}}">
+  <meta name="_csrf_header" content="{{headerName}}" />
+
+</head>
+
+
+<body>
+
+  {{>header}}
+
+  <section class="checkout-container">
+    <div class="container">
+      <div class="row">
+
+        <div class="col-lg-7 mb-4 mb-lg-0">
+          <div class="login-form bg-light p-5">
+            <h2 class="mb-4">Shipping Details</h2>
+            <form action="/checkout/downloadTicket" method="POST">
+              <!-- country -->
+              <div class="mb-3">
+                <label for="country" class="form-label">Country</label>
+                <select class="form-control ps-3 text-input" id="country" name="country" required>
+                  <option value="">Select your country</option>
+                  <option value="US">United States</option>
+                  <option value="UK">United Kingdom</option>
+                  <option value="ES">Spain</option>
+
+                </select>
+              </div>
+
+              <!-- cupon -->
+              <div class="mb-4 coupon-section">
+                <label class="form-label">Coupon</label>
+                <div class="input-group">
+                  <input type="text" name="coupon" class="form-control ps-3 text-input"
+                    placeholder="Enter your coupon code">
+                  
+                </div>
+              </div>
+
+              <!-- personal information-->
+              <div class="mb-3">
+                <label for="firstName" class="form-label">First Name</label>
+                <input type="text" class="form-control ps-3 text-input" id="firstName" name="firstName"
+                  placeholder="Enter your First Name" required>
+              </div>
+              <input type="hidden" name="orderId" value="{{id_orderShoe}}">
+
+              <div class="mb-3">
+                <label for="lastName" class="form-label">Second Name</label>
+                <input type="text" class="form-control ps-3 text-input" id="lastName" name="lastName"
+                  placeholder="Enter your Second Name" required>
+              </div>
+
+              <div class="mb-3">
+                <label for="email" class="form-label">Email Address</label>
+                <input type="email" class="form-control ps-3 text-input" id="email" name="email"
+                  placeholder="Enter your E-mail Address" required>
+              </div>
+
+              <div class="mb-3">
+                <label for="address" class="form-label">Address</label>
+                <input type="text" class="form-control ps-3 text-input" id="address" name="address"
+                  placeholder="Enter your Address" required>
+              </div>
+
+              <div class="mb-4">
+                <label for="phone" class="form-label">Phone Number</label>
+                <input type="tel" class="form-control ps-3 text-input" id="phone" name="phone"
+                  placeholder="Enter your Phone Number" required>
+              </div>
+              <input type="hidden" name="_csrf" value="{{token}}">
+              <button type="submit" class="btn btn-red hvr-sweep-to-right dark-sweep w-100">Continue with Order</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- resume -->
+        <div class="col-lg-5">
+          <div class="login-form bg-light p-5">
+            <h2 class="mb-4">Order Summary</h2>
+            <!-- products list -->
+            <div id="CartItemsList">
+              <div class="order-items">
+                <!-- individual product of the order -->
+                {{#cartItems}}
+                <div id="item-{{id_orderItem}}" class="order-item d-flex align-items-center"
+                  style="padding-bottom: 20px">
+                  <div class="col-lg-2 col-md-3 col-sm-2 me-4">
+                    <a href="#" title="product-image">
+                      <img src="/shop/{{id}}/image/1" class="img-fluid" alt="single-product-item">
+                    </a>
+                  </div>
+                  <div class="ms-3 flex-grow-1">
+                    <h5 class="mb-2">{{name}}</h5>
+                    <div class="d-flex justify-content-between align-items-center flex-wrap">
+                      <div class="input-group product-qty">
+                        {{#stock}}
+                        <button type="button"
+                          class="quantity-left-minus btn btn-light rounded-0 rounded-start btn-number"
+                          data-type="minus">
+                          <svg width="16" height="16">
+                            <use xlink:href="#minus"></use>
+                          </svg>
+                        </button>
+
+                        <input type="text" name="quantity" class="form-control input-number quantity quantity-input"
+                          value={{quantity}} data-id="{{id_orderItem}}">
+
+                        <button type="button" class="quantity-right-plus btn btn-light rounded-0 rounded-end btn-number"
+                          data-type="plus">
+                          <svg width="16" height="16">
+                            <use xlink:href="#plus"></use>
+                          </svg>
+                        </button>
+                        {{/stock}}
+
+                        {{^stock}}
+                        <p>No stock available</p>
+                        <input type="hidden" name="quantity" class="form-control input-number quantity quantity-input"
+                          value=0 data-id="{{id_orderItem}}">
+                        {{/stock}}
+                      </div>
+                      <div class="price-wrapper mb-2">
+                        <span class="fw-bold">{{price}}</span>
+                      </div>
+                      <!--boton de eliminar producto en checkout-->
+                      <button class="btn btn-link text-danger p-0 mb-2"
+                        onclick="deleteItemfromCart('{{id_orderItem}}')">
+                        <svg class="close" width="16" height="16">
+                          <use xlink:href="#close"></use>
+                        </svg>
+                      </button>
+
+                    </div>
+                  </div>
+                </div>
+                {{/cartItems}}
+
+                {{^cartItems}}
+                <div class="text-center py-4">
+                  <p class="mb-0">No items in your bag yet</p>
+                </div>
+                {{/cartItems}}
+              </div>
+
+              {{#setSubtotal}}
+              <button type="submit" class="btn btn-red hvr-sweep-to-right dark-sweep w-100"
+                onclick="recalculate()">Recalculate</button>
+              {{/setSubtotal}}
+              <!-- total -->
+              <div class="mt-4 pt-4 border-top">
+                <div class="d-flex justify-content-between mb-2">
+                  <span>Subtotal:</span>
+                  <span class="fw-bold">{{#setSubtotal}} {{total}} $ {{/setSubtotal}}
+                    {{^setSubtotal}}0.00${{/setSubtotal}}</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                  <span>Shipping:</span>
+                  <span class="fw-bold">{{#setSubtotal}} Free {{/setSubtotal}}
+                    {{^setSubtotal}}0.00${{/setSubtotal}}</span>
+                </div>
+                {{#setSubtotal}}
+                <div class="d-flex justify-content-between mt-3 pt-3 border-top">
+                  <span class="h5">Total:</span>
+                  <span class="h5">{{total}} $</span>
+                  {{/setSubtotal}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+  </section>
+
+  <!-- quick view -->
+  <div class="modal fade" id="modaltoggle" aria-hidden="true" tabindex="-1">
+    <div class="modal-dialog modal-fullscreen-md-down modal-md modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-body" id="modal-body-content">
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- / quick view -->
+
+  {{>footer}}
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const form = document.querySelector("form[action='/checkout/downloadTicket']");
+    
+        form.addEventListener("submit", function(event) {
+            event.preventDefault(); // Evita la redirección inmediata
+            
+            const formData = new FormData(form);
+    
+            fetch(form.action, {
+                method: "POST",
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) throw new Error("Error generating PDF.");
+                return response.blob();
+            })
+            .then(blob => {
+                const link = document.createElement("a");
+                link.href = window.URL.createObjectURL(blob);
+                link.download = "ticket.pdf";
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+    
+                // Redirigir después de la descarga
+                setTimeout(() => {
+                    window.location.href = "/profile";
+                }, 2000);
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Error generating PDF.");
+            });
+        });
+    });
+    </script>
+    
+  <script src="/js/jquery-1.11.0.min.js"></script>
+  <script src="/js/plugins.js"></script>
+  <script src="/js/script.js"></script>
+  <script src="/js/checkout.js"></script>
+</body>
+
+</html>

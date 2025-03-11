@@ -1,0 +1,27 @@
+{{#user}}
+<div class="row">
+    <div class="col-md-6 mb-3">
+      <label class="form-label">First Name</label>
+      <input type="text" class="form-control" name="firstName" value="{{firstname}}" required>
+    </div>
+    <div class="col-md-6 mb-3">
+      <label class="form-label">Last Name</label>
+      <input type="text" class="form-control" name="lastName" value="{{lastName}}" required>
+    </div>
+    <div class="col-md-6 mb-3">
+      <label class="form-label">Username</label>
+      <input type="text" class="form-control" name="username" value="{{username}}" required>
+      {{^uniqueUserName}}
+        <div>
+            <p style="color: red;">the username already exist, please select anotherone</p>
+        </div>
+      {{/uniqueUserName}}
+    </div>
+    <div class="col-md-6 mb-3">
+      <label class="form-label">Email</label>
+      <input type="email" class="form-control" name="email" value="{{email}}" required>
+    </div>
+    <div class="col-12">
+      <button type="button" onclick="updateUserInformation()" class="btn btn-dark hvr-sweep-to-right">Save Changes</button>
+    </div>
+{{/user}}

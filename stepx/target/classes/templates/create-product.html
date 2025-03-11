@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Stylish - Shoes Online Store HTML Template</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="author" content="TemplatesJungle">
+    <meta name="keywords" content="Online Store">
+    <meta name="description" content="Stylish - Shoes Online Store HTML Template">
+
+    <link rel="stylesheet" href="/css/vendor.css">
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,900;1,900&family=Source+Sans+Pro:wght@400;600;700;900&display=swap"
+        rel="stylesheet">
+    <!--style of the images in this page -->
+
+
+</head>
+
+<body>
+    <div class="modal fade" id="modallogin" tabindex="-1" aria-modal="true" role="dialog">
+        <div class="modal-dialog modal-fullscreen-md-down modal-md modal-dialog-centered" role="document">
+            <div class="modal-content p-4">
+                <div class="modal-header mx-auto border-0">
+                    <h2 class="modal-title fs-3 fw-normal">Login</h2>
+                </div>
+                <div class="modal-body">
+                    <div class="login-detail">
+                        <div class="login-form p-0">
+                            <div class="col-lg-12 mx-auto">
+
+                                {{#loginError}}
+                                <div class="alert alert-danger text-center">
+                                  Incorrect username or password. Please try again.
+                                </div>
+                                {{/loginError}}
+                  
+                  
+                                <form id="login-form" action="/login" method="post">
+                                    <input type="text" name="username" placeholder="Username *"
+                                        class="mb-3 ps-3 text-input">
+                                    <input type="password" name="password" placeholder="Password"
+                                        class="ps-3 text-input">
+                                    
+                                    <input type="hidden" name="_csrf" value="{{token}}"/>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="modal-footer mt-5 d-flex justify-content-center">
+                            <button type="submit" form="login-form" class="btn btn-red hvr-sweep-to-right dark-sweep">Login</button>
+                            <button type="button" class="btn btn-outline-gray hvr-sweep-to-right dark-sweep"><a
+                                    href="register-user.html">Register</a></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Login -->
+   
+    {{>header}}
+ 
+
+    <!-- Entire Body  -->
+    <section class="login-detail py-5">
+        <div class="container">
+            <div class="row">
+                <!-- Form Column -->
+                <div class="col-lg-9 mx-auto">
+                    <div class="login-form bg-light p-5" style=" background: rgba(0, 0, 0, 0.2); /* Fondo semitransparente */
+                    backdrop-filter: blur(50px);
+                    -webkit-backdrop-filter: blur(50px); 
+                    border-radius: 10px; 
+                    padding: 20px;
+                    box-shadow: 0px 40px 100px rgba(73, 2, 2, 0.5); ">
+
+                        <h2 class="text-center mb-4">Create Shoe Product</h2>
+                        <form id="create-product-form" action="/shop/create" method="post" enctype="multipart/form-data">
+                            <h5 class="widget-title text-decoration-underline pe-2">Shoe Information:</h5>
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Name</label>
+                                <input type="text" id="name" name="name" class="form-control ps-3 text-input" required>
+                            </div>
+                        
+                            <div class="mb-3">
+                                <label for="ShortDescription" class="form-label">Short Description</label>
+                                <textarea id="ShortDescription" name="ShortDescription" class="form-control ps-3 text-input" rows="5" required></textarea>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="LongDescription" class="form-label">Long Description</label>
+                                <textarea id="LongDescription" name="LongDescription" class="form-control ps-3 text-input" rows="5" required></textarea>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" name="price" required>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            <h5 class="widget-title text-decoration-underline pe-2">Shoe Images:</h5>
+                            <div class="mb-3">
+                                <label for="picture1" class="form-label">Picture 1</label>
+                                <input type="file" id="picture1" name="image1" class="form-control ps-3 text-input" accept="image/*">
+                            </div>
+                            <div class="mb-3">
+                                <label for="picture2" class="form-label">Picture 2</label>
+                                <input type="file" id="picture2" name="image2" class="form-control ps-3 text-input" accept="image/*">
+                            </div>
+                            <div class="mb-3">
+                                <label for="picture3" class="form-label">Picture 3</label>
+                                <input type="file" id="picture3" name="image3" class="form-control ps-3 text-input" accept="image/*">
+                            </div>
+                        
+                            <h5 class="widget-title text-decoration-underline pe-2">Size and Category:</h5>
+                        
+                            <div class="mb-3">
+                                <label for="category" class="form-label">Category</label>
+                                <select id="category" name="category" class="form-control ps-3 text-input" required>
+                                    <option value="" selected>Select a category</option>
+                                    <option value="SPORT">Sport</option>
+                                    <option value="CASUAL">Casual</option>
+                                    <option value="URBAN">Urban</option>
+                                </select>
+                            </div>
+                        
+                            <div class="mb-3">
+                                <label for="brand" class="form-label">Brand</label>
+                                <select id="brand" name="brand" class="form-control ps-3 text-input" required>
+                                    <option value="" selected>Select Brand</option>
+                                    <option value="NIKE">Nike</option>
+                                    <option value="PUMA">Puma</option>
+                                    <option value="ADIDAS">Adidas</option>
+                                    <option value="NEW_BALANCE">New Balance</option>
+                                    <option value="VANS">Vans</option>
+                                </select>
+                            </div>
+                        
+                            <div class="d-grid gap-2 mt-4">
+                                <button type="submit" class="btn btn-red hvr-sweep-to-right dark-sweep">Publish Shoe</button>
+                                <button type="button" class="btn btn-outline-gray hvr-sweep-to-right dark-sweep">Cancel</button>
+                            </div>
+                            <input type="hidden" name="_csrf" value="{{token}}"/>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    
+    <script src="/js/jquery-1.11.0.min.js"></script>
+    <script src="/js/plugins.js"></script>
+    <script src="/js/script.js"></script>
+</body>
+
+</html>

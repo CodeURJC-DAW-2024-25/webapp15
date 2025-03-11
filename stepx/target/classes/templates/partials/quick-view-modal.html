@@ -1,0 +1,23 @@
+{{#product}}
+<div class="col-lg-12 col-md-12 me-3">
+    <div class="image-holder">
+      <img src="/shop/{{id}}/image/1" alt="Shoes" style="width: 100%;max-height: 100%;">
+    </div>
+  </div>
+  <div class="col-lg-12 col-md-12">
+    <div class="summary">
+      <div class="summary-content fs-6">
+        <div class="product-header d-flex justify-content-between mt-4">
+          <h3 class="display-7">{{name}}</h3>
+          <div class="modal-close-btn">
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+        </div>
+        <span class="product-price fs-3">${{price}}</span>
+        <div class="product-details">
+          <p class="fs-7">{{shortdescription}}</p>
+        </div>
+      </div>
+    </div> 
+  </div>
+{{/product}}

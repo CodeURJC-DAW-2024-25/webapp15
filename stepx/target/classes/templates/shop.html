@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Stylish - Shoes Online Store HTML Template</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="author" content="TemplatesJungle">
+  <meta name="keywords" content="Online Store">
+  <meta name="description" content="Stylish - Shoes Online Store HTML Template">
+  <meta name="_csrf" content="{{token}}"/>
+  <meta name="_csrf_header" content="{{headerName}}"/>
+
+  <link rel="stylesheet" href="/css/vendor.css">
+  <link rel="stylesheet" type="text/css" href="/css/style.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,900;1,900&family=Source+Sans+Pro:wght@400;600;700;900&display=swap"
+    rel="stylesheet">
+</head>
+
+<body>
+  <!--Pen to edit svg-->
+  <svg style="display: none;">
+    <symbol id="icon-pencil" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M16.862 3.487a3.162 3.162 0 0 1 4.481 4.482L8.5 20.812a1.5 1.5 0 0 1-.652.386l-4.5 1.125a.75.75 0 0 1-.913-.913l1.125-4.5a1.5 1.5 0 0 1 .386-.652L16.862 3.487zM19.5 4.5a1.5 1.5 0 0 0-2.121 0L15 6.879l2.121 2.121 2.379-2.379A1.5 1.5 0 0 0 19.5 4.5zM4.935 16.065 14.5 6.5l2.121 2.121-9.565 9.565-2.52.63.63-2.52z"/>
+    </symbol>
+  </svg>
+  <!--/Pen to edit svg-->
+
+  <!-- Modal of Delete Confirmation -->
+  <!-- Button to Trigger Modal -->
+
+
+
+  <!-- /End of Modal Delete Confirmation -->
+
+  {{>header}}
+
+  <section class="hero-section position-relative bg-gray padding-medium">
+    <div class="hero-content">
+      <div class="container">
+        <div class="row">
+          <div class="text-center">
+            <h1 class="display-2 text-uppercase text-dark">Shop</h1>
+            <div class="breadcrumbs">
+              <span class="item">
+                <a href="/index">Home ></a>
+              </span>
+              <span class="item">Shop</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="shopify-grid py-2 my-2 py-md-5 my-md-5">
+    <div class="container-lg">
+      <div class="row">
+        <aside class="col-lg-2 col-md-6 col-sm-12">
+          <div class="sidebar">
+            <div class="widget-product-categories pt-5">
+              <h5 class="widget-title text-decoration-underline">Categories</h5>
+              <ul class="product-categories sidebar-list list-unstyled text-hover">
+                <li class="tags-item">
+                  <a href="#" onclick="resetFilters(event)">All</a>
+               </li>
+                <li class="cat-item">
+                  <a href="#" onclick="searchByCategory(event,'SPORT')">Sport</a>
+                </li>
+                <li class="cat-item">
+                  <a href="#" onclick="searchByCategory(event,'CASUAL')" >Casual</a>
+                </li>
+                <li class="cat-item">
+                  <a href="#" onclick="searchByCategory(event,'URBAN')" >Urban</a>
+                </li>
+              </ul>
+            </div>
+            <div class="widget-product-brands pt-3">
+              <h5 class="widget-title text-decoration-underline">Brands</h5>
+              <ul class="product-tags sidebar-list list-unstyled text-hover">
+                <li class="tags-item">
+                  <a href="#" onclick="resetFilters(event)">All</a>
+               </li>
+                <li class="tags-item">
+                  <a href="#" onclick="searchByBrand(event,'NIKE')">Nike</a>
+                </li>
+                <li class="tags-item">
+                  <a href="#" onclick="searchByBrand(event,'PUMA')">Puma</a>
+                </li>
+                <li class="tags-item">
+                  <a href="#" onclick="searchByBrand(event,'ADIDAS')">Adidas</a>
+                </li>
+                <li class="tags-item">
+                  <a href="#" onclick="searchByBrand(event,'NEW_BALANCE')">New Balance</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </aside>
+        <main class="col-lg-10 col-md-6 col-sm-12">
+          {{#admin}}
+          <div >
+            <div class="btn-wrap">
+              <a href="/create-product">
+              <button href="/create-product" class="btn btn-black btn-medium text-uppercase hvr-sweep-to-right" style="margin-bottom: 30px;">Create Shoe</button>
+            </a>
+            </div>
+            
+          </div> 
+          {{/admin}} 
+
+
+          <div class="product-content product-store d-flex justify-content-between flex-wrap" id="shoes">
+            <!-- Product Card element-->
+            {{#shoes}}
+            <div class="col-lg-4 col-md-12 col-sm-12 mb-4 pe-3">
+              <div class="product-card position-relative">
+                <div class="card-img">
+                  <img src="/shop/{{id}}/image/1" alt="product-item" class="product-image img-fluid">
+                  <div class="cart-concern position-absolute d-flex justify-content-center">
+                  <div class="cart-button d-flex gap-2 justify-content-center align-items-center">
+                    <!--Delete Buttom-->
+
+                    {{#admin}}
+                    
+                    <button type="button" onclick="openModal('{{id}}','delete')"  class="btn btn-light" data-bs-toggle="modal" data-bs-target="#modaltoggle">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                        <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                      </svg>
+                    </button>
+                    
+                      
+                  
+                      <!--Edit Buttom-->
+                    <a href="/shop/edit/{{id}}">
+                      <button type="button" class="btn btn-light">
+                        <svg class="icon-pencil">
+                          <use xlink:href="#icon-pencil"></use>
+                        </svg>
+                      </button>
+                    </a>
+                    {{/admin}}
+
+                    {{#isAuthenticated}}
+                    {{^admin}}
+
+                    <!--modal of carriage(check)-->
+                    <button type="button" class="btn btn-light" onclick="openModal('{{id}}','confirmation')" data-bs-toggle="modal" data-bs-target="#modaltoggle">
+                      <svg class="shopping-carriage">
+                        <use xlink:href="#shopping-carriage"></use>
+                      </svg>
+                    </button>
+                    {{/admin}}
+                    {{/isAuthenticated}}
+                           
+                    <!--modal of preview (check)-->
+                    <button type="button" class="btn btn-light" onclick="openModal('{{id}}','quick')" data-bs-toggle="modal" data-bs-target="#modaltoggle">
+                      <svg class="quick-view">
+                          <use xlink:href="#quick-view"></use>
+                      </svg>
+                  </button>
+                  
+
+                  </div>
+                </div>
+                  <!-- cart-concern -->
+                </div>
+                <div class="card-detail d-flex justify-content-between align-items-center mt-3">
+                  <h3 class="card-title fs-6 fw-normal m-0">
+                    <a href="/shop/single-product/{{id}}">{{name}}</a>
+                  </h3>
+                  <span class="card-price fw-bold">${{price}}</span>
+                </div>
+              </div>
+            </div>
+            {{/shoes}} 
+            <!--end of product card element-->
+          </div>
+
+
+          <div id="loadMoreButtom"  {{^hasMoreShoes}}style="display:none;"{{/hasMoreShoes}}>
+            <div class="btn-wrap">
+                <button class="btn btn-black btn-medium text-uppercase hvr-sweep-to-right"
+                        style="margin-bottom: 30px;" onclick="loadMore()">
+                    Show More
+                </button>
+            </div>
+        </div>
+
+        </main>
+        
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- quick view -->
+<div class="modal fade" id="modaltoggle" aria-hidden="true" tabindex="-1">
+  <div class="modal-dialog modal-fullscreen-md-down modal-md modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body" id="modal-body-content">
+
+      </div>
+    </div>
+  </div>
+</div>
+<!-- / quick view -->
+
+<!--Cart confirmation Modal-->
+
+
+  
+
+  {{>footer}}
+
+  
+  <script src="/js/jquery-1.11.0.min.js"></script>
+  <script src="/js/plugins.js"></script>
+  <script src="/js/script.js"></script>
+ <!--<script src="/js/shop.js"></script>-->
+  <script src="/js/testModal.js"></script>
+
+
+</body>
+
+</html>
