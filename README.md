@@ -139,18 +139,45 @@ This is the create user account screen. It presents a form where users can enter
 ### 📁 DIAGRAM WITH DATABASE ENTITIES
 ![bbddDiagram](https://github.com/user-attachments/assets/b832332f-41a3-44d3-8b97-ac9e46afdfc9)
 
-
+## PHASE 1:
+### EXECUTION INSTRUCTIONS:
+1. **Clone the repository**:
+   - The first step is to download or clone the repository onto your machine and open it with a development         environment like Visual Studio Code. 
+2. **Install Java and Mave**:
+   - Preferably, install Java 21 as well as Maven on the device.
+3. **Set up the Database**:
+   - In our case, we are using XAMPP for the database, but you can use any SQL editor of your choice, such as       MAMP, for example.
+   - If you have installed XAMPP, once the program opens, you should click on Start under SQL. Then, click on       the Shell icon.
+   -  Once in the shell, enter the following command:
+     ```sh
+     mysql -u root
+     ```
+    - Finally, execute the following SQL command to create the database:
+     ```sh
+     CREATE DATABASE stepxDatabase;
+     ```
+4. **Run the proyect**
+   - We recommend using **Visual Studio Code (VS Code)** as the development environment. For a better               experience and easier project execution, install the following extensions in **VS Code**:  
+      - **Java Extension Pack**  
+      - **Spring Boot Extension Pack**  
+      - **Maven for Java**
+   - With these extensions installed, you can run the program with just one click from **VS Code**. 🚀
 ## 🤝 PARTICIPATION
 
 ### **Ronald Sebastian Silvera llimpe**
-(Description)
+A significant portion of the time invested in the project was dedicated to developing the dynamic loading of elements and confirmations. This includes features such as modal usage and loading additional elements when clicking a button (**AJAX**).  
+
+Additionally, considerable effort was put into implementing the necessary validations during the user's checkout process, including recalculating prices and verifying stock availability.  
+
+Furthermore, I contributed to the **user profile section**, handling updates to user information, profile pictures, and displaying the associated orders.  
+
 | Nº    | Commits      | Files      |
 |:------------: |:------------:| :------------:|
-|1|   |   |
-|2|   |   |
-|3|   |   |
-|4|   |   |
-|5|   |   |
+|1| [load more orders in profile](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/88c199b3686378d5f55ef4442f61d2abbb132880)  | [userController](https://github.com/CodeURJC-DAW-2024-25/webapp15/blob/main/backend/src/main/java/com/stepx/stepx/controller/UserController.java)   |
+|2|  [recalculate funtion, load image and orders](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/55e604ac5913a8f7e1124c364cdd91f3ea7ba59c)  |  [CheckoutController](https://github.com/CodeURJC-DAW-2024-25/webapp15/blob/main/backend/src/main/java/com/stepx/stepx/controller/CheckoutController.java)     |
+|3|  [cuppon apply recalculate price](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/db43ba3d6ba41e9bb3149ef51153b67555bbb748)  |  [CheckoutController](https://github.com/CodeURJC-DAW-2024-25/webapp15/blob/main/backend/src/main/java/com/stepx/stepx/controller/CheckoutController.java)   |
+|4| [update user personal information](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/b7e711bffd13aeae81806f33cf4d7878b9affae5)   | [userController](https://github.com/CodeURJC-DAW-2024-25/webapp15/blob/main/backend/src/main/java/com/stepx/stepx/controller/UserController.java)   |
+|5|  [all filter of shop](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/c0d498410ab3e7af2973fef5321419dff3a2187c)  | [ShoeController](https://github.com/CodeURJC-DAW-2024-25/webapp15/blob/main/backend/src/main/java/com/stepx/stepx/controller/ShoeController.java)  |
 
 ### **Alexander Matias Pearson Huaycochea**
 I have been in charge of some functionalities for the administrator such as creating products through a form, on the other hand I was in charge of developing functionalities for both registered and non-registered users, such as the best-selling products on the website, recommended products, as well as we have all the functionality of the comments of a product, such as creating, showing and deleting comments with AJAX. Likewise, I was in charge of implementing an external tool that facilitates the download of PDF as a sales ticket for the user.
