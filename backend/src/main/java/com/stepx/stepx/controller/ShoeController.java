@@ -198,6 +198,16 @@ public class ShoeController {
         return "redirect:/shop"; // Redirect to shop page after creation
     }
 
+    @GetMapping("/create-product")
+    public String showCreate(Model model, HttpServletRequest request) {
+        boolean admin = request.isUserInRole("ROLE_ADMIN");
+        if (!admin) {
+            return "redirect:/errorPage?errorType=notValidPage";
+        }
+        return "create-product";
+
+    }
+
     @PostMapping("/delete/{id}")
     public String deleteShoe(@PathVariable Long id, Model model, HttpServletRequest request) {
 

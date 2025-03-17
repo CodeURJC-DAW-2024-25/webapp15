@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.stepx.stepx.model.Review;
 
-@Mapper(ComponentModel = "spring")
+//@Mapper(ComponentModel = "spring")
 public interface ReviewMapper {
     ReviewDTO toDTO(Review review);
 
