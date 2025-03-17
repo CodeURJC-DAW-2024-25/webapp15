@@ -32,7 +32,7 @@ import com.stepx.stepx.repository.UserRepository;
 import com.stepx.stepx.repository.CouponRepository;
 import com.stepx.stepx.service.OrderItemService;
 import com.stepx.stepx.service.OrderShoesService;
-import com.stepx.stepx.service.ProductsService;
+import com.stepx.stepx.service.ShoeService;
 import com.stepx.stepx.service.UserService;
 
 import org.springframework.core.io.ClassPathResource;
@@ -43,9 +43,6 @@ import java.sql.Blob;
 
 @Controller
 public class GeneralController {
-
-    @Autowired
-    private ProductsService productsService;
 
     @Autowired
     private UserRepository userRepository;
@@ -248,16 +245,6 @@ public class GeneralController {
         model.addAttribute("admin", true);
 
         return "admin-pannel";
-    }
-
-    @GetMapping("/edit-product/{id}")
-    public String showEditProduct(Model model, @PathVariable Long id, HttpServletRequest request) {
-        model.addAttribute("product", productsService.getProductById(id));
-        boolean admin = request.isUserInRole("ROLE_ADMIN");
-        if (!admin) {
-            return "redirect:/errorPage?errorType=notValidPage";
-        }
-        return "edit-product";
     }
 
     @GetMapping("/create-product")
