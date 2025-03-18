@@ -7,7 +7,6 @@ import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel =  "spring")
 public interface ShoeMapper {
-    ShoeMapper INSTANCE = Mappers.getMapper(ShoeMapper.class);
 
     ShoeDTO toDTO(Shoe shoe);
     Shoe toDoamin(ShoeDTO shoeDTO);

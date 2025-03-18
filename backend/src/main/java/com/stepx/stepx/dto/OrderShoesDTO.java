@@ -16,7 +16,8 @@ public class OrderShoesDTO {
     private String numerPhone;
     private BigDecimal summary;
     private String state;
-    private UserDTO user;
+    //private UserDTO user; se quita por referencia circular
+    private Long userId;
     private CouponDTO coupon;
     private List<OrderItemDTO> orderItems;
 
@@ -107,14 +108,6 @@ public class OrderShoesDTO {
 
     public void setState(String state) {
         this.state = state;
-    }
-
-    public UserDTO getUser() {
-        return user;
-    }
-
-    public void setUser(UserDTO user) {
-        this.user = user;
     }
 
     public CouponDTO getCoupon() {

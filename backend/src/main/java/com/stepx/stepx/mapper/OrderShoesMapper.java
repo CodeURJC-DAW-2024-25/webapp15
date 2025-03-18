@@ -7,11 +7,10 @@ import com.stepx.stepx.model.Shoe;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(componentModel =  "spring", uses = {ShoeMapper.class, CouponMapper.class, OrderItemMapper.class, UserMapper.class})
+@Mapper(componentModel =  "spring")
 public interface OrderShoesMapper {
     
     OrderShoesDTO toDTO(OrderShoes orderShoes);
-
-    OrderShoes toEntity(OrderShoesDTO orderShoesDTO);
+    OrderShoes toDomain(OrderShoesDTO orderShoesDTO);
 }
 

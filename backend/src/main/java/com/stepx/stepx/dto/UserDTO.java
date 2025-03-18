@@ -15,6 +15,7 @@ public class UserDTO {
     private String username;
     private String email;
     private List<OrderShoesDTO> orders;
+    private List<ReviewDTO> reviews;
 
     // Constructors
     public UserDTO() {

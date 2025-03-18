@@ -8,6 +8,7 @@ public class CouponDTO {
     private Long id;
     private String code;
     private BigDecimal discount;
+    private Long userId;
 
     // Constructors
     public CouponDTO() {
