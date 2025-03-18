@@ -10,5 +10,5 @@ public interface ShoeMapper {
     ShoeMapper INSTANCE = Mappers.getMapper(ShoeMapper.class);
 
     ShoeDTO toDTO(Shoe shoe);
-    Shoe toEntity(ShoeDTO shoeDTO);
+    Shoe toDoamin(ShoeDTO shoeDTO);
 }
