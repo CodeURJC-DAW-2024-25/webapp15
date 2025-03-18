@@ -4,19 +4,23 @@ package com.stepx.stepx.controller;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.sql.rowset.serial.SerialBlob;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -27,19 +31,14 @@ import com.stepx.stepx.model.Coupon;
 import com.stepx.stepx.model.OrderShoes;
 import com.stepx.stepx.model.Shoe;
 import com.stepx.stepx.model.User;
+import com.stepx.stepx.repository.CouponRepository;
 import com.stepx.stepx.repository.OrderShoesRepository;
 import com.stepx.stepx.repository.UserRepository;
-import com.stepx.stepx.repository.CouponRepository;
 import com.stepx.stepx.service.OrderItemService;
 import com.stepx.stepx.service.OrderShoesService;
-import com.stepx.stepx.service.ShoeService;
 import com.stepx.stepx.service.UserService;
 
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import jakarta.servlet.http.HttpServletRequest;
-import javax.sql.rowset.serial.SerialBlob;
-import java.sql.Blob;
 
 @Controller
 public class GeneralController {
@@ -226,10 +225,6 @@ public class GeneralController {
         return "partials/ordersProfile";
     }
 
-    @GetMapping("/styles")
-    public String showStyles(Model model) {
-        return "styles";
-    }
 
     @GetMapping("/register-user")
     public String showRegisterUser(Model model) {
@@ -237,15 +232,6 @@ public class GeneralController {
     }
     // Recovering data and elements to show to admin users
 
-    @GetMapping("/admin-pannel")
-    public String showAdminPanel(Model model, HttpServletRequest request) {
-        if (request.getUserPrincipal() == null || !request.isUserInRole("ROLE_ADMIN")) {
-            return "redirect:/errorPage?errorType=notValidPage"; // Redirigir a la página principal si no es admin
-        }
-        model.addAttribute("admin", true);
-
-        return "admin-pannel";
-    }
 
     @GetMapping("/create-product")
     public String showCreate(Model model, HttpServletRequest request) {
