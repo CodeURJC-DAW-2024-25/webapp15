@@ -1,14 +1,25 @@
 package com.stepx.stepx.service;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.sql.Blob;
+import java.sql.SQLException;
+import java.util.Base64;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
+import javax.sql.rowset.serial.SerialBlob;
+
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Optional;
-
 import com.stepx.stepx.model.Shoe;
+import com.stepx.stepx.model.Shoe.Brand;
+import com.stepx.stepx.model.Shoe.Category;
 import com.stepx.stepx.repository.ShoeRepository;
 
 @Service
@@ -81,4 +92,62 @@ public class ShoeService {
         List<Shoe> shoes = shoeRepository.findAll();
         return shoes.size();
     }
+
+   public Resource getShoeImage(Long id, int imageNumber) throws SQLException, IOException {
+        Shoe shoe = shoeRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Shoe not found"));
+
+        Blob imageBlob = switch (imageNumber) {
+            case 1 -> shoe.getImage1();
+            case 2 -> shoe.getImage2();
+            case 3 -> shoe.getImage3();
+            default -> throw new NoSuchElementException("Invalid image number");
+        };
+
+        if (imageBlob == null) {
+            throw new NoSuchElementException("Image not found");
+        }
+
+        return new InputStreamResource(imageBlob.getBinaryStream());
+    }
+
+    public static String convertBlobToBase64(Blob blob) {
+        if (blob == null) {
+            return null; 
+        }
+        try {
+            //Getting bytes from Blob and turn it in Base64
+            byte[] bytes = blob.getBytes(1, (int) blob.length());
+            return Base64.getEncoder().encodeToString(bytes);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static Blob convertBase64ToBlob(String image64) throws SQLException{
+        if (image64 == null) {
+            return null;
+        }
+        try{
+            byte[] decodedByte = Base64.getDecoder().decode(image64);
+            Blob b = new SerialBlob(decodedByte);
+            return b;
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+
+    public String brandToString(Brand brand){
+        return brand.name().toUpperCase();
+    }
+
+    public String categoryToString(Category category){
+        return category.name().toUpperCase();
+    }
+
+    
 }

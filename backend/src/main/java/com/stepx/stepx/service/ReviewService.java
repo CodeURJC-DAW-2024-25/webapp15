@@ -2,10 +2,13 @@ package com.stepx.stepx.service;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Pageable;
 
+import com.stepx.stepx.dto.ReviewDTO;
 import com.stepx.stepx.model.Review;
 
 import com.stepx.stepx.repository.ReviewRepository;
@@ -40,6 +43,17 @@ public class ReviewService {
     public List<Review> getPagedReviewsByShoeId(Long shoeId, int page, int limit) {
         Pageable pageable = PageRequest.of(page, limit);
         return reviewRepository.findByShoeId(shoeId, pageable).getContent();
+    }
+
+    public List<ReviewDTO> convertToDTOReviewList(List<Review> reviews) {
+    List<ReviewDTO> reviewDTOs = new ArrayList<>();
+    
+    for (Review review : reviews) {
+        ReviewDTO reviewDTO = new ReviewDTO(review.getId(), review.getDate(), review.getRating(), review.getDescription(), review.getShoe(), review.getUser());
+        reviewDTOs.add(reviewDTO);
+    }
+    
+    return reviewDTOs;
     }
 
 }
