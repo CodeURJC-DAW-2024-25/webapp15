@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 public record CouponDTO(
     Long id,
     String code,
-    BigDecimal discount
+    BigDecimal discount,
+    Long userId
 ) {
 }
