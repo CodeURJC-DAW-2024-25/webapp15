@@ -120,4 +120,30 @@ public class OrderItemService {
                 .collect(Collectors.toList());
     }
 
+    public List<OrderItem> convertToOrderItemList(Long shoeId, List<OrderItemDTO> orderItemDTOs) {
+        if (shoeId == null) {
+            throw new IllegalArgumentException("El ID del zapato no puede ser nulo.");
+        }
+    
+        if (orderItemDTOs == null || orderItemDTOs.isEmpty()) {
+            return new ArrayList<>();
+        }
+    
+
+        Shoe shoe = shoeRepository.findById(shoeId).orElseThrow(
+            () -> new IllegalArgumentException("Shoe not found with ID: " + shoeId)
+        );
+    
+        return orderItemDTOs.stream().map(dto -> {
+            OrderShoes orderShoes = null;
+            if (dto.orderId() != null) {
+                orderShoes = orderShoesRepository.findById(dto.orderId()).orElse(null);
+            }
+    
+            return new OrderItem(orderShoes, shoe, dto.quantity(), dto.size());
+        }).collect(Collectors.toList());
+    }
+
+   
+
 }

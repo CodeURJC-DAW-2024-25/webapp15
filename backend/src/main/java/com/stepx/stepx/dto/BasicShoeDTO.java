@@ -2,8 +2,9 @@ package com.stepx.stepx.dto;
 
 import java.math.BigDecimal;
 import java.util.List;
+import com.stepx.stepx.model.Shoe;
 
-public record ShoeDTO(
+public record BasicShoeDTO (
     Long id,
     String name,
     String shortDescription,
@@ -13,8 +14,8 @@ public record ShoeDTO(
     String category,
     String imageUrl1,
     String imageUrl2,
-    String imageUrl3,
-    List<BasicShoeSizeStockDTO> sizeStocks,
-    List<ReviewDTO> reviews,
-    List<OrderItemDTO> orderItems
-) {}
+    String imageUrl3
+
+){
+
+}

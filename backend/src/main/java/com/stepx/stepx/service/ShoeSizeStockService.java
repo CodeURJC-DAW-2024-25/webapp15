@@ -1,21 +1,30 @@
 package com.stepx.stepx.service;
 
-import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import jakarta.transaction.Transactional;
-import com.stepx.stepx.model.ShoeSizeStock;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.stepx.stepx.dto.BasicShoeSizeStockDTO;
+import com.stepx.stepx.model.Shoe;
+import com.stepx.stepx.model.ShoeSizeStock;
+import com.stepx.stepx.repository.ShoeRepository;
 import com.stepx.stepx.repository.ShoeSizeStockRepository;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class ShoeSizeStockService {
 
     @Autowired
     private ShoeSizeStockRepository shoeSizeStockRepository;
+
+    @Autowired
+    private ShoeRepository shoeRepository;
 
     public List<ShoeSizeStock> getAllStock() {
         return shoeSizeStockRepository.findAll();
@@ -55,6 +64,43 @@ public class ShoeSizeStockService {
                 shoeSizeStockRepository.reduceStock(shoeId, size, quantity);
             }
         }
+    }
+
+    public List<BasicShoeSizeStockDTO> convertToShoeSizeStockDTO(List<ShoeSizeStock> sizeStocks) {
+        List<BasicShoeSizeStockDTO> sizeStocksDTOs = new ArrayList<>();
+    
+        for (ShoeSizeStock sizeStock : sizeStocks) {
+            BasicShoeSizeStockDTO sizeStockDTO = new BasicShoeSizeStockDTO(
+                sizeStock.getId(), 
+                sizeStock.getShoe().getId(), 
+                sizeStock.getSize(), 
+                sizeStock.getStock()
+            );
+            sizeStocksDTOs.add(sizeStockDTO);
+        }
+    
+        return sizeStocksDTOs;
+    }
+
+    public List<ShoeSizeStock> convertToShoeSizeStock(List<BasicShoeSizeStockDTO> sizeStocksDTOs) {
+        List<ShoeSizeStock> sizeStocks = new ArrayList<>();
+
+        for (BasicShoeSizeStockDTO sizeStockDTO : sizeStocksDTOs) {
+            Shoe shoe = new Shoe(); // Debes recuperar la instancia de Shoe por su ID
+            shoe.setId(sizeStockDTO.shoeId());
+            ShoeSizeStock sizeStock = new ShoeSizeStock();
+            Optional<Shoe> shoeOpt = shoeRepository.findById(sizeStockDTO.shoeId());
+            if (shoeOpt.isPresent()) {
+                sizeStock.setShoe(shoeOpt.get());
+            } else {
+                throw new IllegalArgumentException("Shoe with ID " + sizeStockDTO.shoeId() + " not found");
+            }
+            sizeStock.setSize(sizeStockDTO.size());
+            sizeStock.setStock(sizeStockDTO.stock());
+            sizeStocks.add(sizeStock);
+        }
+
+        return sizeStocks;
     }
 
 }

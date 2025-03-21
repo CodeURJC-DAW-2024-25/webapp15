@@ -11,7 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import com.stepx.stepx.controller.CustomAuthenticationSuccessHandler;
+import com.stepx.stepx.controller.web.CustomAuthenticationSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -53,7 +53,7 @@ public class WebSecurityConfig {
 				.authorizeHttpRequests(authorize -> authorize
 						// PUBLIC PAGES
 						.requestMatchers("/index", "/register-user", "/shop/**", "/partials/**", "/createAccount",
-								"/errorPage")
+								"/errorPage", "/api/**", "/api/create-product")
 						.permitAll()
 						.requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
 						// PRIVATE PAGES

@@ -1,5 +1,5 @@
 
-package com.stepx.stepx.controller;
+package com.stepx.stepx.controller.web;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -232,6 +232,15 @@ public class GeneralController {
     }
     // Recovering data and elements to show to admin users
 
+    // @GetMapping("/admin-pannel")
+    // public String showAdminPanel(Model model, HttpServletRequest request) {
+    //     if (request.getUserPrincipal() == null || !request.isUserInRole("ROLE_ADMIN")) {
+    //         return "redirect:/errorPage?errorType=notValidPage"; // Redirigir a la página principal si no es admin
+    //     }
+    //     model.addAttribute("admin", true);
+
+    //     return "admin-pannel";
+    // }
 
     @GetMapping("/create-product")
     public String showCreate(Model model, HttpServletRequest request) {
