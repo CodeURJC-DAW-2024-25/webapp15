@@ -1,10 +1,20 @@
 package com.stepx.stepx.model;
 
-import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.List;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Shoe {
@@ -51,6 +61,25 @@ public class Shoe {
     @OneToMany(mappedBy = "shoe", cascade = CascadeType.ALL, orphanRemoval = true)//relation with orderItem
     private List<OrderItem> orderItems = new ArrayList<>();
 
+    public Shoe(){}
+    
+    public Shoe(Long id, String name, String shortdescription, String longDescription, BigDecimal price,Shoe.Brand brand, Shoe.Category category, Blob image1, Blob image2, Blob image3, List<ShoeSizeStock> sizeStocks, List<Review> reviews, List<OrderItem> orderItems){
+        this.id = id;
+        this.name = name;
+        this.shortdescription = shortdescription;
+        this.longDescription = longDescription;
+        this.price = price;
+        this.image1 = image1;
+        this.image2 = image2;
+        this.image3 = image3;
+        this.brand = brand;
+        this.category = category;
+        this.sizeStocks = sizeStocks;
+        this.reviews = reviews;
+        this.orderItems = orderItems;
+    }
+
+        
     // Getters y setters
     public Long getId() {
         return id;
@@ -122,6 +151,14 @@ public class Shoe {
 
     public void setBrand(Brand brand) {
         this.brand = brand;
+    }
+
+    public List<Review> getReviews(){
+        return this.reviews;
+    }
+
+    public void setReviews(List<Review> reviews){
+        this.reviews = reviews;
     }
 
     public Category getCategory() {

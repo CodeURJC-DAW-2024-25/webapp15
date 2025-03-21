@@ -24,6 +24,7 @@ import com.stepx.stepx.repository.ShoeRepository;
 
 @Service
 public class ShoeService {
+   
 
     private final ShoeRepository shoeRepository;
 
@@ -111,7 +112,7 @@ public class ShoeService {
         return new InputStreamResource(imageBlob.getBinaryStream());
     }
 
-    public static String convertBlobToBase64(Blob blob) {
+    public String convertBlobToBase64(Blob blob) {
         if (blob == null) {
             return null; 
         }
@@ -125,7 +126,7 @@ public class ShoeService {
         }
     }
 
-    public static Blob convertBase64ToBlob(String image64) throws SQLException{
+    public Blob convertBase64ToBlob(String image64) throws SQLException{
         if (image64 == null) {
             return null;
         }
@@ -143,6 +144,16 @@ public class ShoeService {
 
     public String brandToString(Brand brand){
         return brand.name().toUpperCase();
+    }
+
+    public Brand StringToBrand(String brandString){
+      Brand brand = Brand.valueOf(brandString.trim().toUpperCase());
+      return brand;
+    }
+
+    public Category StringToCategory(String categoryString){
+        Category category = Category.valueOf(categoryString.trim().toUpperCase());
+        return category;
     }
 
     public String categoryToString(Category category){

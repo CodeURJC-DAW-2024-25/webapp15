@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.stepx.stepx.dto.OrderItemDTO;
 import com.stepx.stepx.model.OrderItem;
 import com.stepx.stepx.model.Shoe;
 import com.stepx.stepx.model.OrderShoes;
@@ -95,6 +96,30 @@ public class OrderItemService {
         }
         List<Shoe> recommendedShoes = shoeRepository.findRecommendedShoesByBrandsExcludingPurchased(brands, userId);
         return recommendedShoes.stream().limit(limit).collect(Collectors.toList());
+    }
+
+    public List<OrderItem> convertToOrderItemList(Long shoeId, List<OrderItemDTO> orderItemDTOs) {
+        if (shoeId == null) {
+            throw new IllegalArgumentException("El ID del zapato no puede ser nulo.");
+        }
+    
+        if (orderItemDTOs == null || orderItemDTOs.isEmpty()) {
+            return new ArrayList<>();
+        }
+    
+
+        Shoe shoe = shoeRepository.findById(shoeId).orElseThrow(
+            () -> new IllegalArgumentException("Shoe not found with ID: " + shoeId)
+        );
+    
+        return orderItemDTOs.stream().map(dto -> {
+            OrderShoes orderShoes = null;
+            if (dto.orderId() != null) {
+                orderShoes = orderShoesRepository.findById(dto.orderId()).orElse(null);
+            }
+    
+            return new OrderItem(orderShoes, shoe, dto.quantity(), dto.size());
+        }).collect(Collectors.toList());
     }
 
 }

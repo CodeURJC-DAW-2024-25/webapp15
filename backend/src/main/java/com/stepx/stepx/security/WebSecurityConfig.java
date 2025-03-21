@@ -53,7 +53,7 @@ public class WebSecurityConfig {
 				.authorizeHttpRequests(authorize -> authorize
 						// PUBLIC PAGES
 						.requestMatchers("/index", "/register-user", "/shop/**", "/partials/**", "/createAccount",
-								"/errorPage")
+								"/errorPage", "/api/**", "/api/create-product")
 						.permitAll()
 						.requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
 						// PRIVATE PAGES
