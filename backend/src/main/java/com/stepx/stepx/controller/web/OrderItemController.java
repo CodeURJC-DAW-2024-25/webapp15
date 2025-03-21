@@ -1,4 +1,4 @@
-package com.stepx.stepx.controller;
+package com.stepx.stepx.controller.web;
 
 import java.security.Principal;
 import java.util.Optional;

@@ -1,5 +1,5 @@
 
-package com.stepx.stepx.controller;
+package com.stepx.stepx.controller.web;
 
 import java.io.IOException;
 import java.io.InputStream;

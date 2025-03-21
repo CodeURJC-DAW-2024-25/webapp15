@@ -1,4 +1,4 @@
-package com.stepx.stepx.controller;
+package com.stepx.stepx.controller.rest;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.stepx.stepx.dto.BasicShoeDTO;
 import com.stepx.stepx.dto.BasicShoeSizeStockDTO;
 import com.stepx.stepx.dto.ShoeDTO;
+import com.stepx.stepx.mapper.ShoeMapper;
 import com.stepx.stepx.model.Review;
 import com.stepx.stepx.model.Shoe;
 import com.stepx.stepx.model.ShoeSizeStock;
@@ -59,73 +60,8 @@ public class ShoeRestController {
     @Autowired
     private OrderItemService orderItemService;
 
-private ShoeDTO toDTO(Shoe shoe) {
-    // Crear la lista de sizeStockDTOs
-    List<BasicShoeSizeStockDTO> sizeStockDTOs = new ArrayList<>();
-
-    // Verify is the list is empty
-    if (shoe.getSizeStocks() != null && !shoe.getSizeStocks().isEmpty()) {
-        //We convert list of ShoeSizeStock to BasicShoeSizeStockDTO
-        
-        for (ShoeSizeStock sizeStock : shoe.getSizeStocks()) {
-            sizeStockDTOs.add(new BasicShoeSizeStockDTO(
-                sizeStock.getId(), 
-                shoe.getId(), 
-                sizeStock.getSize(),
-                sizeStock.getStock()
-            ));
-        }
-    }
-
-    // we create the basicShoeDTO to void circle relations
-    BasicShoeDTO basicShoeDTO = new BasicShoeDTO(
-        shoe.getId(),
-        shoe.getName(),
-        shoe.getDescription(),
-        shoe.getLongDescription(),
-        shoe.getPrice(),
-        shoeService.brandToString(shoe.getBrand()),
-        shoeService.categoryToString(shoe.getCategory()),
-        shoeService.convertBlobToBase64(shoe.getImage1()),
-        shoeService.convertBlobToBase64(shoe.getImage2()),
-        shoeService.convertBlobToBase64(shoe.getImage3())
-    );
-    //return the shoeDTO with the list of sizeStockDTOs
-    return new ShoeDTO(
-        shoe.getId(),
-        shoe.getName(),
-        shoe.getDescription(),
-        shoe.getLongDescription(),
-        shoe.getPrice(),
-        shoeService.brandToString(shoe.getBrand()),
-        shoeService.categoryToString(shoe.getCategory()),
-        shoeService.convertBlobToBase64(shoe.getImage1()),
-        shoeService.convertBlobToBase64(shoe.getImage2()),
-        shoeService.convertBlobToBase64(shoe.getImage3()),
-        sizeStockDTOs,  // Lista de tamaños y stock
-        reviewService.convertToDTOReviewList(shoe.getReviews()),
-        null // Aquí puedes poner la lista de OrderItemDTO si es necesario
-    );
-}
-
-    
-    private Shoe toDomain(ShoeDTO shoeDTO) throws SQLException {
-        return new Shoe(
-            shoeDTO.id(),
-            shoeDTO.name(),
-            shoeDTO.shortDescription(),
-            shoeDTO.longDescription(),
-            shoeDTO.price(),
-            shoeService.StringToBrand(shoeDTO.brand()),
-            shoeService.StringToCategory(shoeDTO.category()),
-            shoeService.convertBase64ToBlob(shoeDTO.imageUrl1()),
-            shoeService.convertBase64ToBlob(shoeDTO.imageUrl2()),
-            shoeService.convertBase64ToBlob(shoeDTO.imageUrl3()),
-            shoeSizeStockService.convertToShoeSizeStock(shoeDTO.sizeStocks()),
-            reviewService.convertToReviewList(shoeDTO.reviews()),
-            orderItemService.convertToOrderItemList(shoeDTO.id(), shoeDTO.orderItems())
-        );
-    }     
+    @Autowired ShoeMapper shoeMapper;
+     
 
     @GetMapping
     public ResponseEntity<List<Shoe>> getShoes(@RequestParam(defaultValue = "0") int page) {

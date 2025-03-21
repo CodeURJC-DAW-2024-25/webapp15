@@ -1,4 +1,4 @@
-package com.stepx.stepx.controller;
+package com.stepx.stepx.controller.web;
 
 //public package com.stepx.stepx.config;
 

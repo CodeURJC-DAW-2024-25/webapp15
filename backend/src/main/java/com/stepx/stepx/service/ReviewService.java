@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.stepx.stepx.dto.ReviewDTO;
+import com.stepx.stepx.mapper.ShoeMapper;
 import com.stepx.stepx.model.Review;
+import com.stepx.stepx.mapper.*;
 import com.stepx.stepx.model.Shoe;
 import com.stepx.stepx.model.User;
 import com.stepx.stepx.repository.ReviewRepository;
@@ -17,6 +20,10 @@ import com.stepx.stepx.repository.ReviewRepository;
 @Service
 public class ReviewService {
     private final ReviewRepository reviewRepository;
+
+    @Autowired
+    private ReviewMapper reviewMapper;
+
 
     public ReviewService(ReviewRepository reviewRepository) {
         this.reviewRepository = reviewRepository;
@@ -50,7 +57,8 @@ public class ReviewService {
         List<ReviewDTO> reviewDTOs = new ArrayList<>();
         
         for (Review review : reviews) {
-            ReviewDTO reviewDTO = new ReviewDTO(review.getId(), review.getDate(), review.getRating(), review.getDescription(), review.getShoe(), review.getUser());
+            ReviewDTO reviewDTO = reviewMapper.toDTO(review);
+            //ReviewDTO reviewDTO = new ReviewDTO(review.getId(), review.getDate(), review.getRating(), review.getDescription(), review.getShoe(), review.getUser());
             reviewDTOs.add(reviewDTO);
         }
         
@@ -69,12 +77,12 @@ public class ReviewService {
 
            
             Shoe shoe = new Shoe();
-            shoe.setId(reviewDTO.shoe().getId());
+            shoe.setId(reviewDTO.shoeId());
             review.setShoe(shoe);
 
 
             User user = new User();
-            user.setId(reviewDTO.user().getId());
+            user.setId(reviewDTO.userId());
             review.setUser(user);
 
             reviews.add(review);

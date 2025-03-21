@@ -1,4 +1,4 @@
-package com.stepx.stepx.controller;
+package com.stepx.stepx.controller.rest;
 
 import java.io.IOException;
 import java.io.InputStream;

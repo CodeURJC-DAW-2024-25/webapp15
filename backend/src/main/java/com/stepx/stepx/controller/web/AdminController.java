@@ -1,4 +1,4 @@
-package com.stepx.stepx.controller;
+package com.stepx.stepx.controller.web;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
