@@ -1,15 +1,21 @@
 package com.stepx.stepx.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.stepx.stepx.dto.OrderItemDTO;
+import com.stepx.stepx.dto.ShoeDTO;
+import com.stepx.stepx.mapper.OrderItemMapper;
+import com.stepx.stepx.mapper.ShoeMapper;
 import com.stepx.stepx.model.OrderItem;
 import com.stepx.stepx.model.Shoe;
 import com.stepx.stepx.model.OrderShoes;
@@ -24,6 +30,12 @@ public class OrderItemService {
     private ShoeRepository shoeRepository;
     private OrderShoesRepository orderShoesRepository;
 
+    @Autowired
+    private OrderItemMapper orderItemMapper;
+
+    @Autowired
+    private ShoeMapper shoeMapper;
+
     public OrderItemService(OrderItemRepository orderItemRepository, ShoeRepository shoeRepository,
             OrderShoesRepository orderShoesRepository) {
         this.orderItemRepository = orderItemRepository;
@@ -31,14 +43,19 @@ public class OrderItemService {
         this.orderShoesRepository = orderShoesRepository;
     }
 
-    public Optional<OrderItem> findByCartAndShoeAndSize(Long userId, Long shoeId, String size) {
-        return orderItemRepository.findByCartAndShoeAndSize(userId, shoeId, size);// this return the shoe that the
-                                                                                  // cliente is triying to add to the
-                                                                                  // cart
-        // if exist or not, that will be managed by the controller
+    public OrderItemDTO findByCartAndShoeAndSize(Long userId, Long shoeId, String size) {
+        
+        Optional<OrderItem> orderItem = orderItemRepository.findByCartAndShoeAndSize(userId, shoeId, size);
+        if (orderItem.isPresent()) {
+            return orderItemMapper.toDTO(orderItem.get());
+        }else {
+            return null;
+        }
+        // this return the shoe that the cliente is triying to add to the cart if exist or not, that will be managed by the controller
     }
 
-    public void save(OrderItem orderItem) {// save the order item in the bbdd
+    public void save(OrderItemDTO orderItemDTO) {// save the order item in the bbdd
+        OrderItem orderItem = orderItemMapper.toDomain(orderItemDTO);
         orderItemRepository.save(orderItem);
     }
 
@@ -62,14 +79,17 @@ public class OrderItemService {
         }
     }
 
-    public List<OrderItem> getOrderItemsByOrderId(Long orderId) {
-        return orderItemRepository.findByOrderId(orderId);
+    public List<OrderItemDTO> getOrderItemsByOrderId(Long orderId) {
+        Collection<OrderItem> orderItems = orderItemRepository.findByOrderId(orderId);
+        return orderItemMapper.toDTOs(orderItems);
     }
 
-    public List<Shoe> getBestSellingShoes(int limit) {
+    
+    public List<ShoeDTO> getBestSellingShoes(int limit) {
         List<Object[]> results = orderItemRepository.findBestSellingShoes(PageRequest.of(0, limit));
+
         return results.stream()
-                .map(result -> (Shoe) result[0]) // extract only shoe object
+                .map(result -> shoeMapper.toDTO((Shoe) result[0])) // MapStruct hace la conversión
                 .collect(Collectors.toList());
     }
 
@@ -88,13 +108,16 @@ public class OrderItemService {
                 .collect(Collectors.toList());
     }
 
-    public List<Shoe> getRecommendedShoesForUser(Long userId, int limit) {
+    public List<ShoeDTO> getRecommendedShoesForUser(Long userId, int limit) {
         List<Shoe.Brand> brands = getBrandsFromLastOrder(userId);
         if (brands.isEmpty()) {
             return new ArrayList<>();
         }
         List<Shoe> recommendedShoes = shoeRepository.findRecommendedShoesByBrandsExcludingPurchased(brands, userId);
-        return recommendedShoes.stream().limit(limit).collect(Collectors.toList());
+        return recommendedShoes.stream()
+                .limit(limit)
+                .map(shoeMapper::toDTO) // Usamos MapStruct para la conversión
+                .collect(Collectors.toList());
     }
 
 }
