@@ -8,19 +8,20 @@ public class UserDTO {
 
     private Long id;
     private boolean imageBool;
-    private String imageUser;
+    private Blob imageUser;
     private String firstname;
     private String lastName;
     private List<String> roles;
     private String username;
     private String email;
     private List<OrderShoesDTO> orders;
+    private List<ReviewDTO> reviews;
 
     // Constructors
     public UserDTO() {
     }
 
-    public UserDTO(Long id, String imageUser, String firstname, String lastName, List<String> roles, String username, String email, List<OrderShoesDTO> orders) {
+    public UserDTO(Long id, Blob imageUser, String firstname, String lastName, List<String> roles, String username, String email, List<OrderShoesDTO> orders) {
         this.id = id;
         this.imageUser = imageUser;
         this.firstname = firstname;
@@ -40,11 +41,11 @@ public class UserDTO {
         this.id = id;
     }
 
-    public String getImageUser() {
+    public Blob getImageUser() {
         return imageUser;
     }
 
-    public void setImageUser(String imageUser) {
+    public void setImageUser(Blob imageUser) {
         this.imageUser = imageUser;
     }
 
