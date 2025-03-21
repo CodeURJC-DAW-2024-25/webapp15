@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,21 +18,24 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import com.stepx.stepx.dto.*;
-import com.stepx.stepx.model.OrderItem;
-import com.stepx.stepx.model.OrderShoes;
-import com.stepx.stepx.model.Shoe;
+
+import com.stepx.stepx.dto.CouponDTO;
+import com.stepx.stepx.dto.OrderItemDTO;
+import com.stepx.stepx.dto.OrderShoesDTO;
+import com.stepx.stepx.dto.UserDTO;
+import com.stepx.stepx.model.*;
 import com.stepx.stepx.repository.*;
 import com.stepx.stepx.service.*;
-
 
 @Controller
 @RequestMapping("/api/checkout")
 public class CheckoutRestController {
 
-
     @Autowired
     private OrderShoesService orderShoesService;
+
+    @Autowired
+    private ShoeService shoeService;
 
     @Autowired
     private OrderItemService orderItemService;
@@ -46,7 +50,12 @@ public class CheckoutRestController {
     private PdfService pdfService;
 
     @Autowired
+    private CouponService couponService;
+
+    @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UserService userService;
 
     /**
      * Method to download the ticket PDF after processing the order.
@@ -72,8 +81,8 @@ public class CheckoutRestController {
         }
 
         // Retrieve user
-        UserDTO userdto = getAuthenticatedUserOrThrow(request);
-        Long userId = userdto.getId();
+        UserDTO userdto = getAuthenticatedUser(request);
+        Long userId = userdto.id();
 
         // Retrieve the cart
         Optional<OrderShoesDTO> orderDToOptional = orderShoesService.getCartById(userId);
@@ -81,33 +90,26 @@ public class CheckoutRestController {
             response.sendError(HttpServletResponse.SC_NOT_FOUND, "Order not found");
             return;
         }
-
         // Fill the order details
         OrderShoesDTO orderDto = orderDToOptional.get();
-        orderDto.setCountry(country);
-        orderDto.setFirstName(firstName);
-        orderDto.setSecondName(lastName);
-        orderDto.setEmail(email);
-        orderDto.setAddress(address);
-        orderDto.setNumerPhone(phone);
-        orderDto.setState("Processed");
-        orderDto.setActualDate();
 
         // Apply coupon discount if valid
-        BigDecimal totalPrice = orderShoesService.getTotalPrice(orderDto.getId());
+        BigDecimal totalPrice = orderShoesService.getTotalPrice(orderDto.id());
+        String couponString;
         if (coupon != null && !coupon.isEmpty()) {
-            Optional<CouponDTO> couponDtoOptional = couponRepository.findByCodeAndId(coupon, user.getId());
-            if (couponOptional.isPresent() && couponOptional.get().getUser().getId().equals(userId)) {
-                BigDecimal discount = couponOptional.get().getDiscount();
+            Optional<CouponDTO> couponDtoOptional = couponService.findByCodeAndId(coupon, userdto.id());
+            if (couponDtoOptional.isPresent() && couponDtoOptional.get().userId().equals(userdto.id())) {
+                BigDecimal discount = couponDtoOptional.get().discount();
                 totalPrice = totalPrice.multiply(discount).abs();
-                orderDto.setCuponUsed(coupon);
+                couponString = coupon;
             } else {
-                orderDto.setCuponUsed("No coupon applied");
+                couponString = "No coupon applied";
             }
         } else {
-            orderDto.setCuponUsed("No coupon applied");
+            couponString = "No coupon applied";
         }
-        orderDto.setSummary(totalPrice);
+        orderDto = OrderShoesService.fillDetailsOrder(orderDto, userId, country, coupon, firstName, lastName, email,
+                address, phone, couponString, totalPrice);
         orderShoesService.saveOrderShoes(orderDto);
         orderShoesService.processOrder(orderDto);
         // Prepare data for the PDF
@@ -118,8 +120,8 @@ public class CheckoutRestController {
         data.put("phone", phone);
         data.put("country", country);
         data.put("coupon", (coupon != null && !coupon.isEmpty()) ? coupon : "No coupon applied");
-        data.put("date", orderDto.getDate());
-        data.put("products", orderDto.getOrderItems());
+        data.put("date", orderDto.date());
+        data.put("products", orderDto.orderItems());
         data.put("total", totalPrice);
 
         // Generate PDF
@@ -135,7 +137,190 @@ public class CheckoutRestController {
         response.getOutputStream().write(pdfBytes);
     }
 
-    
+    /**
+     * Method to apply a coupon code and recalculate the total.
+     */
+    @PostMapping("/applyCoupon")
+    public String applyCoupon(@RequestParam String coupon, HttpServletRequest request, Model model) {
+
+        // Ensure the user is authenticated
+        boolean isAuthenticated = request.getUserPrincipal() != null;
+        if (!isAuthenticated) {
+            return "redirect:/errorPage";
+        }
+
+        // Retrieve user
+        UserDTO userDto = getAuthenticatedUser(request);
+
+        // Retrieve the cart
+        Optional<OrderShoesDTO> orderDtoOptional = orderShoesService.getCartById(userDto.id());
+        if (orderDtoOptional.isPresent()) {
+            OrderShoesDTO orderDto = orderDtoOptional.get();
+            Optional<CouponDTO> couponOptional = couponService.findByCodeAndId(coupon, userDto.id());
+
+            if (couponOptional.isPresent()) {
+                BigDecimal discount = couponOptional.get().discount();
+                BigDecimal totalPrice = orderDto.summary().multiply(discount);
+                model.addAttribute("apply", true);
+                model.addAttribute("Summary", totalPrice);
+                return "partials/finalSummary";
+            } else {
+                model.addAttribute("error", true);
+                return "partials/errorCoupon";
+            }
+        }
+        return "redirect:/errorPage";
+    }
+
+    /**
+     * Method to display the checkout page.
+     */
+    @GetMapping("/user")
+    public String showCheckout(HttpServletRequest request, Model model) {
+
+        // Get CSRF token
+        CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
+        model.addAttribute("token", csrfToken.getToken());
+        model.addAttribute("headerName", csrfToken.getHeaderName());
+
+        // Check authentication
+        boolean isAuthenticated = request.getUserPrincipal() != null;
+        model.addAttribute("isAuthenticated", isAuthenticated);
+        if (isAuthenticated) {
+            model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
+        }
+
+        // If user is not authenticated or not found, return default checkout page
+        if (!isAuthenticated) {
+            model.addAttribute("setSubtotal", false);
+            model.addAttribute("stocskAvailable", false);
+            model.addAttribute("cartItems", false);
+            return "checkout";
+        }
+
+        // Retrieve user
+        UserDTO userDto = getAuthenticatedUser(request);
+
+        // Retrieve cart
+        Optional<OrderShoesDTO> cartOptional = orderShoesService.getCartById(userDto.id());
+        if (cartOptional.isEmpty()) {
+            model.addAttribute("setSubtotal", false);
+            model.addAttribute("stocskAvailable", false);
+            model.addAttribute("cartItems", false);
+            return "checkout";
+        }
+
+        // Set model attributes for the cart
+        setModelAttributesForCart(cartOptional.get(), model);
+
+        return "checkout";
+    }
+
+    /**
+     * Method to delete an item from the checkout cart.
+     */
+    @GetMapping("/deleteItem/{id}")
+    public String deleteItemCheckout(@PathVariable Long id, Model model, HttpServletRequest request) {
+
+        // Retrieve user
+        UserDTO userDto = getAuthenticatedUser(request);
+
+        // Retrieve cart
+        Optional<OrderShoesDTO> cartOptionalDto = orderShoesService.getCartById(userDto.id());
+        if (cartOptionalDto.isEmpty()) {
+            model.addAttribute("setSubtotal", false);
+            model.addAttribute("stocskAvailable", false);
+            model.addAttribute("cartItems", false);
+            return "partials/checkout-itemsList";
+        }
+
+        OrderShoesDTO cartDto = cartOptionalDto.get();
+
+        // Delete the orderItem from the cart
+        orderShoesService.deleteOrderItems(userDto.id(), id);
+        orderShoesService.saveOrderShoes(cartDto);
+
+        // Refresh the cart after deletion
+        setModelAttributesForCart(cartDto, model);
+
+        return "partials/checkout-itemsList";
+    }
+
+    /**
+     * Method to recalculate cart totals after quantity changes in the cart.
+     */
+    @PostMapping("/recalculate")
+    public String recalculate(
+            @RequestParam(required = false) List<Long> ids,
+            @RequestParam(required = false) List<Integer> quantities,
+            Model model,
+            HttpServletRequest request) {
+
+        // Retrieve user
+        UserDTO userDto = getAuthenticatedUser(request);
+
+        // Basic checks
+        if (ids == null || quantities == null || ids.isEmpty() || quantities.isEmpty()) {
+            model.addAttribute("setSubtotal", false);
+            model.addAttribute("stocskAvailable", false);
+            model.addAttribute("cartItems", false);
+            return "partials/checkout-itemsList";
+        }
+
+        // Retrieve cart
+        Optional<OrderShoesDTO> cartOptionalDto = orderShoesService.getCartById(userDto.id());
+        if (cartOptionalDto.isEmpty() || orderShoesService.getLengthOrderShoes(cartOptionalDto.get()) == 0) {
+            model.addAttribute("setSubtotal", false);
+            model.addAttribute("stocskAvailable", false);
+            model.addAttribute("cartItems", false);
+            return "partials/checkout-itemsList";
+        }
+
+        // Update order items
+        OrderShoesDTO cartDto = cartOptionalDto.get();
+
+        Map<String, Object> shoeInfo = orderShoesService.getShoeIdsAndSizes(cartDto);
+        List<Long> shoeIds = (List<Long>) shoeInfo.get("shoeIds");
+        List<String> sizes = (List<String>) shoeInfo.get("sizes");
+
+        Map<String, Integer> stockMap = shoeSizeStockService.getAllStocksForShoes(shoeIds, sizes);
+
+        List<Long> updatedIds = new ArrayList<>();
+        List<Integer> updatedQuantities = new ArrayList<>();
+
+        // For each item in the cart, adjust quantity according to available stock
+        for (OrderItemDTO orderItemDto : cartDto.orderItems()) {
+            String stockKey = orderItemDto.shoeId() + "_" + orderItemDto.size();
+            int availableStock = stockMap.getOrDefault(stockKey, 0);
+
+            int index = ids.indexOf(orderItemDto.id());
+            int newQuantity = (index != -1 && quantities.get(index) != null) ? quantities.get(index)
+                    : orderItemDto.quantity();
+
+            // Ensure quantity is at least 1
+            if (newQuantity < 1) {
+                newQuantity = orderItemDto.quantity();
+            }
+            // Ensure we do not exceed available stock
+            if (newQuantity > availableStock) {
+                newQuantity = availableStock;
+            }
+
+            updatedIds.add(orderItemDto.id());
+            updatedQuantities.add(newQuantity);
+        }
+
+        // Batch update order items
+        orderItemService.updateOrderItemsBatch(updatedIds, updatedQuantities);
+
+        // Retrieve updated cart
+        cartDto = orderShoesService.getCartById(userDto.id()).orElseThrow();
+
+        // Set model attributes for the updated cart
+        setModelAttributesForCart(cartDto, model);
+
+        return "partials/checkout-itemsList";
+    }
 
     // ======================= PRIVATE HELPER METHODS ======================= //
 
@@ -143,76 +328,66 @@ public class CheckoutRestController {
      * Retrieves the authenticated user from the HttpServletRequest.
      * Throws an exception if the user is not found.
      */
-    private UserDTO getAuthenticatedUserOrThrow(HttpServletRequest request) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !(authentication.getPrincipal() instanceof UserDetails)) {
-            throw new RuntimeException("No authenticated user found");
-        }
-        //se debe cambir el service para que devuelva un DTO
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return userRepository.findByUsername(userDetails.getUsername())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    public UserDTO getAuthenticatedUser(HttpServletRequest request) {
+        UserDTO userDTO = userService.getAuthenticatedUser();
+        return userDTO;
     }
 
     /**
      * Sets common model attributes for displaying cart information.
      */
-    private void setModelAttributesForCart(OrderShoes cart, Model model) {
-        // If the cart has no items, show empty cart attributes
-        if (cart.getLenghtOrderShoes() == 0) {
+    private void setModelAttributesForCart(OrderShoesDTO cart, Model model) {
+        int cartLength = orderShoesService.getLengthOrderShoes(cart);
+
+        // Si el carrito no tiene artículos, mostramos atributos de carrito vacío
+        if (cartLength == 0) {
             model.addAttribute("setSubtotal", false);
             model.addAttribute("stocskAvailable", false);
             model.addAttribute("cartItems", false);
             return;
         }
 
-        // Build lists of shoe IDs and sizes
-        List<Long> shoeIds = cart.getOrderItems().stream()
-                .map(orderItem -> orderItem.getShoe().getId())
-                .distinct()
-                .collect(Collectors.toList());
-        List<String> sizes = cart.getOrderItems().stream()
-                .map(OrderItem::getSize)
-                .distinct()
-                .collect(Collectors.toList());
+        Map<String, Object> shoeInfo = orderShoesService.getShoeIdsAndSizes(cart);
+        List<Long> shoeIds = (List<Long>) shoeInfo.get("shoeIds");
+        List<String> sizes = (List<String>) shoeInfo.get("sizes");
 
-        // Obtain stocks in a single query
+        // Obtener stock en una sola consulta
         Map<String, Integer> stockMap = shoeSizeStockService.getAllStocksForShoes(shoeIds, sizes);
 
         boolean stocksAvailable = true;
         List<Map<String, Object>> cartItems = new ArrayList<>();
 
-        // Build a list of cart items with stock information
-        for (OrderItem orderItem : cart.getOrderItems()) {
-            Shoe shoe = orderItem.getShoe();
-            String stockKey = shoe.getId() + "_" + orderItem.getSize();
+        // Construir lista de artículos del carrito con información de stock
+        for (OrderItemDTO orderItemDto : cart.orderItems()) {
+            String stockKey = orderItemDto.shoeId() + "_" + orderItemDto.size();
             boolean stockAvailable = stockMap.getOrDefault(stockKey, 0) > 0;
             stocksAvailable = stocksAvailable && stockAvailable;
 
             Map<String, Object> item = new HashMap<>();
-            item.put("id", shoe.getId());
-            item.put("name", shoe.getName());
-            item.put("price", shoe.getPrice());
-            item.put("quantity", orderItem.getQuantity());
-            item.put("size", orderItem.getSize());
-            item.put("id_orderItem", orderItem.getId());
+            item.put("id", orderItemDto.shoeId());
+            item.put("name", orderItemDto.shoeName());
+            item.put("price", shoeService.getPricefromShoe(shoeService.getShoeById(orderItemDto.shoeId()).get()));
+            // lado
+            item.put("quantity", orderItemDto.quantity());
+            item.put("size", orderItemDto.size());
+            item.put("id_orderItem", orderItemDto.id());
             item.put("stock", stockAvailable);
 
             cartItems.add(item);
         }
 
-        // Calculate total excluding out-of-stock items
-        BigDecimal total = orderShoesService.getTotalPriceExcludingOutOfStock(cart.getId());
+        // Calcular total excluyendo artículos fuera de stock
+        BigDecimal total = orderShoesService.getTotalPriceExcludingOutOfStock(cart.id());
         if (total == null) {
             total = BigDecimal.ZERO;
         }
 
-        // Set the model attributes
-        model.addAttribute("stocskAvailable", stocksAvailable);
+        // Establecer atributos en el modelo
+        model.addAttribute("stocksAvailable", stocksAvailable);
         model.addAttribute("setSubtotal", true);
         model.addAttribute("total", total);
         model.addAttribute("cartItems", cartItems);
-        model.addAttribute("id_orderShoe", cart.getId());
-    }
+        model.addAttribute("id_orderShoe", cart.id());
 
+    }
 }
