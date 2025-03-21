@@ -17,6 +17,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import com.stepx.stepx.dto.CouponDTO;
+import com.stepx.stepx.dto.OrderShoesDTO;
+import com.stepx.stepx.dto.UserDTO;
 import com.stepx.stepx.model.*;
 import com.stepx.stepx.repository.*;
 import com.stepx.stepx.service.*;
@@ -41,6 +44,9 @@ public class CheckoutController {
 
     @Autowired
     private PdfService pdfService;
+
+    @Autowired
+    private CouponService couponService;
 
     @Autowired
     private UserRepository userRepository;
@@ -69,44 +75,38 @@ public class CheckoutController {
         }
 
         // Retrieve user
-        User user = getAuthenticatedUserOrThrow(request);
-        Long userId = user.getId();
+        UserDTO userdto = getAuthenticatedUserOrThrow(request);
+        Long userId = userdto.id();
 
         // Retrieve the cart
-        Optional<OrderShoes> orderOptional = orderShoesService.getCartById(userId);
-        if (!orderOptional.isPresent()) {
+        Optional<OrderShoesDTO> orderDToOptional = orderShoesService.getCartById(userId);
+        if (!orderDToOptional.isPresent()) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND, "Order not found");
             return;
         }
-
         // Fill the order details
-        OrderShoes order = orderOptional.get();
-        order.setCountry(country);
-        order.setFirstName(firstName);
-        order.setSecondName(lastName);
-        order.setEmail(email);
-        order.setAddress(address);
-        order.setNumerPhone(phone);
-        order.setState("Processed");
-        order.setActualDate();
+        OrderShoesDTO orderDto = orderDToOptional.get();
+       
 
+        
         // Apply coupon discount if valid
-        BigDecimal totalPrice = order.getTotalPrice();
+        BigDecimal totalPrice = orderShoesService.getTotalPrice(orderDto.id());
+        String couponString;
         if (coupon != null && !coupon.isEmpty()) {
-            Optional<Coupon> couponOptional = couponRepository.findByCodeAndId(coupon, user.getId());
-            if (couponOptional.isPresent() && couponOptional.get().getUser().getId().equals(userId)) {
-                BigDecimal discount = couponOptional.get().getDiscount();
+            Optional<CouponDTO> couponDtoOptional = couponService.findByCodeAndId(coupon, userdto.id());
+            if (couponDtoOptional.isPresent() && couponDtoOptional.get().userId().equals(userdto.id())) {
+                BigDecimal discount = couponDtoOptional.get().discount();
                 totalPrice = totalPrice.multiply(discount).abs();
-                order.setCuponUsed(coupon);
+                couponString = coupon;
             } else {
-                order.setCuponUsed("No coupon applied");
+                couponString = "No coupon applied";
             }
         } else {
-            order.setCuponUsed("No coupon applied");
+            couponString = "No coupon applied";
         }
-        order.setSummary(totalPrice);
-        orderShoesService.saveOrderShoes(order);
-        orderShoesService.processOrder(order);
+        orderDto = OrderShoesService.fillDetailsOrder(orderDto, userId, country, coupon, firstName, lastName, email, address, phone, couponString, totalPrice);
+        orderShoesService.saveOrderShoes(orderDto);
+        orderShoesService.processOrder(orderDto);
         // Prepare data for the PDF
         Map<String, Object> data = new HashMap<>();
         data.put("customerName", firstName + " " + lastName);
@@ -115,8 +115,8 @@ public class CheckoutController {
         data.put("phone", phone);
         data.put("country", country);
         data.put("coupon", (coupon != null && !coupon.isEmpty()) ? coupon : "No coupon applied");
-        data.put("date", order.getDate());
-        data.put("products", order.getOrderItems());
+        data.put("date", orderDto.date());
+        data.put("products", orderDto.orderItems());
         data.put("total", totalPrice);
 
         // Generate PDF
@@ -145,17 +145,17 @@ public class CheckoutController {
         }
 
         // Retrieve user
-        User user = getAuthenticatedUserOrThrow(request);
+        UserDTO userDto = getAuthenticatedUserOrThrow(request);
 
         // Retrieve the cart
-        Optional<OrderShoes> orderOptional = orderShoesService.getCartById(user.getId());
-        if (orderOptional.isPresent()) {
-            OrderShoes order = orderOptional.get();
-            Optional<Coupon> couponOptional = couponRepository.findByCodeAndId(coupon, user.getId());
+        Optional<OrderShoesDTO> orderDtoOptional = orderShoesService.getCartById(userDto.id());
+        if (orderDtoOptional.isPresent()) {
+            OrderShoesDTO orderDto = orderDtoOptional.get();
+            Optional<CouponDTO> couponOptional = couponService.findByCodeAndId(coupon, userDto.id());
 
             if (couponOptional.isPresent()) {
-                BigDecimal discount = couponOptional.get().getDiscount();
-                BigDecimal totalPrice = order.getTotalPrice().multiply(discount);
+                BigDecimal discount = couponOptional.get().discount();
+                BigDecimal totalPrice = orderDto.summary().multiply(discount);
                 model.addAttribute("apply", true);
                 model.addAttribute("Summary", totalPrice);
                 return "partials/finalSummary";
@@ -329,7 +329,7 @@ public class CheckoutController {
      * Retrieves the authenticated user from the HttpServletRequest.
      * Throws an exception if the user is not found.
      */
-    private User getAuthenticatedUserOrThrow(HttpServletRequest request) {
+    private UserDTO getAuthenticatedUserOrThrow(HttpServletRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !(authentication.getPrincipal() instanceof UserDetails)) {
             throw new RuntimeException("No authenticated user found");
