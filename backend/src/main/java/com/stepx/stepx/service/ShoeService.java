@@ -11,22 +11,29 @@ import java.util.Optional;
 
 import javax.sql.rowset.serial.SerialBlob;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import com.stepx.stepx.dto.ShoeDTO;
 import com.stepx.stepx.model.Shoe;
+import com.stepx.stepx.mapper.*;
 import com.stepx.stepx.model.Shoe.Brand;
 import com.stepx.stepx.model.Shoe.Category;
 import com.stepx.stepx.repository.ShoeRepository;
+
 
 @Service
 public class ShoeService {
    
 
     private final ShoeRepository shoeRepository;
+
+    @Autowired
+    private static ShoeMapper shoeMapper;
 
     public ShoeService(ShoeRepository shoeRepository) {
         this.shoeRepository = shoeRepository;
@@ -66,8 +73,9 @@ public class ShoeService {
     }
 
 
-    public Optional<Shoe> getShoeById(Long id) {
-        return shoeRepository.findById(id);
+    public Optional<ShoeDTO> getShoeById(Long id){
+        Optional<Shoe> shoeOptional = shoeRepository.findById(id);
+        return shoeOptional.map(shoeMapper::toDTO); 
     }
     
     
@@ -158,6 +166,11 @@ public class ShoeService {
 
     public String categoryToString(Category category){
         return category.name().toUpperCase();
+    }
+
+    public BigDecimal getPricefromShoe(ShoeDTO shoeDtO){
+        Shoe shoe = ShoeMapper.toDomain(shoeDtO);
+        return shoe.getPrice();
     }
 
     

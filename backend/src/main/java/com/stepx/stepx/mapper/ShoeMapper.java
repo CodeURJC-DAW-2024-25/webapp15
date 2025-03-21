@@ -12,7 +12,10 @@ import org.mapstruct.factory.Mappers;
 public interface ShoeMapper {
 
     ShoeDTO toDTO(Shoe shoe);
-    Shoe toDoamin(ShoeDTO shoeDTO);
 
-    
+    static Shoe toDomain(ShoeDTO shoeDTO) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'toDomain'");
+    }
+
 }

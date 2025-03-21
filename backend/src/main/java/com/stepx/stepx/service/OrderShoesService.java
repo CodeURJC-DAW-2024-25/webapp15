@@ -172,9 +172,33 @@ public class OrderShoesService {
 
     }
 
-    public int getCartLength(OrderShoesDTO orderShoesDTO) {
+    public int getLengthOrderShoes(OrderShoesDTO orderShoesDTO) {
         OrderShoes orderShoes = orderShoesMapper.toDomain(orderShoesDTO); // Convertimos DTO a dominio
         return orderShoes.getOrderItems().size(); // Calculamos la longitud del carrito en base a los items
     }
+
+    public Map<String, Object> getShoeIdsAndSizes(OrderShoesDTO orderShoesDTO) {
+        // Convertimos el DTO a la entidad de dominio
+        OrderShoes orderShoes = orderShoesMapper.toDomain(orderShoesDTO);
+
+        // Extraemos los shoeIds y sizes de los OrderItems
+        List<Long> shoeIds = orderShoes.getOrderItems().stream()
+                .map(orderItem -> orderItem.getShoe().getId())  // Suponiendo que OrderItem tiene un método getShoe()
+                .distinct()
+                .collect(Collectors.toList());
+
+        List<String> sizes = orderShoes.getOrderItems().stream()
+                .map(OrderItem::getSize)  // Suponiendo que OrderItem tiene un método getSize()
+                .distinct()
+                .collect(Collectors.toList());
+
+        // Retornamos los resultados en un Map
+        Map<String, Object> result = new HashMap<>();
+        result.put("shoeIds", shoeIds);
+        result.put("sizes", sizes);
+        
+        return result;
+    }
+
 
 }

@@ -1,11 +1,17 @@
 package com.stepx.stepx.service;
 
 
+
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+import com.stepx.stepx.dto.UserDTO;
+import com.stepx.stepx.mapper.UserMapper;
 import com.stepx.stepx.model.User;
 import com.mysql.cj.jdbc.Blob;
 
@@ -17,10 +23,13 @@ public class UserService {
     
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder){
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder ,UserMapper userMapper ){
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.userMapper = userMapper;
+
     }
 
     public Optional<User> findUserById(Long userId) {
@@ -50,6 +59,22 @@ public class UserService {
 
     public void saveUser(User user){
         userRepository.save(user);
+    }
+
+    public UserDTO getAuthenticatedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof UserDetails)) {
+            throw new RuntimeException("No authenticated user found");
+        }
+
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+        // Buscar usuario en la base de datos
+        User user = userRepository.findByUsername(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Convertir User a UserDTO
+        return userMapper.toDTO(user);
     }
 
 }
