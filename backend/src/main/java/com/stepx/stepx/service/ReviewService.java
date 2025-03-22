@@ -28,9 +28,11 @@ public class ReviewService {
         this.reviewRepository = reviewRepository;
     }
 
-    public List<Review> getReviewsByShoe(Long shoeId) {
-        return reviewRepository.findReviewsByShoeId(shoeId);
+    public List<ReviewDTO> getReviewsByShoe(Long shoeId) {
+        List<Review> reviews = reviewRepository.findReviewsByShoeId(shoeId);
+        return reviews != null ? reviewMapper.toDTOs(reviews) : List.of();
     }
+    
 
     public Optional<ReviewDTO> getReviewById(Long id) {
         return reviewRepository.findById(id)
@@ -54,9 +56,10 @@ public class ReviewService {
         }
     }
 
-    public List<Review> getPagedReviewsByShoeId(Long shoeId, int page, int limit) {
+    public List<ReviewDTO> getPagedReviewsByShoeId(Long shoeId, int page, int limit) {
         Pageable pageable = PageRequest.of(page, limit);
-        return reviewRepository.findByShoeId(shoeId, pageable).getContent();
+        List<Review> reviews = reviewRepository.findByShoeId(shoeId, pageable).getContent();
+        return reviews != null ? reviewMapper.toDTOs(reviews) : List.of();
     }
 
     public List<ReviewDTO> convertToDTOReviewList(List<Review> reviews) {
