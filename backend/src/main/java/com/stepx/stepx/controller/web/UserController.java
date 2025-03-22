@@ -85,7 +85,7 @@ public class UserController {
         if (!usergetted.isPresent()) {
             throw new RuntimeException("User not registered");
         }
-        UserDTO user = usergetted.get();
+        UserDTO user = usergetted.get();//
 
         // verify if the user has a cart or not
         Optional<OrderShoesDTO> cart_Optional = orderShoesService.getCartById(user.id());
