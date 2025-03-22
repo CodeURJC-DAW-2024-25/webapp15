@@ -1,5 +1,7 @@
 package com.stepx.stepx.model;
 
+import java.math.BigDecimal;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,6 +31,8 @@ public class OrderItem {
 
     @Column(nullable = false)
     private String size; // Size shoe
+
+    private BigDecimal price; // Price of product in that moment
 
     public OrderItem() {
     }
@@ -80,4 +84,11 @@ public class OrderItem {
         this.size = size;
     }
 
+    public BigDecimal getPrice() {
+        return price;
+    }
+    
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
 }

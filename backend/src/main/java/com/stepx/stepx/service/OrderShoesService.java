@@ -12,8 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import com.mysql.cj.x.protobuf.MysqlxCrud.Order;
 import com.stepx.stepx.dto.*;
 import com.stepx.stepx.mapper.OrderShoesMapper;
+import com.stepx.stepx.mapper.UserMapper;
 import com.stepx.stepx.model.OrderItem;
 import com.stepx.stepx.model.OrderShoes;
 import com.stepx.stepx.model.Shoe;
@@ -32,9 +34,10 @@ public class OrderShoesService {
     private final UserRepository userRepository;
     private final OrderItemRepository orderItemRepository;
     private final ShoeSizeStockService shoeSizeStockService;
-
     @Autowired
-    private static OrderShoesMapper orderShoesMapper;
+    private OrderShoesMapper orderShoesMapper;
+    @Autowired
+    private UserMapper userMapper;
 
     public OrderShoesService(OrderShoesRepository orderShoesRepository, UserRepository userRepository,
             OrderItemRepository orderItemRepository, ShoeSizeStockService shoeSizeStockService) {
@@ -44,20 +47,26 @@ public class OrderShoesService {
         this.shoeSizeStockService = shoeSizeStockService;
     }
 
-    // cambiado esto para DTO
+    
     public Optional<OrderShoesDTO> getCartById(Long id_client) {
         return orderShoesRepository.findCartById(id_client)
                 .map(orderShoes -> Optional.ofNullable(orderShoesMapper.toDTO(orderShoes)))
                 .orElse(Optional.empty());
     }
 
-    public OrderShoes createCartForUser(User user) {
-        OrderShoes ordershoe = new OrderShoes(user);
-        ordershoe.setState("notFinished");
-        user.addOrderShoe(ordershoe);
-        orderShoesRepository.save(ordershoe);
-        userRepository.save(user);
-        return ordershoe;
+    public OrderShoesDTO createCartForUser(UserDTO userdto) {
+        Optional<User> userOptional = userRepository.findById(userdto.id());
+        if (userOptional.isPresent()){
+            User user = userOptional.get();
+            OrderShoes ordershoe = new OrderShoes(user);
+            ordershoe.setState("notFinished");
+            user.addOrderShoe(ordershoe);
+            orderShoesRepository.save(ordershoe);
+            userRepository.save(user);
+            return orderShoesMapper.toDTO(ordershoe);
+        }else{
+            throw new IllegalArgumentException("User not found");
+        }
     }
 
     @Transactional
@@ -147,14 +156,14 @@ public class OrderShoesService {
         BigDecimal total = BigDecimal.ZERO;
 
         for (OrderItem item : order.getOrderItems()) {
-            BigDecimal itemTotal = item.getShoe().getPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
+            BigDecimal itemTotal = item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
             total = total.add(itemTotal);
         }
 
         return total;
     }
 
-    public static OrderShoesDTO fillDetailsOrder(OrderShoesDTO orderDto, Long userId, String country, String coupon,
+    public OrderShoesDTO fillDetailsOrder(OrderShoesDTO orderDto, Long userId, String country, String coupon,
             String firstName, String lastName, String email, String address, String phone, String couponString,
             BigDecimal totalPrice) {
         OrderShoes order = orderShoesMapper.toDomain(orderDto);
@@ -172,7 +181,7 @@ public class OrderShoesService {
 
     }
 
-    public int getCartLength(OrderShoesDTO orderShoesDTO) {
+    public int getLenghtOrderShoes(OrderShoesDTO orderShoesDTO) {
         OrderShoes orderShoes = orderShoesMapper.toDomain(orderShoesDTO); // Convertimos DTO a dominio
         return orderShoes.getOrderItems().size(); // Calculamos la longitud del carrito en base a los items
     }

@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import com.stepx.stepx.model.User;
 import com.stepx.stepx.model.Shoe;
+import com.stepx.stepx.dto.OrderItemDTO;
+import com.stepx.stepx.dto.OrderShoesDTO;
+import com.stepx.stepx.dto.ShoeDTO;
 import com.stepx.stepx.model.OrderItem;
 import com.stepx.stepx.model.OrderShoes;
 import com.stepx.stepx.service.OrderItemService;
@@ -54,20 +57,21 @@ public class OrderItemController {
         }
         User user = usergetted.get();
 
-        Optional<OrderShoes> cart_Optional = orderShoesService.getCartById(user.getId());
+        Optional<OrderShoesDTO> cart_Optional = orderShoesService.getCartById(user.getId());
 
-        OrderShoes cart;
+        OrderShoesDTO cart;
         if (cart_Optional.isPresent()) {
             cart = cart_Optional.get();
         } else {
             cart = orderShoesService.createCartForUser(user);
         }
 
-        Optional<Shoe> shoe_optional = shoeService.getShoeById(id_Shoe);
+        Optional<ShoeDTO> shoe_optional = shoeService.getShoeById(id_Shoe);
         if (!shoe_optional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Shoes not found");
         }
-        Shoe shoe = shoe_optional.get();
+        ShoeDTO shoe = shoe_optional.get();
+
         // obtain stock of that shoe
         Optional<Integer> stockShoe_Optional = shoeSizeStockService.getStockByShoeAndSize(id_Shoe, size);
         Integer stock = stockShoe_Optional.get();
@@ -76,8 +80,7 @@ public class OrderItemController {
             cuantity = 0;
         }
 
-        Optional<OrderItem> orderItemOptional = orderItemService.findByCartAndShoeAndSize(user.getId(), id_Shoe, size);
-        OrderItem orderItem;
+        OrderItemDTO orderItemDTO = orderItemService.findByCartAndShoeAndSize(user.getId(), id_Shoe, size);
         // confirmation if quantity is <1 or >stock
         if (cuantity < 1) {
             cuantity = 1;
@@ -86,14 +89,20 @@ public class OrderItemController {
             cuantity = stock;
         }
 
-        if (orderItemOptional.isPresent()) {
-            orderItem = orderItemOptional.get();
-            orderItem.setQuantity(orderItem.getQuantity() + 1);
+        if (orderItemDTO!=null) {//if the shoe is already in the cart
+            orderItemService.addOrUpdateItem(orderItemDTO, orderItemDTO.quantity() + cuantity);
         } else {
-            orderItem = new OrderItem(cart, shoe, cuantity, size);
+            OrderItemDTO itemToAdd = new OrderItemDTO(
+                null, // id
+                cart.id(),
+                shoe.id(),
+                shoe.name(),
+                cuantity,
+                size,
+                shoe.price()
+            );
+            orderItemService.addOrUpdateItem(itemToAdd, cuantity);
         }
-        orderItemService.save(orderItem);
-
         return ResponseEntity.ok("Shoe added to your cart");
     }
 

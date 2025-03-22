@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.stepx.stepx.dto.BasicShoeSizeStockDTO;
+import com.stepx.stepx.dto.ShoeSizeStockDTO;
+import com.stepx.stepx.mapper.ShoeSizeStockMapper;
 import com.stepx.stepx.model.Shoe;
 import com.stepx.stepx.model.ShoeSizeStock;
 import com.stepx.stepx.repository.ShoeRepository;
@@ -26,6 +28,9 @@ public class ShoeSizeStockService {
     @Autowired
     private ShoeRepository shoeRepository;
 
+    @Autowired
+    private ShoeSizeStockMapper shoeSizeStockMapper;
+
     public List<ShoeSizeStock> getAllStock() {
         return shoeSizeStockRepository.findAll();
     }
@@ -36,6 +41,13 @@ public class ShoeSizeStockService {
 
     public ShoeSizeStock saveStock(ShoeSizeStock stock) {
         return shoeSizeStockRepository.save(stock);
+    }
+
+     public void saveStockList(List<ShoeSizeStockDTO> dtos) {
+        List<ShoeSizeStock> entities = dtos.stream()
+            .map(shoeSizeStockMapper::toDomain)
+            .toList();
+            shoeSizeStockRepository.saveAll(entities);
     }
 
     public void deleteStock(Long id) {
@@ -66,7 +78,7 @@ public class ShoeSizeStockService {
         }
     }
 
-    public List<BasicShoeSizeStockDTO> convertToShoeSizeStockDTO(List<ShoeSizeStock> sizeStocks) {
+    /*public List<BasicShoeSizeStockDTO> convertToShoeSizeStockDTO(List<ShoeSizeStock> sizeStocks) {
         List<BasicShoeSizeStockDTO> sizeStocksDTOs = new ArrayList<>();
     
         for (ShoeSizeStock sizeStock : sizeStocks) {
@@ -80,12 +92,12 @@ public class ShoeSizeStockService {
         }
     
         return sizeStocksDTOs;
-    }
+    }*/
 
-    public List<ShoeSizeStock> convertToShoeSizeStock(List<BasicShoeSizeStockDTO> sizeStocksDTOs) {
+    public List<ShoeSizeStock> convertToShoeSizeStock(List<ShoeSizeStockDTO> sizeStocksDTOs) {
         List<ShoeSizeStock> sizeStocks = new ArrayList<>();
-
-        for (BasicShoeSizeStockDTO sizeStockDTO : sizeStocksDTOs) {
+        sizeStocks=shoeSizeStockMapper.toDomains(sizeStocksDTOs);
+        /*for (BasicShoeSizeStockDTO sizeStockDTO : sizeStocksDTOs) {
             Shoe shoe = new Shoe(); // Debes recuperar la instancia de Shoe por su ID
             shoe.setId(sizeStockDTO.shoeId());
             ShoeSizeStock sizeStock = new ShoeSizeStock();
@@ -98,7 +110,7 @@ public class ShoeSizeStockService {
             sizeStock.setSize(sizeStockDTO.size());
             sizeStock.setStock(sizeStockDTO.stock());
             sizeStocks.add(sizeStock);
-        }
+        }*/
 
         return sizeStocks;
     }

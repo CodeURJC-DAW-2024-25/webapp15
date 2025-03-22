@@ -9,12 +9,13 @@ import org.mapstruct.Mapping;
 import com.stepx.stepx.dto.ShoeSizeStockDTO;
 import com.stepx.stepx.model.ShoeSizeStock;
 
-@Mapper(componentModel =  "spring",uses = ShoeMapper.class) 
+@Mapper(componentModel =  "spring") 
 public interface ShoeSizeStockMapper {
 
     @Mapping(source = "shoe.id", target = "shoeId")  // Extrae solo el ID de Shoe
     ShoeSizeStockDTO toDTO(ShoeSizeStock shoeSizeStock);
-    //@Mapping(source = "shoeId", target = "shoe") // Usa ShoeMapper para convertir el ID en Shoe
+    
+    @Mapping(source = "shoeId", target = "shoe.id") // Usa ShoeMapper para convertir el ID en Shoe
     ShoeSizeStock toDomain(ShoeSizeStockDTO shoeSizeStockDTO); 
     
     List<ShoeSizeStock> toDomains(List<ShoeSizeStockDTO> shoeSizeStockDTOs);

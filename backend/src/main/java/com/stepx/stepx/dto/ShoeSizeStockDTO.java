@@ -1,11 +1,9 @@
 package com.stepx.stepx.dto;
 
-import com.stepx.stepx.model.Shoe;
 
 public record ShoeSizeStockDTO(
     Long id,
     Long shoeId,
-    ShoeDTO shoe,
     String size,
     Integer stock
 ) {

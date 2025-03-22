@@ -27,9 +27,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.stepx.stepx.model.OrderItem;
+import com.stepx.stepx.dto.OrderItemDTO;
+import com.stepx.stepx.dto.OrderShoesDTO;
+import com.stepx.stepx.dto.UserDTO;
 import com.stepx.stepx.model.OrderShoes;
-import com.stepx.stepx.model.Shoe;
 import com.stepx.stepx.model.User;
 import com.stepx.stepx.repository.UserRepository;
 import com.stepx.stepx.security.RepositoryUserDetailsService;
@@ -37,6 +38,7 @@ import com.stepx.stepx.service.EmailService;
 import com.stepx.stepx.service.OrderItemService;
 import com.stepx.stepx.service.OrderShoesService;
 import com.stepx.stepx.service.PdfService;
+import com.stepx.stepx.service.ShoeService;
 import com.stepx.stepx.service.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -65,6 +67,9 @@ public class UserController {
     private UserRepository userRepository;
 
     @Autowired
+    private ShoeService shoeService;
+
+    @Autowired
     private RepositoryUserDetailsService repositoryUserDetailsService;
 
     @GetMapping("/cart")
@@ -76,35 +81,37 @@ public class UserController {
         }
 
         // Existing cart code
-        Optional<User> usergetted = userService.findUserByUserName(principal.getName());
+        Optional<UserDTO> usergetted = userService.findUserByUserName(principal.getName());
         if (!usergetted.isPresent()) {
             throw new RuntimeException("User not registered");
         }
-        User user = usergetted.get();
+        UserDTO user = usergetted.get();
 
         // verify if the user has a cart or not
-        Optional<OrderShoes> cart_Optional = orderShoesService.getCartById(user.getId());
-        OrderShoes cart;
+        Optional<OrderShoesDTO> cart_Optional = orderShoesService.getCartById(user.id());
+        OrderShoesDTO cart;
 
         if (cart_Optional.isPresent()) {
-            cart = cart_Optional.get();
-            if (cart.getLenghtOrderShoes() == 0) {
+            cart = cart_Optional.get();//cart in dto format
+
+            if (orderShoesService.getLenghtOrderShoes(cart) == 0) {
                 model.addAttribute("setSubtotal", false);
                 model.addAttribute("empty", true);
             } else {
                 List<Map<String, Object>> cartItems = new ArrayList<>();
-                for (OrderItem orderItem : cart.getOrderItems()) {
+
+                for (OrderItemDTO orderItem : cart.orderItems()) {
                     Map<String, Object> item = new HashMap<>();
-                    item.put("id", orderItem.getShoe().getId());
-                    item.put("name", orderItem.getShoe().getName());
-                    item.put("price", orderItem.getShoe().getPrice());
-                    item.put("quantity", orderItem.getQuantity());
-                    item.put("size", orderItem.getSize());
-                    item.put("id_orderItem", orderItem.getId());
+                    item.put("id", orderItem.shoeId());
+                    item.put("name", orderItem.shoeName());
+                    item.put("price", orderItem.price());
+                    item.put("quantity", orderItem.quantity());
+                    item.put("size", orderItem.size());
+                    item.put("id_orderItem", orderItem.id());
                     cartItems.add(item);
                 }
                 model.addAttribute("setSubtotal", true);
-                model.addAttribute("total", cart.getTotalPrice());
+                model.addAttribute("total", orderShoesService.getTotalPrice(cart.id()));
                 model.addAttribute("cartItems", cartItems);
                 model.addAttribute("empty", false);
             }
@@ -148,16 +155,15 @@ public class UserController {
 
     @GetMapping("/orderItems")
     public String getOrderItems(@RequestParam Long id_order, Model model) {
-        List<OrderItem> orderItemsList = orderItemService.getOrderItemsByOrderId(id_order);
+        List<OrderItemDTO> orderItemsList = orderItemService.getOrderItemsByOrderId(id_order);
         List<Map<String, Object>> cartItems = new ArrayList<>();
-        for (OrderItem orderItem : orderItemsList) {
-            Shoe shoe = orderItem.getShoe();
+        for (OrderItemDTO orderItem : orderItemsList) {
             Map<String, Object> item = new HashMap<>();
-            item.put("id_item", shoe.getId());
-            item.put("name", shoe.getName());
-            item.put("price", shoe.getPrice());
-            item.put("quantity", orderItem.getQuantity());
-            item.put("size", orderItem.getSize());
+            item.put("id_item", orderItem.shoeId());
+            item.put("name", orderItem.shoeName());
+            item.put("price", orderItem.price());
+            item.put("quantity", orderItem.quantity());
+            item.put("size", orderItem.size());
             cartItems.add(item);
         }
 
@@ -165,7 +171,7 @@ public class UserController {
         return "partials/profileOrderItems";
     }
 
-    @PostMapping("/upload-profile-image")
+    @PostMapping("/upload-profile-image")//a dto
     public String uploadProfilePicture(@RequestParam(required = false) MultipartFile imageUser,
             HttpServletRequest request, Model model) throws IOException, SQLException {
         User user = userService.findUserByUserName(request.getUserPrincipal().getName()).orElseThrow();

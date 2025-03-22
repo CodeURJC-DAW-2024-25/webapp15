@@ -14,7 +14,6 @@ public record ShoeDTO(
     String imageUrl1,
     String imageUrl2,
     String imageUrl3,
-    List<BasicShoeSizeStockDTO> sizeStocks,
-    List<ReviewDTO> reviews,
-    List<OrderItemDTO> orderItems
+    List<ShoeSizeStockDTO> sizeStocks,
+    List<ReviewDTO> reviews
 ) {}

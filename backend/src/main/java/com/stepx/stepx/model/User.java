@@ -168,5 +168,6 @@ public class User implements UserDetails {
 
     public void addOrderShoe(OrderShoes orderShoes) {
         this.orders.add(orderShoes);
+        orderShoes.setUser(this);
     }
 }

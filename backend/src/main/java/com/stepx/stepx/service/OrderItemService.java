@@ -54,6 +54,29 @@ public class OrderItemService {
         // this return the shoe that the cliente is triying to add to the cart if exist or not, that will be managed by the controller
     }
 
+    @Transactional
+    public void addOrUpdateItem(OrderItemDTO dto, int newQuantity) {
+
+        if (dto == null) {
+            throw new IllegalArgumentException("DTO cannot be null");
+        }
+
+        if (dto.id() != null) {
+            Optional<OrderItem> existingItem = orderItemRepository.findById(dto.id());
+            if (existingItem.isPresent()) {
+                OrderItem item = existingItem.get();
+                item.setQuantity(newQuantity);
+                orderItemRepository.save(item);
+            } else {
+                throw new IllegalStateException("OrderItem not found with id: " + dto.id());
+            }
+        } else {
+            OrderItem newItem = orderItemMapper.toDomain(dto);
+            newItem.setQuantity(newQuantity);
+            orderItemRepository.save(newItem);
+        }
+    }
+
     public void save(OrderItemDTO orderItemDTO) {// save the order item in the bbdd
         OrderItem orderItem = orderItemMapper.toDomain(orderItemDTO);
         orderItemRepository.save(orderItem);

@@ -1,16 +1,18 @@
 package com.stepx.stepx.mapper;
 
 import com.stepx.stepx.dto.OrderShoesDTO;
-import com.stepx.stepx.dto.ShoeDTO;
 import com.stepx.stepx.model.OrderShoes;
-import com.stepx.stepx.model.Shoe;
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
+import org.mapstruct.Mapping;
 
-@Mapper(componentModel =  "spring")
+@Mapper(componentModel = "spring", uses = {OrderItemMapper.class, UserMapper.class})
 public interface OrderShoesMapper {
     
+    @Mapping(target = "userId", source = "user.id")
     OrderShoesDTO toDTO(OrderShoes orderShoes);
+    
+    @Mapping(target = "user.id", source = "userId")
     OrderShoes toDomain(OrderShoesDTO orderShoesDTO);
+
 }
 
