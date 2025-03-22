@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -105,12 +106,17 @@ public class OrderShoesService {
         return totalPrice;
     }
 
-    public List<OrderShoes> getOrderShoesFinishedByUserId(Long userId) {
-        return orderShoesRepository.getOrderShoesFinishedByUserId(userId);
+    public List<OrderShoesDTO> getOrderShoesFinishedByUserId(Long userId) {
+        return Optional.ofNullable(orderShoesRepository.getOrderShoesFinishedByUserId(userId))
+                .map(orderShoesMapper::toDTOs)
+                .orElseGet(List::of);
     }
+    
 
-    public List<OrderShoes> getPagedOrdersByUserId(int pageStart, Long userId) {
-        return orderShoesRepository.getPagedOrdersByUserId(userId, PageRequest.of(pageStart, 5));
+    public List<OrderShoesDTO> getPagedOrdersByUserId(int pageStart, Long userId) {
+        return Optional.ofNullable(orderShoesRepository.getPagedOrdersByUserId(userId, PageRequest.of(pageStart, 5)))
+                .map(orderShoesMapper::toDTOs)
+                .orElseGet(List::of);
     }
 
     public OrderShoes getLastOrder(Long userId) {
