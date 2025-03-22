@@ -60,71 +60,31 @@ public class CheckoutController {
      * Method to download the ticket PDF after processing the order.
      */
     @PostMapping("/downloadTicket")
-    public void downloadTicket(
-            @RequestParam Long orderId,
-            @RequestParam String country,
-            @RequestParam(required = false) String coupon,
-            @RequestParam String firstName,
-            @RequestParam String lastName,
-            @RequestParam String email,
-            @RequestParam String address,
-            @RequestParam String phone,
-            HttpServletResponse response,
-            HttpServletRequest request) throws IOException {
+public void downloadTicket(
+        @RequestParam Long orderId,
+        @RequestParam String country,
+        @RequestParam(required = false) String coupon,
+        @RequestParam String firstName,
+        @RequestParam String lastName,
+        @RequestParam String email,
+        @RequestParam String address,
+        @RequestParam String phone,
+        HttpServletResponse response,
+        HttpServletRequest request) throws IOException {
 
-        // Ensure the user is authenticated
-        boolean isAuthenticated = request.getUserPrincipal() != null;
-        if (!isAuthenticated) {
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged in to download the ticket");
-            return;
-        }
+    // Ensure the user is authenticated
+    boolean isAuthenticated = request.getUserPrincipal() != null;
+    if (!isAuthenticated) {
+        response.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged in to download the ticket");
+        return;
+    }
 
-        // Retrieve user
-        UserDTO userdto = getAuthenticatedUser(request);
-        Long userId = userdto.id();
+    // Retrieve user
+    UserDTO userdto = getAuthenticatedUser(request);
+    Long userId = userdto.id();
 
-        // Retrieve the cart
-        Optional<OrderShoesDTO> orderDToOptional = orderShoesService.getCartById(userId);
-        if (!orderDToOptional.isPresent()) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Order not found");
-            return;
-        }
-        // Fill the order details
-        OrderShoesDTO orderDto = orderDToOptional.get();
-
-        // Apply coupon discount if valid
-        BigDecimal totalPrice = orderShoesService.getTotalPrice(orderDto.id());
-        String couponString;
-        if (coupon != null && !coupon.isEmpty()) {
-            Optional<CouponDTO> couponDtoOptional = couponService.findByCodeAndId(coupon, userdto.id());
-            if (couponDtoOptional.isPresent() && couponDtoOptional.get().userId().equals(userdto.id())) {
-                BigDecimal discount = couponDtoOptional.get().discount();
-                totalPrice = totalPrice.multiply(discount).abs();
-                couponString = coupon;
-            } else {
-                couponString = "No coupon applied";
-            }
-        } else {
-            couponString = "No coupon applied";
-        }
-        orderDto = OrderShoesService.fillDetailsOrder(orderDto, userId, country, coupon, firstName, lastName, email,
-                address, phone, couponString, totalPrice);
-        orderShoesService.saveOrderShoes(orderDto);
-        orderShoesService.processOrder(orderDto);
-        // Prepare data for the PDF
-        Map<String, Object> data = new HashMap<>();
-        data.put("customerName", firstName + " " + lastName);
-        data.put("email", email);
-        data.put("address", address);
-        data.put("phone", phone);
-        data.put("country", country);
-        data.put("coupon", (coupon != null && !coupon.isEmpty()) ? coupon : "No coupon applied");
-        data.put("date", orderDto.date());
-        data.put("products", orderDto.orderItems());
-        data.put("total", totalPrice);
-
-        // Generate PDF
-        byte[] pdfBytes = pdfService.generatePdfFromOrder(data);
+    try {
+        byte[] pdfBytes = userService.generateTicket(orderId, country, coupon, firstName, lastName, email, address, phone, userId);
         if (pdfBytes == null || pdfBytes.length == 0) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error generating PDF");
             return;
@@ -134,19 +94,21 @@ public class CheckoutController {
         response.setContentType("application/pdf");
         response.setHeader("Content-Disposition", "attachment; filename=ticket.pdf");
         response.getOutputStream().write(pdfBytes);
+    } catch (IOException e) {
+        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
     }
+}
+
 
     /**
      * Method to apply a coupon code and recalculate the total.
      */
     @PostMapping("/applyCoupon")
-    public String applyCoupon(@RequestParam String coupon, HttpServletRequest request, Model model) {
-
-        // Ensure the user is authenticated
-        boolean isAuthenticated = request.getUserPrincipal() != null;
-        if (!isAuthenticated) {
-            return "redirect:/errorPage";
-        }
+public String applyCoupon(@RequestParam String coupon, HttpServletRequest request, Model model) {
+    boolean isAuthenticated = request.getUserPrincipal() != null;
+    if (!isAuthenticated) {
+        return "redirect:/errorPage";
+    }
 
         // Retrieve user
         UserDTO userDto = getAuthenticatedUser(request);
