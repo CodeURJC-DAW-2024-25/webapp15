@@ -27,6 +27,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.stepx.stepx.dto.UserDTO;
+import com.stepx.stepx.dto.OrderShoesDTO;
 import com.stepx.stepx.model.OrderItem;
 import com.stepx.stepx.model.OrderShoes;
 import com.stepx.stepx.model.Shoe;
@@ -190,58 +192,37 @@ public class UserController {
             @RequestParam String lastName,
             @RequestParam String username,
             @RequestParam String email) {
-
-        User user = userService.findUserByUserName(request.getUserPrincipal().getName()).orElseThrow();
-        // if username already exists
-        Optional<User> existingUser = userService.findUserByUserName(username);
-        if (existingUser.isPresent() && !existingUser.get().getUsername().equals(user.getUsername())) {
-            User tempUser = new User();// to mantain the information of the form
-            tempUser.setFirstname(firstName);
-            tempUser.setLastName(lastName);
-            tempUser.setUsername(username);
-            tempUser.setEmail(email);
-            model.addAttribute("user", tempUser);
-            model.addAttribute("uniqueUserName", false);
-            return "partials/newInformationUser";
+    
+        // Get the authenticated user
+        String authenticatedUsername = request.getUserPrincipal().getName();
+        UserDTO currentUserDto = userService.findUserByUserName(authenticatedUsername)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    
+        // Check if the new username already exists
+        Optional<UserDTO> existingUserDto = userService.findUserByUserName(username);
+        if (existingUserDto.isPresent() && !existingUserDto.get().username().equals(authenticatedUsername)) {
+            model.addAttribute("uniqueUserName", false); // Indicate that the username is not unique
+            return "partials/newInformationUser"; // Return to the view with the error
         }
-
-        boolean updated = false;
-
-        if (!user.getFirstName().equals(firstName)) {
-            user.setFirstname(firstName);
-            updated = true;
+    
+        // Pass the data to the service to update the user
+        UserDTO updatedUserDto = userService.updateUser(currentUserDto.id(), firstName, lastName, username, email);
+    
+        // Update authentication if the username has changed
+        if (!currentUserDto.username().equals(username)) {
+            updateUserAuthentication(updatedUserDto);
         }
-        if (!user.getLastName().equals(lastName)) {
-            user.setLastName(lastName);
-            updated = true;
-        }
-        if (!user.getEmail().equals(email)) {
-            user.setEmail(email);
-            updated = true;
-        }
-        if (!user.getUsername().equals(username)) {
-            user.setUsername(username);
-            updated = true;
-        }
-
-        if (updated) {
-            userService.saveUser(user);
-        }
-
-        if (!user.getUsername().equals(request.getUserPrincipal().getName())) {
-            updateUserAuthentication(user);
-        }
-
-        Optional<User> userUpdated = userService.findUserByUserName(username);
-        model.addAttribute("user", userUpdated.get());
+    
+        // Add the updated user to the model
+        model.addAttribute("user", updatedUserDto);
         model.addAttribute("uniqueUserName", true);
-
+    
         return "partials/newInformationUser";
     }
 
-    private void updateUserAuthentication(User updatedUser) {
+    private void updateUserAuthentication(UserDTO updatedUserDto) {
         try {
-            UserDetails userDetails = repositoryUserDetailsService.loadUserByUsername(updatedUser.getUsername());
+            UserDetails userDetails = repositoryUserDetailsService.loadUserByUsername(updatedUserDto.username()); //userdetails not dto because its an Spring entity
             Authentication newAuth = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(),
                     userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(newAuth);
@@ -269,32 +250,33 @@ public class UserController {
 
         // 3️⃣ Get the user from the database (using
         // `userDetails.getUsername()` if you need to look it up)
-        Optional<User> userOptional = userRepository.findByUsername(userDetails.getUsername());
-        if (!userOptional.isPresent()) {
+        Optional<UserDTO> userOptionalDto = userService.findUserByUserName(userDetails.getUsername());
+        if (!userOptionalDto.isPresent()) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User not found");
             return;
         }
 
         // 4️⃣ Search for the order by ID and validate that it belongs to the
         // authenticated user
-        Optional<OrderShoes> orderOptional = orderShoesService.getOrderById(orderId);
-        if (!orderOptional.isPresent()) {
+        Optional<OrderShoesDTO> orderOptionalDto = orderShoesService.getOrderById(orderId);
+        if (!orderOptionalDto.isPresent()) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND, "Order not found");
             return;
         }
 
-        OrderShoes order = orderOptional.get();
+        OrderShoesDTO orderDto = orderOptionalDto.get();
         // Prearing data to send the template
         Map<String, Object> data = new HashMap<>();
-        data.put("customerName", order.getFirstName() + " " + order.getSecondName());
-        data.put("email", order.getEmail());
-        data.put("address", order.getAddress());
-        data.put("phone", order.getNumerPhone());
-        data.put("country", order.getCountry());
-        data.put("coupon", order.getCuponUsed() != null ? order.getCuponUsed() : "No coupon applied");
-        data.put("date", order.getDate());
-        data.put("products", order.getOrderItems());
-        data.put("total", order.getSummary());
+
+        data.put("customerName", orderDto.firstName() + " " + orderDto.secondName());
+        data.put("email", orderDto.email());
+        data.put("address", orderDto.address());
+        data.put("phone", orderDto.numerPhone());
+        data.put("country", orderDto.country());
+        data.put("coupon", orderDto.cuponUsed() != null ? orderDto.cuponUsed() : "No coupon applied");
+        data.put("date", orderDto.date());
+        data.put("products", orderDto.orderItems());
+        data.put("total", orderDto.summary());
 
         byte[] pdfBytes = pdfService.generatePdfFromOrder(data);
 

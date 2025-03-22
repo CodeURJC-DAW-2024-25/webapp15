@@ -136,8 +136,10 @@ public class OrderShoesService {
         shoeSizeStockService.updateStock(stockUpdates);
     }
 
-    public Optional<OrderShoes> getOrderById(Long orderId) {
-        return orderShoesRepository.findById(orderId);
+    public Optional<OrderShoesDTO> getOrderById(Long orderId) {
+        return orderShoesRepository.findById(orderId).
+        map(orderShoes -> Optional.ofNullable(orderShoesMapper.toDTO(orderShoes)))
+        .orElse(Optional.empty());
     }
 
     public BigDecimal getTotalPrice(Long orderId) {

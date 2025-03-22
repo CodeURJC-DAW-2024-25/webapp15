@@ -71,7 +71,8 @@ public class UserService {
         userRepository.save(newUser);
     }
 
-    public void saveUser(User user){
+    public void saveUser(UserDTO userDTO){
+        User user = userMapper.toDomain(userDTO);
         userRepository.save(user);
     }
 
@@ -89,6 +90,25 @@ public class UserService {
 
         // Convertir User a UserDTO
         return userMapper.toDTO(user);
+    }
+
+    // Actualizar usuario
+    public UserDTO updateUser(Long userId, String firstName, String lastName, String username, String email) {
+        // Buscar la entidad del usuario
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        // Actualizar los campos
+        user.setFirstname(firstName);
+        user.setLastName(lastName);
+        user.setUsername(username);
+        user.setEmail(email);
+
+        // Guardar en la base de datos
+        User updatedUser = userRepository.save(user);
+
+        // Convertir a DTO y devolver
+        return userMapper.toDTO(updatedUser);
     }
 
     public byte[] generateTicket(Long orderId, String country, String couponCode, String firstName, String lastName,
