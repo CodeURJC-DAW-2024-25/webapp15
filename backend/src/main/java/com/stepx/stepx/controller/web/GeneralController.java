@@ -132,7 +132,7 @@ public class GeneralController {
 
         return "index";
     }
-
+        
     @GetMapping("/login")
     public String login(Model model, HttpServletRequest request) {
         User user = (User) request.getAttribute("user");
