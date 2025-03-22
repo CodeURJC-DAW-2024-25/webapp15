@@ -13,6 +13,7 @@ import com.stepx.stepx.model.Shoe;
 import com.stepx.stepx.dto.OrderItemDTO;
 import com.stepx.stepx.dto.OrderShoesDTO;
 import com.stepx.stepx.dto.ShoeDTO;
+import com.stepx.stepx.dto.UserDTO;
 import com.stepx.stepx.model.OrderItem;
 import com.stepx.stepx.model.OrderShoes;
 import com.stepx.stepx.service.OrderItemService;
@@ -51,13 +52,13 @@ public class OrderItemController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuer not logged in");
         }
 
-        Optional<User> usergetted = userService.findUserByUserName(principal.getName());
-        if (!usergetted.isPresent()) {
+        Optional<UserDTO> usergettedDto = userService.findUserByUserName(principal.getName());
+        if (!usergettedDto.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
-        User user = usergetted.get();
+        UserDTO user = usergettedDto.get();
 
-        Optional<OrderShoesDTO> cart_Optional = orderShoesService.getCartById(user.getId());
+        Optional<OrderShoesDTO> cart_Optional = orderShoesService.getCartById(user.id());
 
         OrderShoesDTO cart;
         if (cart_Optional.isPresent()) {
@@ -80,7 +81,7 @@ public class OrderItemController {
             cuantity = 0;
         }
 
-        OrderItemDTO orderItemDTO = orderItemService.findByCartAndShoeAndSize(user.getId(), id_Shoe, size);
+        OrderItemDTO orderItemDTO = orderItemService.findByCartAndShoeAndSize(user.id(), id_Shoe, size);
         // confirmation if quantity is <1 or >stock
         if (cuantity < 1) {
             cuantity = 1;

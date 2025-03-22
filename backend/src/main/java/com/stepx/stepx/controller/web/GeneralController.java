@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.sql.rowset.serial.SerialBlob;
 
@@ -27,6 +28,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.stepx.stepx.dto.CouponDTO;
+import com.stepx.stepx.dto.OrderShoesDTO;
+import com.stepx.stepx.dto.ShoeDTO;
+import com.stepx.stepx.dto.UserDTO;
 import com.stepx.stepx.model.Coupon;
 import com.stepx.stepx.model.OrderShoes;
 import com.stepx.stepx.model.Shoe;
@@ -34,6 +39,7 @@ import com.stepx.stepx.model.User;
 import com.stepx.stepx.repository.CouponRepository;
 import com.stepx.stepx.repository.OrderShoesRepository;
 import com.stepx.stepx.repository.UserRepository;
+import com.stepx.stepx.service.CouponService;
 import com.stepx.stepx.service.OrderItemService;
 import com.stepx.stepx.service.OrderShoesService;
 import com.stepx.stepx.service.UserService;
@@ -42,6 +48,8 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 public class GeneralController {
+
+    private final CouponService couponService;
 
     @Autowired
     private UserRepository userRepository;
@@ -67,6 +75,10 @@ public class GeneralController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    GeneralController(CouponService couponService) {
+        this.couponService = couponService;
+    }
+
     @ModelAttribute
     public void addAttributes(Model model, HttpServletRequest request) {
         boolean isAuthenticated = request.getUserPrincipal() != null;
@@ -84,14 +96,14 @@ public class GeneralController {
 
             model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
 
-            User user = userRepository.findByUsername(username).get();
+            UserDTO userDto = userService.findUserByUserName(username).get();
 
-            model.addAttribute("id", user.getId());
-            model.addAttribute("email", user.getEmail());
-            model.addAttribute("imageBlob", user.getImageUser());
-            model.addAttribute("lastName", user.getLastName());
-            model.addAttribute("firstname", user.getFirstName());
-            model.addAttribute("user_id", user.getId());
+            model.addAttribute("id", userDto.id());
+            model.addAttribute("email", userDto.email());
+            model.addAttribute("imageBlob", userDto.imageUser());
+            model.addAttribute("lastName", userDto.lastName());
+            model.addAttribute("firstname", userDto.firstname());
+            model.addAttribute("user_id", userDto.id());
 
         }
     }
@@ -106,28 +118,28 @@ public class GeneralController {
 
         if (isAuthenticated) {
             String username = request.getUserPrincipal().getName();
-            User user = userRepository.findByUsername(username).orElse(null);
+            UserDTO userDto = userService.findUserByUserName(username).orElse(null);
 
-            if (user != null) {
+            if (userDto != null) {
                 // get recommended shoes
-                List<Shoe> recommendedShoes = orderItemService.getRecommendedShoesForUser(user.getId(), 10);
+                List<ShoeDTO> recommendedShoesDto = orderItemService.getRecommendedShoesForUser(userDto.id(), 10);
 
-                if (recommendedShoes.isEmpty()) {
+                if (recommendedShoesDto.isEmpty()) {
                     model.addAttribute("recommendedShoes", false);
                     model.addAttribute("hasRecommendedShoes", false);
                 } else {
-                    model.addAttribute("recommendedShoes", recommendedShoes);
+                    model.addAttribute("recommendedShoes", recommendedShoesDto);
                     model.addAttribute("hasRecommendedShoes", true);
                 }
             }
         }
 
         // Getting mbest seller products
-        List<Shoe> bestSellingShoes = orderItemService.getBestSellingShoes(10);
-        if (bestSellingShoes.isEmpty()) {
+        List<ShoeDTO> bestSellingShoesDto = orderItemService.getBestSellingShoes(10);
+        if (bestSellingShoesDto.isEmpty()) {
             model.addAttribute("bestSellingShoes", false);
         } else {
-            model.addAttribute("bestSellingShoes", bestSellingShoes);
+            model.addAttribute("bestSellingShoes", bestSellingShoesDto);
         }
 
         return "index";
@@ -135,8 +147,8 @@ public class GeneralController {
         
     @GetMapping("/login")
     public String login(Model model, HttpServletRequest request) {
-        User user = (User) request.getAttribute("user");
-        model.addAttribute("isAuthenticated", user != null);
+        UserDTO userdto = (UserDTO) request.getAttribute("user");
+        model.addAttribute("isAuthenticated", userdto != null);
         return "index";
     }
 
@@ -148,17 +160,17 @@ public class GeneralController {
 
         model.addAttribute("isAuthenticated", request.getUserPrincipal() != null);
         String username = request.getUserPrincipal().getName();
-        User user = userRepository.findByUsername(username).orElseThrow();
+        UserDTO userDto = userService.findUserByUserName(username).orElseThrow();
 
         // Load all orders from user
-        List<OrderShoes> orderShoes = orderShoesService.getOrderShoesFinishedByUserId(user.getId());
-        if (orderShoes.size() == 0) {
+        List<OrderShoesDTO> orderShoesDto = orderShoesService.getOrderShoesFinishedByUserId(userDto.id());
+        if (orderShoesDto.size() == 0) {
             model.addAttribute("orders", false);
             model.addAttribute("hasmoreorders", false);
         } else {
-            List<OrderShoes> displayedOrders = orderShoes.stream().limit(5).toList();
+            List<OrderShoesDTO> displayedOrders = orderShoesDto.stream().limit(5).toList();
             model.addAttribute("orders", displayedOrders);
-            if (orderShoes.size() > 5) {
+            if (orderShoesDto.size() > 5) {
                 model.addAttribute("hasmoreorders", true);
             } else {
                 model.addAttribute("hasmoreorders", false);
@@ -166,7 +178,7 @@ public class GeneralController {
         }
 
         // Get monthly spending data for the user
-        List<Map<String, Object>> monthlySpending = orderShoesRepository.getMonthlySpendingByUserId(user.getId());
+        List<Map<String, Object>> monthlySpending = orderShoesRepository.getMonthlySpendingByUserId(userDto.id());
 
         // Prepare data for the chart
         Map<String, Object> chartData = new HashMap<>();
@@ -214,14 +226,14 @@ public class GeneralController {
 
     @GetMapping("/profile/orders")
     public String loadMoreOrders(@RequestParam int page, HttpServletRequest request, Model model) {
-        User user = userService.findUserByUserName(request.getUserPrincipal().getName()).orElseThrow();
-        Long userId = user.getId();
-        List<OrderShoes> nextOrders = orderShoesService.getPagedOrdersByUserId(page, userId);
-        if (nextOrders.size() == 0) {
+        UserDTO userDto = userService.findUserByUserName(request.getUserPrincipal().getName()).orElseThrow();
+        Long userId = userDto.id();
+        List<OrderShoesDTO> nextOrdersDto = orderShoesService.getPagedOrdersByUserId(page, userId);
+        if (nextOrdersDto.size() == 0) {
             model.addAttribute("oders", false);
             return "partials/ordersProfile";
         }
-        model.addAttribute("orders", nextOrders);
+        model.addAttribute("orders", nextOrdersDto);
         return "partials/ordersProfile";
     }
 
@@ -280,10 +292,10 @@ public class GeneralController {
         // Code the password
         String encodedPassword = passwordEncoder.encode(password);
 
+        List<String> roles = List.of("USER");
+
         // Create new user
-        User newUser = new User(username, email, encodedPassword, null, "USER");
-        newUser.setLastName(lastName);
-        newUser.setFirstname(firstName);
+        UserDTO newUserdto = new UserDTO(null,null,firstName, lastName,roles, username,email,null,encodedPassword);
         // load default image
         Blob defaultUserImage;
         try {
@@ -299,15 +311,12 @@ public class GeneralController {
             e.printStackTrace();
             defaultUserImage = null;
         }
-        newUser.setImageUser(defaultUserImage);
+        //newUserdto.setImageUser(defaultUserImage);
         // Saving in data
-        userRepository.save(newUser);
+        userService.saveUser(newUserdto);
 
-        Coupon coupon = new Coupon();
-        coupon.setCode("STEPXDISCOUNT10");
-        coupon.setDiscount(new BigDecimal("0.9")); // Representing a discount of 10%
-        coupon.setUser(newUser);
-        couponRepository.save(coupon);
+        CouponDTO couponDto = new CouponDTO(null, "STEPXDISCOUNT10", new BigDecimal("0.9"), newUserdto.id());
+        couponService.save(couponDto);
         return "redirect:/index";
     }
 

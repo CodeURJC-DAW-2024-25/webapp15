@@ -1,7 +1,12 @@
 package com.stepx.stepx.mapper;
 
 import com.stepx.stepx.dto.OrderShoesDTO;
+import com.stepx.stepx.model.Coupon;
 import com.stepx.stepx.model.OrderShoes;
+
+import java.util.Collection;
+import java.util.List;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -13,6 +18,8 @@ public interface OrderShoesMapper {
     
     @Mapping(target = "user.id", source = "userId")
     OrderShoes toDomain(OrderShoesDTO orderShoesDTO);
+
+    List<OrderShoesDTO> toDTOs(Collection<OrderShoes> orderShoes);
 
 }
 

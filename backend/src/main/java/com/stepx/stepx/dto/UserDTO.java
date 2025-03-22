@@ -11,6 +11,7 @@ public record UserDTO(
     List<String> roles,
     String username,
     String email,
-    List<OrderShoesDTO> orders
+    List<OrderShoesDTO> orders,
+    String password
 ) {
 }

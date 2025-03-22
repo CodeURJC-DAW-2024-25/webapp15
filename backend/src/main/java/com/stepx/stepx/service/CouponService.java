@@ -28,6 +28,10 @@ public class CouponService {
         return couponRepository.findByCodeAndId(couponCode, userId)
                 .map(couponMapper::toDTO);
     }
+    public void save(CouponDTO couponDto) {
+        Coupon coupon = couponMapper.toDomain(couponDto);
+        couponRepository.save(coupon);
+    }
     
     
 }
