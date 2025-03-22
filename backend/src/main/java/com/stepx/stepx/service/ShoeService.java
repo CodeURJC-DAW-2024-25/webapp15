@@ -12,6 +12,7 @@ import java.util.Optional;
 import javax.sql.rowset.serial.SerialBlob;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
@@ -24,9 +25,11 @@ import com.stepx.stepx.dto.ShoeDTO;
 import com.stepx.stepx.dto.ShoeSizeStockDTO;
 import com.stepx.stepx.mapper.ShoeMapper;
 import com.stepx.stepx.model.Shoe;
+import com.stepx.stepx.mapper.*;
 import com.stepx.stepx.model.Shoe.Brand;
 import com.stepx.stepx.model.Shoe.Category;
 import com.stepx.stepx.repository.ShoeRepository;
+
 
 @Service
 public class ShoeService {
@@ -261,6 +264,11 @@ public class ShoeService {
 
     public String categoryToString(Category category){
         return category.name().toUpperCase();
+    }
+
+    public BigDecimal getPricefromShoe(ShoeDTO shoeDtO){
+        Shoe shoe = ShoeMapper.toDomain(shoeDtO);
+        return shoe.getPrice();
     }
 
     
