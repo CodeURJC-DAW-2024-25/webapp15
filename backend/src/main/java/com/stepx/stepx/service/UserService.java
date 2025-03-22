@@ -49,8 +49,10 @@ public class UserService {
     }
 
     
-    public Optional<User> findUserByUserName(String username) {
-        return userRepository.findByUsername(username);
+    public Optional<UserDTO> findUserByUserName(String username) {
+        return userRepository.findByUsername(username)
+                .map(user -> Optional.ofNullable(userMapper.toDTO(user)))
+                .orElse(Optional.empty());
     }
 
 
