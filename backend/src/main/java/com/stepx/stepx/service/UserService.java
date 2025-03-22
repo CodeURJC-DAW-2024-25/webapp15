@@ -29,7 +29,7 @@ public class UserService {
     
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final UserMapper userMapper;
+    private static UserMapper userMapper;
     private final OrderShoesService orderShoesService;
     private final CouponService couponService;
     private final PdfService pdfService;
@@ -49,7 +49,7 @@ public class UserService {
     }
 
     
-    public Optional<UserDTO> findUserByUserName(String username) {
+    public  Optional<UserDTO> findUserByUserName(String username) {
         return userRepository.findByUsername(username)
                 .map(user -> Optional.ofNullable(userMapper.toDTO(user)))
                 .orElse(Optional.empty());

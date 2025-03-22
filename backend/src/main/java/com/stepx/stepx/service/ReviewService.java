@@ -10,7 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.stepx.stepx.dto.ReviewDTO;
-import com.stepx.stepx.mapper.ShoeMapper;
 import com.stepx.stepx.model.Review;
 import com.stepx.stepx.mapper.*;
 import com.stepx.stepx.model.Shoe;
@@ -33,7 +32,14 @@ public class ReviewService {
         return reviewRepository.findReviewsByShoeId(shoeId);
     }
 
-    public void save(Review review) {
+    public Optional<ReviewDTO> getReviewById(Long id) {
+        return reviewRepository.findById(id)
+                .map(review -> Optional.ofNullable(reviewMapper.toDTO(review)))
+                .orElse(Optional.empty());
+    }
+
+    public void save(ReviewDTO reviewDto) {
+        Review review = reviewMapper.toDomain(reviewDto);
         reviewRepository.save(review);
     }
 
