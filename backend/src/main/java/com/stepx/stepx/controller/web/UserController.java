@@ -94,7 +94,7 @@ public class UserController {
         if (cart_Optional.isPresent()) {
             cart = cart_Optional.get();//cart in dto format
 
-            if (orderShoesService.getLenghtOrderShoes(cart) == 0) {
+            if (orderShoesService.getLengthOrderShoes(cart) == 0) {
                 model.addAttribute("setSubtotal", false);
                 model.addAttribute("empty", true);
             } else {

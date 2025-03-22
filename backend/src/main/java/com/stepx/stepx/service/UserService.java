@@ -132,7 +132,7 @@ public class UserService {
         }
 
         // Fill the order details
-        orderDto = OrderShoesService.fillDetailsOrder(orderDto, userId, country, couponCode, firstName, lastName, email,
+        orderDto = orderShoesService.fillDetailsOrder(orderDto, userId, country, couponCode, firstName, lastName, email,
                 address, phone, couponCode, totalPrice);
         orderShoesService.saveOrderShoes(orderDto);
         orderShoesService.processOrder(orderDto);

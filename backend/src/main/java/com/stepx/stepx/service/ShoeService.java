@@ -267,7 +267,7 @@ public class ShoeService {
     }
 
     public BigDecimal getPricefromShoe(ShoeDTO shoeDtO){
-        Shoe shoe = ShoeMapper.toDomain(shoeDtO);
+        Shoe shoe = shoeMapper.toDomain(shoeDtO);
         return shoe.getPrice();
     }
 
