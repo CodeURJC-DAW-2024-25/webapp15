@@ -85,7 +85,7 @@ public class UserController {
         if (!usergetted.isPresent()) {
             throw new RuntimeException("User not registered");
         }
-        UserDTO user = usergetted.get();//
+        UserDTO user = usergetted.get();
 
         // verify if the user has a cart or not
         Optional<OrderShoesDTO> cart_Optional = orderShoesService.getCartById(user.id());
@@ -124,7 +124,7 @@ public class UserController {
         return "partials/quick-view-cart-modal";
     }
 
-    @GetMapping("/send-coupon")
+    @GetMapping("/send-coupon")//a dto
     public String sendCouponEmail(@RequestParam Long userId, RedirectAttributes redirectAttributes) {
         try {
             Optional<User> optionalUser = userRepository.findById(userId);
@@ -174,12 +174,15 @@ public class UserController {
     @PostMapping("/upload-profile-image")//a dto
     public String uploadProfilePicture(@RequestParam(required = false) MultipartFile imageUser,
             HttpServletRequest request, Model model) throws IOException, SQLException {
-            User user = userService.findUserByUserName(request.getUserPrincipal().getName()).orElseThrow();
-
+        Optional<UserDTO> user = userService.findUserByUserName(request.getUserPrincipal().getName());
+        if (!user.isPresent()) {
+            return "User not found";
+        }
         if (imageUser == null) {
             return "do not found an image to load";
         }
-
+        //service to load the image
+        //userService.uploadProfilePicture(user.get().id(), imageUser);
         if (imageUser != null && !imageUser.isEmpty()) {
             user.setImageUser(new SerialBlob(imageUser.getBytes()));
         }

@@ -125,8 +125,11 @@ public class ShoeController {
 
         if (isAuthenticated) {
             String username = request.getUserPrincipal().getName();
-            UserDTO userDto = userService.findUserByUserName(username).orElseThrow();
-            model.addAttribute("username", userDto.username());
+            Optional<UserDTO> user = userService.findUserByUserName(username);
+            if(!user.isPresent()){
+                throw new RuntimeException("User not found");
+            }
+            model.addAttribute("username", user.get().username());
             model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
         }
 
@@ -151,10 +154,13 @@ public class ShoeController {
         boolean isAuthenticated = request.getUserPrincipal() != null;
         model.addAttribute("isAuthenticated", isAuthenticated);
         String username = request.getUserPrincipal().getName();
-        UserDTO userDto = userService.findUserByUserName(username).orElseThrow();
+        Optional<UserDTO> user = userService.findUserByUserName(username);
+        if(!user.isPresent()){
+            throw new RuntimeException("User not found");
+        }
 
         if (isAuthenticated) {
-            model.addAttribute("username", userDto.username());
+            model.addAttribute("username", user.get().username());
             model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
         }
 
@@ -189,10 +195,13 @@ public class ShoeController {
         boolean isAuthenticated = request.getUserPrincipal() != null;
         model.addAttribute("isAuthenticated", isAuthenticated);
         String username = request.getUserPrincipal().getName();
-        UserDTO userDto = userService.findUserByUserName(username).orElseThrow();
+        Optional<UserDTO> user = userService.findUserByUserName(username);
+        if(!user.isPresent()){
+            throw new RuntimeException("User not found");
+        }
 
         if (isAuthenticated) {
-            model.addAttribute("username", userDto.username());
+            model.addAttribute("username", user.get().username());
             model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
 
         }
@@ -212,15 +221,17 @@ public class ShoeController {
 
         if (isAuthenticated) {
             String username = request.getUserPrincipal().getName();
-            UserDTO userDto = userService.findUserByUserName(username).orElseThrow();
-            model.addAttribute("username", userDto.username());
+            Optional<UserDTO> user = userService.findUserByUserName(username);
+            if(!user.isPresent()){
+                throw new RuntimeException("User not found");
+            }
+            model.addAttribute("username", user.get().username());
             model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
         }
 
         if (op.isPresent()) {
             try {
                 Resource image = shoeService.getShoeImage(id, imageNumber);
-
                 return ResponseEntity.ok()
                         .header(HttpHeaders.CONTENT_TYPE, "image/jpeg")
                         .body(image);
@@ -253,8 +264,11 @@ public class ShoeController {
 
         if (isAuthenticated) {
             String username = request.getUserPrincipal().getName();
-            UserDTO userDto = userService.findUserByUserName(username).orElseThrow();
-            model.addAttribute("username", userDto.username());
+            Optional<UserDTO> user = userService.findUserByUserName(username);
+            if(!user.isPresent()){
+                throw new RuntimeException("User not found");
+            }
+            model.addAttribute("username", user.get().username());
             model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
 
         }
@@ -310,8 +324,11 @@ public class ShoeController {
 
         if (isAuthenticated) {
             String username = request.getUserPrincipal().getName();
-            UserDTO userDto = userService.findUserByUserName(username).orElseThrow();
-            model.addAttribute("username", userDto.username());
+            Optional<UserDTO> user = userService.findUserByUserName(username);
+            if(!user.isPresent()){
+                throw new RuntimeException("User not found");
+            }
+            model.addAttribute("username", user.get().username());
             model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));// if user is admin or not
         }
 
@@ -355,19 +372,15 @@ public class ShoeController {
         return "partials/loadMoreShoe";
     }
 
-    @GetMapping("/{userId}/imageUser")//a dto
+    @GetMapping("/{userId}/imageUser")
     public ResponseEntity<Resource> getProfileImage(@PathVariable Long userId, Model model,
             HttpServletRequest request) {
-        Optional<User> userOptional = userService.findUserById(userId);
 
+        Optional<UserDTO> userOptional = userService.findUserById(userId);
         boolean isAuthenticated = request.getUserPrincipal() != null;
-        model.addAttribute("isAuthenticated", isAuthenticated);
-        String username = request.getUserPrincipal().getName();
-        UserDTO userDto = userService.findUserByUserName(username).orElseThrow();
-
+        model.addAttribute("isAuthenticated", isAuthenticated);   
         if (userOptional.isPresent()) {
-            Blob image = userDto.imageUser();
-
+            Blob image =userOptional.get().imageUser();//dudas imagen
             if (image != null) {
                 try {
                     Resource file = new InputStreamResource(image.getBinaryStream());
@@ -388,12 +401,9 @@ public class ShoeController {
     @GetMapping("/{userId}/imageUserReview")
     public ResponseEntity<Resource> getProfileImageForReview(@PathVariable Long userId, Model model,
             HttpServletRequest request) {
-        Optional<User> userOptional = userService.findUserById(userId);
-
+        Optional<UserDTO> userOptional = userService.findUserById(userId);
         if (userOptional.isPresent()) {
-            User user = userRepository.findByUsername(userOptional.get().getUsername()).orElseThrow();
-            Blob image = user.getImageUser(); 
-
+            Blob image = userOptional.get().imageUser(); 
             if (image != null) {
                 try {
                     Resource file = new InputStreamResource(image.getBinaryStream());
@@ -406,7 +416,6 @@ public class ShoeController {
                 }
             }
         }
-
         return ResponseEntity.notFound().build();
     }
 
@@ -526,7 +535,7 @@ public class ShoeController {
         return "partials/loadMoreShoe";
     }
 
-    @PostMapping("/submit/{id}")//a dto
+    @PostMapping("/submit/{id}")
     public String publishReview(
             @PathVariable Long id, // ID of the shoe
             @RequestParam("rating") int rating,
@@ -535,14 +544,16 @@ public class ShoeController {
         boolean isAuthenticated = request.getUserPrincipal() != null;
         model.addAttribute("isAuthenticated", isAuthenticated);
         String username = request.getUserPrincipal().getName();
-        UserDTO userDto = userService.findUserByUserName(username).orElseThrow();
-
+        Optional<UserDTO> user = userService.findUserByUserName(username);
+        if(!user.isPresent()){
+            throw new RuntimeException("User not found");
+        }
         // search the shoe by id
         ShoeDTO shoe = shoeService.getShoeById(id).orElseThrow(() -> new RuntimeException("Shoe not found"));
         LocalDate date;
         date = LocalDate.now();
         // Create new review
-        ReviewDTO reviewDto = new ReviewDTO(null,date,rating, description, shoe.id(), userDto.id());
+        ReviewDTO reviewDto = new ReviewDTO(null,date,rating, description, shoe.id(), user.get().id());
 
         // Saving the review
         reviewService.save(reviewDto);
@@ -551,24 +562,25 @@ public class ShoeController {
 
     }
 
-    @GetMapping("/{productId}/deleteReview/{id}")//a dto
+    @GetMapping("/{productId}/deleteReview/{id}")
     public String deleteReview(@PathVariable Long productId, @PathVariable Long id, Model model,
             HttpServletRequest request) {
 
         boolean isAuthenticated = request.getUserPrincipal() != null;
         model.addAttribute("isAuthenticated", isAuthenticated);
         String username = request.getUserPrincipal().getName();
-        UserDTO userDto = userService.findUserByUserName(username).orElseThrow();
-
-
+        Optional<UserDTO> user = userService.findUserByUserName(username);
+        if(!user.isPresent()){
+            throw new RuntimeException("User not found");
+        }
         if (isAuthenticated) {
-            model.addAttribute("username", userDto.username());
+            model.addAttribute("username", user.get().username());
             model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
         }
 
         reviewService.deleteReview(id);
 
-        List<ReviewDTO> reviewDto = reviewService.getReviewsByShoe(productId);
+        List<ReviewDTO> reviewDto = reviewService.getReviewsByShoe(productId);//a dto
         if (reviewDto != null) {
             model.addAttribute("review", reviewDto);
             return "partials/singleProduct-reviewList";
@@ -577,7 +589,7 @@ public class ShoeController {
 
     }
 
-    @PostMapping("/single-product/loadMoreReviews")//a dto
+    @PostMapping("/single-product/loadMoreReviews")
     public String loadMoreReviews(@RequestParam int page, @RequestParam Long shoeId, Model model) {
         int limit = 2;
         List<ReviewDTO> reviews = reviewService.getPagedReviewsByShoeId(shoeId, page, limit);
