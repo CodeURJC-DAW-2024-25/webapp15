@@ -199,4 +199,18 @@ public class UserService {
         return pdfService.generatePdfFromOrder(data);
     }
 
+    public UserDTO updateUserImage(String name, MultipartFile imageUser) throws SerialException, SQLException, IOException {
+        
+        Optional<User> userOptional= userRepository.findByUsername(name);
+
+        if (imageUser != null && !imageUser.isEmpty()) {
+            userOptional.get().setImageUser(new SerialBlob(imageUser.getBytes()));
+        }
+
+        userRepository.save(userOptional.get());
+
+        return userMapper.toDTO(userOptional.get());
+
+    }
+
 }
