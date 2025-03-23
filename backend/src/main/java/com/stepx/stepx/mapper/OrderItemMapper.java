@@ -15,7 +15,6 @@ public interface OrderItemMapper {
     @Mapping(source = "orderShoes.id", target = "orderId")
     @Mapping(source = "shoe.id", target = "shoeId")
     @Mapping(source = "shoe.name", target = "shoeName")
-    @Mapping(source = "shoe.price", target = "price")
     OrderItemDTO toDTO(OrderItem orderItem);
 
     @Mapping(source = "orderId", target = "orderShoes.id")

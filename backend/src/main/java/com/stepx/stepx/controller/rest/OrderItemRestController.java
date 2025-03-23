@@ -9,6 +9,8 @@ import com.stepx.stepx.dto.OrderItemDTO;
 import com.stepx.stepx.model.OrderItem;
 import com.stepx.stepx.service.OrderItemService;
 
+import jakarta.validation.Valid;
+
 import java.lang.foreign.Linker.Option;
 import java.net.URI;
 import java.util.List;
@@ -54,7 +56,7 @@ public class OrderItemRestController {
 
     //create a order item (produces = MediaType.APPLICATION_JSON_VALUE)
     @PostMapping
-    public ResponseEntity<OrderItemDTO> createOrderItem(@RequestBody OrderItemDTO orderItemDTO) {
+    public ResponseEntity<OrderItemDTO> createOrderItem(@Valid @RequestBody OrderItemDTO orderItemDTO) {
         System.out.println("⚙️ Recibido DTO: " + orderItemDTO);
         OrderItemDTO savedDTO =orderItemService.save(orderItemDTO);
         if (savedDTO ==null) {
