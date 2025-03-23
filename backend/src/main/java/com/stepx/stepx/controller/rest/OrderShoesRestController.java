@@ -27,7 +27,7 @@ import com.stepx.stepx.repository.*;
 import com.stepx.stepx.service.*;
 
 @RestController
-@RequestMapping("/api/checkout")
+@RequestMapping("/api/OrderShoes")
 public class OrderShoesRestController {
 
     @Autowired
