@@ -50,9 +50,6 @@ public class ShoeSizeStockService {
             shoeSizeStockRepository.saveAll(entities);
     }
 
-    public void deleteStock(Long id) {
-        shoeSizeStockRepository.deleteById(id);
-    }
 
     public Optional<Integer> getStockByShoeAndSize(Long shoeId, String size) {
         return shoeSizeStockRepository.findByShoeAndSize(shoeId, size);
@@ -78,41 +75,59 @@ public class ShoeSizeStockService {
         }
     }
 
-    /*public List<BasicShoeSizeStockDTO> convertToShoeSizeStockDTO(List<ShoeSizeStock> sizeStocks) {
-        List<BasicShoeSizeStockDTO> sizeStocksDTOs = new ArrayList<>();
-    
-        for (ShoeSizeStock sizeStock : sizeStocks) {
-            BasicShoeSizeStockDTO sizeStockDTO = new BasicShoeSizeStockDTO(
-                sizeStock.getId(), 
-                sizeStock.getShoe().getId(), 
-                sizeStock.getSize(), 
-                sizeStock.getStock()
-            );
-            sizeStocksDTOs.add(sizeStockDTO);
+    public ShoeSizeStockDTO findById(Long id){
+        Optional<ShoeSizeStock> shoeSizeStock = shoeSizeStockRepository.findById(id);
+        if (shoeSizeStock.isPresent()) {
+            return shoeSizeStockMapper.toDTO(shoeSizeStock.get());
+        } else {
+            return null;
         }
-    
-        return sizeStocksDTOs;
-    }*/
+    }
 
-    public List<ShoeSizeStock> convertToShoeSizeStock(List<ShoeSizeStockDTO> sizeStocksDTOs) {
-        List<ShoeSizeStock> sizeStocks = new ArrayList<>();
-        sizeStocks=shoeSizeStockMapper.toDomains(sizeStocksDTOs);
-        /*for (BasicShoeSizeStockDTO sizeStockDTO : sizeStocksDTOs) {
-            Shoe shoe = new Shoe(); // Debes recuperar la instancia de Shoe por su ID
-            shoe.setId(sizeStockDTO.shoeId());
-            ShoeSizeStock sizeStock = new ShoeSizeStock();
-            Optional<Shoe> shoeOpt = shoeRepository.findById(sizeStockDTO.shoeId());
-            if (shoeOpt.isPresent()) {
-                sizeStock.setShoe(shoeOpt.get());
-            } else {
-                throw new IllegalArgumentException("Shoe with ID " + sizeStockDTO.shoeId() + " not found");
-            }
-            sizeStock.setSize(sizeStockDTO.size());
-            sizeStock.setStock(sizeStockDTO.stock());
-            sizeStocks.add(sizeStock);
-        }*/
+    public List<ShoeSizeStockDTO> findAll() {
+        List<ShoeSizeStock> shoeSizeStocks = shoeSizeStockRepository.findAll();
+        return shoeSizeStockMapper.toDTOs(shoeSizeStocks);
+    }
 
-        return sizeStocks;
+    public List<ShoeSizeStockDTO> findByShoeId(Long shoeId) {
+        List<ShoeSizeStock> shoeSizeStocks = shoeSizeStockRepository.findByShoeId(shoeId);
+        return shoeSizeStockMapper.toDTOs(shoeSizeStocks);
+    }
+
+    public ShoeSizeStockDTO save(ShoeSizeStockDTO shoeSizeStockDTO){
+        Shoe shoe = shoeRepository.findById(shoeSizeStockDTO.shoeId()).orElse(null);
+        ShoeSizeStock shoeSizeStock = new ShoeSizeStock();
+        shoeSizeStock.setShoe(shoe);
+        shoeSizeStock.setSize(shoeSizeStockDTO.size());
+        shoeSizeStock.setStock(shoeSizeStockDTO.stock());
+        if (shoe != null) {
+            shoe.addSizeStock(shoeSizeStock);
+        } else {
+            shoeSizeStock.setShoe(null);
+        }
+        ShoeSizeStock saved=shoeSizeStockRepository.save(shoeSizeStock);
+        return shoeSizeStockMapper.toDTO(saved);
+    }
+
+    public Optional<ShoeSizeStockDTO> updateSigleStock(String size,Long shoeId, ShoeSizeStockDTO dto){
+        List<ShoeSizeStock> stockList=shoeSizeStockRepository.findByShoeIdsAndSizes(List.of(shoeId), List.of(size));
+        if(!stockList.isEmpty()){
+            ShoeSizeStock toUpdate=stockList.getFirst();
+            toUpdate.setSize(dto.size());
+            toUpdate.setStock(dto.stock());
+            ShoeSizeStock updated= shoeSizeStockRepository.save(toUpdate);
+            return Optional.of(shoeSizeStockMapper.toDTO(updated));
+        }
+        return Optional.empty();
+    }
+
+    public Optional<ShoeSizeStockDTO> deleteStock(String size,Long shoeId) {
+        List<ShoeSizeStock> stockList=shoeSizeStockRepository.findByShoeIdsAndSizes(List.of(shoeId), List.of(size));
+        if(!stockList.isEmpty()){
+            shoeSizeStockRepository.deleteByShoeIdAndSize(shoeId,size);
+            return Optional.of(shoeSizeStockMapper.toDTO(stockList.getFirst()));
+        }
+        return Optional.empty();
     }
 
 }

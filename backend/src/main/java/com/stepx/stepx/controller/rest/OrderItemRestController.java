@@ -9,11 +9,15 @@ import com.stepx.stepx.dto.OrderItemDTO;
 import com.stepx.stepx.model.OrderItem;
 import com.stepx.stepx.service.OrderItemService;
 
+import jakarta.validation.Valid;
+
 import java.lang.foreign.Linker.Option;
 import java.net.URI;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,25 +39,30 @@ public class OrderItemRestController {
 
     //get a order item by id
     @GetMapping("/{id}")
-    public ResponseEntity<OrderItemDTO> getById(@PathVariable Long id) {
+    public ResponseEntity<?> getById(@PathVariable Long id) {
         OrderItemDTO orderItem = orderItemService.findById(id);
 
         if (orderItem==null) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(404)
+            .body(Collections.singletonMap("error", "OrderItem with ID " + id + " not found"));
+
         }
         return ResponseEntity.ok(orderItem);
     }
 
     //get all orders items
     @GetMapping
-    public ResponseEntity<List<OrderItemDTO>> getAll(){
+    public ResponseEntity<?> getAll(){
         List<OrderItemDTO> orderItems = orderItemService.findAll();
+        if (orderItems.isEmpty()) {
+            return ResponseEntity.status(404)
+                    .body(Collections.singletonMap("error", "No OrderItems found"));
+        }
         return ResponseEntity.ok(orderItems);
     }
 
-    //create a order item
     @PostMapping
-    public ResponseEntity<OrderItemDTO> createOrderItem(@RequestBody OrderItemDTO orderItemDTO) {
+    public ResponseEntity<OrderItemDTO> createOrderItem(@Valid @RequestBody OrderItemDTO orderItemDTO) {
         OrderItemDTO savedDTO =orderItemService.save(orderItemDTO);
         if (savedDTO ==null) {
             return ResponseEntity.badRequest().build();
@@ -62,8 +71,7 @@ public class OrderItemRestController {
         .fromCurrentRequest()
         .path("/{id}")
         .buildAndExpand(savedDTO.id())
-        .toUri();
-
+        .toUri(); 
     return ResponseEntity.created(location).body(savedDTO);
     }
     

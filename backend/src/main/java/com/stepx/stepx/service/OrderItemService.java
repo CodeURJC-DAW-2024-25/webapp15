@@ -93,11 +93,30 @@ public class OrderItemService {
         }
     }
 
-    public OrderItemDTO save(OrderItemDTO orderItemDTO) {// save the order item in the bbdd
-        OrderItem orderItem = orderItemMapper.toDomain(orderItemDTO);
-        OrderItem saved =orderItemRepository.save(orderItem);
+    public OrderItemDTO save(OrderItemDTO orderItemDTO) {
+        OrderShoes orderShoe = orderShoesRepository.findById(orderItemDTO.orderId())
+                .orElseThrow(() -> new IllegalArgumentException("OrderShoe not found"));
+
+        Shoe shoe = shoeRepository.findById(orderItemDTO.shoeId())
+                .orElseThrow(() -> new IllegalArgumentException("Shoe not found"));
+
+        OrderItem orderItem = new OrderItem();
+        orderItem.setOrderShoes(orderShoe);
+        orderItem.setShoe(shoe);
+        orderItem.setShoeName(orderItemDTO.shoeName());
+        orderItem.setQuantity(orderItemDTO.quantity());
+        orderItem.setSize(orderItemDTO.size());
+
+        if (orderItemDTO.price() != null) {
+            orderItem.setPrice(orderItemDTO.price());
+        } else {
+            orderItem.setPrice(shoe.getPrice().multiply(BigDecimal.valueOf(orderItemDTO.quantity())));
+        }
+
+        OrderItem saved = orderItemRepository.save(orderItem);
         return orderItemMapper.toDTO(saved);
     }
+
 
     @Transactional
     public void updateOrderItem(Long id, int quantity) {
@@ -120,29 +139,32 @@ public class OrderItemService {
     }
 
     public Optional<OrderItemDTO> updateAllOrderItem(Long id, OrderItemDTO orderItemDTO) {
-       Optional<OrderItem> orderItemOptional= orderItemRepository.findById(id);
-       OrderShoes orderShoe = orderShoesRepository.findById(orderItemDTO.orderId()).orElse(null);
-       Shoe shoe = shoeRepository.findById(orderItemDTO.shoeId()).orElse(null);
-        if (orderItemOptional.isPresent()) { // & orderShoesOptional.isPresent() & shoeOptional.isPresent()
-            OrderItem orderItem = orderItemOptional.get();
-            orderItem.setOrderShoes(orderShoe);//new ordershoe of orderitem
-            orderItem.setShoe(shoe);//new shoe of orderitem
-            orderItem.setShoeName(orderItemDTO.shoeName());
-            orderItem.setQuantity(orderItemDTO.quantity());
-            orderItem.setSize(orderItemDTO.size());
-            orderItemRepository.save(orderItem);
-            if(orderItemDTO.price()!=null){
-                orderItem.setPrice(orderItemDTO.price());//orderItem.setPrice(orderItemDTO.price().multiply(BigDecimal.valueOf(orderItemDTO.quantity())));
-            }else if (shoe != null) {
-                orderItem.setPrice(shoe.getPrice().multiply(BigDecimal.valueOf(orderItemDTO.quantity())));
-            }
-            else{
-                orderItem.setPrice(BigDecimal.ZERO);
-            }
-            OrderItem saved=orderItemRepository.save(orderItem);
-            return Optional.of(orderItemMapper.toDTO(saved));  
+        Optional<OrderItem> orderItemOptional = orderItemRepository.findById(id);
+        if (orderItemOptional.isEmpty()) {
+            return Optional.empty();
         }
-        return Optional.empty();
+        OrderItem orderItem = orderItemOptional.get();
+
+        OrderShoes orderShoe = orderShoesRepository.findById(orderItemDTO.orderId())
+                .orElseThrow(() -> new IllegalArgumentException("OrderShoe not found"));
+
+        Shoe shoe = shoeRepository.findById(orderItemDTO.shoeId())
+                .orElseThrow(() -> new IllegalArgumentException("Shoe not found"));
+
+        orderItem.setOrderShoes(orderShoe);
+        orderItem.setShoe(shoe);
+        orderItem.setShoeName(shoe.getName()); // Usamos el nombre correcto del zapato
+        orderItem.setQuantity(orderItemDTO.quantity());
+        orderItem.setSize(orderItemDTO.size());
+
+        if (orderItemDTO.price() != null) {
+            orderItem.setPrice(orderItemDTO.price());
+        } else {
+            orderItem.setPrice(shoe.getPrice().multiply(BigDecimal.valueOf(orderItemDTO.quantity())));
+        }
+
+        OrderItem saved = orderItemRepository.save(orderItem);
+        return Optional.of(orderItemMapper.toDTO(saved));
     }
 
     public Optional<OrderItemDTO> deleteOrderItem(Long id) {
