@@ -29,7 +29,7 @@ public class UserService {
     
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private static UserMapper userMapper;
+    private final UserMapper userMapper;
     private final OrderShoesService orderShoesService;
     private final CouponService couponService;
     private final PdfService pdfService;
@@ -44,8 +44,10 @@ public class UserService {
 
     }
 
-    public Optional<User> findUserById(Long userId) {
-        return userRepository.findById(userId);
+    public Optional<UserDTO> findUserById(Long userId) {
+        return userRepository.findById(userId)
+                .map(user -> Optional.ofNullable(userMapper.toDTO(user)))
+                .orElse(Optional.empty());
     }
 
     
