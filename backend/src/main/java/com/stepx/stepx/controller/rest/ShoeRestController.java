@@ -2,7 +2,6 @@ package com.stepx.stepx.controller.rest;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,13 +20,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.stepx.stepx.dto.BasicShoeDTO;
-import com.stepx.stepx.dto.BasicShoeSizeStockDTO;
+import com.stepx.stepx.dto.ReviewDTO;
 import com.stepx.stepx.dto.ShoeDTO;
 import com.stepx.stepx.mapper.ShoeMapper;
-import com.stepx.stepx.model.Review;
-import com.stepx.stepx.model.Shoe;
-import com.stepx.stepx.model.ShoeSizeStock;
 import com.stepx.stepx.repository.UserRepository;
 import com.stepx.stepx.service.OrderItemService;
 import com.stepx.stepx.service.ReviewService;
@@ -64,7 +59,7 @@ public class ShoeRestController {
      
 
     @GetMapping
-    public ResponseEntity<List<Shoe>> getShoes(@RequestParam(defaultValue = "0") int page) {
+    public ResponseEntity<List<ShoeDTO>> getShoes(@RequestParam(defaultValue = "0") int page) {
         return ResponseEntity.ok(shoeService.getNineShoes(page).getContent());
         
     }
@@ -122,13 +117,13 @@ public class ShoeRestController {
     @GetMapping("/{id}")
     public ResponseEntity<Map<String, Object>> getProductById(@PathVariable Long id, @RequestParam(required = false) String action, HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();
-        Optional<Shoe> product = shoeService.getShoeById(id);
+        Optional<ShoeDTO> product = shoeService.getShoeById(id);
 
         if (product.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Product not found"));
         }
 
-        Shoe shoe = product.get();
+        ShoeDTO shoe = product.get();
         response.put("product", shoe);
 
         if ("quick".equals(action)) {
@@ -211,7 +206,7 @@ public class ShoeRestController {
     @PostMapping("/single-product/loadMoreReviews")
     public ResponseEntity<Map<String, Object>> loadMoreReviews(@RequestParam int page, @RequestParam Long shoeId) {
         int limit = 2;
-        List<Review> reviews = reviewService.getPagedReviewsByShoeId(shoeId, page, limit);
+        List<ReviewDTO> reviews = reviewService.getPagedReviewsByShoeId(shoeId, page, limit);
 
         Map<String, Object> response = new HashMap<>();
         response.put("reviews", reviews);
@@ -235,12 +230,12 @@ public class ShoeRestController {
     @GetMapping("/single-product/{id}")
     public ResponseEntity<Map<String, Object>> showSingleProduct(@PathVariable Long id, HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();
-        Optional<Shoe> op = shoeService.getShoeById(id);
+        Optional<ShoeDTO> op = shoeService.getShoeById(id);
         if (op.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Product not found"));
         }
 
-        Shoe shoe = op.get();
+        ShoeDTO shoe = op.get();
         response.put("product", shoe);
 
         // Fetching stock and reviews
@@ -250,7 +245,7 @@ public class ShoeRestController {
         Optional<Integer> stockXL = shoeSizeStockService.getStockByShoeAndSize(id, "XL");
 
         int initialReviewsCount = 2;
-        List<Review> reviews = reviewService.getPagedReviewsByShoeId(id, 0, initialReviewsCount);
+        List<ReviewDTO> reviews = reviewService.getPagedReviewsByShoeId(id, 0, initialReviewsCount);
 
         response.put("stockS", stockS.orElse(0) == 0);
         response.put("stockM", stockM.orElse(0) == 0);
