@@ -21,9 +21,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.stepx.stepx.dto.OrderItemDTO;
 import com.stepx.stepx.dto.ShoeDTO;
 import com.stepx.stepx.dto.ShoeSizeStockDTO;
 import com.stepx.stepx.mapper.ShoeMapper;
+import com.stepx.stepx.model.OrderItem;
+import com.stepx.stepx.model.OrderShoes;
 import com.stepx.stepx.model.Shoe;
 import com.stepx.stepx.mapper.*;
 import com.stepx.stepx.model.Shoe.Brand;
@@ -42,6 +45,8 @@ public class ShoeService {
     private ShoeMapper shoeMapper;
     @Autowired
     private ShoeSizeStockService shoeSizeStockService;
+    @Autowired
+    private ReviewService reviewService;
 
     public ShoeService(ShoeRepository shoeRepository) {
         this.shoeRepository = shoeRepository;
@@ -97,15 +102,30 @@ public class ShoeService {
         }
     }
     
+    //save method
     
-    public Shoe saveShoe(Shoe shoe) {
-        return shoeRepository.save(shoe);
+    public ShoeDTO saveShoe(ShoeDTO shoeDTO) throws SQLException {
+        Shoe shoe = shoeRepository.findById(shoeDTO.id()).orElseThrow(() -> new IllegalArgumentException("Shoe not found"));
+        
+        shoe.setId(shoeDTO.id());
+        shoe.setName(shoeDTO.name());
+        shoe.setDescription(shoeDTO.shortDescription());
+        shoe.setLongDescription(shoeDTO.longDescription());
+        shoe.setPrice(shoeDTO.price());
+        shoe.setBrand(StringToBrand(shoeDTO.brand()));
+        shoe.setCategory(StringToCategory(shoeDTO.category()));
+        shoe.setImage1(convertBase64ToBlob(shoeDTO.imageUrl1()));
+
+        Shoe saved = shoeRepository.save(shoe);
+
+        return shoeMapper.toDTO(saved);
+        
     }
 
     @Transactional
-    public void updateShoe(Long id, String name, String shortDescription, String longDescription,
-            BigDecimal price, MultipartFile image1, MultipartFile image2,
-            MultipartFile image3, String brand, String category)
+    public ShoeDTO update(Long id, String name, String shortDescription, String longDescription,
+            BigDecimal price, Blob image1, Blob image2,
+            Blob image3, String brand, String category)
             throws IOException, SQLException {
 
         Shoe shoe = shoeRepository.findById(id)
@@ -118,18 +138,61 @@ public class ShoeService {
         shoe.setBrand(Brand.valueOf(brand));
         shoe.setCategory(Category.valueOf(category));
 
-        if (image1 != null && !image1.isEmpty()) {
-            shoe.setImage1(new SerialBlob(image1.getBytes()));
+        if (image1 != null) {
+            shoe.setImage1(image1);
         }
-        if (image2 != null && !image2.isEmpty()) {
-            shoe.setImage2(new SerialBlob(image2.getBytes()));
+        if (image2 != null) {
+            shoe.setImage2(image2);
         }
-        if (image3 != null && !image3.isEmpty()) {
-            shoe.setImage3(new SerialBlob(image3.getBytes()));
+        if (image3 != null) {
+            shoe.setImage3(image3);
         }
 
         shoeRepository.save(shoe);
+        return shoeMapper.toDTO(shoe);
     }
+
+    public Optional<ShoeDTO> updateAllShoe(ShoeDTO shoeDTO) {
+        Optional<Shoe> shoeOp = shoeRepository.findById(shoeDTO.id());
+        if (shoeOp.isEmpty()) {
+            return Optional.empty();
+        }
+        Shoe shoe = shoeOp.get();
+        shoe.setName(shoeDTO.name());
+        shoe.setDescription(shoeDTO.shortDescription());
+        shoe.setLongDescription(shoeDTO.longDescription());
+        shoe.setPrice(shoeDTO.price());
+        shoe.setBrand(StringToBrand(shoeDTO.brand()));
+        shoe.setCategory(StringToCategory(shoeDTO.category()));
+        shoe.setSizeStock(shoeSizeStockService.convertToShoeSizeStock(shoeDTO.sizeStocks()));
+        shoe.setReviews(reviewService.convertToReviewList(shoeDTO.reviews()));
+
+        Shoe saved = shoeRepository.save(shoe);
+        return Optional.of(shoeMapper.toDTO(saved));
+    }
+
+    /*@Transactional
+    public void addOrUpdateItem(OrderItemDTO dto, int newQuantity) {
+
+        if (dto == null) {
+            throw new IllegalArgumentException("DTO cannot be null");
+        }
+
+        if (dto.id() != null) {
+            Optional<OrderItem> existingItem = orderItemRepository.findById(dto.id());
+            if (existingItem.isPresent()) {
+                OrderItem item = existingItem.get();
+                item.setQuantity(newQuantity);
+                orderItemRepository.save(item);
+            } else {
+                throw new IllegalStateException("OrderItem not found with id: " + dto.id());
+            }
+        } else {
+            OrderItem newItem = orderItemMapper.toDomain(dto);
+            newItem.setQuantity(newQuantity);
+            orderItemRepository.save(newItem);
+        }
+    } */
 
     
     public Long saveAndReturnId(ShoeDTO dto) {
@@ -180,8 +243,13 @@ public class ShoeService {
         return saved.getId(); // In case you need the id of the new created shoe
     }
 
-    public void deleteShoe(Long id) {
+    public Optional<ShoeDTO> deleteShoe(Long id)
+    {   
+        Optional<Shoe> shoeOp = shoeRepository.findById(id);
+        Shoe shoe = shoeOp.get();
+        ShoeDTO shoeDTO = new ShoeDTO(id, shoe.getName(), shoe.getDescription(), shoe.getLongDescription(), shoe.getPrice(), brandToString(shoe.getBrand()), categoryToString(shoe.getCategory()), convertBlobToBase64(shoe.getImage1()), convertBlobToBase64(shoe.getImage2()), convertBlobToBase64(shoe.getImage3()), shoeSizeStockService.convertToShoeSizeStockDTO(shoe.getSizeStocks()), reviewService.convertToDTOReviewList(shoe.getReviews()));
         shoeRepository.deleteById(id);
+        return Optional.of(shoeMapper.toDTO(shoe));
     }
 
     public Page<ShoeDTO> getShoesPaginated(int currentPage) {
@@ -269,6 +337,35 @@ public class ShoeService {
     public BigDecimal getPricefromShoe(ShoeDTO shoeDtO){
         Shoe shoe = shoeMapper.toDomain(shoeDtO);
         return shoe.getPrice();
+    }
+
+    @Transactional
+    public void updateShoe(Long id, String name, String shortDescription, String longDescription,
+            BigDecimal price, MultipartFile image1, MultipartFile image2,
+            MultipartFile image3, String brand, String category)
+            throws IOException, SQLException {
+
+        Shoe shoe = shoeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Shoe not found"));
+
+        shoe.setName(name);
+        shoe.setDescription(shortDescription);
+        shoe.setLongDescription(longDescription);
+        shoe.setPrice(price);
+        shoe.setBrand(Brand.valueOf(brand));
+        shoe.setCategory(Category.valueOf(category));
+
+        if (image1 != null && !image1.isEmpty()) {
+            shoe.setImage1(new SerialBlob(image1.getBytes()));
+        }
+        if (image2 != null && !image2.isEmpty()) {
+            shoe.setImage2(new SerialBlob(image2.getBytes()));
+        }
+        if (image3 != null && !image3.isEmpty()) {
+            shoe.setImage3(new SerialBlob(image3.getBytes()));
+        }
+
+        shoeRepository.save(shoe);
     }
 
     

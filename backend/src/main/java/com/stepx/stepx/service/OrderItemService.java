@@ -118,14 +118,14 @@ public class OrderItemService {
     }
 
 
-    @Transactional
-    public void updateOrderItem(Long id, int quantity) {
-        Optional<OrderItem> item_Optional = orderItemRepository.findById(id);
-        OrderItem item = item_Optional.get();
-        item.setQuantity(quantity);
-        orderItemRepository.save(item);
+    // @Transactional
+    // public void updateOrderItem(Long id, int quantity) {
+    //     Optional<OrderItem> item_Optional = orderItemRepository.findById(id);
+    //     OrderItem item = item_Optional.get();
+    //     item.setQuantity(quantity);
+    //     orderItemRepository.save(item);
 
-    }
+    // }
 
     @Transactional
     public void updateOrderItemsBatch(List<Long> ids, List<Integer> quantities) {
@@ -241,6 +241,33 @@ public class OrderItemService {
         }).collect(Collectors.toList());
     }
 
+    public List<OrderItemDTO> convertToOrderItemDTOList(List<OrderItem> orderItems) {
+        if (orderItems == null || orderItems.isEmpty()) {
+            return List.of();
+        }
+    
+        List<OrderItemDTO> dtoList = new ArrayList<>();
+        
+        for (OrderItem orderItem : orderItems) {
+            Long orderId = null;
+            if (orderItem.getOrderShoes() != null) {
+                orderId = orderItem.getOrderShoes().getId();
+            }
+    
+            Long shoeId = orderItem.getShoe().getId();
+            int quantity = orderItem.getQuantity();
+            String size = orderItem.getSize();
+            String shoeName = orderItem.getShoe().getName();
+            BigDecimal price = orderItem.getShoe().getPrice();
+    
+            dtoList.add(new OrderItemDTO(null,orderId, shoeId, shoeName, quantity, size, price));
+
+        }
+    
+        return dtoList;
+    }
+    
+    
    
 
 }

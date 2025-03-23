@@ -2,6 +2,7 @@ package com.stepx.stepx.controller.rest;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.URI;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,11 +24,15 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.stepx.stepx.dto.OrderItemDTO;
 import com.stepx.stepx.dto.ReviewDTO;
 import com.stepx.stepx.dto.ShoeDTO;
 import com.stepx.stepx.dto.ShoeSizeStockDTO;
@@ -40,10 +45,11 @@ import com.stepx.stepx.service.ShoeSizeStockService;
 import com.stepx.stepx.service.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/shoe")
 public class ShoeRestController {
 
     @Autowired
@@ -77,39 +83,38 @@ public class ShoeRestController {
         return Base64.getEncoder().encodeToString(file.getBytes());
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<String> createShoe(
-            @RequestParam String name,
-            @RequestParam String shortDescription,
-            @RequestParam String longDescription,
-            @RequestParam BigDecimal price,
-            @RequestParam(required = false) MultipartFile image1,
-            @RequestParam(required = false) MultipartFile image2,
-            @RequestParam(required = false) MultipartFile image3,
-            @RequestParam String brand,
-            @RequestParam String category) throws IOException, SQLException {
 
-        
-        List<ShoeSizeStockDTO> sizeStocks = new ArrayList<>();
-        for (String size : new String[]{"S", "M", "L", "XL"}) {
-            ShoeSizeStockDTO stockDTO = new ShoeSizeStockDTO(null, null, size, 10); 
-            sizeStocks.add(stockDTO);
+    @PostMapping
+    public ResponseEntity<ShoeDTO> createShoe(@Valid @RequestBody ShoeDTO shoeDTO) throws SQLException {
+        ShoeDTO savedDTO =shoeService.saveShoe(shoeDTO);
+        if (savedDTO ==null) {
+            return ResponseEntity.badRequest().build();
         }
-
-        String imageBase64_1 = (image1 != null && !image1.isEmpty()) ? convertToBase64(image1) : null;
-        String imageBase64_2 = (image2 != null && !image2.isEmpty()) ? convertToBase64(image2) : null;
-        String imageBase64_3 = (image3 != null && !image3.isEmpty()) ? convertToBase64(image3) : null;
-
-
-        
-        ShoeDTO shoe = new ShoeDTO(null, name, shortDescription, 
-        longDescription, price, brand, category,null, null, null, sizeStocks, List.of());
-
-     
-        shoeService.saveShoe(shoeMapper.toDomain(shoe));
-
-        return ResponseEntity.ok("Shoe created successfully.");
+        URI location = ServletUriComponentsBuilder
+        .fromCurrentRequest()
+        .path("/{id}")
+        .buildAndExpand(savedDTO.id())
+        .toUri();
+    return ResponseEntity.created(location).body(savedDTO);
     }
+
+     @PutMapping("/{id}")
+     public ResponseEntity<ShoeDTO> updateShoe(@RequestBody ShoeDTO shoeDTO) {
+         Optional<ShoeDTO> shoe = shoeService.updateAllShoe(shoeDTO);//get the orderitem
+         if (shoe.isEmpty()) {
+             return ResponseEntity.notFound().build();
+         }
+         return ResponseEntity.ok(shoe.get());
+     }
+
+     //delete a orderitem
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ShoeDTO> deleteShoe(@PathVariable Long id) {
+        Optional<ShoeDTO> deleted = shoeService.deleteShoe(id);//implement function
+        return deleted.map(ResponseEntity::ok)
+        .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+     
 
     @GetMapping("/create-product")
     public ResponseEntity<Map<String, Object>> getCreateProductData(HttpServletRequest request) {
@@ -129,11 +134,11 @@ public class ShoeRestController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteShoe(@PathVariable Long id) {
-        shoeService.deleteShoe(id);
-        return ResponseEntity.ok("Shoe deleted successfully.");
-    }
+    // @DeleteMapping("/delete/{id}")
+    // public ResponseEntity<String> deleteShoe(@PathVariable Long id) {
+    //     shoeService.deleteShoe(id);
+    //     return ResponseEntity.ok("Shoe deleted successfully.");
+    // }
 
 
     @GetMapping("/{id}")
@@ -163,68 +168,7 @@ public class ShoeRestController {
         return ResponseEntity.ok(response);
     }
 
-    // @GetMapping("/loadMoreShoes/")
-    // public ResponseEntity<Map<String, Object>> getMore(@RequestParam int currentPage, HttpServletRequest request) {
-    //     Page<Shoe> shoePage = shoeService.getShoesPaginated(currentPage);
-    //     boolean more = currentPage < shoePage.getTotalPages() - 1;
-
-    //     Map<String, Object> response = new HashMap<>();
-    //     response.put("hasMoreShoes", more);
-    //     response.put("shoes", shoePage.getContent());
-
-    //     return ResponseEntity.ok(response);
-    // }
-
-    // @GetMapping("/{userId}/imageUser")
-    // public ResponseEntity<Resource> getProfileImage(@PathVariable Long userId, HttpServletRequest request) {
-    //     Optional<User> userOptional = userService.findUserById(userId);
-
-    //     if (userOptional.isPresent()) {
-    //         User user = userOptional.get();
-    //         Blob image = user.getImageUser();
-
-    //         if (image != null) {
-    //             try {
-    //                 Resource file = new InputStreamResource(image.getBinaryStream());
-    //                 return ResponseEntity.ok()
-    //                         .header(HttpHeaders.CONTENT_TYPE, "image/jpg")
-    //                         .contentLength(image.length())
-    //                         .body(file);
-    //             } catch (Exception e) {
-    //                 e.printStackTrace();
-    //             }
-    //         }
-    //     }
-
-    //     return ResponseEntity.notFound().build();
-    // }
-
-    // @PostMapping("/submit/{id}")
-    // public ResponseEntity<Map<String, Object>> publishReview(@PathVariable Long id, @RequestParam("rating") int rating,
-    //         @RequestParam String description, HttpServletRequest request) {
-    //     Map<String, Object> response = new HashMap<>();
-    //     String username = request.getUserPrincipal().getName();
-    //     User user = userRepository.findByUsername(username).orElseThrow();
-    //     Shoe shoe = shoeService.getShoeById(id).orElseThrow(() -> new RuntimeException("Shoe not found"));
-    //     LocalDate date = LocalDate.now();
-    //     Review review = new Review(rating, description, shoe, user, date);
-    //     reviewService.save(review);
-
-    //     response.put("message", "Review published successfully");
-    //     return ResponseEntity.ok(response);
-    // }
-
-    // @GetMapping("/{productId}/deleteReview/{id}")
-    // public ResponseEntity<Map<String, Object>> deleteReview(@PathVariable Long productId, @PathVariable Long id, HttpServletRequest request) {
-    //     Map<String, Object> response = new HashMap<>();
-    //     reviewService.deleteReview(id);
-
-    //     List<Review> reviews = reviewService.getReviewsByShoe(productId);
-    //     response.put("reviews", reviews);
-
-    //     return ResponseEntity.ok(response);
-    // }
-
+    
     @PostMapping("/single-product/loadMoreReviews")
     public ResponseEntity<Map<String, Object>> loadMoreReviews(@RequestParam int page, @RequestParam Long shoeId) {
         int limit = 2;
@@ -280,12 +224,12 @@ public class ShoeRestController {
     }
 
     @GetMapping("/shop")
-public ResponseEntity<Page<ShoeDTO>> getAllProducts() {
-    Page<ShoeDTO> shoes = shoeService.getNineShoes(0);
-        boolean more = shoes.getTotalPages() > 1;
-        
-    return ResponseEntity.ok(shoes);
-}
+    public ResponseEntity<Page<ShoeDTO>> getAllProducts() {
+        Page<ShoeDTO> shoes = shoeService.getNineShoes(0);
+            boolean more = shoes.getTotalPages() > 1;
+            
+        return ResponseEntity.ok(shoes);
+    }
 }
  
     

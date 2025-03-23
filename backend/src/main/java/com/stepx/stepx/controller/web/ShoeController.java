@@ -441,9 +441,7 @@ public class ShoeController {
         model.addAttribute("isAuthenticated", isAuthenticated);
 
         shoeService.updateShoe(
-            id, name, description, LongDescription, price,
-            image1, image2, image3, brand, category
-        );
+            id, name, description, LongDescription, price, image1, image2, image3, brand, category);
         return "redirect:/shop";
     }
 

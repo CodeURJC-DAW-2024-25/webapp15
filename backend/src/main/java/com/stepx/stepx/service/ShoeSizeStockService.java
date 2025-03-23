@@ -115,4 +115,11 @@ public class ShoeSizeStockService {
         return sizeStocks;
     }
 
+    public List<ShoeSizeStockDTO> convertToShoeSizeStockDTO(List<ShoeSizeStock> sizeStocks) {
+        List<ShoeSizeStockDTO> sizeStocksDTOs = new ArrayList<>();
+        sizeStocksDTOs = shoeSizeStockMapper.toDTOs(sizeStocks);
+        
+        return sizeStocksDTOs;
+    }
+
 }
