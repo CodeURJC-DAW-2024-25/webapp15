@@ -177,7 +177,7 @@ public class ShoeService {
 
         shoeSizeStockService.saveStockList(stockDTOs);
 
-        return saved.getId(); // por si querés redirigir o generar DTO luego
+        return saved.getId(); // In case you need the id of the new created shoe
     }
 
     public void deleteShoe(Long id) {

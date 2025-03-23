@@ -174,7 +174,7 @@ public class UserController {
     @PostMapping("/upload-profile-image")//a dto
     public String uploadProfilePicture(@RequestParam(required = false) MultipartFile imageUser,
             HttpServletRequest request, Model model) throws IOException, SQLException {
-        User user = userService.findUserByUserName(request.getUserPrincipal().getName()).orElseThrow();
+            User user = userService.findUserByUserName(request.getUserPrincipal().getName()).orElseThrow();
 
         if (imageUser == null) {
             return "do not found an image to load";
