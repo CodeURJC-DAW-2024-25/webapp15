@@ -1,5 +1,6 @@
 package com.stepx.stepx.service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.mysql.cj.x.protobuf.MysqlxCrud.Order;
 import com.stepx.stepx.dto.OrderItemDTO;
 import com.stepx.stepx.dto.ShoeDTO;
 import com.stepx.stepx.mapper.OrderItemMapper;
@@ -54,6 +56,20 @@ public class OrderItemService {
         // this return the shoe that the cliente is triying to add to the cart if exist or not, that will be managed by the controller
     }
 
+    public OrderItemDTO findById(Long id) {
+        Optional<OrderItem> orderItem = orderItemRepository.findById(id);
+        if (orderItem.isPresent()) {
+            return orderItemMapper.toDTO(orderItem.get());
+        } else {
+            return null;
+        }
+    }
+
+    public List<OrderItemDTO> findAll() {
+        Collection<OrderItem> orderItems = orderItemRepository.findAll();
+        return orderItemMapper.toDTOs(orderItems);
+    }
+
     @Transactional
     public void addOrUpdateItem(OrderItemDTO dto, int newQuantity) {
 
@@ -77,9 +93,10 @@ public class OrderItemService {
         }
     }
 
-    public void save(OrderItemDTO orderItemDTO) {// save the order item in the bbdd
+    public OrderItemDTO save(OrderItemDTO orderItemDTO) {// save the order item in the bbdd
         OrderItem orderItem = orderItemMapper.toDomain(orderItemDTO);
-        orderItemRepository.save(orderItem);
+        OrderItem saved =orderItemRepository.save(orderItem);
+        return orderItemMapper.toDTO(saved);
     }
 
     @Transactional
@@ -100,6 +117,41 @@ public class OrderItemService {
         for (int i = 0; i < ids.size(); i++) {
             orderItemRepository.updateOrderItemQuantity(ids.get(i), quantities.get(i));
         }
+    }
+
+    public Optional<OrderItemDTO> updateAllOrderItem(Long id, OrderItemDTO orderItemDTO) {
+       Optional<OrderItem> orderItemOptional= orderItemRepository.findById(id);
+       OrderShoes orderShoe = orderShoesRepository.findById(orderItemDTO.orderId()).orElse(null);
+       Shoe shoe = shoeRepository.findById(orderItemDTO.shoeId()).orElse(null);
+        if (orderItemOptional.isPresent()) { // & orderShoesOptional.isPresent() & shoeOptional.isPresent()
+            OrderItem orderItem = orderItemOptional.get();
+            orderItem.setOrderShoes(orderShoe);//new ordershoe of orderitem
+            orderItem.setShoe(shoe);//new shoe of orderitem
+            orderItem.setShoeName(orderItemDTO.shoeName());
+            orderItem.setQuantity(orderItemDTO.quantity());
+            orderItem.setSize(orderItemDTO.size());
+            orderItemRepository.save(orderItem);
+            if(orderItemDTO.price()!=null){
+                orderItem.setPrice(orderItemDTO.price());//orderItem.setPrice(orderItemDTO.price().multiply(BigDecimal.valueOf(orderItemDTO.quantity())));
+            }else if (shoe != null) {
+                orderItem.setPrice(shoe.getPrice().multiply(BigDecimal.valueOf(orderItemDTO.quantity())));
+            }
+            else{
+                orderItem.setPrice(BigDecimal.ZERO);
+            }
+            OrderItem saved=orderItemRepository.save(orderItem);
+            return Optional.of(orderItemMapper.toDTO(saved));  
+        }
+        return Optional.empty();
+    }
+
+    public Optional<OrderItemDTO> deleteOrderItem(Long id) {
+        OrderItem orderItem = orderItemRepository.findById(id).orElse(null);
+        if (orderItem != null) {
+            orderItemRepository.deleteById(id);
+            return Optional.of(orderItemMapper.toDTO(orderItem));   
+        }
+        return Optional.empty();
     }
 
     public List<OrderItemDTO> getOrderItemsByOrderId(Long orderId) {

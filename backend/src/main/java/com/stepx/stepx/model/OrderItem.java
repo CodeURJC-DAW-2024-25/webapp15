@@ -34,6 +34,16 @@ public class OrderItem {
 
     private BigDecimal price; // Price of product in that moment
 
+    private String shoeName;
+
+    public String getShoeName() {
+        return shoeName;
+    }
+
+    public void setShoeName(String shoeName) {
+        this.shoeName = shoeName;
+    }
+
     public OrderItem() {
     }
 
