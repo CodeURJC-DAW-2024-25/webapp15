@@ -2,17 +2,26 @@ package com.stepx.stepx.service;
 
 
 
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import org.springframework.core.io.Resource;
+import javax.sql.rowset.serial.SerialBlob;
+import javax.sql.rowset.serial.SerialException;
 
 import com.stepx.stepx.dto.CouponDTO;
 import com.stepx.stepx.dto.OrderShoesDTO;
@@ -77,6 +86,42 @@ public class UserService {
         User user = userMapper.toDomain(userDTO);
         userRepository.save(user);
     }
+
+    public UserDTO createUser(String firstName, String lastName, String username, String email, String password) {
+        // Encode password
+        String encodedPassword = passwordEncoder.encode(password);
+
+        // Create user entity
+        User user = new User();
+        user.setFirstname(firstName);
+        user.setLastName(lastName);
+        user.setUsername(username);
+        user.setEmail(email);
+        user.setEncodedPassword(encodedPassword);
+        user.setRoles(List.of("USER"));
+
+        try {
+        Resource resource = new ClassPathResource("static/images/defaultProfilePicture.jpg");
+        if (resource.exists()) {
+            try (InputStream inputStream = resource.getInputStream()) {
+                byte[] bytes = inputStream.readAllBytes();
+                user.setImageUser(new SerialBlob(bytes));
+            }
+        } else {
+            user.setImageUser(null);
+        }
+    } catch (IOException | SQLException e) {
+        e.printStackTrace();
+        user.setImageUser(null);
+    }
+           
+        //Save in database
+        User savedUser = userRepository.save(user);
+
+        // Return as a dto
+        return userMapper.toDTO(savedUser);
+    }
+
 
     public UserDTO getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

@@ -175,6 +175,7 @@ public class UserController {
     public String uploadProfilePicture(@RequestParam(required = false) MultipartFile imageUser,
             HttpServletRequest request, Model model) throws IOException, SQLException {
         Optional<UserDTO> user = userService.findUserByUserName(request.getUserPrincipal().getName());
+        
         if (!user.isPresent()) {
             return "User not found";
         }
