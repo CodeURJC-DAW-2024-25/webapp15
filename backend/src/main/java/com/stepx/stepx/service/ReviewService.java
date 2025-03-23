@@ -10,50 +10,71 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.stepx.stepx.dto.ReviewDTO;
+import com.stepx.stepx.model.OrderItem;
 import com.stepx.stepx.model.Review;
 import com.stepx.stepx.mapper.*;
+import com.stepx.stepx.repository.*;
 import com.stepx.stepx.model.Shoe;
 import com.stepx.stepx.model.User;
-import com.stepx.stepx.repository.ReviewRepository;
 
 @Service
 public class ReviewService {
     private final ReviewRepository reviewRepository;
 
     @Autowired
-    private ReviewMapper reviewMapper;
+    private ShoeRepository shoeRepository;
 
+    @Autowired
+    private ReviewMapper reviewMapper;
+    @Autowired
+    private ShoeService shoeService;
 
     public ReviewService(ReviewRepository reviewRepository) {
         this.reviewRepository = reviewRepository;
     }
 
     public List<ReviewDTO> getReviewsByShoe(Long shoeId) {
+        System.out.println("Fetching reviews for shoe with ID: " + shoeId);
         List<Review> reviews = reviewRepository.findReviewsByShoeId(shoeId);
+        System.out.println("Reviews retrieved from DB: " + reviews);
         return reviews != null ? reviewMapper.toDTOs(reviews) : List.of();
     }
-    
 
-    public Optional<ReviewDTO> getReviewById(Long id) {
-        return reviewRepository.findById(id)
-                .map(review -> Optional.ofNullable(reviewMapper.toDTO(review)))
-                .orElse(Optional.empty());
+    public ReviewDTO getReviewById(Long id) {
+        Optional<Review> reviewDto = reviewRepository.findById(id);
+        if (reviewDto.isPresent()) {
+            return reviewMapper.toDTO(reviewDto.get());
+        } else {
+            return null;
+        }
     }
 
-    public void save(ReviewDTO reviewDto) {
-        Review review = reviewMapper.toDomain(reviewDto);
-        reviewRepository.save(review);
+    public ReviewDTO save(ReviewDTO reviewDto) {
+        Shoe shoe = shoeRepository.findById(reviewDto.shoeId()).orElseThrow();
+
+        Review review = new Review();
+        review.setRating(reviewDto.rating());
+        review.setDescription(reviewDto.description());
+        review.setShoe(shoe);
+        review.setUser(null);
+        review.setDate(reviewDto.date());
+        shoe.addReview(review);
+
+        System.out.println("⚙️ Review in shoe: " + shoe.getReviews());
+        Review Savedreview = reviewRepository.save(review);
+        shoeRepository.save(shoe);
+        return reviewMapper.toDTO(Savedreview);
     }
 
-    public void deleteReview(Long id) {
+    public Optional<ReviewDTO> deleteReview(Long id) {
         Optional<Review> reviewOptional = reviewRepository.findById(id);
 
         if (reviewOptional.isPresent()) {
             reviewRepository.deleteById(id);
+            return Optional.of(reviewMapper.toDTO(reviewOptional.get()));
 
-        } else {
-            throw new IllegalArgumentException("Review not found");
         }
+        return Optional.empty();
     }
 
     public List<ReviewDTO> getPagedReviewsByShoeId(Long shoeId, int page, int limit) {
@@ -64,13 +85,15 @@ public class ReviewService {
 
     public List<ReviewDTO> convertToDTOReviewList(List<Review> reviews) {
         List<ReviewDTO> reviewDTOs = new ArrayList<>();
-        
+
         for (Review review : reviews) {
             ReviewDTO reviewDTO = reviewMapper.toDTO(review);
-            //ReviewDTO reviewDTO = new ReviewDTO(review.getId(), review.getDate(), review.getRating(), review.getDescription(), review.getShoe(), review.getUser());
+            // ReviewDTO reviewDTO = new ReviewDTO(review.getId(), review.getDate(),
+            // review.getRating(), review.getDescription(), review.getShoe(),
+            // review.getUser());
             reviewDTOs.add(reviewDTO);
         }
-        
+
         return reviewDTOs;
     }
 
@@ -84,11 +107,9 @@ public class ReviewService {
             review.setRating(reviewDTO.rating());
             review.setDescription(reviewDTO.description());
 
-           
             Shoe shoe = new Shoe();
             shoe.setId(reviewDTO.shoeId());
             review.setShoe(shoe);
-
 
             User user = new User();
             user.setId(reviewDTO.userId());
@@ -98,6 +119,28 @@ public class ReviewService {
         }
 
         return reviews;
+    }
+
+    public ReviewDTO assignIdshoe(ReviewDTO reviewDto, Long idShoe) {
+        Review review = reviewMapper.toDomain(reviewDto);
+        Shoe shoe = shoeRepository.findById(idShoe).orElse(null);
+        review.setShoe(shoe);
+        reviewDto = reviewMapper.toDTO(review);
+        return reviewDto;
+    }
+
+    public Optional<ReviewDTO> updateReview(Long id, ReviewDTO reviewDto) {
+        Optional<Review> reviewOptional = reviewRepository.findById(id);
+        if (reviewOptional.isPresent()) {
+            Review review = reviewOptional.get();
+            review.setDate(reviewDto.date());
+            review.setRating(reviewDto.rating());
+            review.setDescription(reviewDto.description());
+            reviewRepository.save(review);
+            return Optional.of(reviewMapper.toDTO(review));
+        } else {
+            return Optional.empty();
+        }
     }
 
 }

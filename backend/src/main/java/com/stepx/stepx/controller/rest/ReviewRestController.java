@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -27,6 +30,7 @@ import com.stepx.stepx.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
+@RequestMapping("/api/reviews")
 public class ReviewRestController {
 
     @Autowired
@@ -40,62 +44,67 @@ public class ReviewRestController {
     @Autowired
     private UserService userService;
 
-@PostMapping("/submit/{idShoe}")
-public ResponseEntity<?> publishReview(
-        @PathVariable Long idShoe,
-        @RequestParam("rating") int rating,
-        @RequestParam String description,
-        HttpServletRequest request
-) {
-    // Verificar autenticación del usuario
-    if (request.getUserPrincipal() == null) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body("Usuario no autenticado.");
+    // get a order item by id
+    @GetMapping("/{id}")
+    public ResponseEntity<ReviewDTO> getById(@PathVariable Long id) {
+        ReviewDTO reviewDto = reviewService.getReviewById(id);
+
+        if (reviewDto == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(reviewDto);
     }
 
-    // Obtener el usuario autenticado
-    String username = request.getUserPrincipal().getName();
-    UserDTO userDto = userService.findUserByUserName(username)
-            .orElseThrow(() -> new RuntimeException("User not found"));
-
-    // Buscar el zapato por ID
-    ShoeDTO shoeDto = shoeService.getShoeById(idShoe)
-            .orElseThrow(() -> new RuntimeException("Shoe not found"));
-
-    // Crear la reseña
-    ReviewDTO reviewDto = new ReviewDTO(null, LocalDate.now(), rating, description, idShoe, userDto.id());
-
-    // Guardar la reseña y obtener el ID generado
-    reviewService.save(reviewDto);
-
-    // Construir la URI del recurso recién creado
-    URI location = ServletUriComponentsBuilder
-            .fromCurrentRequest()
-            .path("/{id}")
-            .buildAndExpand(reviewDto.id()) // Suponiendo que `getId()` retorna el ID de la reseña
-            .toUri();
-
-    // Retornar la respuesta con código 201 Created y la URI en `Location`
-    return ResponseEntity.created(location).body(reviewDto);
-}
-
-    
-
-    @DeleteMapping("/reviews/{id}")  // Cambio de nombre para seguir convenciones REST
-public ResponseEntity<Object> deleteReview(@PathVariable Long id, HttpServletRequest request) {
-    // Verificar si el usuario es dueño de la reseña o un administrador
-    if (!request.isUserInRole("ROLE_ADMIN")) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No tienes permiso para eliminar esta reseña.");
+    // get all reviews in shoe
+    @GetMapping("/Shoe/{idShoe}")
+    public ResponseEntity<List<ReviewDTO>> getAll(@PathVariable Long idShoe) {
+        List<ReviewDTO> reviews = reviewService.getReviewsByShoe(idShoe);
+        System.out.println("foundedreviews:" + reviews);
+        if (reviews.isEmpty()) {
+            return ResponseEntity.noContent().build(); // 204 No Content si no hay reseñas
+        }
+        return ResponseEntity.ok(reviews);
     }
 
-    try {
-        reviewService.deleteReview(id);
-			return new ResponseEntity<>(null, HttpStatus.OK);
+    // Crear una review
+    @PostMapping
+    public ResponseEntity<ReviewDTO> createReview(@RequestBody ReviewDTO reviewDTO) {
+        System.out.println("⚙️ Recibido DTO: " + reviewDTO);
 
-		} catch (EmptyResultDataAccessException e) {
-			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-		}
-}
+        ReviewDTO savedDTO = reviewService.save(reviewDTO);
 
-    
+        if (savedDTO == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(savedDTO.id()) // Asegúrate de tener un método getId() en ReviewDTO
+                .toUri();
+
+        System.out.println("✅ Creada Review: " + savedDTO);
+
+        return ResponseEntity.created(location).body(savedDTO);
+    }
+
+    // Eliminar una review
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ReviewDTO> deleteReview(@PathVariable Long id) {
+        Optional<ReviewDTO> deleted = reviewService.deleteReview(id); // Implementa este método en el servicio
+
+        return deleted.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    // update a orderitem
+    @PutMapping("/{id}")
+    public ResponseEntity<ReviewDTO> updateReview(@PathVariable Long id, @RequestBody ReviewDTO reviewDto) {
+        Optional<ReviewDTO> review = reviewService.updateReview(id, reviewDto);// get the orderitem
+        if (review.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(review.get());
+    }
+
 }
