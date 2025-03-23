@@ -182,6 +182,10 @@ public class Shoe {
         sizeStocks.add(sizeStock);
         sizeStock.setShoe(this); // Ensure bidirectional relationship is maintained
     }
+    public void addReview(Review review) {
+        reviews.add(review);
+        review.setShoe(this); // Ensure bidirectional relationship is maintained
+    }
 
     // Encapsulated method to remove a ShoeSizeStock
     public void removeSizeStock(ShoeSizeStock sizeStock) {

@@ -34,6 +34,14 @@ public class Coupon {
     public void setDiscount(BigDecimal discount) {
         this.discount = discount;
     }
+   
+     public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     // Getter and setter for user
     public User getUser() {

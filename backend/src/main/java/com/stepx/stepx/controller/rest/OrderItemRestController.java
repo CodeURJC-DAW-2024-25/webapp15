@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 
 import java.lang.foreign.Linker.Option;
 import java.net.URI;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,26 +39,30 @@ public class OrderItemRestController {
 
     //get a order item by id
     @GetMapping("/{id}")
-    public ResponseEntity<OrderItemDTO> getById(@PathVariable Long id) {
+    public ResponseEntity<?> getById(@PathVariable Long id) {
         OrderItemDTO orderItem = orderItemService.findById(id);
 
         if (orderItem==null) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(404)
+            .body(Collections.singletonMap("error", "OrderItem with ID " + id + " not found"));
+
         }
         return ResponseEntity.ok(orderItem);
     }
 
     //get all orders items
     @GetMapping
-    public ResponseEntity<List<OrderItemDTO>> getAll(){
+    public ResponseEntity<?> getAll(){
         List<OrderItemDTO> orderItems = orderItemService.findAll();
+        if (orderItems.isEmpty()) {
+            return ResponseEntity.status(404)
+                    .body(Collections.singletonMap("error", "No OrderItems found"));
+        }
         return ResponseEntity.ok(orderItems);
     }
 
-    //create a order item (produces = MediaType.APPLICATION_JSON_VALUE)
     @PostMapping
     public ResponseEntity<OrderItemDTO> createOrderItem(@Valid @RequestBody OrderItemDTO orderItemDTO) {
-        System.out.println("⚙️ Recibido DTO: " + orderItemDTO);
         OrderItemDTO savedDTO =orderItemService.save(orderItemDTO);
         if (savedDTO ==null) {
             return ResponseEntity.badRequest().build();
@@ -66,8 +71,7 @@ public class OrderItemRestController {
         .fromCurrentRequest()
         .path("/{id}")
         .buildAndExpand(savedDTO.id())
-        .toUri();
-    System.out.println("✅ Creado OrderItem: " + savedDTO);    
+        .toUri(); 
     return ResponseEntity.created(location).body(savedDTO);
     }
     
