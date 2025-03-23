@@ -85,14 +85,14 @@ public class ShoeController {
 
             model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
 
-            User user = userRepository.findByUsername(username).get();
+            UserDTO userDto = userService.findUserByUserName(username).get();
 
-            model.addAttribute("id", user.getId());
-            model.addAttribute("email", user.getEmail());
-            model.addAttribute("imageBlob", user.getImageUser());
-            model.addAttribute("lastName", user.getLastName());
-            model.addAttribute("firstname", user.getFirstName());
-            model.addAttribute("user_id", user.getId());
+            model.addAttribute("id", userDto.id());
+            model.addAttribute("email", userDto.email());
+            model.addAttribute("imageBlob", userDto.imageUser());
+            model.addAttribute("lastName", userDto.lastName());
+            model.addAttribute("firstname", userDto.firstname());
+            model.addAttribute("user_id", userDto.id());
 
         }
     }
@@ -276,7 +276,7 @@ public class ShoeController {
         Optional<ShoeDTO> op = shoeService.getShoeById(id);
         int initialReviewsCount = 2;
         //a dto
-        List<Review> reviews = reviewService.getPagedReviewsByShoeId(id, 0, initialReviewsCount);
+        List<ReviewDTO> reviewsDto = reviewService.getPagedReviewsByShoeId(id, 0, initialReviewsCount);
 
         if (op.isPresent()) {
             ShoeDTO shoe = op.get();
@@ -291,8 +291,8 @@ public class ShoeController {
             model.addAttribute("stockXL", outOfStockXL);
 
             model.addAttribute("product", shoe);
-            if (reviews != null) {
-                model.addAttribute("review", reviews);
+            if (reviewsDto != null) {
+                model.addAttribute("review", reviewsDto);
                 model.addAttribute("hasReviews", true);
 
             }else{
@@ -464,8 +464,8 @@ public class ShoeController {
 
             if (isAuthenticated) {
                 String username = request.getUserPrincipal().getName();
-                User user = userRepository.findByUsername(username).orElseThrow();
-                model.addAttribute("username", user.getUsername());
+                UserDTO userDto = userService.findUserByUserName(username).orElseThrow();
+                model.addAttribute("username", userDto.username());
                 model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
 
             }
@@ -524,8 +524,8 @@ public class ShoeController {
 
         if (isAuthenticated) {
             String username = request.getUserPrincipal().getName();
-            User user = userRepository.findByUsername(username).orElseThrow();
-            model.addAttribute("username", user.getUsername());
+            UserDTO userDto = userService.findUserByUserName(username).orElseThrow();
+            model.addAttribute("username", userDto.username());
             model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
 
         }
@@ -553,10 +553,10 @@ public class ShoeController {
         LocalDate date;
         date = LocalDate.now();
         // Create new review
-        ReviewDTO review = new Review(rating, description, shoe, user, date);//a dto
+        ReviewDTO reviewDto = new ReviewDTO(null,date,rating, description, shoe.id(), user.get().id());
 
         // Saving the review
-        reviewService.save(review);
+        reviewService.save(reviewDto);
 
         return "redirect:/shop/single-product/" + id + "?page=0";
 
@@ -580,9 +580,9 @@ public class ShoeController {
 
         reviewService.deleteReview(id);
 
-        List<Review> review = reviewService.getReviewsByShoe(productId);//a dto
-        if (review != null) {
-            model.addAttribute("review", review);
+        List<ReviewDTO> reviewDto = reviewService.getReviewsByShoe(productId);//a dto
+        if (reviewDto != null) {
+            model.addAttribute("review", reviewDto);
             return "partials/singleProduct-reviewList";
         }
         return "error";
@@ -592,7 +592,7 @@ public class ShoeController {
     @PostMapping("/single-product/loadMoreReviews")
     public String loadMoreReviews(@RequestParam int page, @RequestParam Long shoeId, Model model) {
         int limit = 2;
-        List<Review> reviews = reviewService.getPagedReviewsByShoeId(shoeId, page, limit);//a dto
+        List<ReviewDTO> reviews = reviewService.getPagedReviewsByShoeId(shoeId, page, limit);
         model.addAttribute("review", reviews);
 
         return "partials/singleProduct-reviewList";

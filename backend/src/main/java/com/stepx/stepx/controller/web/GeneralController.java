@@ -144,7 +144,7 @@ public class GeneralController {
 
         return "index";
     }
-
+        
     @GetMapping("/login")
     public String login(Model model, HttpServletRequest request) {
         UserDTO userdto = (UserDTO) request.getAttribute("user");
