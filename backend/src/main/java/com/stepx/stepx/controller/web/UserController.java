@@ -172,23 +172,12 @@ public class UserController {
     }
 
     @PostMapping("/upload-profile-image")//a dto
-    public String uploadProfilePicture(@RequestParam(required = false) MultipartFile imageUser,
-            HttpServletRequest request, Model model) throws IOException, SQLException {
-        Optional<UserDTO> user = userService.findUserByUserName(request.getUserPrincipal().getName());
-        if (!user.isPresent()) {
-            return "User not found";
-        }
-        if (imageUser == null) {
-            return "do not found an image to load";
-        }
-        //service to load the image
-        //userService.uploadProfilePicture(user.get().id(), imageUser);
-        if (imageUser != null && !imageUser.isEmpty()) {
-            user.setImageUser(new SerialBlob(imageUser.getBytes()));
-        }
+    public String uploadProfilePicture(@RequestParam(required = false) MultipartFile imageUser,HttpServletRequest request, Model model) throws IOException, SQLException {
 
-        userService.saveUser(user);
-        model.addAttribute("user", user);
+    
+        UserDTO UserDto =userService.updateUserImage(request.getUserPrincipal().getName(), imageUser);
+
+        model.addAttribute("user", UserDto);
 
         return "partials/userImage";
     }

@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -282,40 +283,17 @@ public class GeneralController {
             return "redirect:/register-user";
         }
 
-        // Verigy email and user exists
-        if (userRepository.findByUsername(username).isPresent() /** || userRepository.findByEmail(email).isPresent() */
+        // Verify email and user exists
+        if (userService.findUserByUserName(username).isPresent() /** || userRepository.findByEmail(email).isPresent() */
         ) {
             redirectAttributes.addFlashAttribute("error", "❌ Username is already in use.");
             return "redirect:/register-user";
         }
 
-        // Code the password
-        String encodedPassword = passwordEncoder.encode(password);
-
-        List<String> roles = List.of("USER");
-
-        // Create new user
-        UserDTO newUserdto = new UserDTO(null,null,firstName, lastName,roles, username,email,null,encodedPassword);
-        // load default image
-        Blob defaultUserImage;
-        try {
-            Resource resource = new ClassPathResource("static/images/defaultProfilePicture.jpg");
-            if (!resource.exists()) {
-                defaultUserImage = null;
-            }
-            try (InputStream inputStream = resource.getInputStream()) {
-                byte[] imageBytes = inputStream.readAllBytes();
-                defaultUserImage = new SerialBlob(imageBytes);
-            }
-        } catch (IOException | SQLException e) {
-            e.printStackTrace();
-            defaultUserImage = null;
-        }
-        //newUserdto.setImageUser(defaultUserImage);
-        // Saving in data
-        userService.saveUser(newUserdto);
-
-        CouponDTO couponDto = new CouponDTO(null, "STEPXDISCOUNT10", new BigDecimal("0.9"), newUserdto.id());
+           
+        UserDTO newUserDTO = userService.createUser(firstName, lastName, username, email, password);
+        
+        CouponDTO couponDto = new CouponDTO(null, "STEPXDISCOUNT10", new BigDecimal("0.9"), newUserDTO.id());
         couponService.save(couponDto);
         return "redirect:/index";
     }

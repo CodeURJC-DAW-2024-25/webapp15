@@ -5,7 +5,7 @@ import java.util.List;
 
 public record UserDTO(
     Long id,
-    Blob imageUser,
+    String imageUser,
     String firstname,
     String lastName,
     List<String> roles,

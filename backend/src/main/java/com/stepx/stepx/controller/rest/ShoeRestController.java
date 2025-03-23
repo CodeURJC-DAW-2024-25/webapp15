@@ -1,7 +1,12 @@
 package com.stepx.stepx.controller.rest;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,15 +19,18 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.stepx.stepx.dto.ReviewDTO;
 import com.stepx.stepx.dto.ShoeDTO;
+import com.stepx.stepx.dto.ShoeSizeStockDTO;
 import com.stepx.stepx.mapper.ShoeMapper;
 import com.stepx.stepx.repository.UserRepository;
 import com.stepx.stepx.service.OrderItemService;
@@ -65,54 +73,67 @@ public class ShoeRestController {
         
     }
 
-    // @PostMapping("/create")
-    // public ResponseEntity<String> createShoe(
-    //         @RequestParam String name,
-    //         @RequestParam String shortDescription,
-    //         @RequestParam String longDescription,
-    //         @RequestParam BigDecimal price,
-    //         @RequestParam(required = false) MultipartFile image1,
-    //         @RequestParam(required = false) MultipartFile image2,
-    //         @RequestParam(required = false) MultipartFile image3,
-    //         @RequestParam String brand,
-    //         @RequestParam String category) throws IOException, SQLException {
+    private String convertToBase64(MultipartFile file) throws IOException {
+        return Base64.getEncoder().encodeToString(file.getBytes());
+    }
 
-    //     Shoe shoe = new Shoe();
-    //     shoe.setName(name);
-    //     shoe.setDescription(shortDescription);
-    //     shoe.setPrice(price);
-    //     shoe.setBrand(Shoe.Brand.valueOf(brand));
-    //     shoe.setCategory(Shoe.Category.valueOf(category));
-    //     shoe.setLongDescription(longDescription);
+    @PostMapping("/create")
+    public ResponseEntity<String> createShoe(
+            @RequestParam String name,
+            @RequestParam String shortDescription,
+            @RequestParam String longDescription,
+            @RequestParam BigDecimal price,
+            @RequestParam(required = false) MultipartFile image1,
+            @RequestParam(required = false) MultipartFile image2,
+            @RequestParam(required = false) MultipartFile image3,
+            @RequestParam String brand,
+            @RequestParam String category) throws IOException, SQLException {
 
-    //     if (image1 != null && !image1.isEmpty()) {
-    //         shoe.setImage1(new SerialBlob(image1.getBytes()));
-    //     }
-    //     if (image2 != null && !image2.isEmpty()) {
-    //         shoe.setImage2(new SerialBlob(image2.getBytes()));
-    //     }
-    //     if (image3 != null && !image3.isEmpty()) {
-    //         shoe.setImage3(new SerialBlob(image3.getBytes()));
-    //     }
+        
+        List<ShoeSizeStockDTO> sizeStocks = new ArrayList<>();
+        for (String size : new String[]{"S", "M", "L", "XL"}) {
+            ShoeSizeStockDTO stockDTO = new ShoeSizeStockDTO(null, null, size, 10); 
+            sizeStocks.add(stockDTO);
+        }
 
-    //     shoeService.saveShoe(shoe);
+        String imageBase64_1 = (image1 != null && !image1.isEmpty()) ? convertToBase64(image1) : null;
+        String imageBase64_2 = (image2 != null && !image2.isEmpty()) ? convertToBase64(image2) : null;
+        String imageBase64_3 = (image3 != null && !image3.isEmpty()) ? convertToBase64(image3) : null;
 
-    //     for (String size : new String[]{"S", "M", "L", "XL"}) {
-    //         ShoeSizeStock stock = new ShoeSizeStock();
-    //         stock.setShoe(shoe);
-    //         stock.setSize(size);
-    //         stock.setStock(10);
-    //         shoeSizeStockService.saveStock(stock);
-    //     }
 
-    //     return ResponseEntity.ok("Shoe created successfully.");
-    // }
+        
+        ShoeDTO shoe = new ShoeDTO(null, name, shortDescription, 
+        longDescription, price, brand, category,null, null, null, sizeStocks, List.of());
 
-    // @DeleteMapping("/delete/{id}")
-    // public ResponseEntity<String> deleteShoe(@PathVariable Long id) {
-    //     shoeService.deleteShoe(id);
-    //     return ResponseEntity.ok("Shoe deleted successfully.");
-    // }
+     
+        shoeService.saveShoe(shoeMapper.toDomain(shoe));
+
+        return ResponseEntity.ok("Shoe created successfully.");
+    }
+
+    @GetMapping("/create-product")
+    public ResponseEntity<Map<String, Object>> getCreateProductData(HttpServletRequest request) {
+        boolean admin = request.isUserInRole("ROLE_ADMIN");
+        if (!admin) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Collections.singletonMap("error", "You do not have permission to create products."));
+        }
+
+        // Aquí podrías devolver los datos necesarios para el formulario, si es necesario
+        // Por ejemplo: categorías, marcas, etc.
+        Map<String, Object> response = new HashMap<>();
+        response.put("sizes", Arrays.asList("S", "M", "L", "XL"));
+        response.put("categories", Arrays.asList("Sportswear", "Casual", "Outdoor"));
+        response.put("brands", Arrays.asList("Nike", "Adidas", "Puma"));
+
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteShoe(@PathVariable Long id) {
+        shoeService.deleteShoe(id);
+        return ResponseEntity.ok("Shoe deleted successfully.");
+    }
 
 
     @GetMapping("/{id}")

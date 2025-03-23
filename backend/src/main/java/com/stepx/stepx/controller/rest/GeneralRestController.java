@@ -3,13 +3,10 @@ package com.stepx.stepx.controller.rest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.sql.SQLException;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-
-import javax.sql.rowset.serial.SerialBlob;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -22,21 +19,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.stepx.stepx.model.Coupon;
-import com.stepx.stepx.model.OrderShoes;
-import com.stepx.stepx.model.Shoe;
-import com.stepx.stepx.model.User;
+import com.stepx.stepx.dto.CouponDTO;
+import com.stepx.stepx.dto.UserDTO;
+import com.stepx.stepx.mapper.CouponMapper;
+import com.stepx.stepx.mapper.UserMapper;
 import com.stepx.stepx.repository.CouponRepository;
 import com.stepx.stepx.repository.OrderShoesRepository;
 import com.stepx.stepx.repository.UserRepository;
 import com.stepx.stepx.service.OrderItemService;
 import com.stepx.stepx.service.OrderShoesService;
 import com.stepx.stepx.service.UserService;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/api")
@@ -65,6 +60,12 @@ public class GeneralRestController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private CouponMapper couponMapper;
+
+    @Autowired
+    private UserMapper userMapper;
 
     // @GetMapping("/user")
     // public Map<String, Object> getUserData(HttpServletRequest request) {
@@ -146,55 +147,56 @@ public class GeneralRestController {
     //     return orderShoesService.getPagedOrdersByUserId(page, user.getId());
     // }
 
-    // @PostMapping("/register")
-    // public Map<String, String> createUser(
-    //         @RequestParam String username,
-    //         @RequestParam String email,
-    //         @RequestParam String emailRepeated,
-    //         @RequestParam String password,
-    //         @RequestParam String lastName,
-    //         @RequestParam String firstName) {
+    private String convertToBase64(MultipartFile file) throws IOException {
+        return Base64.getEncoder().encodeToString(file.getBytes());
+    }
 
-    //     Map<String, String> response = new HashMap<>();
+    @PostMapping("/register")
+    public Map<String, String> createUser(
+            @RequestParam String username,
+            @RequestParam String email,
+            @RequestParam String emailRepeated,
+            @RequestParam String password,
+            @RequestParam String lastName,
+            @RequestParam String firstName) {
 
-    //     if (!email.equals(emailRepeated)) {
-    //         response.put("error", "❌ Emails do not match.");
-    //         return response;
-    //     }
+        Map<String, String> response = new HashMap<>();
 
-    //     if (userRepository.findByUsername(username).isPresent()) {
-    //         response.put("error", "❌ Username is already in use.");
-    //         return response;
-    //     }
+        if (!email.equals(emailRepeated)) {
+            response.put("error", "❌ Emails do not match.");
+            return response;
+        }
 
-    //     String encodedPassword = passwordEncoder.encode(password);
-    //     User newUser = new User(username, email, encodedPassword, null, "USER");
-    //     newUser.setLastName(lastName);
-    //     newUser.setFirstname(firstName);
+        if (userRepository.findByUsername(username).isPresent()) {
+            response.put("error", "❌ Username is already in use.");
+            return response;
+        }
 
-    //     try {
-    //         Resource resource = new ClassPathResource("static/images/defaultProfilePicture.jpg");
-    //         if (resource.exists()) {
-    //             try (InputStream inputStream = resource.getInputStream()) {
-    //                 byte[] imageBytes = inputStream.readAllBytes();
-    //                 newUser.setImageUser(new SerialBlob(imageBytes));
-    //             }
-    //         }
-    //     } catch (IOException | SQLException e) {
-    //         e.printStackTrace();
-    //     }
+        String encodedPassword = passwordEncoder.encode(password);
+        try {
+            Resource resource = new ClassPathResource("static/images/defaultProfilePicture.jpg");
+            String image = (resource.exists() && resource.isReadable()) ? convertToBase64((MultipartFile) resource) : null;
+            
+            if (resource.exists()) {
+                try (InputStream inputStream = resource.getInputStream()) {
+                    byte[] imageBytes = inputStream.readAllBytes();
+                    UserDTO newUser = new UserDTO(null,image,firstName,lastName,List.of("USER"),username, email,null, encodedPassword);
+                    CouponDTO coupon = new CouponDTO(null, "STEPXDISCOUNT10", new BigDecimal("0.9"), newUser.id());
+                    userRepository.save(userMapper.toDomain(newUser));
+                    couponRepository.save(couponMapper.toDomain(coupon));
+            
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-    //     userRepository.save(newUser);
 
-    //     Coupon coupon = new Coupon();
-    //     coupon.setCode("STEPXDISCOUNT10");
-    //     coupon.setDiscount(new BigDecimal("0.9"));
-    //     coupon.setUser(newUser);
-    //     couponRepository.save(coupon);
+       
+        response.put("message", "User registered successfully.");
+        return response;
+    }
 
-    //     response.put("message", "User registered successfully.");
-    //     return response;
-    // }
 @GetMapping("/errorPage")
     public ResponseEntity<Object> errorShow(@RequestParam(value = "errorType", required = false) String errorType) {
         String message = null;
@@ -232,12 +234,4 @@ public class GeneralRestController {
         }
     }
 
-    @GetMapping("/create-product")
-    public ResponseEntity<String> showCreate(HttpServletRequest request) {
-        boolean admin = request.isUserInRole("ROLE_ADMIN");
-        if (!admin) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Not authorized to access this resource");
-        }
-        return ResponseEntity.ok("create-product");
-    }
 }
