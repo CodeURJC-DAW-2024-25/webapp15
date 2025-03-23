@@ -14,6 +14,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -51,9 +52,10 @@ public class OrderItemRestController {
         return ResponseEntity.ok(orderItems);
     }
 
-    //create a order item
+    //create a order item (produces = MediaType.APPLICATION_JSON_VALUE)
     @PostMapping
     public ResponseEntity<OrderItemDTO> createOrderItem(@RequestBody OrderItemDTO orderItemDTO) {
+        System.out.println("⚙️ Recibido DTO: " + orderItemDTO);
         OrderItemDTO savedDTO =orderItemService.save(orderItemDTO);
         if (savedDTO ==null) {
             return ResponseEntity.badRequest().build();
@@ -63,7 +65,7 @@ public class OrderItemRestController {
         .path("/{id}")
         .buildAndExpand(savedDTO.id())
         .toUri();
-
+    System.out.println("✅ Creado OrderItem: " + savedDTO);    
     return ResponseEntity.created(location).body(savedDTO);
     }
     

@@ -49,7 +49,9 @@ public class WebSecurityConfig {
 			throws Exception {
 
 		http.authenticationProvider(authenticationProvider());
-		http
+		http .csrf(csrf -> csrf
+				.ignoringRequestMatchers("/api/**") // ✅ Ignorar CSRF solo en la API
+				)
 				.authorizeHttpRequests(authorize -> authorize
 						// PUBLIC PAGES
 						.requestMatchers("/index", "/register-user", "/shop/**", "/partials/**", "/createAccount",
