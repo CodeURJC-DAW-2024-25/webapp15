@@ -441,8 +441,8 @@ public class ShoeController {
         model.addAttribute("isAuthenticated", isAuthenticated);
 
         shoeService.updateShoe(
-            id, name, description, LongDescription, price, image1, image2, image3, brand, category);
-        return "redirect:/shop";
+            id, name, description, LongDescription, price, image1, image2, image3, brand, category); 
+            return "redirect:/shop";
     }
 
     @GetMapping("/getByBrand") // first 9 shoes of same brand
