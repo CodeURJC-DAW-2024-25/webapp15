@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -256,6 +257,14 @@ public class ShoeRestController {
 
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/shop")
+public ResponseEntity<Page<ShoeDTO>> getAllProducts() {
+    Page<ShoeDTO> shoes = shoeService.getNineShoes(0);
+        boolean more = shoes.getTotalPages() > 1;
+        
+    return ResponseEntity.ok(shoes);
+}
 }
  
     
