@@ -1,42 +1,21 @@
 package com.stepx.stepx.controller.rest;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import javax.sql.rowset.serial.SerialBlob;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.stepx.stepx.model.Coupon;
-import com.stepx.stepx.model.OrderShoes;
-import com.stepx.stepx.model.Shoe;
-import com.stepx.stepx.model.User;
 import com.stepx.stepx.repository.CouponRepository;
 import com.stepx.stepx.repository.OrderShoesRepository;
 import com.stepx.stepx.repository.UserRepository;
 import com.stepx.stepx.service.OrderItemService;
 import com.stepx.stepx.service.OrderShoesService;
 import com.stepx.stepx.service.UserService;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/api")
@@ -232,12 +211,4 @@ public class GeneralRestController {
         }
     }
 
-    @GetMapping("/create-product")
-    public ResponseEntity<String> showCreate(HttpServletRequest request) {
-        boolean admin = request.isUserInRole("ROLE_ADMIN");
-        if (!admin) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Not authorized to access this resource");
-        }
-        return ResponseEntity.ok("create-product");
-    }
 }

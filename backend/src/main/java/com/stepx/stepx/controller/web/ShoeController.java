@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import javax.sql.rowset.serial.SerialBlob;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -33,10 +31,6 @@ import com.stepx.stepx.dto.ReviewDTO;
 import com.stepx.stepx.dto.ShoeDTO;
 import com.stepx.stepx.dto.ShoeSizeStockDTO;
 import com.stepx.stepx.dto.UserDTO;
-import com.stepx.stepx.model.Review;
-import com.stepx.stepx.model.Shoe;
-import com.stepx.stepx.model.ShoeSizeStock;
-import com.stepx.stepx.model.User;
 import com.stepx.stepx.repository.UserRepository;
 import com.stepx.stepx.service.ReviewService;
 import com.stepx.stepx.service.ShoeService;
@@ -374,13 +368,13 @@ public class ShoeController {
 
     @GetMapping("/{userId}/imageUser")
     public ResponseEntity<Resource> getProfileImage(@PathVariable Long userId, Model model,
-            HttpServletRequest request) {
+            HttpServletRequest request) throws SQLException {
 
         Optional<UserDTO> userOptional = userService.findUserById(userId);
         boolean isAuthenticated = request.getUserPrincipal() != null;
         model.addAttribute("isAuthenticated", isAuthenticated);   
         if (userOptional.isPresent()) {
-            Blob image =userOptional.get().imageUser();//dudas imagen
+            Blob image =shoeService.convertBase64ToBlob(userOptional.get().imageUser());//dudas imagen
             if (image != null) {
                 try {
                     Resource file = new InputStreamResource(image.getBinaryStream());
@@ -400,10 +394,10 @@ public class ShoeController {
 
     @GetMapping("/{userId}/imageUserReview")
     public ResponseEntity<Resource> getProfileImageForReview(@PathVariable Long userId, Model model,
-            HttpServletRequest request) {
+            HttpServletRequest request) throws SQLException {
         Optional<UserDTO> userOptional = userService.findUserById(userId);
         if (userOptional.isPresent()) {
-            Blob image = userOptional.get().imageUser(); 
+            Blob image =shoeService.convertBase64ToBlob(userOptional.get().imageUser());//dudas imagen
             if (image != null) {
                 try {
                     Resource file = new InputStreamResource(image.getBinaryStream());
