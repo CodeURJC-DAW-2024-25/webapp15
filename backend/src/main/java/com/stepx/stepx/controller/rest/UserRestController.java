@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stepx.stepx.dto.*;
 import com.stepx.stepx.model.Review;
 import com.stepx.stepx.model.Shoe;
@@ -50,6 +54,12 @@ public class UserRestController {
     private ShoeService shoeService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private OrderShoesRepository orderShoesRepository;
+
+    
+@Autowired
+private ObjectMapper objectMapper;
 
     // get all users
     @GetMapping
@@ -70,6 +80,45 @@ public class UserRestController {
         }
         return ResponseEntity.ok(userDto);
     }
+    @GetMapping("/chartuser/{userId}")
+public ResponseEntity<String> getUserMonthlySpendingChart(@PathVariable Long userId) {
+    // Get monthly spending data for the user
+    List<Map<String, Object>> monthlySpending = userService.getMonthlySpendingByUserId(userId);
+
+    // Prepare data for the chart
+    Map<String, Object> chartData = new HashMap<>();
+    String[] monthNames = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+    Double[] spendingData = new Double[12];
+
+    // Initialize with zeros
+    for (int i = 0; i < 12; i++) {
+        spendingData[i] = 0.0;
+    }
+
+    // Fill in the actual spending data
+    for (Map<String, Object> entry : monthlySpending) {
+        String monthStr = (String) entry.get("month");
+        Number amount = (Number) entry.get("total_spent");
+        Double totalSpent = amount != null ? amount.doubleValue() : 0.0;
+
+        // Convert month string to zero-based index
+        int monthIndex = Integer.parseInt(monthStr) - 1;
+        if (monthIndex >= 0 && monthIndex < 12) {
+            spendingData[monthIndex] = totalSpent;
+        }
+    }
+
+    chartData.put("labels", monthNames);
+    chartData.put("data", spendingData);
+
+    try {
+        // Convert to JSON 
+        String chartDataJson = objectMapper.writeValueAsString(chartData);
+        return ResponseEntity.ok(chartDataJson);
+    } catch (JsonProcessingException e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing chart data");
+    }
+}
 
     //create User
     @PostMapping

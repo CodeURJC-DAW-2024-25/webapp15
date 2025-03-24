@@ -34,6 +34,7 @@ import com.stepx.stepx.dto.UserDTO;
 import com.stepx.stepx.mapper.UserMapper;
 import com.stepx.stepx.model.Review;
 import com.stepx.stepx.model.User;
+import com.stepx.stepx.repository.OrderShoesRepository;
 import com.mysql.cj.jdbc.Blob;
 
 import com.stepx.stepx.repository.UserRepository;
@@ -41,6 +42,8 @@ import com.stepx.stepx.repository.UserRepository;
 
 @Service
 public class UserService {
+
+    private final OrderShoesRepository orderShoesRepository;
     
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -49,13 +52,14 @@ public class UserService {
     private final CouponService couponService;
     private final PdfService pdfService;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder ,UserMapper userMapper, OrderShoesService orderShoesService, CouponService couponService , PdfService pdfService){
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder ,UserMapper userMapper, OrderShoesService orderShoesService, CouponService couponService , PdfService pdfService, OrderShoesRepository orderShoesRepository){
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.userMapper = userMapper;
         this.orderShoesService = orderShoesService;
         this.couponService = couponService;
         this.pdfService = pdfService;
+        this.orderShoesRepository = orderShoesRepository;
 
     }
 
@@ -102,6 +106,14 @@ public class UserService {
     public void saveUser(UserDTO userDTO){
         User user = userMapper.toDomain(userDTO);
         userRepository.save(user);
+    }
+
+    public List<Map<String, Object>> getMonthlySpendingByUserId(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow();
+        if (user == null){
+            throw new NoSuchElementException();
+        }
+        return orderShoesRepository.getMonthlySpendingByUserId(userId);
     }
 
     public UserDTO createUser(String firstName, String lastName, String username, String email, String password) {
