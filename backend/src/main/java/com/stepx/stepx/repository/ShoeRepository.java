@@ -23,6 +23,10 @@ public interface ShoeRepository extends JpaRepository<Shoe, Long> {
        // to load 3 more without filter aplicated
        Page<Shoe> findAll(Pageable page);
 
+       //get all shoes from ddbb
+       @Query(value = "Select * from shoe",nativeQuery = true)
+       List<Shoe> findAllShoes();
+
        // to load 9 with brand filter aplicated
        @Query(value = "SELECT * FROM shoe WHERE brand=:brand", nativeQuery = true)
        Page<Shoe> findFirst9ByBrand(@Param("brand") String brand, Pageable pageable);
@@ -52,6 +56,7 @@ public interface ShoeRepository extends JpaRepository<Shoe, Long> {
        List<Shoe> findRecommendedShoesByBrandsExcludingPurchased(@Param("brands") List<Shoe.Brand> brands,
                      @Param("userId") Long userId);
 
+       //find a single shoe
        Optional<Shoe> findById(Long id);
 
 }

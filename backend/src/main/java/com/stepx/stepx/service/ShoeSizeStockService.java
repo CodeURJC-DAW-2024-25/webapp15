@@ -43,10 +43,14 @@ public class ShoeSizeStockService {
         return shoeSizeStockRepository.save(stock);
     }
 
-     public void saveStockList(List<ShoeSizeStockDTO> dtos) {
+     public void saveStockList(List<ShoeSizeStockDTO> dtos,Shoe shoe) {
         List<ShoeSizeStock> entities = dtos.stream()
-            .map(shoeSizeStockMapper::toDomain)
-            .toList();
+        .map(shoeSizeStockMapper::toDomain)
+        .peek(stock -> {
+            stock.setShoe(shoe);      // Relación unidireccional (DB)
+            shoe.addSizeStock(stock); // Relación bidireccional (memoria)
+        })
+        .toList();
             shoeSizeStockRepository.saveAll(entities);
     }
 
@@ -138,10 +142,7 @@ public class ShoeSizeStockService {
     }
 
     public List<ShoeSizeStock> convertToShoeSizeStock(List<ShoeSizeStockDTO> sizeStocksDTOs) {
-        List<ShoeSizeStock> sizeStocks = new ArrayList<>();
-        sizeStocks = shoeSizeStockMapper.toDomains(sizeStocksDTOs);
-        
-        return sizeStocks;
+        return shoeSizeStockMapper.toDomains(sizeStocksDTOs);
     }
 
 }

@@ -3,6 +3,7 @@ package com.stepx.stepx.mapper;
 import com.stepx.stepx.dto.ShoeDTO;
 import com.stepx.stepx.model.Shoe;
 
+import java.util.List;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -12,9 +13,9 @@ import org.mapstruct.Mappings;
 public interface ShoeMapper {
 
     @Mappings({
-        @Mapping(target = "imageUrl1", expression = "java(\"/shop/\" + shoe.getId() + \"/image/1\")"),
-        @Mapping(target = "imageUrl2", expression = "java(\"/shop/\" + shoe.getId() + \"/image/2\")"),
-        @Mapping(target = "imageUrl3", expression = "java(\"/shop/\" + shoe.getId() + \"/image/3\")"),
+        @Mapping(target = "imageUrl1", expression = "java(\"/Shop/\" + shoe.getId() + \"/image/1\")"),
+        @Mapping(target = "imageUrl2", expression = "java(\"/Shop/\" + shoe.getId() + \"/image/2\")"),
+        @Mapping(target = "imageUrl3", expression = "java(\"/Shop/\" + shoe.getId() + \"/image/3\")"),
         @Mapping(target = "shortDescription", source = "description")
     })
     ShoeDTO toDTO(Shoe shoe);
@@ -27,5 +28,7 @@ public interface ShoeMapper {
         // sizeStocks y reviews ahora se mapean automáticamente si están bien definidos
     })
     Shoe toDomain(ShoeDTO shoeDTO);
+
+    List<ShoeDTO> toDTOs(List<Shoe> shoeList);
 
 }

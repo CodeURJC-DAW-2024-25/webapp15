@@ -1,6 +1,7 @@
 package com.stepx.stepx.service;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.SQLException;
@@ -11,11 +12,14 @@ import java.util.Optional;
 
 import javax.sql.rowset.serial.SerialBlob;
 
+import org.hibernate.engine.jdbc.BlobProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,6 +33,8 @@ import com.stepx.stepx.model.Shoe.Brand;
 import com.stepx.stepx.model.Shoe.Category;
 import com.stepx.stepx.model.ShoeSizeStock;
 import com.stepx.stepx.repository.ShoeRepository;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 
 @Service
@@ -84,7 +90,7 @@ public class ShoeService {
         return paginatedShoe.map(shoeMapper::toDTO);
     }
 
-
+    //find a single shoe
     public Optional<ShoeDTO> getShoeById(Long id) {
         Shoe shoe= shoeRepository.findById(id).orElse(null);
         
@@ -99,9 +105,22 @@ public class ShoeService {
         }
     }
     
-    //save method
+    //Paged shoes
+    public Page<ShoeDTO> getPagedShoes(int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        return shoeRepository.findAll(pageable).map(shoeMapper::toDTO);
+    }
+
+    //find all shoes API
+    public List<ShoeDTO> findAll(){
+       List<Shoe>shoesList= shoeRepository.findAllShoes();
+       return shoeMapper.toDTOs(shoesList);
+    }
     
+    //create shoe
+    @Transactional
     public ShoeDTO saveShoe(ShoeDTO shoeDTO) throws SQLException {
+
         Shoe shoe = new Shoe();
         shoe.setName(shoeDTO.name());
         shoe.setDescription(shoeDTO.shortDescription());
@@ -109,11 +128,53 @@ public class ShoeService {
         shoe.setPrice(shoeDTO.price());
         shoe.setBrand(StringToBrand(shoeDTO.brand()));
         shoe.setCategory(StringToCategory(shoeDTO.category()));
-        shoe.setImage1(convertBase64ToBlob(shoeDTO.imageUrl1()));
+    
     
         Shoe saved = shoeRepository.save(shoe);
+
+        List<String> defaultSizes = List.of("S", "M", "L", "XL");
+        List<ShoeSizeStockDTO> defaultStocks = defaultSizes.stream()
+                .map(size -> new ShoeSizeStockDTO(null, saved.getId(), size, 10))
+                .toList();
     
-        return shoeMapper.toDTO(saved);
+        shoeSizeStockService.saveStockList(defaultStocks,saved);
+
+        return shoeMapper.toDTO(saved);    
+    }
+
+    //get image
+    public Resource getImage(Long shoeId, int imageNumber)throws SQLException{
+        Optional<Shoe> shoeOptional= shoeRepository.findById(shoeId);
+        if (shoeOptional.isPresent()) {
+            Shoe shoe = shoeOptional.get();
+            Blob blob=switch (imageNumber){
+                case 1 -> shoe.getImage1();
+                case 2 -> shoe.getImage2();
+                case 3 -> shoe.getImage3();
+                default -> throw new IllegalArgumentException("Invalid image number");  
+            };
+            if(blob==null){
+                throw new NoSuchElementException("Image not found");
+            }
+            return new InputStreamResource(blob.getBinaryStream());
+        }
+        throw new NoSuchElementException("Shoe not found");
+    }
+
+    //save image
+    public void storeImage(Long shoeId,int imageNumber,InputStream inputStream,long size){
+        Optional<Shoe> shoeOptional = shoeRepository.findById(shoeId);
+        if(shoeOptional.isPresent()){
+            Shoe shoe=shoeOptional.get();
+            Blob image= BlobProxy.generateProxy(inputStream,size);
+            switch (imageNumber) {
+                case 1 -> shoe.setImage1(image);
+                case 2 -> shoe.setImage2(image);
+                case 3 -> shoe.setImage3(image);
+                default -> throw new IllegalArgumentException("Invalid image Number");
+            }
+            shoeRepository.save(shoe);
+        }
     }
 
     @Transactional
@@ -165,8 +226,8 @@ public class ShoeService {
     //     return Optional.of(shoeMapper.toDTO(saved));
     // }
 
-    public Optional<ShoeDTO> updateAllShoe(ShoeDTO shoeDTO) {
-    Optional<Shoe> shoeOp = shoeRepository.findById(shoeDTO.id());
+    public Optional<ShoeDTO> updateAllShoe(Long shoeId,ShoeDTO shoeDTO) {
+    Optional<Shoe> shoeOp = shoeRepository.findById(shoeId);
     if (shoeOp.isEmpty()) {
         return Optional.empty();
     }
@@ -181,8 +242,10 @@ public class ShoeService {
 
     // Actualizar la colección de reviews sin reemplazarla
     List<Review> reviews = reviewService.convertToReviewList(shoeDTO.reviews());
-    shoe.getReviews().clear(); // Limpiar la colección existente
-    shoe.getReviews().addAll(reviews); // Agregar las nuevas reviews
+    if (!shoe.getReviews().equals(reviews)) {
+        shoe.getReviews().clear();
+        shoe.getReviews().addAll(reviews);
+    }
 
     // Actualizar la colección de sizeStocks sin reemplazarla
     List<ShoeSizeStock> sizeStocks = shoeSizeStockService.convertToShoeSizeStock(shoeDTO.sizeStocks());
@@ -237,7 +300,7 @@ public class ShoeService {
                 .map(size -> new ShoeSizeStockDTO(null, saved.getId(), size, 10))
                 .toList();
 
-        shoeSizeStockService.saveStockList(stockDTOs);
+        shoeSizeStockService.saveStockList(stockDTOs,saved);
 
         return saved.getId(); // In case you need the id of the new created shoe
     }
