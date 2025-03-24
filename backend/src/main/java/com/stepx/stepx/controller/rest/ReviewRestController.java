@@ -30,7 +30,7 @@ import com.stepx.stepx.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping("/api/reviews")
+@RequestMapping("/api/v1/reviews")
 public class ReviewRestController {
 
     @Autowired

@@ -14,7 +14,7 @@ import com.stepx.stepx.service.OrderShoesService;
 import com.stepx.stepx.repository.OrderShoesRepository;
 
 @RestController
-@RequestMapping("/api/admin")
+@RequestMapping("/api/v1/admin")
 public class AdminRestController {
 
 

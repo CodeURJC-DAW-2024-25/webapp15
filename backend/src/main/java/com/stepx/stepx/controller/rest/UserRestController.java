@@ -41,7 +41,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentRequest;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/v1/user")
 public class UserRestController {
 
     @Autowired

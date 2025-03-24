@@ -24,7 +24,7 @@ import aj.org.objectweb.asm.commons.Method;
 
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig {
+public class SecurityConfig {
 
 	// @Autowired
 	private RepositoryUserDetailsService userDetailsService;
@@ -36,7 +36,7 @@ public class WebSecurityConfig {
 	private UnauthorizedHandlerJwt unauthorizedHandlerJwt;
 
 
-	public WebSecurityConfig(RepositoryUserDetailsService userDetailsService) {
+	public SecurityConfig(RepositoryUserDetailsService userDetailsService) {
 		this.userDetailsService = userDetailsService;
 	}
 
@@ -67,24 +67,24 @@ public class WebSecurityConfig {
 		http.authenticationProvider(authenticationProvider());
 		
 		http
-			.securityMatcher("/api/**")
+			.securityMatcher("/api/v1/**")
 			.exceptionHandling(handling -> handling.authenticationEntryPoint(unauthorizedHandlerJwt));
 		
 		http
 			.authorizeHttpRequests(authorize -> authorize
                     // PRIVATE ENDPOINTS
 						//users
-                    .requestMatchers(HttpMethod.POST,"/api/OrderItem/**", "/api/OrderShoes/**","/api/reviews/**","/api/ShoeSizeStock/**", "/api/user/**").hasRole("USER")
-                    .requestMatchers(HttpMethod.PUT,"/api/OrderItem/**", "/api/reviews/**", "/api/ShoeSizeStock/**").hasRole("USER")
-					.requestMatchers(HttpMethod.GET,"/api/OrderItem/**","/api/OrderShoes/**").hasRole("USER")
-					.requestMatchers(HttpMethod.DELETE,"/api/admin/**", "/api/OrderItem/**", "/api/reviews/**", "/api/user/**").hasRole("USER")
+                    .requestMatchers(HttpMethod.POST,"/api/v1/OrderItem/**", "/api/v1/OrderShoes/**","/api/v1/reviews/**","/api/v1/ShoeSizeStock/**", "/api/v1/user/**").hasRole("USER")
+                    .requestMatchers(HttpMethod.PUT,"/api/v1/OrderItem/**", "/api/v1/reviews/**", "/api/v1/ShoeSizeStock/**").hasRole("USER")
+					.requestMatchers(HttpMethod.GET,"/api/v1/OrderItem/**","/api/v1/OrderShoes/**").hasRole("USER")
+					.requestMatchers(HttpMethod.DELETE,"/api/v1/admin/**", "/api/v1/OrderItem/**", "/api/v1/reviews/**", "/api/v1/user/**").hasRole("USER")
 						//Admins
-                    .requestMatchers(HttpMethod.DELETE,"/api/admin/**","/api/reviews/**", "/api/Shoe/**", "/api/user/**").hasRole("ADMIN")
-					.requestMatchers(HttpMethod.GET,"/api/admin/**", "/api/reviews/**","/api/Shoe/**", "/api/user/**").hasRole("ADMIN")
-					.requestMatchers(HttpMethod.PUT,"/api/admin/**","/api/ShoeSizeStock/**").hasRole("ADMIN")
-					.requestMatchers(HttpMethod.POST,"/api/admin/**", "/api/Shoe/**","/api/ShoeSizeStock/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.DELETE,"/api/v1/admin/**","/api/v1/reviews/**", "/api/v1/Shoe/**", "/api/v1/user/**").hasRole("ADMIN")
+					.requestMatchers(HttpMethod.GET,"/api/v1/admin/**", "/api/v1/reviews/**","/api/v1/Shoe/**", "/api/v1/user/**").hasRole("ADMIN")
+					.requestMatchers(HttpMethod.PUT,"/api/v1/admin/**","/api/v1/ShoeSizeStock/**").hasRole("ADMIN")
+					.requestMatchers(HttpMethod.POST,"/api/v1/admin/**", "/api/v1/Shoe/**","/api/v1/ShoeSizeStock/**").hasRole("ADMIN")
 					// PUBLIC ENDPOINTS
-					.requestMatchers("/api/shoe", "/**/image/**", "/api/Shoe/**").permitAll()
+					.requestMatchers("/api/v1/shoe", "/**/image/**", "/api/v1/Shoe/**").permitAll()
 					.anyRequest().permitAll()
 			);
 		
@@ -111,7 +111,7 @@ public class WebSecurityConfig {
 		http .authorizeHttpRequests(authorize -> authorize
 						// PUBLIC PAGES
 						.requestMatchers("/index", "/register-user", "/shop/**", "/partials/**", "/createAccount",
-								"/errorPage", "/api/**", "/api/create-product")
+								"/errorPage")
 						.permitAll()
 						.requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
 						// PRIVATE PAGES
