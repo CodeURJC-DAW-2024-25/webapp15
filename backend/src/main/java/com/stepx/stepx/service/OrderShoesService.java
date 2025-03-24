@@ -189,6 +189,14 @@ public class OrderShoesService {
 
     }
 
+    public List<Map<String, Object>> getOrderCountsByMonth() {
+        return orderShoesRepository.getOrderCountsByMonth();
+    }
+    
+    public List<Map<String, Object>> getMoneyGainedByMonth() {
+        return orderShoesRepository.getMoneyGainedByMonth();
+    }
+
     public int getLengthOrderShoes(OrderShoesDTO orderShoesDTO) {
         OrderShoes orderShoes = orderShoesMapper.toDomain(orderShoesDTO); // Convertimos DTO a dominio
         return orderShoes.getOrderItems().size(); // Calculamos la longitud del carrito en base a los items
