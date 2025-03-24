@@ -169,16 +169,16 @@ public class ShoeRestController {
     }
 
     
-    @PostMapping("/single-product/loadMoreReviews")
-    public ResponseEntity<Map<String, Object>> loadMoreReviews(@RequestParam int page, @RequestParam Long shoeId) {
-        int limit = 2;
-        List<ReviewDTO> reviews = reviewService.getPagedReviewsByShoeId(shoeId, page, limit);
+    // @PostMapping("/single-product/loadMoreReviews")
+    // public ResponseEntity<Map<String, Object>> loadMoreReviews(@RequestParam int page, @RequestParam Long shoeId) {
+    //     int limit = 2;
+    //     List<ReviewDTO> reviews = reviewService.getPagedReviewsByShoeId(shoeId, page, limit);
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("reviews", reviews);
+    //     Map<String, Object> response = new HashMap<>();
+    //     response.put("reviews", reviews);
 
-        return ResponseEntity.ok(response);
-    }
+    //     return ResponseEntity.ok(response);
+    // }
 
     @GetMapping("/{id}/image/{imageNumber}")
     public ResponseEntity<Resource> getShoeImage(@PathVariable Long id, @PathVariable int imageNumber) {
@@ -193,43 +193,43 @@ public class ShoeRestController {
             return ResponseEntity.internalServerError().build();
         }
     }    
-    @GetMapping("/single-product/{id}")
-    public ResponseEntity<Map<String, Object>> showSingleProduct(@PathVariable Long id, HttpServletRequest request) {
-        Map<String, Object> response = new HashMap<>();
-        Optional<ShoeDTO> op = shoeService.getShoeById(id);
-        if (op.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Product not found"));
-        }
+    // @GetMapping("/single-product/{id}")
+    // public ResponseEntity<Map<String, Object>> showSingleProduct(@PathVariable Long id, HttpServletRequest request) {
+    //     Map<String, Object> response = new HashMap<>();
+    //     Optional<ShoeDTO> op = shoeService.getShoeById(id);
+    //     if (op.isEmpty()) {
+    //         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Product not found"));
+    //     }
 
-        ShoeDTO shoe = op.get();
-        response.put("product", shoe);
+    //     ShoeDTO shoe = op.get();
+    //     response.put("product", shoe);
 
-        // Fetching stock and reviews
-        Optional<Integer> stockS = shoeSizeStockService.getStockByShoeAndSize(id, "S");
-        Optional<Integer> stockM = shoeSizeStockService.getStockByShoeAndSize(id, "M");
-        Optional<Integer> stockL = shoeSizeStockService.getStockByShoeAndSize(id, "L");
-        Optional<Integer> stockXL = shoeSizeStockService.getStockByShoeAndSize(id, "XL");
+    //     // Fetching stock and reviews
+    //     Optional<Integer> stockS = shoeSizeStockService.getStockByShoeAndSize(id, "S");
+    //     Optional<Integer> stockM = shoeSizeStockService.getStockByShoeAndSize(id, "M");
+    //     Optional<Integer> stockL = shoeSizeStockService.getStockByShoeAndSize(id, "L");
+    //     Optional<Integer> stockXL = shoeSizeStockService.getStockByShoeAndSize(id, "XL");
 
-        int initialReviewsCount = 2;
-        List<ReviewDTO> reviews = reviewService.getPagedReviewsByShoeId(id, 0, initialReviewsCount);
+    //     int initialReviewsCount = 2;
+    //     List<ReviewDTO> reviews = reviewService.getPagedReviewsByShoeId(id, 0, initialReviewsCount);
 
-        response.put("stockS", stockS.orElse(0) == 0);
-        response.put("stockM", stockM.orElse(0) == 0);
-        response.put("stockL", stockL.orElse(0) == 0);
-        response.put("stockXL", stockXL.orElse(0) == 0);
-        response.put("reviews", reviews);
-        response.put("hasReviews", reviews != null && !reviews.isEmpty());
+    //     response.put("stockS", stockS.orElse(0) == 0);
+    //     response.put("stockM", stockM.orElse(0) == 0);
+    //     response.put("stockL", stockL.orElse(0) == 0);
+    //     response.put("stockXL", stockXL.orElse(0) == 0);
+    //     response.put("reviews", reviews);
+    //     response.put("hasReviews", reviews != null && !reviews.isEmpty());
 
-        return ResponseEntity.ok(response);
-    }
+    //     return ResponseEntity.ok(response);
+    // }
 
-    @GetMapping("/shop")
-    public ResponseEntity<Page<ShoeDTO>> getAllProducts() {
-        Page<ShoeDTO> shoes = shoeService.getNineShoes(0);
-            boolean more = shoes.getTotalPages() > 1;
+    // @GetMapping("/shop")
+    // public ResponseEntity<Page<ShoeDTO>> getAllProducts() {
+    //     Page<ShoeDTO> shoes = shoeService.getNineShoes(0);
+    //         boolean more = shoes.getTotalPages() > 1;
             
-        return ResponseEntity.ok(shoes);
-    }
+    //     return ResponseEntity.ok(shoes);
+    // }
 }
  
     
