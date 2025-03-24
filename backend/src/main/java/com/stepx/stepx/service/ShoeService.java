@@ -1,6 +1,7 @@
 package com.stepx.stepx.service;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.SQLException;
@@ -11,6 +12,7 @@ import java.util.Optional;
 
 import javax.sql.rowset.serial.SerialBlob;
 
+import org.hibernate.engine.jdbc.BlobProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -32,6 +34,8 @@ import com.stepx.stepx.mapper.*;
 import com.stepx.stepx.model.Shoe.Brand;
 import com.stepx.stepx.model.Shoe.Category;
 import com.stepx.stepx.repository.ShoeRepository;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 
 @Service
@@ -102,24 +106,92 @@ public class ShoeService {
         }
     }
     
-    //save method
+    //find all shoes API
+    public List<ShoeDTO> findAll(){
+       List<Shoe>shoesList= shoeRepository.findAllShoes();
+       return shoeMapper.toDTOs(shoesList);
+    }
     
+    // Find Single shoe API
+    public ShoeDTO findById(Long shoeId, HttpServletRequest request) {
+        Optional<Shoe> shoeOptional = shoeRepository.findById(shoeId);
+        if (shoeOptional.isEmpty())
+            return null;
+        ShoeDTO dto = shoeMapper.toDTO(shoeOptional.get());
+
+        String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+
+        return new ShoeDTO(
+                dto.id(),
+                dto.name(),
+                dto.shortDescription(),
+                dto.longDescription(),
+                dto.price(),
+                dto.brand(),
+                dto.category(),
+                baseUrl + "/api/Shoe/" + shoeId + "/image/1",
+                baseUrl + "/api/Shoe/" + shoeId + "/image/2",
+                baseUrl + "/api/Shoe/" + shoeId + "/image/3",
+                dto.sizeStocks(),
+                dto.reviews());
+    }
+    
+    //create shoe
+    @Transactional
     public ShoeDTO saveShoe(ShoeDTO shoeDTO) throws SQLException {
-        Shoe shoe = shoeRepository.findById(shoeDTO.id()).orElseThrow(() -> new IllegalArgumentException("Shoe not found"));
-        
-        shoe.setId(shoeDTO.id());
+
+        Shoe shoe = new Shoe();
         shoe.setName(shoeDTO.name());
         shoe.setDescription(shoeDTO.shortDescription());
         shoe.setLongDescription(shoeDTO.longDescription());
         shoe.setPrice(shoeDTO.price());
         shoe.setBrand(StringToBrand(shoeDTO.brand()));
         shoe.setCategory(StringToCategory(shoeDTO.category()));
-        shoe.setImage1(convertBase64ToBlob(shoeDTO.imageUrl1()));
-
         Shoe saved = shoeRepository.save(shoe);
 
-        return shoeMapper.toDTO(saved);
-        
+        List<String> defaultSizes = List.of("S", "M", "L", "XL");
+        List<ShoeSizeStockDTO> defaultStocks = defaultSizes.stream()
+                .map(size -> new ShoeSizeStockDTO(null, saved.getId(), size, 10))
+                .toList();
+    
+        shoeSizeStockService.saveStockList(defaultStocks,saved);
+
+        return shoeMapper.toDTO(saved);    
+    }
+
+    //get image
+    public Resource getImage(Long shoeId, int imageNumber)throws SQLException{
+        Optional<Shoe> shoeOptional= shoeRepository.findById(shoeId);
+        if (shoeOptional.isPresent()) {
+            Shoe shoe = shoeOptional.get();
+            Blob blob=switch (imageNumber){
+                case 1 -> shoe.getImage1();
+                case 2 -> shoe.getImage2();
+                case 3 -> shoe.getImage3();
+                default -> throw new IllegalArgumentException("Invalid image number");  
+            };
+            if(blob==null){
+                throw new NoSuchElementException("Image not found");
+            }
+            return new InputStreamResource(blob.getBinaryStream());
+        }
+        throw new NoSuchElementException("Shoe not found");
+    }
+
+    //save image
+    public void storeImage(Long shoeId,int imageNumber,InputStream inputStream,long size){
+        Optional<Shoe> shoeOptional = shoeRepository.findById(shoeId);
+        if(shoeOptional.isPresent()){
+            Shoe shoe=shoeOptional.get();
+            Blob image= BlobProxy.generateProxy(inputStream,size);
+            switch (imageNumber) {
+                case 1 -> shoe.setImage1(image);
+                case 2 -> shoe.setImage2(image);
+                case 3 -> shoe.setImage3(image);
+                default -> throw new IllegalArgumentException("Invalid image Number");
+            }
+            shoeRepository.save(shoe);
+        }
     }
 
     @Transactional
@@ -164,7 +236,7 @@ public class ShoeService {
         shoe.setPrice(shoeDTO.price());
         shoe.setBrand(StringToBrand(shoeDTO.brand()));
         shoe.setCategory(StringToCategory(shoeDTO.category()));
-        shoe.setSizeStock(shoeSizeStockService.convertToShoeSizeStock(shoeDTO.sizeStocks()));
+        //shoe.setSizeStock(shoeSizeStockService.convertToShoeSizeStock(shoeDTO.sizeStocks()));
         shoe.setReviews(reviewService.convertToReviewList(shoeDTO.reviews()));
 
         Shoe saved = shoeRepository.save(shoe);
@@ -238,7 +310,7 @@ public class ShoeService {
                 .map(size -> new ShoeSizeStockDTO(null, saved.getId(), size, 10))
                 .toList();
 
-        shoeSizeStockService.saveStockList(stockDTOs);
+        shoeSizeStockService.saveStockList(stockDTOs,saved);
 
         return saved.getId(); // In case you need the id of the new created shoe
     }

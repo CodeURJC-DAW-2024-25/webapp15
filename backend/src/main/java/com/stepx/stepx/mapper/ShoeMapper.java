@@ -3,6 +3,7 @@ package com.stepx.stepx.mapper;
 import com.stepx.stepx.dto.ShoeDTO;
 import com.stepx.stepx.model.Shoe;
 
+import java.util.List;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -27,5 +28,7 @@ public interface ShoeMapper {
         // sizeStocks y reviews ahora se mapean automáticamente si están bien definidos
     })
     Shoe toDomain(ShoeDTO shoeDTO);
+
+    List<ShoeDTO> toDTOs(List<Shoe> shoeList);
 
 }

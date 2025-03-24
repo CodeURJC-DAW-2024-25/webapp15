@@ -26,8 +26,7 @@ public class ReviewService {
 
     @Autowired
     private ReviewMapper reviewMapper;
-    @Autowired
-    private ShoeService shoeService;
+    
 
     public ReviewService(ReviewRepository reviewRepository) {
         this.reviewRepository = reviewRepository;
