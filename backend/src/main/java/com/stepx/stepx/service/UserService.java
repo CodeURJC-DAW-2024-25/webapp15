@@ -1,6 +1,7 @@
 package com.stepx.stepx.service;
 
 import org.hibernate.engine.jdbc.BlobProxy;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.security.core.Authentication;
@@ -35,13 +36,16 @@ import com.stepx.stepx.dto.UserDTO;
 import com.stepx.stepx.mapper.UserMapper;
 import com.stepx.stepx.model.Review;
 import com.stepx.stepx.model.User;
+import com.stepx.stepx.repository.OrderShoesRepository;
 import com.mysql.cj.jdbc.Blob;
 
 import com.stepx.stepx.repository.UserRepository;
 
 @Service
 public class UserService {
-
+    @Autowired
+    private  OrderShoesRepository orderShoesRepository;
+    
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
@@ -101,6 +105,14 @@ public class UserService {
     public void saveUser(UserDTO userDTO) {
         User user = userMapper.toDomain(userDTO);
         userRepository.save(user);
+    }
+
+    public List<Map<String, Object>> getMonthlySpendingByUserId(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow();
+        if (user == null){
+            throw new NoSuchElementException();
+        }
+        return orderShoesRepository.getMonthlySpendingByUserId(userId);
     }
 
     public UserDTO createUser(String firstName, String lastName, String username, String email, String password) {
