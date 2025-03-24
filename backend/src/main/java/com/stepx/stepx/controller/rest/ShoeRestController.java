@@ -153,13 +153,6 @@ public class ShoeRestController {
 
         return ResponseEntity.ok(shoeOptional.get());
     }
-    
-
-    @GetMapping
-    public ResponseEntity<List<ShoeDTO>> getShoes(@RequestParam(defaultValue = "0") int page) {
-        return ResponseEntity.ok(shoeService.getNineShoes(page).getContent());
-        
-    }
 
 
    
