@@ -40,6 +40,9 @@ public class User implements UserDetails {
     @Column(name = "LastName")
     private String lastName;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Coupon> coupons = new ArrayList<>();
+
     private String imageString;
 
     public String getImageString() {
@@ -74,7 +77,7 @@ public class User implements UserDetails {
         this.imageUser = imageUser;
     }
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Review> review;
 
     @Column(nullable = false)
