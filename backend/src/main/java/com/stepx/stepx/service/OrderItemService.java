@@ -23,6 +23,9 @@ import com.stepx.stepx.model.Shoe;
 import com.stepx.stepx.model.OrderShoes;
 import com.stepx.stepx.repository.OrderItemRepository;
 import com.stepx.stepx.repository.ShoeRepository;
+
+import jakarta.persistence.EntityNotFoundException;
+
 import com.stepx.stepx.repository.OrderShoesRepository;
 
 @Service
@@ -71,25 +74,37 @@ public class OrderItemService {
     }
 
     @Transactional
-    public void addOrUpdateItem(OrderItemDTO dto, int newQuantity) {
+    public OrderItemDTO addOrUpdateItem(OrderItemDTO dto, int newQuantity) {
 
         if (dto == null) {
             throw new IllegalArgumentException("DTO cannot be null");
         }
 
-        if (dto.id() != null) {
+        if (dto.id() != null) {//if already exist
+
             Optional<OrderItem> existingItem = orderItemRepository.findById(dto.id());
             if (existingItem.isPresent()) {
                 OrderItem item = existingItem.get();
                 item.setQuantity(newQuantity);
-                orderItemRepository.save(item);
+                OrderItem saved= orderItemRepository.save(item);
+                return orderItemMapper.toDTO(saved);
             } else {
                 throw new IllegalStateException("OrderItem not found with id: " + dto.id());
             }
-        } else {
+        } else {//if its a new orderItem
             OrderItem newItem = orderItemMapper.toDomain(dto);
+
+            Shoe shoe = shoeRepository.findById(dto.shoeId())
+                    .orElseThrow(() -> new EntityNotFoundException("Shoe not found"));
+
+            OrderShoes cart = orderShoesRepository.findById(dto.orderId())
+                    .orElseThrow(() -> new EntityNotFoundException("Cart not found"));
+
+            newItem.setShoe(shoe);
+            newItem.setOrderShoes(cart);
             newItem.setQuantity(newQuantity);
-            orderItemRepository.save(newItem);
+            OrderItem saved =orderItemRepository.save(newItem);
+            return orderItemMapper.toDTO(saved);
         }
     }
 
@@ -117,15 +132,6 @@ public class OrderItemService {
         return orderItemMapper.toDTO(saved);
     }
 
-
-    // @Transactional
-    // public void updateOrderItem(Long id, int quantity) {
-    //     Optional<OrderItem> item_Optional = orderItemRepository.findById(id);
-    //     OrderItem item = item_Optional.get();
-    //     item.setQuantity(quantity);
-    //     orderItemRepository.save(item);
-
-    // }
 
     @Transactional
     public void updateOrderItemsBatch(List<Long> ids, List<Integer> quantities) {
