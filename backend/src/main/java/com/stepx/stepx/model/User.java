@@ -40,6 +40,16 @@ public class User implements UserDetails {
     @Column(name = "LastName")
     private String lastName;
 
+    private String imageString;
+
+    public String getImageString() {
+        return imageString;
+    }
+
+    public void setImageString(String imageString) {
+        this.imageString = imageString;
+    }
+
     public String getFirstName() {
         return firstname;
     }

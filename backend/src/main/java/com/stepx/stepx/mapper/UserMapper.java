@@ -12,20 +12,19 @@ import org.mapstruct.Mappings;
 
 
 @Mapper(componentModel =  "spring")
-public interface UserMapper{
+public interface UserMapper {
 
-
-     @Mappings({        
+    @Mappings({        
         @Mapping(target = "imageUser", expression = "java(\"/user/\" + user.getId() + \"/image/\")"),
+        @Mapping(source = "encodedPassword", target = "password") // Agregar este mapeo en toDTO
     })
-
     UserDTO toDTO(User user);
 
     @Mappings({   
         @Mapping(target = "imageUser", ignore = true),
+        @Mapping(source = "password", target = "encodedPassword") // Agregar este mapeo en toDomain
     })
+    User toDomain(UserDTO userDTO);
 
-     User toDomain(UserDTO userDTO);
-
-     List<UserDTO> toDTOs(Collection<User> users);
+    List<UserDTO> toDTOs(Collection<User> users);
 }
