@@ -2,7 +2,9 @@ package com.stepx.stepx.service;
 
 
 
+import org.hibernate.engine.jdbc.BlobProxy;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,11 +15,14 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.net.URI;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.core.io.Resource;
 import javax.sql.rowset.serial.SerialBlob;
@@ -27,6 +32,7 @@ import com.stepx.stepx.dto.CouponDTO;
 import com.stepx.stepx.dto.OrderShoesDTO;
 import com.stepx.stepx.dto.UserDTO;
 import com.stepx.stepx.mapper.UserMapper;
+import com.stepx.stepx.model.Review;
 import com.stepx.stepx.model.User;
 import com.mysql.cj.jdbc.Blob;
 
@@ -53,10 +59,21 @@ public class UserService {
 
     }
 
-    public Optional<UserDTO> findUserById(Long userId) {
-        return userRepository.findById(userId)
-                .map(user -> Optional.ofNullable(userMapper.toDTO(user)))
-                .orElse(Optional.empty());
+    public UserDTO findUserById(Long userId) {
+
+        Optional<User> userDto = userRepository.findById(userId);
+        if (userDto.isPresent()) {
+            return userMapper.toDTO(userDto.get());
+        } else {
+            return null;
+        }
+    }
+
+    public List<UserDTO> findAllUsers() {
+        List<User> users = userRepository.findAll();  // Usando findAll() de JpaRepository
+        return users.stream()
+                    .map(user -> userMapper.toDTO(user))  // Si tienes un mapeador de User a UserDTO
+                    .collect(Collectors.toList());
     }
 
     
@@ -212,5 +229,84 @@ public class UserService {
         return userMapper.toDTO(userOptional.get());
 
     }
+
+	public Resource getUserImage(long id) throws SQLException {
+
+		User user = userRepository.findById(id).orElseThrow();
+
+		if (user.getImageUser() != null) {
+			return new InputStreamResource(user.getImageUser().getBinaryStream());
+		} else {
+			throw new NoSuchElementException();
+		}
+	}
+
+    public void createUserImage(long id, URI location, InputStream inputStream, long size) {
+
+		User user = userRepository.findById(id).orElseThrow();
+
+		user.setImageString(location.toString());
+		user.setImageUser(BlobProxy.generateProxy(inputStream, size));
+		userRepository.save(user);
+	}
+
+    public void replaceUserImage(long id, InputStream inputStream, long size) {
+
+		User user = userRepository.findById(id).orElseThrow();
+
+		user.setImageUser(BlobProxy.generateProxy(inputStream, size));
+        System.out.println("Image user guardado perfect");
+		userRepository.save(user);
+	}
+
+    public void deleteUserImage(long id) {
+        User user = userRepository.findById(id).orElseThrow();
+        if (user.getImageUser() == null) {
+            throw new NoSuchElementException();
+        }
+        user.setImageUser(null);
+        user.setImageString(null);
+        userRepository.save(user);
+    }
+
+    public UserDTO createUserAPI(UserDTO userDto) {
+            User user  = userMapper.toDomain(userDto);
+            if (user.getPassword() == null || user.getPassword().isEmpty()) {
+                throw new IllegalArgumentException("Password cannot be null or empty");
+            }
+            user.setEncodedPassword(passwordEncoder.encode(user.getPassword()));
+            userRepository.save(user);
+            System.out.println("User created successfully:" + user.getUsername());
+            return userMapper.toDTO(user);
+        }
+
+    public UserDTO deleteUser(Long id) {
+        User user = userRepository.findById(id).orElseThrow();
+        if (user != null) {
+            userRepository.delete(user);
+            return userMapper.toDTO(user);
+        }
+        return null;
+    }
+
+	public UserDTO replaceUser(long id, UserDTO updatedUserDTO) throws SQLException {
+
+		User oldUser = userRepository.findById(id).orElseThrow();
+		User updatedUser = userMapper.toDomain(updatedUserDTO);
+		updatedUser.setId(id);
+
+		if (oldUser.getImageUser() != null) {
+
+			//Set the image in the updated post
+			updatedUser.setImageUser(BlobProxy.generateProxy(oldUser.getImageUser().getBinaryStream(),
+					oldUser.getImageUser().length()));
+			updatedUser.setImageUser(oldUser.getImageUser());
+		}
+
+		userRepository.save(updatedUser);
+
+		return userMapper.toDTO(updatedUser);
+	}
+
 
 }
