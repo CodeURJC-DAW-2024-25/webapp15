@@ -2,6 +2,7 @@ package com.stepx.stepx.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,8 @@ public class ReviewService {
     @Autowired
     private ShoeRepository shoeRepository;
 
+    @Autowired
+    private UserRepository userRepository;
     @Autowired
     private ReviewMapper reviewMapper;
 
@@ -49,12 +52,17 @@ public class ReviewService {
 
     public ReviewDTO save(ReviewDTO reviewDto) {
         Shoe shoe = shoeRepository.findById(reviewDto.shoeId()).orElseThrow();
+        User user = userRepository.findById(reviewDto.userId()).orElseThrow();
+
+        if (user==null){
+            throw new NoSuchElementException();
+        }
 
         Review review = new Review();
         review.setRating(reviewDto.rating());
         review.setDescription(reviewDto.description());
         review.setShoe(shoe);
-        review.setUser(null);
+        review.setUser(user);
         review.setDate(reviewDto.date());
         shoe.addReview(review);
 
