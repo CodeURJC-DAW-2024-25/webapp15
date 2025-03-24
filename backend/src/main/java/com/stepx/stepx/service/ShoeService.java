@@ -14,7 +14,6 @@ import javax.sql.rowset.serial.SerialBlob;
 
 import org.hibernate.engine.jdbc.BlobProxy;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
@@ -23,16 +22,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.stepx.stepx.dto.OrderItemDTO;
 import com.stepx.stepx.dto.ShoeDTO;
 import com.stepx.stepx.dto.ShoeSizeStockDTO;
 import com.stepx.stepx.mapper.ShoeMapper;
-import com.stepx.stepx.model.OrderItem;
-import com.stepx.stepx.model.OrderShoes;
+import com.stepx.stepx.model.Review;
 import com.stepx.stepx.model.Shoe;
-import com.stepx.stepx.mapper.*;
 import com.stepx.stepx.model.Shoe.Brand;
 import com.stepx.stepx.model.Shoe.Category;
+import com.stepx.stepx.model.ShoeSizeStock;
 import com.stepx.stepx.repository.ShoeRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -147,6 +144,8 @@ public class ShoeService {
         shoe.setPrice(shoeDTO.price());
         shoe.setBrand(StringToBrand(shoeDTO.brand()));
         shoe.setCategory(StringToCategory(shoeDTO.category()));
+    
+    
         Shoe saved = shoeRepository.save(shoe);
 
         List<String> defaultSizes = List.of("S", "M", "L", "XL");
@@ -224,47 +223,52 @@ public class ShoeService {
         return shoeMapper.toDTO(shoe);
     }
 
-    public Optional<ShoeDTO> updateAllShoe(ShoeDTO shoeDTO) {
-        Optional<Shoe> shoeOp = shoeRepository.findById(shoeDTO.id());
-        if (shoeOp.isEmpty()) {
-            return Optional.empty();
-        }
-        Shoe shoe = shoeOp.get();
-        shoe.setName(shoeDTO.name());
-        shoe.setDescription(shoeDTO.shortDescription());
-        shoe.setLongDescription(shoeDTO.longDescription());
-        shoe.setPrice(shoeDTO.price());
-        shoe.setBrand(StringToBrand(shoeDTO.brand()));
-        shoe.setCategory(StringToCategory(shoeDTO.category()));
-        //shoe.setSizeStock(shoeSizeStockService.convertToShoeSizeStock(shoeDTO.sizeStocks()));
-        shoe.setReviews(reviewService.convertToReviewList(shoeDTO.reviews()));
+    // public Optional<ShoeDTO> updateAllShoe(ShoeDTO shoeDTO) {
+    //     Optional<Shoe> shoeOp = shoeRepository.findById(shoeDTO.id());
+    //     if (shoeOp.isEmpty()) {
+    //         return Optional.empty();
+    //     }
+    //     Shoe shoe = shoeOp.get();
+    //     shoe.setName(shoeDTO.name());
+    //     shoe.setDescription(shoeDTO.shortDescription());
+    //     shoe.setLongDescription(shoeDTO.longDescription());
+    //     shoe.setPrice(shoeDTO.price());
+    //     shoe.setBrand(StringToBrand(shoeDTO.brand()));
+    //     shoe.setCategory(StringToCategory(shoeDTO.category()));
+    //     shoe.setSizeStock(shoeSizeStockService.convertToShoeSizeStock(shoeDTO.sizeStocks()));
+    //     shoe.setReviews(reviewService.convertToReviewList(shoeDTO.reviews()));
 
-        Shoe saved = shoeRepository.save(shoe);
-        return Optional.of(shoeMapper.toDTO(saved));
+    //     Shoe saved = shoeRepository.save(shoe);
+    //     return Optional.of(shoeMapper.toDTO(saved));
+    // }
+
+    public Optional<ShoeDTO> updateAllShoe(ShoeDTO shoeDTO) {
+    Optional<Shoe> shoeOp = shoeRepository.findById(shoeDTO.id());
+    if (shoeOp.isEmpty()) {
+        return Optional.empty();
     }
 
-    /*@Transactional
-    public void addOrUpdateItem(OrderItemDTO dto, int newQuantity) {
+    Shoe shoe = shoeOp.get();
+    shoe.setName(shoeDTO.name());
+    shoe.setDescription(shoeDTO.shortDescription());
+    shoe.setLongDescription(shoeDTO.longDescription());
+    shoe.setPrice(shoeDTO.price());
+    shoe.setBrand(StringToBrand(shoeDTO.brand()));
+    shoe.setCategory(StringToCategory(shoeDTO.category()));
 
-        if (dto == null) {
-            throw new IllegalArgumentException("DTO cannot be null");
-        }
+    // Actualizar la colección de reviews sin reemplazarla
+    List<Review> reviews = reviewService.convertToReviewList(shoeDTO.reviews());
+    shoe.getReviews().clear(); // Limpiar la colección existente
+    shoe.getReviews().addAll(reviews); // Agregar las nuevas reviews
 
-        if (dto.id() != null) {
-            Optional<OrderItem> existingItem = orderItemRepository.findById(dto.id());
-            if (existingItem.isPresent()) {
-                OrderItem item = existingItem.get();
-                item.setQuantity(newQuantity);
-                orderItemRepository.save(item);
-            } else {
-                throw new IllegalStateException("OrderItem not found with id: " + dto.id());
-            }
-        } else {
-            OrderItem newItem = orderItemMapper.toDomain(dto);
-            newItem.setQuantity(newQuantity);
-            orderItemRepository.save(newItem);
-        }
-    } */
+    // Actualizar la colección de sizeStocks sin reemplazarla
+    List<ShoeSizeStock> sizeStocks = shoeSizeStockService.convertToShoeSizeStock(shoeDTO.sizeStocks());
+    shoe.getSizeStocks().clear(); // Limpiar la colección existente
+    shoe.getSizeStocks().addAll(sizeStocks); // Agregar los nuevos sizeStocks
+
+    Shoe saved = shoeRepository.save(shoe);
+    return Optional.of(shoeMapper.toDTO(saved));
+}
 
     
     public Long saveAndReturnId(ShoeDTO dto) {
@@ -358,17 +362,17 @@ public class ShoeService {
         return new InputStreamResource(imageBlob.getBinaryStream());
     }
 
-    public String convertBlobToBase64(Blob blob) {
+    private String convertBlobToBase64(Blob blob) {
         if (blob == null) {
-            return null; 
+            return "";
         }
         try {
-            //Getting bytes from Blob and turn it in Base64
-            byte[] bytes = blob.getBytes(1, (int) blob.length());
-            return Base64.getEncoder().encodeToString(bytes);
+            byte[] blobBytes = blob.getBytes(1, (int) blob.length());
+            return Base64.getEncoder().encodeToString(blobBytes);
         } catch (SQLException e) {
+
             e.printStackTrace();
-            return null;
+            return ""; 
         }
     }
 

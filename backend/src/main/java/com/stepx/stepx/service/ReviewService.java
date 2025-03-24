@@ -26,7 +26,6 @@ public class ReviewService {
 
     @Autowired
     private ReviewMapper reviewMapper;
-    
 
     public ReviewService(ReviewRepository reviewRepository) {
         this.reviewRepository = reviewRepository;

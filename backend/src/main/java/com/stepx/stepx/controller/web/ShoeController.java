@@ -370,11 +370,11 @@ public class ShoeController {
     public ResponseEntity<Resource> getProfileImage(@PathVariable Long userId, Model model,
             HttpServletRequest request) throws SQLException {
 
-        Optional<UserDTO> userOptional = userService.findUserById(userId);
+        UserDTO userOptional = userService.findUserById(userId);
         boolean isAuthenticated = request.getUserPrincipal() != null;
         model.addAttribute("isAuthenticated", isAuthenticated);   
-        if (userOptional.isPresent()) {
-            Blob image =shoeService.convertBase64ToBlob(userOptional.get().imageUser());//dudas imagen
+        if (userOptional!= null) {
+            Blob image =shoeService.convertBase64ToBlob(userOptional.imageUser());//dudas imagen
             if (image != null) {
                 try {
                     Resource file = new InputStreamResource(image.getBinaryStream());
@@ -395,9 +395,9 @@ public class ShoeController {
     @GetMapping("/{userId}/imageUserReview")
     public ResponseEntity<Resource> getProfileImageForReview(@PathVariable Long userId, Model model,
             HttpServletRequest request) throws SQLException {
-        Optional<UserDTO> userOptional = userService.findUserById(userId);
-        if (userOptional.isPresent()) {
-            Blob image =shoeService.convertBase64ToBlob(userOptional.get().imageUser());//dudas imagen
+        UserDTO userOptional = userService.findUserById(userId);
+        if (userOptional!=null) {
+            Blob image =shoeService.convertBase64ToBlob(userOptional.imageUser());//dudas imagen
             if (image != null) {
                 try {
                     Resource file = new InputStreamResource(image.getBinaryStream());
@@ -441,8 +441,8 @@ public class ShoeController {
         model.addAttribute("isAuthenticated", isAuthenticated);
 
         shoeService.updateShoe(
-            id, name, description, LongDescription, price, image1, image2, image3, brand, category);
-        return "redirect:/shop";
+            id, name, description, LongDescription, price, image1, image2, image3, brand, category); 
+            return "redirect:/shop";
     }
 
     @GetMapping("/getByBrand") // first 9 shoes of same brand

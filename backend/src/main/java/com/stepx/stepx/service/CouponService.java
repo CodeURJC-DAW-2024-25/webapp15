@@ -32,10 +32,16 @@ public class CouponService {
                 .map(couponMapper::toDTO);
     }
     public CouponDTO save(CouponDTO couponDto) {
+        // Convert the DTO to a domain object
         Coupon coupon = couponMapper.toDomain(couponDto);
-        couponRepository.save(coupon);
-        return couponMapper.toDTO(coupon);
+        
+        // Save the coupon to the repository and get the persisted entity with ID
+        Coupon savedCoupon = couponRepository.save(coupon);
+        
+        // Convert the saved coupon back to a DTO with the generated ID
+        return couponMapper.toDTO(savedCoupon);
     }
+    
 
       public List<CouponDTO> findAll() {
         Collection<Coupon> coupon = couponRepository.findAll();
@@ -43,18 +49,39 @@ public class CouponService {
     }
 
     public CouponDTO findById(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findById'");
+        Optional<Coupon> couponOptional = couponRepository.findById(id);
+        return couponOptional.map(couponMapper::toDTO).orElse(null);
     }
 
     public Optional<CouponDTO> updateCoupon(Long id, CouponDTO couponDTO) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateCoupon'");
+        Optional<Coupon> existingCouponOptional = couponRepository.findById(id);
+        
+        if (existingCouponOptional.isEmpty()) {
+            return Optional.empty();
+        }
+        
+        Coupon existingCoupon = existingCouponOptional.get();
+        Coupon updatedCoupon = couponMapper.toDomain(couponDTO);
+        
+        // Preserve the ID
+        updatedCoupon.setId(id);
+        
+        // Save the updated coupon
+        Coupon savedCoupon = couponRepository.save(updatedCoupon);
+        return Optional.of(couponMapper.toDTO(savedCoupon));
     }
+    
 
     public Optional<CouponDTO> deleteCoupon(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteCoupon'");
+        Optional<Coupon> couponOptional = couponRepository.findById(id);
+        
+        if (couponOptional.isEmpty()) {
+            return Optional.empty();
+        }
+        
+        Coupon coupon = couponOptional.get();
+        couponRepository.delete(coupon);
+        return Optional.of(couponMapper.toDTO(coupon));
     }
 
    
