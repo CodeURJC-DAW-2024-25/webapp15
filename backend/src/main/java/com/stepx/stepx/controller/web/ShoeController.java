@@ -545,7 +545,7 @@ public class ShoeController {
         LocalDate date;
         date = LocalDate.now();
         // Create new review
-        ReviewDTO reviewDto = new ReviewDTO(null,date,rating, description, shoe.id(), user.get().id());
+        ReviewDTO reviewDto = new ReviewDTO(null,date,rating, description, shoe.id(), user.get().id(), user.get().username());
 
         // Saving the review
         reviewService.save(reviewDto);

@@ -13,6 +13,7 @@ import com.stepx.stepx.model.Review;
 public interface ReviewMapper{
     
     @Mapping(source = "user.id", target = "userId")
+    @Mapping(source = "user.username", target = "userName")
     @Mapping(source = "shoe.id", target = "shoeId")
     ReviewDTO toDTO(Review review);
 
@@ -21,5 +22,4 @@ public interface ReviewMapper{
     @Mapping(source = "userId", target = "user.id") 
     Review toDomain(ReviewDTO reviewDTO);
 
-    
 }
