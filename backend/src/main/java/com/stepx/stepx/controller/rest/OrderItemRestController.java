@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 
 @RestController
-@RequestMapping("/api/OrderItem")
+@RequestMapping("/api/v1/OrderItem")
 public class OrderItemRestController {
     private final OrderItemService orderItemService;
 

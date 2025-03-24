@@ -37,7 +37,7 @@ import com.stepx.stepx.mapper.UserMapper;
 import com.stepx.stepx.model.Review;
 import com.stepx.stepx.model.User;
 import com.stepx.stepx.repository.OrderShoesRepository;
-import com.mysql.cj.jdbc.Blob;
+import java.sql.Blob;
 
 import com.stepx.stepx.repository.UserRepository;
 
@@ -243,14 +243,13 @@ public class UserService {
 
     public Resource getUserImage(long id) throws SQLException {
 
-        User user = userRepository.findById(id).orElseThrow();
-
-        if (user.getImageUser() != null) {
-            return new InputStreamResource(user.getImageUser().getBinaryStream());
-        } else {
-            throw new NoSuchElementException();
+		User user = userRepository.findById(id).orElseThrow();
+        Blob userImage=user.getImageUser();
+        if(userImage==null){
+            throw new NoSuchElementException("Image not found");
         }
-    }
+        return new InputStreamResource(userImage.getBinaryStream());
+	}
 
     public void createUserImage(long id, URI location, InputStream inputStream, long size) {
 
