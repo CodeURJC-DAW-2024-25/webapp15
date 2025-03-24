@@ -17,7 +17,6 @@ public class AdminController {
 
     @Autowired
     private ObjectMapper objectMapper;
-
     @Autowired
     private OrderShoesRepository orderShoesRepository;
     @Autowired

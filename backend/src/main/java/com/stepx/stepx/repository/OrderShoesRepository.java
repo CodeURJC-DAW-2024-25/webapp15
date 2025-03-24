@@ -32,8 +32,12 @@ public interface OrderShoesRepository extends JpaRepository<OrderShoes, Long> {
             """)
     BigDecimal getTotalPriceExcludingOutOfStock(@Param("cartId") Long cartId);
 
-    @Query(value = "SELECT DATE_FORMAT(date, '%m') AS month, SUM(summary) AS total_spent FROM order_shoes WHERE user_id = :userId AND state = 'Processed' GROUP BY DATE_FORMAT(date, '%Y-%m') ORDER BY month", nativeQuery = true)
-    List<Map<String, Object>> getMonthlySpendingByUserId(@Param("userId") Long userId);
+    @Query(value = "SELECT DATE_FORMAT(date, '%m') AS month, SUM(summary) AS total_spent " +
+    "FROM order_shoes " +
+    "WHERE user_id = :userId AND state = 'Processed' " +
+    "GROUP BY DATE_FORMAT(date, '%Y-%m'), DATE_FORMAT(date, '%m') " +
+    "ORDER BY month", nativeQuery = true)
+List<Map<String, Object>> getMonthlySpendingByUserId(@Param("userId") Long userId);
 
     @Query(value = "SELECT DATE_FORMAT(date, '%m') AS month, COUNT(*) AS orders_count FROM order_shoes WHERE state = 'Processed' GROUP BY DATE_FORMAT(date, '%Y-%m') ORDER BY month", nativeQuery = true)
     List<Map<String, Object>> getOrderCountsByMonth();
