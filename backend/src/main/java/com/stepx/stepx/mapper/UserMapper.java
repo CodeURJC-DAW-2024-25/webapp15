@@ -14,9 +14,10 @@ import org.mapstruct.Mappings;
 @Mapper(componentModel =  "spring")
 public interface UserMapper {
 
-    @Mappings({        
-        @Mapping(target = "imageUser", expression = "java(\"/user/\" + user.getId() + \"/image/\")"),
+    @Mappings({
+        
         @Mapping(source = "encodedPassword", target = "password") // Agregar este mapeo en toDTO
+
     })
     UserDTO toDTO(User user);
 

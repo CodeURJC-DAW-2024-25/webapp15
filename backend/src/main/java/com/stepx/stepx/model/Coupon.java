@@ -14,8 +14,8 @@ public class Coupon {
     private String code;
     private BigDecimal discount;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @ManyToOne(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "user_id" )
     private User user;
 
     public String getCode() {

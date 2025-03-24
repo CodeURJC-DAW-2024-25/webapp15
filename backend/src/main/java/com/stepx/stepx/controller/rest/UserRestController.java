@@ -70,6 +70,7 @@ private ObjectMapper objectMapper;
         }
         return ResponseEntity.ok(users);
     }
+
     // get a order item by id
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
@@ -120,14 +121,19 @@ public ResponseEntity<String> getUserMonthlySpendingChart(@PathVariable Long use
     }
 }
 
-    //create User
+    // create User
     @PostMapping
     public ResponseEntity<UserDTO> createUserAPI(@RequestBody UserDTO userDto) {
-
-        userDto = userService.createUserAPI(userDto);
-        URI location = fromCurrentRequest().path("/{id}").buildAndExpand(userDto.id()).toUri();
-
-		return ResponseEntity.created(location).body(userDto);
+        UserDTO createdUser = userService.createUserAPI(userDto);
+    
+        // ✅ Construir la URI del nuevo recurso
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(createdUser.id()) // Suponiendo que UserDTO tiene un método getId()
+                .toUri();
+    
+        return ResponseEntity.created(location).body(createdUser); // 201 Created con Location en Headers
     }
 
     @DeleteMapping("/{id}")
@@ -137,11 +143,11 @@ public ResponseEntity<String> getUserMonthlySpendingChart(@PathVariable Long use
     }
 
     @PutMapping("/{id}")
-    public UserDTO ReplaceUser(@PathVariable Long id,@RequestBody UserDTO updatedUserDTO)throws SQLException {
+    public UserDTO ReplaceUser(@PathVariable Long id, @RequestBody UserDTO updatedUserDTO) throws SQLException {
         return userService.replaceUser(id, updatedUserDTO);
     }
 
-    //--Images with user---
+    // --Images with user---
     @GetMapping("/{id}/image")
     public ResponseEntity<Object> getPostImage(@PathVariable long id)
             throws SQLException, IOException {
@@ -155,33 +161,33 @@ public ResponseEntity<String> getUserMonthlySpendingChart(@PathVariable Long use
     }
 
     @PostMapping("/{id}/image")
-	public ResponseEntity<Object> createUserImage(@PathVariable long id, @RequestParam MultipartFile imageFile)
-			throws IOException {
+    public ResponseEntity<Object> createUserImage(@PathVariable long id, @RequestParam MultipartFile imageFile)
+            throws IOException {
 
-		URI location = fromCurrentRequest().build().toUri();
+        URI location = fromCurrentRequest().build().toUri();
 
-		userService.createUserImage(id, location, imageFile.getInputStream(), imageFile.getSize());
+        userService.createUserImage(id, location, imageFile.getInputStream(), imageFile.getSize());
 
-		return ResponseEntity.created(location).build();
+        return ResponseEntity.created(location).build();
 
-	}
+    }
 
     @PutMapping("/{id}/image")
-	public ResponseEntity<Object> replaceUserImage(@PathVariable long id, @RequestParam MultipartFile imageFile)
-			throws IOException {
+    public ResponseEntity<Object> replaceUserImage(@PathVariable long id, @RequestParam MultipartFile imageFile)
+            throws IOException {
 
-		userService.replaceUserImage(id, imageFile.getInputStream(), imageFile.getSize());
+        userService.replaceUserImage(id, imageFile.getInputStream(), imageFile.getSize());
 
-		return ResponseEntity.noContent().build();
-	}
+        return ResponseEntity.noContent().build();
+    }
 
     @DeleteMapping("/{id}/image")
-	public ResponseEntity<Object> deleteUserImage(@PathVariable long id)
-			throws IOException {
+    public ResponseEntity<Object> deleteUserImage(@PathVariable long id)
+            throws IOException {
 
-		userService.deleteUserImage(id);
+        userService.deleteUserImage(id);
 
-		return ResponseEntity.noContent().build();
-	}
+        return ResponseEntity.noContent().build();
+    }
 
 }

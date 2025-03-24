@@ -101,7 +101,7 @@ public class GeneralController {
 
             model.addAttribute("id", userDto.id());
             model.addAttribute("email", userDto.email());
-            model.addAttribute("imageBlob", userDto.imageUser());
+            model.addAttribute("imageBlob", userDto.imageString());
             model.addAttribute("lastName", userDto.lastName());
             model.addAttribute("firstname", userDto.firstname());
             model.addAttribute("user_id", userDto.id());

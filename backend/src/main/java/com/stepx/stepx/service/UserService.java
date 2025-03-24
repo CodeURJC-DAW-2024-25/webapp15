@@ -1,8 +1,7 @@
 package com.stepx.stepx.service;
 
-
-
 import org.hibernate.engine.jdbc.BlobProxy;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.security.core.Authentication;
@@ -11,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,6 +25,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
+
 import javax.sql.rowset.serial.SerialBlob;
 import javax.sql.rowset.serial.SerialException;
 
@@ -39,11 +41,10 @@ import com.mysql.cj.jdbc.Blob;
 
 import com.stepx.stepx.repository.UserRepository;
 
-
 @Service
 public class UserService {
-
-    private final OrderShoesRepository orderShoesRepository;
+    @Autowired
+    private  OrderShoesRepository orderShoesRepository;
     
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -52,14 +53,14 @@ public class UserService {
     private final CouponService couponService;
     private final PdfService pdfService;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder ,UserMapper userMapper, OrderShoesService orderShoesService, CouponService couponService , PdfService pdfService, OrderShoesRepository orderShoesRepository){
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapper userMapper,
+            OrderShoesService orderShoesService, CouponService couponService, PdfService pdfService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.userMapper = userMapper;
         this.orderShoesService = orderShoesService;
         this.couponService = couponService;
         this.pdfService = pdfService;
-        this.orderShoesRepository = orderShoesRepository;
 
     }
 
@@ -74,19 +75,17 @@ public class UserService {
     }
 
     public List<UserDTO> findAllUsers() {
-        List<User> users = userRepository.findAll();  // Usando findAll() de JpaRepository
+        List<User> users = userRepository.findAll(); // Usando findAll() de JpaRepository
         return users.stream()
-                    .map(user -> userMapper.toDTO(user))  // Si tienes un mapeador de User a UserDTO
-                    .collect(Collectors.toList());
+                .map(user -> userMapper.toDTO(user)) // Si tienes un mapeador de User a UserDTO
+                .collect(Collectors.toList());
     }
 
-    
-    public  Optional<UserDTO> findUserByUserName(String username) {
+    public Optional<UserDTO> findUserByUserName(String username) {
         return userRepository.findByUsername(username)
                 .map(user -> Optional.ofNullable(userMapper.toDTO(user)))
                 .orElse(Optional.empty());
     }
-
 
     public boolean authenticate(String username, String password) {
         Optional<User> userOpt = userRepository.findByUsername(username);
@@ -97,13 +96,13 @@ public class UserService {
         return false;
     }
 
-    public void registerUser(String username,String email, String password, Blob image, String... roles) {
+    public void registerUser(String username, String email, String password, Blob image, String... roles) {
         String encodedPassword = passwordEncoder.encode(password);
-        User newUser = new User(username, email,encodedPassword, image, roles);
+        User newUser = new User(username, email, encodedPassword, image, roles);
         userRepository.save(newUser);
     }
 
-    public void saveUser(UserDTO userDTO){
+    public void saveUser(UserDTO userDTO) {
         User user = userMapper.toDomain(userDTO);
         userRepository.save(user);
     }
@@ -130,27 +129,26 @@ public class UserService {
         user.setRoles(List.of("USER"));
 
         try {
-        Resource resource = new ClassPathResource("static/images/defaultProfilePicture.jpg");
-        if (resource.exists()) {
-            try (InputStream inputStream = resource.getInputStream()) {
-                byte[] bytes = inputStream.readAllBytes();
-                user.setImageUser(new SerialBlob(bytes));
+            Resource resource = new ClassPathResource("static/images/defaultProfilePicture.jpg");
+            if (resource.exists()) {
+                try (InputStream inputStream = resource.getInputStream()) {
+                    byte[] bytes = inputStream.readAllBytes();
+                    user.setImageUser(new SerialBlob(bytes));
+                }
+            } else {
+                user.setImageUser(null);
             }
-        } else {
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
             user.setImageUser(null);
         }
-    } catch (IOException | SQLException e) {
-        e.printStackTrace();
-        user.setImageUser(null);
-    }
-           
-        //Save in database
+
+        // Save in database
         User savedUser = userRepository.save(user);
 
         // Return as a dto
         return userMapper.toDTO(savedUser);
     }
-
 
     public UserDTO getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -188,7 +186,7 @@ public class UserService {
     }
 
     public byte[] generateTicket(Long orderId, String country, String couponCode, String firstName, String lastName,
-                                 String email, String address, String phone, Long userId) throws IOException {
+            String email, String address, String phone, Long userId) throws IOException {
 
         // Retrieve the cart
         Optional<OrderShoesDTO> orderDtoOptional = orderShoesService.getCartById(userId);
@@ -228,9 +226,10 @@ public class UserService {
         return pdfService.generatePdfFromOrder(data);
     }
 
-    public UserDTO updateUserImage(String name, MultipartFile imageUser) throws SerialException, SQLException, IOException {
-        
-        Optional<User> userOptional= userRepository.findByUsername(name);
+    public UserDTO updateUserImage(String name, MultipartFile imageUser)
+            throws SerialException, SQLException, IOException {
+
+        Optional<User> userOptional = userRepository.findByUsername(name);
 
         if (imageUser != null && !imageUser.isEmpty()) {
             userOptional.get().setImageUser(new SerialBlob(imageUser.getBytes()));
@@ -242,34 +241,37 @@ public class UserService {
 
     }
 
-	public Resource getUserImage(long id) throws SQLException {
+    public Resource getUserImage(long id) throws SQLException {
 
-		User user = userRepository.findById(id).orElseThrow();
+        User user = userRepository.findById(id).orElseThrow();
 
-		if (user.getImageUser() != null) {
-			return new InputStreamResource(user.getImageUser().getBinaryStream());
-		} else {
-			throw new NoSuchElementException();
-		}
-	}
+        if (user.getImageUser() != null) {
+            return new InputStreamResource(user.getImageUser().getBinaryStream());
+        } else {
+            throw new NoSuchElementException();
+        }
+    }
 
     public void createUserImage(long id, URI location, InputStream inputStream, long size) {
 
-		User user = userRepository.findById(id).orElseThrow();
+        User user = userRepository.findById(id).orElseThrow();
 
-		user.setImageString(location.toString());
-		user.setImageUser(BlobProxy.generateProxy(inputStream, size));
-		userRepository.save(user);
-	}
+        user.setImageString(location.toString());
+        user.setImageUser(BlobProxy.generateProxy(inputStream, size));
+        userRepository.save(user);
+    }
 
     public void replaceUserImage(long id, InputStream inputStream, long size) {
 
-		User user = userRepository.findById(id).orElseThrow();
+        User user = userRepository.findById(id).orElseThrow();
+        if (user == null) {
+            throw new NoSuchElementException();
+        }
 
-		user.setImageUser(BlobProxy.generateProxy(inputStream, size));
+        user.setImageUser(BlobProxy.generateProxy(inputStream, size));
         System.out.println("Image user guardado perfect");
-		userRepository.save(user);
-	}
+        userRepository.save(user);
+    }
 
     public void deleteUserImage(long id) {
         User user = userRepository.findById(id).orElseThrow();
@@ -282,43 +284,74 @@ public class UserService {
     }
 
     public UserDTO createUserAPI(UserDTO userDto) {
-            User user  = userMapper.toDomain(userDto);
-            if (user.getPassword() == null || user.getPassword().isEmpty()) {
-                throw new IllegalArgumentException("Password cannot be null or empty");
-            }
-            user.setEncodedPassword(passwordEncoder.encode(user.getPassword()));
-            userRepository.save(user);
-            System.out.println("User created successfully:" + user.getUsername());
-            return userMapper.toDTO(user);
+
+        System.out.println("User created successfully:" + userDto.imageString());
+        
+        User user = userMapper.toDomain(userDto);
+
+        if (userRepository.existsByUsername(userDto.username())) {
+            throw new IllegalArgumentException("Username already exists");
+            // throw new ResponseStatusException(HttpStatus.CONFLICT, "El usuario con ese
+            // username o email ya existe");
         }
+
+        // ✅ Verifica si el email ya existe
+        if (userRepository.existsByEmail(userDto.email())) {
+            throw new IllegalArgumentException("Email already in use");
+        }
+        if (user.getPassword() == null || user.getPassword().isEmpty()) {
+            throw new IllegalArgumentException("Password cannot be null or empty");
+        }
+        user.setEncodedPassword(passwordEncoder.encode(user.getPassword()));
+
+        try {
+            Resource resource = new ClassPathResource("static/images/defaultProfilePicture.jpg");
+            if (resource.exists()) {
+                try (InputStream inputStream = resource.getInputStream()) {
+                    byte[] bytes = inputStream.readAllBytes();
+                    user.setImageUser(new SerialBlob(bytes));
+                }
+            } else {
+                user.setImageUser(null);
+            }
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
+            user.setImageUser(null);
+        }
+        user.setImageString("static/images/defaultProfilePicture.jpg");
+        
+        userRepository.save(user);
+        return userMapper.toDTO(user);
+    }
 
     public UserDTO deleteUser(Long id) {
         User user = userRepository.findById(id).orElseThrow();
-        if (user != null) {
-            userRepository.delete(user);
-            return userMapper.toDTO(user);
+        if (user == null) {
+            throw new NoSuchElementException("User not found");
         }
-        return null;
+        userRepository.delete(user);
+        return userMapper.toDTO(user);
     }
 
-	public UserDTO replaceUser(long id, UserDTO updatedUserDTO) throws SQLException {
+    public UserDTO replaceUser(long id, UserDTO updatedUserDTO) throws SQLException {
 
-		User oldUser = userRepository.findById(id).orElseThrow();
-		User updatedUser = userMapper.toDomain(updatedUserDTO);
-		updatedUser.setId(id);
+        User oldUser = userRepository.findById(id).orElseThrow();
+        if (oldUser == null) {
+            throw new NoSuchElementException("User not found");
+        }
+        User updatedUser = userMapper.toDomain(updatedUserDTO);
+        updatedUser.setId(id);
 
-		if (oldUser.getImageUser() != null) {
+        if (oldUser.getImageUser() != null) {
+            // Set the image in the updated post
+            updatedUser.setImageUser(BlobProxy.generateProxy(oldUser.getImageUser().getBinaryStream(),
+                    oldUser.getImageUser().length()));
+            updatedUser.setImageUser(oldUser.getImageUser());
+        }
 
-			//Set the image in the updated post
-			updatedUser.setImageUser(BlobProxy.generateProxy(oldUser.getImageUser().getBinaryStream(),
-					oldUser.getImageUser().length()));
-			updatedUser.setImageUser(oldUser.getImageUser());
-		}
+        userRepository.save(updatedUser);
 
-		userRepository.save(updatedUser);
-
-		return userMapper.toDTO(updatedUser);
-	}
-
+        return userMapper.toDTO(updatedUser);
+    }
 
 }
