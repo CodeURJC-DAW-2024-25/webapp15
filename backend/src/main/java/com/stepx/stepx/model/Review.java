@@ -1,6 +1,5 @@
 package com.stepx.stepx.model;
 
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,8 +22,8 @@ public class Review {
 
     private int rating;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @ManyToOne()
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     private String description;
@@ -32,10 +31,7 @@ public class Review {
     @Column(name = "date")
     private LocalDate date;
 
-   
-
-    
-    //A shoe has numerous reviews, making 1:N
+    // A shoe has numerous reviews, making 1:N
     @ManyToOne
     @JoinColumn(name = "shoe_id")
     private Shoe shoe;

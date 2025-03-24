@@ -42,13 +42,13 @@
               <div class="swiper product-thumbnail-slider">
                 <div class="swiper-wrapper">
                   <div class="swiper-slide">
-                    <img src="/shop/{{id}}/image/1" alt="image alternative text" class="thumb-image img-fluid">
+                    <img src="{{imageUrl1}}" alt="image alternative text" class="thumb-image img-fluid">
                   </div>
                   <div class="swiper-slide">
-                    <img src="/shop/{{id}}/image/2" alt="image alternative text" class="thumb-image img-fluid">
+                    <img src="{{imageUrl2}}" alt="image alternative text" class="thumb-image img-fluid">
                   </div>
                   <div class="swiper-slide">
-                    <img src="/shop/{{id}}/image/3" alt="image alternative text" class="thumb-image img-fluid">
+                    <img src="{{imageUrl3}}" alt="image alternative text" class="thumb-image img-fluid">
                   </div>
 
                 </div>
@@ -61,15 +61,15 @@
                 <div class="swiper-wrapper">
                   <div class="swiper-slide">
                     <div class="image-zoom" data-scale="2.5" data-image="images/product-large-1.jpg"><img
-                        src="/shop/{{id}}/image/1" alt="product-large" class="img-fluid"></div>
+                        src="{{imageUrl1}}" alt="product-large" class="img-fluid"></div>
                   </div>
                   <div class="swiper-slide">
                     <div class="image-zoom" data-scale="2.5" data-image="images/product-large-2.jpg"><img
-                        src="/shop/{{id}}/image/2" alt="product-large" class="img-fluid"></div>
+                        src="{{imageUrl2}}" alt="product-large" class="img-fluid"></div>
                   </div>
                   <div class="swiper-slide">
                     <div class="image-zoom" data-scale="2.5" data-image="images/product-large-3.jpg"><img
-                        src="/shop/{{id}}/image/3" alt="product-large" class="img-fluid"></div>
+                        src="{{imageUrl3}}" alt="product-large" class="img-fluid"></div>
                   </div>
                 </div>
                 <div class="swiper-pagination"></div>
@@ -86,7 +86,7 @@
             <div class="product-price py-3">
               <strong class="fs-5 fw-bold">${{price}}</strong>
             </div>
-            <p>{{shortdescription}}</p>
+            <p>{{shortDescription}}</p>
             {{#isAuthenticated}}
             <div class="cart-wrap padding-small">
               <div class="swatch product-select" data-option-index="1">
@@ -182,12 +182,8 @@
               aria-labelledby="nav-home-tab">
               <p>Product Description</p>
               <p>{{longDescription}}.</p>
-              <ul style="list-style-type:disc;" class="list-unstyled ps-4">
-                <li>Donec nec justo eget felis facilisis fermentum.</li>
-                <li>Suspendisse urna viverra non, semper suscipit pede.</li>
-                <li>Aliquam porttitor mauris sit amet orci.</li>
-              </ul>
             </div>
+          <!--Start of reviews-->
             <div class="tab-pane fade padding-small" id="nav-review" role="tabpanel" aria-labelledby="nav-review-tab">
               <div  id="ReviewsList">
                 <div class="review-box d-flex flex-wrap">
@@ -195,22 +191,23 @@
                   <div class="col-lg-6 d-flex flex-wrap"> <!-- All the container for 1 review -->
                     <div class="col-md-2 me-3 mb-3">
                       <div class="image-wrapper mb-3">
-                        <img src="/shop/{{user.id}}/imageUserReview" alt="review" class="rounded-circle"
+                        <img src="/shop/{{userId}}/imageUser" alt="review" class="rounded-circle"
                           style="width: 75px; height: 75px; object-fit: cover;">
                       </div>
                     </div>
+                    
                     <div class="col-md-8">
                       <div class="review-content">
                         <div class="rating-container d-flex align-items-center mb-3">
                           <!--PICKS STARS FROM GETSTARS(IT IS NOT CALLED FROM ANYWHERE, SPRNG MAKE IT BY ITSELF)-->
                           <div class="rating">
-                            {{#stars}}
+                            {{#rating}}
                             <i class="fa-solid fa-star"></i>
-                            {{/stars}}
+                            {{/rating}}
                           </div>
                         </div>
                         <div class="review-header">
-                          <span class="author-name">{{user.username}}</span>
+                          <span class="author-name">{{userName}}</span>
                           <span class="review-date">{{date}}</span>
                         </div>
                         <p id="textReview">{{description}}</p>
@@ -222,7 +219,7 @@
                       </button>
                       {{/admin}}
                     </div>
-                  
+                    
                   </div>
                   {{/review}}
                   {{^review}}
@@ -268,7 +265,7 @@
                 </form>
               </div>
             </div>
-          </div>
+          </div>  
         </div>
       </div>
     </div>

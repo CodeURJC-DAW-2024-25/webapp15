@@ -85,16 +85,17 @@ public class UserController {
         if (!usergetted.isPresent()) {
             throw new RuntimeException("User not registered");
         }
+        
         UserDTO user = usergetted.get();
 
-        // verify if the user has a cart or not
         Optional<OrderShoesDTO> cart_Optional = orderShoesService.getCartById(user.id());
+
         OrderShoesDTO cart;
 
-        if (cart_Optional.isPresent()) {
+        if (cart_Optional.isPresent()) {//if cart aready exists
             cart = cart_Optional.get();//cart in dto format
 
-            if (orderShoesService.getLengthOrderShoes(cart) == 0) {
+            if (orderShoesService.getLengthOrderShoes(cart) == 0) {//if its empty
                 model.addAttribute("setSubtotal", false);
                 model.addAttribute("empty", true);
             } else {
@@ -115,7 +116,7 @@ public class UserController {
                 model.addAttribute("cartItems", cartItems);
                 model.addAttribute("empty", false);
             }
-        } else {
+        } else {//if not exists create one
             cart = orderShoesService.createCartForUser(user);
             model.addAttribute("setSubtotal", false);
             model.addAttribute("empty", true);
@@ -158,9 +159,10 @@ public class UserController {
         List<OrderItemDTO> orderItemsList = orderItemService.getOrderItemsByOrderId(id_order);
         List<Map<String, Object>> cartItems = new ArrayList<>();
         for (OrderItemDTO orderItem : orderItemsList) {
+            System.out.println("información de las orden: "+orderItem);
             Map<String, Object> item = new HashMap<>();
-            item.put("id_item", orderItem.shoeId());
-            item.put("name", orderItem.shoeName());
+            item.put("id", orderItem.shoeId());
+            item.put("shoeName", orderItem.shoeName());
             item.put("price", orderItem.price());
             item.put("quantity", orderItem.quantity());
             item.put("size", orderItem.size());
@@ -203,7 +205,8 @@ public class UserController {
     
         // Pass the data to the service to update the user
         UserDTO updatedUserDto = userService.updateUser(currentUserDto.id(), firstName, lastName, username, email);
-    
+        System.out.println("usuario actualizado: "+updatedUserDto);
+        
         // Update authentication if the username has changed
         if (!currentUserDto.username().equals(username)) {
             updateUserAuthentication(updatedUserDto);

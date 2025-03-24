@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stepx.stepx.dto.*;
 import com.stepx.stepx.model.Review;
 import com.stepx.stepx.model.Shoe;
@@ -50,6 +54,12 @@ public class UserRestController {
     private ShoeService shoeService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private OrderShoesRepository orderShoesRepository;
+
+    
+@Autowired
+private ObjectMapper objectMapper;
 
     // get all users
     @GetMapping
@@ -60,6 +70,7 @@ public class UserRestController {
         }
         return ResponseEntity.ok(users);
     }
+
     // get a order item by id
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
@@ -70,15 +81,59 @@ public class UserRestController {
         }
         return ResponseEntity.ok(userDto);
     }
+    @GetMapping("/chartuser/{userId}")
+public ResponseEntity<String> getUserMonthlySpendingChart(@PathVariable Long userId) {
+    // Get monthly spending data for the user
+    List<Map<String, Object>> monthlySpending = userService.getMonthlySpendingByUserId(userId);
 
-    //create User
+    // Prepare data for the chart
+    Map<String, Object> chartData = new HashMap<>();
+    String[] monthNames = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+    Double[] spendingData = new Double[12];
+
+    // Initialize with zeros
+    for (int i = 0; i < 12; i++) {
+        spendingData[i] = 0.0;
+    }
+
+    // Fill in the actual spending data
+    for (Map<String, Object> entry : monthlySpending) {
+        String monthStr = (String) entry.get("month");
+        Number amount = (Number) entry.get("total_spent");
+        Double totalSpent = amount != null ? amount.doubleValue() : 0.0;
+
+        // Convert month string to zero-based index
+        int monthIndex = Integer.parseInt(monthStr) - 1;
+        if (monthIndex >= 0 && monthIndex < 12) {
+            spendingData[monthIndex] = totalSpent;
+        }
+    }
+
+    chartData.put("labels", monthNames);
+    chartData.put("data", spendingData);
+
+    try {
+        // Convert to JSON 
+        String chartDataJson = objectMapper.writeValueAsString(chartData);
+        return ResponseEntity.ok(chartDataJson);
+    } catch (JsonProcessingException e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing chart data");
+    }
+}
+
+    // create User
     @PostMapping
     public ResponseEntity<UserDTO> createUserAPI(@RequestBody UserDTO userDto) {
-
-        userDto = userService.createUserAPI(userDto);
-        URI location = fromCurrentRequest().path("/{id}").buildAndExpand(userDto.id()).toUri();
-
-		return ResponseEntity.created(location).body(userDto);
+        UserDTO createdUser = userService.createUserAPI(userDto);
+    
+        // ✅ Construir la URI del nuevo recurso
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(createdUser.id()) // Suponiendo que UserDTO tiene un método getId()
+                .toUri();
+    
+        return ResponseEntity.created(location).body(createdUser); // 201 Created con Location en Headers
     }
 
     @DeleteMapping("/{id}")
@@ -88,11 +143,11 @@ public class UserRestController {
     }
 
     @PutMapping("/{id}")
-    public UserDTO ReplaceUser(@PathVariable Long id,@RequestBody UserDTO updatedUserDTO)throws SQLException {
+    public UserDTO ReplaceUser(@PathVariable Long id, @RequestBody UserDTO updatedUserDTO) throws SQLException {
         return userService.replaceUser(id, updatedUserDTO);
     }
 
-    //--Images with user---
+    // --Images with user---
     @GetMapping("/{id}/image")
     public ResponseEntity<Object> getPostImage(@PathVariable long id)
             throws SQLException, IOException {
@@ -106,33 +161,33 @@ public class UserRestController {
     }
 
     @PostMapping("/{id}/image")
-	public ResponseEntity<Object> createUserImage(@PathVariable long id, @RequestParam MultipartFile imageFile)
-			throws IOException {
+    public ResponseEntity<Object> createUserImage(@PathVariable long id, @RequestParam MultipartFile imageFile)
+            throws IOException {
 
-		URI location = fromCurrentRequest().build().toUri();
+        URI location = fromCurrentRequest().build().toUri();
 
-		userService.createUserImage(id, location, imageFile.getInputStream(), imageFile.getSize());
+        userService.createUserImage(id, location, imageFile.getInputStream(), imageFile.getSize());
 
-		return ResponseEntity.created(location).build();
+        return ResponseEntity.created(location).build();
 
-	}
+    }
 
     @PutMapping("/{id}/image")
-	public ResponseEntity<Object> replaceUserImage(@PathVariable long id, @RequestParam MultipartFile imageFile)
-			throws IOException {
+    public ResponseEntity<Object> replaceUserImage(@PathVariable long id, @RequestParam MultipartFile imageFile)
+            throws IOException {
 
-		userService.replaceUserImage(id, imageFile.getInputStream(), imageFile.getSize());
+        userService.replaceUserImage(id, imageFile.getInputStream(), imageFile.getSize());
 
-		return ResponseEntity.noContent().build();
-	}
+        return ResponseEntity.noContent().build();
+    }
 
     @DeleteMapping("/{id}/image")
-	public ResponseEntity<Object> deleteUserImage(@PathVariable long id)
-			throws IOException {
+    public ResponseEntity<Object> deleteUserImage(@PathVariable long id)
+            throws IOException {
 
-		userService.deleteUserImage(id);
+        userService.deleteUserImage(id);
 
-		return ResponseEntity.noContent().build();
-	}
+        return ResponseEntity.noContent().build();
+    }
 
 }

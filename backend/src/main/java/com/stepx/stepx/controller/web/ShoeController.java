@@ -83,7 +83,7 @@ public class ShoeController {
 
             model.addAttribute("id", userDto.id());
             model.addAttribute("email", userDto.email());
-            model.addAttribute("imageBlob", userDto.imageUser());
+            model.addAttribute("imageBlob", userDto.imageString());
             model.addAttribute("lastName", userDto.lastName());
             model.addAttribute("firstname", userDto.firstname());
             model.addAttribute("user_id", userDto.id());
@@ -368,24 +368,23 @@ public class ShoeController {
 
     @GetMapping("/{userId}/imageUser")
     public ResponseEntity<Resource> getProfileImage(@PathVariable Long userId, Model model,
-            HttpServletRequest request) throws SQLException {
+            HttpServletRequest request) {
 
         UserDTO userOptional = userService.findUserById(userId);
         boolean isAuthenticated = request.getUserPrincipal() != null;
         model.addAttribute("isAuthenticated", isAuthenticated);   
-        if (userOptional!= null) {
-            Blob image =shoeService.convertBase64ToBlob(userOptional.imageUser());//dudas imagen
-            if (image != null) {
-                try {
-                    Resource file = new InputStreamResource(image.getBinaryStream());
-                    return ResponseEntity.ok()
-                            .header(HttpHeaders.CONTENT_TYPE, "image/jpg")
-                            .contentLength(image.length())
-                            .body(file);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        if (userOptional!= null) {        
+            try {
+                Resource image = userService.getUserImage(userId);// dudas imagen
+                return ResponseEntity.ok()
+                        .header(HttpHeaders.CONTENT_TYPE, "image/jpg")
+                        .body(image);
+            }  catch (NoSuchElementException e) {
+                return ResponseEntity.notFound().build();
+            } catch (SQLException e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             }
+            
         }
 
         return ResponseEntity.notFound().build();
@@ -397,7 +396,7 @@ public class ShoeController {
             HttpServletRequest request) throws SQLException {
         UserDTO userOptional = userService.findUserById(userId);
         if (userOptional!=null) {
-            Blob image =shoeService.convertBase64ToBlob(userOptional.imageUser());//dudas imagen
+            Blob image =shoeService.convertBase64ToBlob(userOptional.imageString());//dudas imagen
             if (image != null) {
                 try {
                     Resource file = new InputStreamResource(image.getBinaryStream());

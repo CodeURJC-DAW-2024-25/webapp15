@@ -56,6 +56,7 @@ public class OrderItemController {
         if (!usergettedDto.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
+        
         UserDTO user = usergettedDto.get();
 
         Optional<OrderShoesDTO> cart_Optional = orderShoesService.getCartById(user.id());
@@ -71,6 +72,7 @@ public class OrderItemController {
         if (!shoe_optional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Shoes not found");
         }
+
         ShoeDTO shoe = shoe_optional.get();
 
         // obtain stock of that shoe
@@ -82,6 +84,7 @@ public class OrderItemController {
         }
 
         OrderItemDTO orderItemDTO = orderItemService.findByCartAndShoeAndSize(user.id(), id_Shoe, size);
+
         // confirmation if quantity is <1 or >stock
         if (cuantity < 1) {
             cuantity = 1;
@@ -92,6 +95,7 @@ public class OrderItemController {
 
         if (orderItemDTO!=null) {//if the shoe is already in the cart
             orderItemService.addOrUpdateItem(orderItemDTO, orderItemDTO.quantity() + cuantity);
+            
         } else {
             OrderItemDTO itemToAdd = new OrderItemDTO(
                 null, // id
@@ -103,6 +107,7 @@ public class OrderItemController {
                 shoe.price()
             );
             orderItemService.addOrUpdateItem(itemToAdd, cuantity);
+ ;
         }
         return ResponseEntity.ok("Shoe added to your cart");
     }

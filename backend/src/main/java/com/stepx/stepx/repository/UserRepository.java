@@ -18,4 +18,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     List<User> findAll(); // Esto lo tienes por defecto gracias a JpaRepository
 
+    boolean existsByUsername(String username);
+    
+    boolean existsByEmail(String email);
+
 }

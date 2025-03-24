@@ -94,18 +94,23 @@ public class GeneralController {
         if (isAuthenticated) {
             String username = request.getUserPrincipal().getName();
             model.addAttribute("username", username);
-
             model.addAttribute("admin", request.isUserInRole("ROLE_ADMIN"));
-
-            UserDTO userDto = userService.findUserByUserName(username).get();
-
-            model.addAttribute("id", userDto.id());
-            model.addAttribute("email", userDto.email());
-            model.addAttribute("imageBlob", userDto.imageUser());
-            model.addAttribute("lastName", userDto.lastName());
-            model.addAttribute("firstname", userDto.firstname());
-            model.addAttribute("user_id", userDto.id());
-
+        
+            Optional<UserDTO> userOpt = userService.findUserByUserName(username);
+            if (userOpt.isPresent()) {
+                UserDTO userDto = userOpt.get();
+                model.addAttribute("id", userDto.id());
+                model.addAttribute("email", userDto.email());
+                model.addAttribute("imageBlob", userDto.imageString());
+                model.addAttribute("lastName", userDto.lastName());
+                model.addAttribute("firstname", userDto.firstname());
+                model.addAttribute("user_id", userDto.id());
+                model.addAttribute("orders", userDto.orders());
+            } else {
+                model.addAttribute("firstname", ""); // <-- así evitas que reviente Mustache
+                model.addAttribute("lastName", "");
+                model.addAttribute("orders", List.of());
+            }
         }
     }
 
@@ -163,13 +168,15 @@ public class GeneralController {
         String username = request.getUserPrincipal().getName();
         UserDTO userDto = userService.findUserByUserName(username).orElseThrow();
 
+        System.out.println("toda la información del usuario: "+userDto);
         // Load all orders from user
         List<OrderShoesDTO> orderShoesDto = orderShoesService.getOrderShoesFinishedByUserId(userDto.id());
+        
         if (orderShoesDto.size() == 0) {
             model.addAttribute("orders", false);
             model.addAttribute("hasmoreorders", false);
         } else {
-            List<OrderShoesDTO> displayedOrders = orderShoesDto.stream().limit(5).toList();
+            List<OrderShoesDTO> displayedOrders = orderShoesDto.stream().limit(5).toList();//5 orderShoes
             model.addAttribute("orders", displayedOrders);
             if (orderShoesDto.size() > 5) {
                 model.addAttribute("hasmoreorders", true);
@@ -177,6 +184,7 @@ public class GeneralController {
                 model.addAttribute("hasmoreorders", false);
             }
         }
+        model.addAttribute("firstname", "gonzalete");
 
         // Get monthly spending data for the user
         List<Map<String, Object>> monthlySpending = orderShoesRepository.getMonthlySpendingByUserId(userDto.id());

@@ -161,11 +161,14 @@ public class OrderShoes {
         for (OrderItem item : orderItems) {
             if (item.getShoe().equals(shoe) && item.getSize().equals(size)) {
                 item.setQuantity(item.getQuantity() + quantity);
+                item.setPrice(shoe.getPrice());
                 return;
             }
         }
 
         OrderItem newItem = new OrderItem(this, shoe, quantity, size);
+        newItem.setPrice(shoe.getPrice());
+        newItem.setShoeName(shoe.getName());
         orderItems.add(newItem);
     }
 

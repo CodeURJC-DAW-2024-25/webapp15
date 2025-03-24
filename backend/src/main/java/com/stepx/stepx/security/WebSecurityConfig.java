@@ -115,7 +115,7 @@ public class WebSecurityConfig {
 						.permitAll()
 						.requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
 						// PRIVATE PAGES
-						.requestMatchers("/profile", "/profile/orders", "/shop/single-product/loadMoreReviews")
+						.requestMatchers( "/profile/orders", "/shop/single-product/loadMoreReviews","/user/updateInformation","/profile")
 						.hasAnyRole("USER", "ADMIN")
 						.requestMatchers("/OrderItem/addItem", "/checkout/**", "/user/**").hasAnyRole("USER")
 						.requestMatchers("/edit-product/**", "/admin", "/create-product","/shop/delete/**").hasAnyRole("ADMIN"))

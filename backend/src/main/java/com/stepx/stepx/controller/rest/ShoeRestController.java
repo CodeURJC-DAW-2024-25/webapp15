@@ -56,24 +56,8 @@ public class ShoeRestController {
     @Autowired
     private ShoeService shoeService;
 
-    @Autowired
-    private ShoeSizeStockService shoeSizeStockService;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private ReviewService reviewService;
-
-    @Autowired
-    private OrderItemService orderItemService;
-
     @Autowired ShoeMapper shoeMapper;
      
-
     //get all shoes
     @GetMapping("/All")
     public ResponseEntity<?> getAllShoes() {
@@ -117,7 +101,9 @@ public class ShoeRestController {
             .body(shoeImage);
     }
     
+    //get by category
     
+
     //create a shoe
     @PostMapping()
     public ResponseEntity<?> createShoe(@RequestBody ShoeDTO shoeDTO) throws IOException, SQLException {
@@ -154,183 +140,12 @@ public class ShoeRestController {
         return ResponseEntity.ok(shoeOptional.get());
     }
 
-
-   
-    @GetMapping("/create-product")
-    public ResponseEntity<Map<String, Object>> getCreateProductData(HttpServletRequest request) {
-        boolean admin = request.isUserInRole("ROLE_ADMIN");
-        if (!admin) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(Collections.singletonMap("error", "You do not have permission to create products."));
-        }
-
-        // Aquí podrías devolver los datos necesarios para el formulario, si es necesario
-        // Por ejemplo: categorías, marcas, etc.
-        Map<String, Object> response = new HashMap<>();
-        response.put("sizes", Arrays.asList("S", "M", "L", "XL"));
-        response.put("categories", Arrays.asList("Sportswear", "Casual", "Outdoor"));
-        response.put("brands", Arrays.asList("Nike", "Adidas", "Puma"));
-
-        return ResponseEntity.ok(response);
-    }
-
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteShoe(@PathVariable Long id) {
         shoeService.deleteShoe(id);
         return ResponseEntity.ok("Shoe deleted successfully.");
     }
 
-
-  /* @GetMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> getProductById(@PathVariable Long id, @RequestParam(required = false) String action, HttpServletRequest request) {
-        Map<String, Object> response = new HashMap<>();
-        Optional<ShoeDTO> product = shoeService.getShoeById(id);
-
-        if (product.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Product not found"));
-        }
-
-        ShoeDTO shoe = product.get();
-        response.put("product", shoe);
-
-        if ("quick".equals(action)) {
-            response.put("view", "quick-view-modal");
-        } else if ("confirmation".equals(action)) {
-            Optional<Integer> stock = shoeSizeStockService.getStockByShoeAndSize(id, "M");
-            response.put("stockError", stock.isPresent() && stock.get() == 0);
-            response.put("view", "cart-confirmation-view");
-        } else if ("delete".equals(action)) {
-            response.put("view", "deleteShoeModal");
-        } else {
-            response.put("view", "error-modal");
-        }
-
-        return ResponseEntity.ok(response);
-    }*/
-
-    // @GetMapping("/loadMoreShoes/")
-    // public ResponseEntity<Map<String, Object>> getMore(@RequestParam int currentPage, HttpServletRequest request) {
-    //     Page<Shoe> shoePage = shoeService.getShoesPaginated(currentPage);
-    //     boolean more = currentPage < shoePage.getTotalPages() - 1;
-
-    //     Map<String, Object> response = new HashMap<>();
-    //     response.put("hasMoreShoes", more);
-    //     response.put("shoes", shoePage.getContent());
-
-    //     return ResponseEntity.ok(response);
-    // }
-
-    // @GetMapping("/{userId}/imageUser")
-    // public ResponseEntity<Resource> getProfileImage(@PathVariable Long userId, HttpServletRequest request) {
-    //     Optional<User> userOptional = userService.findUserById(userId);
-
-    //     if (userOptional.isPresent()) {
-    //         User user = userOptional.get();
-    //         Blob image = user.getImageUser();
-
-    //         if (image != null) {
-    //             try {
-    //                 Resource file = new InputStreamResource(image.getBinaryStream());
-    //                 return ResponseEntity.ok()
-    //                         .header(HttpHeaders.CONTENT_TYPE, "image/jpg")
-    //                         .contentLength(image.length())
-    //                         .body(file);
-    //             } catch (Exception e) {
-    //                 e.printStackTrace();
-    //             }
-    //         }
-    //     }
-
-    //     return ResponseEntity.notFound().build();
-    // }
-
-    // @PostMapping("/submit/{id}")
-    // public ResponseEntity<Map<String, Object>> publishReview(@PathVariable Long id, @RequestParam("rating") int rating,
-    //         @RequestParam String description, HttpServletRequest request) {
-    //     Map<String, Object> response = new HashMap<>();
-    //     String username = request.getUserPrincipal().getName();
-    //     User user = userRepository.findByUsername(username).orElseThrow();
-    //     Shoe shoe = shoeService.getShoeById(id).orElseThrow(() -> new RuntimeException("Shoe not found"));
-    //     LocalDate date = LocalDate.now();
-    //     Review review = new Review(rating, description, shoe, user, date);
-    //     reviewService.save(review);
-
-    //     response.put("message", "Review published successfully");
-    //     return ResponseEntity.ok(response);
-    // }
-
-    // @GetMapping("/{productId}/deleteReview/{id}")
-    // public ResponseEntity<Map<String, Object>> deleteReview(@PathVariable Long productId, @PathVariable Long id, HttpServletRequest request) {
-    //     Map<String, Object> response = new HashMap<>();
-    //     reviewService.deleteReview(id);
-
-    //     List<Review> reviews = reviewService.getReviewsByShoe(productId);
-    //     response.put("reviews", reviews);
-
-    //     return ResponseEntity.ok(response);
-    // }
-
-    // @PostMapping("/single-product/loadMoreReviews")
-    // public ResponseEntity<Map<String, Object>> loadMoreReviews(@RequestParam int page, @RequestParam Long shoeId) {
-    //     int limit = 2;
-    //     List<ReviewDTO> reviews = reviewService.getPagedReviewsByShoeId(shoeId, page, limit);
-
-    //     Map<String, Object> response = new HashMap<>();
-    //     response.put("reviews", reviews);
-
-    //     return ResponseEntity.ok(response);
-    // }
-
-    /*@GetMapping("/{id}/image/{imageNumber}")
-    public ResponseEntity<Resource> getShoeImage(@PathVariable Long id, @PathVariable int imageNumber) {
-        try {
-            Resource imageResource = shoeService.getShoeImage(id, imageNumber);
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_TYPE, "image/jpeg") // Cambia a dinámico si es necesario
-                    .body(imageResource);
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.notFound().build();
-        } catch (SQLException | IOException e) {
-            return ResponseEntity.internalServerError().build();
-        }
-    }   */ 
-    // @GetMapping("/single-product/{id}")
-    // public ResponseEntity<Map<String, Object>> showSingleProduct(@PathVariable Long id, HttpServletRequest request) {
-    //     Map<String, Object> response = new HashMap<>();
-    //     Optional<ShoeDTO> op = shoeService.getShoeById(id);
-    //     if (op.isEmpty()) {
-    //         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Product not found"));
-    //     }
-
-    //     ShoeDTO shoe = op.get();
-    //     response.put("product", shoe);
-
-    //     // Fetching stock and reviews
-    //     Optional<Integer> stockS = shoeSizeStockService.getStockByShoeAndSize(id, "S");
-    //     Optional<Integer> stockM = shoeSizeStockService.getStockByShoeAndSize(id, "M");
-    //     Optional<Integer> stockL = shoeSizeStockService.getStockByShoeAndSize(id, "L");
-    //     Optional<Integer> stockXL = shoeSizeStockService.getStockByShoeAndSize(id, "XL");
-
-    //     int initialReviewsCount = 2;
-    //     List<ReviewDTO> reviews = reviewService.getPagedReviewsByShoeId(id, 0, initialReviewsCount);
-
-    //     response.put("stockS", stockS.orElse(0) == 0);
-    //     response.put("stockM", stockM.orElse(0) == 0);
-    //     response.put("stockL", stockL.orElse(0) == 0);
-    //     response.put("stockXL", stockXL.orElse(0) == 0);
-    //     response.put("reviews", reviews);
-    //     response.put("hasReviews", reviews != null && !reviews.isEmpty());
-
-    //     return ResponseEntity.ok(response);
-    // }
-
-    // @GetMapping("/shop")
-    // public ResponseEntity<Page<ShoeDTO>> getAllProducts() {
-    //     Page<ShoeDTO> shoes = shoeService.getNineShoes(0);
-    //         boolean more = shoes.getTotalPages() > 1;
-            
-    //     return ResponseEntity.ok(shoes);
-    // }
 }
  
     
