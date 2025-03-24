@@ -83,7 +83,7 @@ public class ShoeController {
 
             model.addAttribute("id", userDto.id());
             model.addAttribute("email", userDto.email());
-            model.addAttribute("imageBlob", userDto.imageUser());
+            model.addAttribute("imageBlob", userDto.imageString());
             model.addAttribute("lastName", userDto.lastName());
             model.addAttribute("firstname", userDto.firstname());
             model.addAttribute("user_id", userDto.id());
@@ -396,7 +396,7 @@ public class ShoeController {
             HttpServletRequest request) throws SQLException {
         UserDTO userOptional = userService.findUserById(userId);
         if (userOptional!=null) {
-            Blob image =shoeService.convertBase64ToBlob(userOptional.imageUser());//dudas imagen
+            Blob image =shoeService.convertBase64ToBlob(userOptional.imageString());//dudas imagen
             if (image != null) {
                 try {
                     Resource file = new InputStreamResource(image.getBinaryStream());

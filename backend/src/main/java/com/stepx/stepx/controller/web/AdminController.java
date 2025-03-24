@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import com.stepx.stepx.repository.*;
+import com.stepx.stepx.service.OrderShoesService;
+
 import org.springframework.ui.Model;
 
 @Controller
@@ -17,13 +19,15 @@ public class AdminController {
 
     @Autowired
     private ObjectMapper objectMapper;
-
     @Autowired
     private OrderShoesRepository orderShoesRepository;
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private ShoeRepository shoeRepository;
+    @Autowired
+    private OrderShoesService orderShoesService;
+
 
     @GetMapping("/admin")
     public String adminDashboard(Model model) throws JsonProcessingException {
@@ -44,8 +48,8 @@ public class AdminController {
         BigDecimal totalMoneyGained = orderShoesRepository.getTotalMoneyGained();
         model.addAttribute("totalMoneyGained", totalMoneyGained);
 
-        // Get order counts by month from repository
-        List<Map<String, Object>> orderCounts = orderShoesRepository.getOrderCountsByMonth();
+        // Get order counts by month from service
+        List<Map<String, Object>> orderCounts = orderShoesService.getOrderCountsByMonth();
 
         // Convert to a map for the chart
         Map<String, Object> chartData = new HashMap<>();
@@ -78,7 +82,7 @@ public class AdminController {
         model.addAttribute("data", "var shoeOrderData = " + chartDataJson + ";");
 
         // Get money gained by month
-        List<Map<String, Object>> moneyGained = orderShoesRepository.getMoneyGainedByMonth();
+        List<Map<String, Object>> moneyGained = orderShoesService.getMoneyGainedByMonth();
 
         // Create a new map for money data
         Map<String, Object> moneyChartData = new HashMap<>();

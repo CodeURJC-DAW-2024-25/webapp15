@@ -11,12 +11,14 @@ import com.stepx.stepx.model.Review;
 
 @Mapper(componentModel = "spring")
 public interface ReviewMapper{
-
+    
+    @Mapping(source = "user.id", target = "userId")
     @Mapping(source = "shoe.id", target = "shoeId")
     ReviewDTO toDTO(Review review);
 
     List<ReviewDTO> toDTOs(Collection<Review> reviews);
 
+    @Mapping(source = "userId", target = "user.id") 
     Review toDomain(ReviewDTO reviewDTO);
 
     
