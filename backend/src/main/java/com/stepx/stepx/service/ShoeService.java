@@ -16,8 +16,10 @@ import org.hibernate.engine.jdbc.BlobProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -88,7 +90,7 @@ public class ShoeService {
         return paginatedShoe.map(shoeMapper::toDTO);
     }
 
-
+    //find a single shoe
     public Optional<ShoeDTO> getShoeById(Long id) {
         Shoe shoe= shoeRepository.findById(id).orElse(null);
         
@@ -103,34 +105,16 @@ public class ShoeService {
         }
     }
     
+    //Paged shoes
+    public Page<ShoeDTO> getPagedShoes(int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        return shoeRepository.findAll(pageable).map(shoeMapper::toDTO);
+    }
+
     //find all shoes API
     public List<ShoeDTO> findAll(){
        List<Shoe>shoesList= shoeRepository.findAllShoes();
        return shoeMapper.toDTOs(shoesList);
-    }
-    
-    // Find Single shoe API
-    public ShoeDTO findById(Long shoeId, HttpServletRequest request) {
-        Optional<Shoe> shoeOptional = shoeRepository.findById(shoeId);
-        if (shoeOptional.isEmpty())
-            return null;
-        ShoeDTO dto = shoeMapper.toDTO(shoeOptional.get());
-
-        String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
-
-        return new ShoeDTO(
-                dto.id(),
-                dto.name(),
-                dto.shortDescription(),
-                dto.longDescription(),
-                dto.price(),
-                dto.brand(),
-                dto.category(),
-                baseUrl + "/api/Shoe/" + shoeId + "/image/1",
-                baseUrl + "/api/Shoe/" + shoeId + "/image/2",
-                baseUrl + "/api/Shoe/" + shoeId + "/image/3",
-                dto.sizeStocks(),
-                dto.reviews());
     }
     
     //create shoe
@@ -242,8 +226,8 @@ public class ShoeService {
     //     return Optional.of(shoeMapper.toDTO(saved));
     // }
 
-    public Optional<ShoeDTO> updateAllShoe(ShoeDTO shoeDTO) {
-    Optional<Shoe> shoeOp = shoeRepository.findById(shoeDTO.id());
+    public Optional<ShoeDTO> updateAllShoe(Long shoeId,ShoeDTO shoeDTO) {
+    Optional<Shoe> shoeOp = shoeRepository.findById(shoeId);
     if (shoeOp.isEmpty()) {
         return Optional.empty();
     }
@@ -258,8 +242,10 @@ public class ShoeService {
 
     // Actualizar la colección de reviews sin reemplazarla
     List<Review> reviews = reviewService.convertToReviewList(shoeDTO.reviews());
-    shoe.getReviews().clear(); // Limpiar la colección existente
-    shoe.getReviews().addAll(reviews); // Agregar las nuevas reviews
+    if (!shoe.getReviews().equals(reviews)) {
+        shoe.getReviews().clear();
+        shoe.getReviews().addAll(reviews);
+    }
 
     // Actualizar la colección de sizeStocks sin reemplazarla
     List<ShoeSizeStock> sizeStocks = shoeSizeStockService.convertToShoeSizeStock(shoeDTO.sizeStocks());

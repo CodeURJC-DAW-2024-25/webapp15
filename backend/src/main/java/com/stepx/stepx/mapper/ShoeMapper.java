@@ -13,9 +13,9 @@ import org.mapstruct.Mappings;
 public interface ShoeMapper {
 
     @Mappings({
-        @Mapping(target = "imageUrl1", expression = "java(\"/shop/\" + shoe.getId() + \"/image/1\")"),
-        @Mapping(target = "imageUrl2", expression = "java(\"/shop/\" + shoe.getId() + \"/image/2\")"),
-        @Mapping(target = "imageUrl3", expression = "java(\"/shop/\" + shoe.getId() + \"/image/3\")"),
+        @Mapping(target = "imageUrl1", expression = "java(\"/Shop/\" + shoe.getId() + \"/image/1\")"),
+        @Mapping(target = "imageUrl2", expression = "java(\"/Shop/\" + shoe.getId() + \"/image/2\")"),
+        @Mapping(target = "imageUrl3", expression = "java(\"/Shop/\" + shoe.getId() + \"/image/3\")"),
         @Mapping(target = "shortDescription", source = "description")
     })
     ShoeDTO toDTO(Shoe shoe);

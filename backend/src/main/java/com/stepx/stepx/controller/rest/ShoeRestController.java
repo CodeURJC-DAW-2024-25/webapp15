@@ -17,6 +17,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +44,8 @@ import com.stepx.stepx.service.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 
 
@@ -82,16 +85,27 @@ public class ShoeRestController {
         return ResponseEntity.ok(shoes);
     }
 
+    //get paged shoes
+    @GetMapping
+    public ResponseEntity<?> getPagedShoes(@RequestParam int page, @RequestParam int size) {
+        Page<ShoeDTO> shoes = shoeService.getPagedShoes(page,size);
+        if(shoes.isEmpty()){
+            return ResponseEntity.status(404)
+            .body(Collections.singletonMap("error", "No shoes found"));
+        }
+        return ResponseEntity.ok(shoes);
+    }
+
     //get one shoe
     @GetMapping("/{shoeId}")
-    public ResponseEntity<?> getOneShoe(@PathVariable Long shoeId,HttpServletRequest request) {
-        ShoeDTO shoeDTO = shoeService.findById(shoeId,request);
-        if (shoeDTO==null) {
+    public ResponseEntity<?> getOneShoe(@PathVariable Long shoeId) {
+        Optional<ShoeDTO> shoeDTO = shoeService.getShoeById(shoeId);
+        if (!shoeDTO.isPresent()) {
             return ResponseEntity.status(404)
             .body(Collections.singletonMap("error", "Shoe not found"));
         }
         
-        return ResponseEntity.ok(shoeDTO);
+        return ResponseEntity.ok(shoeDTO.get());
     }
 
     //get image from shoe
@@ -106,7 +120,7 @@ public class ShoeRestController {
     
     //create a shoe
     @PostMapping()
-    public ResponseEntity<?> createShoe(ShoeDTO shoeDTO) throws IOException, SQLException {
+    public ResponseEntity<?> createShoe(@RequestBody ShoeDTO shoeDTO) throws IOException, SQLException {
         ShoeDTO saved= shoeService.saveShoe(shoeDTO);
         URI location=ServletUriComponentsBuilder
         .fromCurrentRequest()
@@ -118,13 +132,27 @@ public class ShoeRestController {
 
     //create image for shoe
     @PostMapping("/{shoeId}/image/{imageNumber}")
-    public ResponseEntity<?> loadImage(@PathVariable Long shoeId, @PathVariable int imageNumber,@RequestParam MultipartFile imagFile) throws IOException {
+    public ResponseEntity<?> loadImage(@PathVariable Long shoeId, @PathVariable int imageNumber,@RequestParam("file") MultipartFile file) throws IOException {
+        
         URI location=ServletUriComponentsBuilder.fromCurrentRequest().build().toUri();
-        shoeService.storeImage(shoeId,imageNumber,imagFile.getInputStream(),imagFile.getSize());
+
+        shoeService.storeImage(shoeId,imageNumber,file.getInputStream(),file.getSize());
+
         return ResponseEntity.created(location).build();
     }
     
+    //update shoe
+    @PutMapping("/{shoeId}")
+    public ResponseEntity<?> updateShoe(@PathVariable Long shoeId, @RequestBody ShoeDTO shoeDTO) {
+        
+        Optional<ShoeDTO> shoeOptional=shoeService.updateAllShoe(shoeId,shoeDTO);
+        if (!shoeOptional.isPresent()) {
+            return ResponseEntity.status(404)
+            .body(Collections.singletonMap("error", "Shoe not found"));
+        }
 
+        return ResponseEntity.ok(shoeOptional.get());
+    }
     
 
     @GetMapping
