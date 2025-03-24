@@ -22,6 +22,13 @@ public interface ShoeSizeStockRepository extends JpaRepository<ShoeSizeStock, Lo
     List<ShoeSizeStock> findByShoeIdsAndSizes(@Param("shoeIds") List<Long> shoeIds, @Param("sizes") List<String> sizes);
     // all the stock in a single consult
 
+    List<ShoeSizeStock> findByShoeId(Long shoeId);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM ShoeSizeStock s WHERE s.shoe.id = :shoeId AND s.size = :size")
+    void deleteByShoeIdAndSize(@Param("shoeId") Long shoeId, @Param("size") String size);
+
     @Modifying
     @Transactional
     @Query("UPDATE ShoeSizeStock s SET s.stock = s.stock - :quantity " +

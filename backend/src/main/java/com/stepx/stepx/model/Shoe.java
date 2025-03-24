@@ -173,6 +173,10 @@ public class Shoe {
         return sizeStocks;
     }
 
+    public void setSizeStock(List<ShoeSizeStock> sizeStocks){
+        this.sizeStocks = sizeStocks;
+    }
+
     // Encapsulated method to add a ShoeSizeStock
     public void addSizeStock(ShoeSizeStock sizeStock) {
         sizeStocks.add(sizeStock);
