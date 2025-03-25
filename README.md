@@ -227,3 +227,177 @@ She taked care of:
 |3| [Basic models and methods](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/4a259f5aca21f629e328d9687e069b2630e412f9)  |  [Order.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/4a259f5aca21f629e328d9687e069b2630e412f9#diff-6a5acb2862a6376464e361451a8439d404d4e40c84cb5d891a42810a114e3e1f), [Review.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/4a259f5aca21f629e328d9687e069b2630e412f9#diff-54d0c4c5893b8fcd5bdda62be4f4579e86509ee52cf9f3389b32cc50b7b67637), [Product.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/4a259f5aca21f629e328d9687e069b2630e412f9#diff-fa9d1510459b7b6725310216de1db9c0fc9effb6d7db2b719d8a62505bc8705f) |
 |4| [Product Model and Update of Dependencies on POM](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/d841688b9ecff65c02cc1ce119926e4b723a12bc)  | [pom.xml](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/d841688b9ecff65c02cc1ce119926e4b723a12bc#diff-6d4453014b5a08ac36c00c4084a5d01489c56aad5fa973f41f07155f03f55b71), [Product.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/d841688b9ecff65c02cc1ce119926e4b723a12bc#diff-fa9d1510459b7b6725310216de1db9c0fc9effb6d7db2b719d8a62505bc8705f)  |
 |5| [Change of images, adding form for sign up and fixing access to form](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/bc22a09f0900906141381e6e451b12e83360ada3)   |  [index.html](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/bc22a09f0900906141381e6e451b12e83360ada3#diff-0eb547304658805aad788d320f10bf1f292797b5e6d745a3bf617584da017051), [profile.html](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/bc22a09f0900906141381e6e451b12e83360ada3#diff-f32cee85e87bd5c9da57ae49c3534d8ce4795276f4f02d27b4b3486d9ec2bcea), [admin-pannel.html](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/bc22a09f0900906141381e6e451b12e83360ada3#diff-b215324cf8b37b3fa1addbb1e3c2431969d5dee009f50272ec4419a4e49e6ddb) |
+
+
+
+
+## PHASE 2:
+Welcome to our presentation on the technological expansion of our shoe store! In this Phase 2, we have enhanced our platform by integrating API REST and Docker, enabling a more scalable, efficient, and modern solution.
+
+### **API REST**
+with this implementation, we have significantly improved our system’s flexibility and performance. Key benefits include:
+
+- **Seamless Integration:** APIs allow our website, mobile apps, and third-party services to connect effortlessly.
+
+- **Scalability:** RESTful architecture ensures that our system can handle increasing traffic smoothly.
+
+- **Faster Response Times:** Optimized API calls improve user experience and reduce loading times.
+
+- **Better Security:** Using authentication protocol JWT ensures secure transactions.
+
+### **Docker** 
+Revolutionizes our infrastructure by containerizing our application. The main advantages include:
+
+- **Portability:** Our application runs consistently across different environments (development, testing, production).
+
+- **Scalability:** Easy deployment and management of multiple instances to handle high demand.
+
+- **Resource Efficiency:** Containers use fewer resources compared to traditional virtual machines.
+
+- **Fast Deployment:** New updates can be rolled out quickly with minimal downtime.
+
+- **Improved Security:** Isolated containers reduce risks and enhance system stability.
+
+### **How Our System Works Now**
+
+- **User Interaction:** Customers browse and purchase shoes via our website and mobile app.
+
+- **API REST Processing:** Requests for product details, orders, and payments are processed efficiently.
+
+- **Dockerized Deployment:** Our services run in Docker containers, ensuring smooth operation across platforms.
+
+- **Continuous Updates:** New features and fixes are deployed seamlessly without affecting the user experience.
+
+** Shoe Store API - Deployment Guide**
+
+## **Docker Execution Instructions**
+### **Requirements:**
+- Docker must be installed on your system.
+- Docker Compose must be available.
+
+### **Steps to Run the Application:**
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/your-repo/shoe-store-api.git
+   ```
+2. Navigate to the directory where the `docker-compose.yml` file is located:
+   ```sh
+   cd shoe-store-api/backend/docker
+   ```
+3. Start the application using Docker Compose:
+   ```sh
+   docker compose up -d
+   ```
+4. Once the application is running, you can access it at:
+   ```
+   https://localhost:8443/index
+   ```
+5. To stop the deployment, execute the following command:
+   ```sh
+   docker compose down
+   ```
+
+---
+
+## **Building the Docker Image**
+### **Requirements:**
+- Docker must be installed on your system.
+
+### **Steps to Build the Docker Image:**
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/your-repo/shoe-store-api.git
+   ```
+2. Navigate to the directory where the `create_image.sh` file is located:
+   ```sh
+   cd shoe-store-api/backend/docker
+   ```
+3. Grant execution permissions to the script:
+   ```sh
+   chmod +x create_image.sh
+   ```
+4. Execute the script to build the Docker image:
+   ```sh
+   ./create_image.sh
+   ```
+
+---
+
+## **Deployment on Virtual Machine**
+### **Requirements:**
+- You must be connected to the correct network or use a VPN if accessing externally.
+- Ensure you have downloaded the private key for SSH access to your local system.
+
+### **Steps to Deploy the Application:**
+1. Open a terminal and connect to the virtual machine using one of the following commands:
+   ```sh
+   ssh -i ssh-keys/shoe-store.key vmuser@10.100.139.173
+   ssh -i ssh-keys/shoe-store.key vmuser@shoestore.dawgis.etsii.urjc.es
+   ```
+2. Clone the repository to the virtual machine:
+   ```sh
+   git clone https://github.com/your-repo/shoe-store-api.git
+   ```
+3. Navigate to the directory where the `docker-compose.yml` file is located:
+   ```sh
+   cd shoe-store-api/backend/docker
+   ```
+4. Start the application using Docker Compose:
+   ```sh
+   docker compose up -d
+   ```
+5. You can access the deployed application at:
+   ```
+   https://shoestore.dawgis.etsii.urjc.es:8443
+   ```
+
+---
+
+## **Application Credentials**
+| Role      | Username | Password |
+|-----------|---------|---------|
+| Admin     | Gaby    | pass    |
+| User      | Gonzalo | pass    |
+
+Thank you for following the deployment steps! 🚀
+
+
+
+## Updated Class and Templates Diagram (API REST Implementation)
+![DiagramPhase2](https://github.com/user-attachments/assets/342d397d-f61c-48f7-ac62-17ca1075deb1)
+
+## TEAM PARTICIPATION
+
+### **Elinee Nathalie Freites Muñoz**
+She taked care of:
+- Some basic DTOs and ReviewDTO and ShoeDTO. 
+- Security Implementation.
+- Part of ShoeRestController.java
+- Updated Class and Templates Diagrams
+- Part of CRUD of Shoe
+- README structure
+
+  
+| Nº    | Commits      | Files      |
+|:------------: |:------------:| :------------:|
+|1| [BasictDTOS to avoid circular relations, two restControllers and more](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/03ccf0fa2aef706a57d0b3117c9eadb569f62b38) | [pom.xml](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/03ccf0fa2aef706a57d0b3117c9eadb569f62b38#diff-34049c3bc6deee4bbf269544338e0450399140da63fec684096d1ae0ce70b4bb), [ShoeRestController.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/03ccf0fa2aef706a57d0b3117c9eadb569f62b38#diff-96061949fad1b05ac8a41ea41e7a38062e50150c27c22b87430c2f12e345d82a), [BasicShoeDTO.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/03ccf0fa2aef706a57d0b3117c9eadb569f62b38#diff-950bbb54567a2993dd106e2c1d40098256295ac30c0f2d6c47a784afc5943a0f), [BasicShoeSizeStockDTO.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/03ccf0fa2aef706a57d0b3117c9eadb569f62b38#diff-54ccc43aead3c07d44a7afd9581d92700962b82f19db81916101f23033aad411), [ReviewDTO.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/03ccf0fa2aef706a57d0b3117c9eadb569f62b38#diff-6bbb6188f89f61a2083d74b56fe6f44d9a9ccb8f486b08c911de27899ba8c98e), [ShoeDTO.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/03ccf0fa2aef706a57d0b3117c9eadb569f62b38#diff-6ee55f6113ee094c455ccf56dcfc5220d24201cc64e56d652cea75e9616b24b8), [ShoeSizeStockDTO.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/03ccf0fa2aef706a57d0b3117c9eadb569f62b38#diff-397b40b8ba1248f07e55aab411842eca262761e8ecbc246cb9b877abbf3006e1), [OrderItemService.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/03ccf0fa2aef706a57d0b3117c9eadb569f62b38#diff-328363f59ba9892490de06e303ae8d85da37c343d00a0d036ef507458a91ce15), etc |
+|2| [Security Implements](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/3577c08e8e1fba0e82c33c73e4d6e57e67e99baf) | [pom.xml](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/3577c08e8e1fba0e82c33c73e4d6e57e67e99baf#diff-34049c3bc6deee4bbf269544338e0450399140da63fec684096d1ae0ce70b4bb), [CSRFHandlerConfiguration.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/3577c08e8e1fba0e82c33c73e4d6e57e67e99baf#diff-8e023600e21c77628cdc666d3825f97295b43a7ad7a5cfe0e87e3aa6c403c5cf), [SecurityConfig.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/3577c08e8e1fba0e82c33c73e4d6e57e67e99baf#diff-f30b7042564908513f5eb2baced6d20ab2e4feeab2ad7171bf295940cadac789), [JwtRequestFilter.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/3577c08e8e1fba0e82c33c73e4d6e57e67e99baf#diff-5ec671eb5e1ddfef62e2e206ae5e0254c62a6e86a0f6aeeec300f18474c8d5fd), [LoginRequest.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/3577c08e8e1fba0e82c33c73e4d6e57e67e99baf#diff-8e5c37c50ec3c7ea3176969f77a89298f5c1130ca747b1a5d167ca94cc7c54c3), etc |
+|3| [CRUD shoe and shoeController](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/984ffd887f784eea5760075aca726714c2246cfc) | [OrderItems.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/984ffd887f784eea5760075aca726714c2246cfc#diff-67f24a1303db4aac2a725cc4dd7f61443c739b88bcdd4dbdc688a46f6c67fced), [ShoeRestController.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/984ffd887f784eea5760075aca726714c2246cfc#diff-d4d88815131caf9731432f25e2d6b2b56d77e6fd6b4418519e8130c253e7d756), [ReviewService.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/984ffd887f784eea5760075aca726714c2246cfc#diff-17ad8527e1ca43c32f1a8f533ca79f04a8eb810f131036480236ab77dc58ff5c), [ShoeService.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/984ffd887f784eea5760075aca726714c2246cfc#diff-9848a8577e1e3828e66984fbbc5d69f83af5b24beef0cf3b49d3721486b04b23), |
+|4| [Few changes on controllers](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/58109f9c0cc99c4135d7f01c0540c4ee0ce6716f) | [GeneralRestController.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/58109f9c0cc99c4135d7f01c0540c4ee0ce6716f#diff-2f4dc0285a2c9aafdfa69389799262bd9975c218c5bc048afbbd88b4e66bf57d), [ShoeRestController.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/58109f9c0cc99c4135d7f01c0540c4ee0ce6716f#diff-d4d88815131caf9731432f25e2d6b2b56d77e6fd6b4418519e8130c253e7d756), [ShoeController.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/58109f9c0cc99c4135d7f01c0540c4ee0ce6716f#diff-c89e201ab52fc99cbc4796098be1d7020c97a677b6106060655b0ee2a9d105f7), |
+|5| [Changing type Shoe, Review to ShoeDTO and ReviewDTO](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/d339f515ab2ae22f437e49a2fa819a870673a676) | [ShoeRestController.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/d339f515ab2ae22f437e49a2fa819a870673a676#diff-d4d88815131caf9731432f25e2d6b2b56d77e6fd6b4418519e8130c253e7d756) |
+
+
+
+
+
+### **Name here**
+
+| Nº    | Commits      | Files      |
+|:------------: |:------------:| :------------:|
+|1|  |  |
+|2|  |  |
+|3|  |  |
+|4|  |  |
+|5|  |  |
+
+
