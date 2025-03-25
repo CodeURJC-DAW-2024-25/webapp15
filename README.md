@@ -413,6 +413,22 @@ He taked care of:
 |4| [Shoe controller to DTO](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/f1cf8cbf0fd98edcfcbbd6cdd2174c2bf9e99788) | [ShoeController.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/58109f9c0cc99c4135d7f01c0540c4ee0ce6716f#diff-c89e201ab52fc99cbc4796098be1d7020c97a677b6106060655b0ee2a9d105f7) |
 |5| [controllers and services adapted to dots](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/b7328af214aa3a1a90069ba7d31430fa118fb11b) | [ShoeService.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/blob/main/backend/src/main/java/com/stepx/stepx/service/ShoeService.java) |
 
+### **Gabriel Miró-Granada Lluch**
+- Coupon Rest
+- Admin Charts and User charts Rest
+- Dto adaptation
+- Docker
+- User adaptations
+- Fix Mappers
+
+| Nº    | Commits      | Files      |
+|:------------: |:------------:| :------------:|
+|1| [Admin Rest](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/a50f4cf07ea222fc0b7004aa189c2acee17b6c18) |[AdminRestController.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/blob/main/backend/src/main/java/com/stepx/stepx/controller/rest/AdminRestController.java)  |
+|2| [Docker]((https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/a9069c94df162b1438bf24a5f269b9ab136bfa2a](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/d514d70c881d3440a47535af63ee03a8eaa0830c)) | [docker-compose.yaml]((https://github.com/CodeURJC-DAW-2024-25/webapp15/blob/main/backend/src/main/resources/templates/shop.htm](https://github.com/CodeURJC-DAW-2024-25/webapp15/blob/main/backend/docker-compose.yaml)l) |
+|3| [UserController adaptation](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/87eb6f203f7dc1f14d3b1c178c4e8be4077b2339](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/23b1c07547e607839d68fd5cb6f84ea2e8615225)) | [UserController.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/blob/main/backend/src/main/java/com/stepx/stepx/controller/rest/OrderShoesRestController.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/blob/main/backend/src/main/java/com/stepx/stepx/controller/web/UserController.java)) |
+|4| [Coupon Rest](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/6caf8da69039adbf067ec4d6fa3552ca26487d40) | [CouponRestController.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/58109f9c0cc99c4135d7f01c0540c4ee0ce6716f#diff-c89e201ab52fc99cbc4796098be1d7020c97a677b6106060655b0ee2a9d105f7](https://github.com/CodeURJC-DAW-2024-25/webapp15/blob/main/backend/src/main/java/com/stepx/stepx/controller/rest/CouponRestController.java)) |
+|5| [UserImages](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/b7328af214aa3a1a90069ba7d31430fa118fb11b](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/e14fe0ee7e9bd3ab40900c89d495801444923051)) | [GenearlController.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/blob/main/backend/src/main/java/com/stepx/stepx/service/ShoeService.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/blob/main/backend/src/main/java/com/stepx/stepx/controller/web/GeneralController.java)) |
+
 ### **Alexander Pearson Huaycochea**
 He taked care of:
 - Responsible for some conversions between entities and DTOs
