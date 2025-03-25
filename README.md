@@ -413,4 +413,19 @@ He taked care of:
 |4| [Shoe controller to DTO](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/f1cf8cbf0fd98edcfcbbd6cdd2174c2bf9e99788) | [ShoeController.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/58109f9c0cc99c4135d7f01c0540c4ee0ce6716f#diff-c89e201ab52fc99cbc4796098be1d7020c97a677b6106060655b0ee2a9d105f7) |
 |5| [controllers and services adapted to dots](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/b7328af214aa3a1a90069ba7d31430fa118fb11b) | [ShoeService.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/blob/main/backend/src/main/java/com/stepx/stepx/service/ShoeService.java) |
 
-
+### **Alexander Pearson Huaycochea**
+He taked care of:
+- Responsible for some conversions between entities and DTOs
+- Responsible for implementing some mappers using the mapstruct tool
+- Responsible for modifying some web controllers to use DTOs
+- Responsible for implementing some REST APIs such as review and user
+- Responsible for creating API documentation
+- Responsible for some JWT token and security implementations
+  
+| Nº    | Commits      | Files      |
+|:------------: |:------------:| :------------:|
+|1| [DocumetationOpenApi]([https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/78bd458c02e9cfb415f61ebfd89cacfc173c6804](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/68a14ae183cadbf1ead0ab370b30390348ccc458)) |[pom.xml](backend/pom.xml)  [webSecurityConfig.java](backend/src/main/java/com/stepx/stepx/security/SecurityConfig.java)  
+|2| [BestSelling productus and Recommended Prodcuts in Api Rest](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/9d57e498c242992e03fb54b3022aaf8f8aef813f) | [indexRestController.java](backend/src/main/java/com/stepx/stepx/controller/rest/IndexRestController.java) |
+|3| [Implementation of JWT and security enhancements]([https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/87eb6f203f7dc1f14d3b1c178c4e8be4077b2339](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/d15352fd9898cbb0f659b8c0bc5f4b38729f295f)) | [webSecurityConfig.java](backend/src/main/java/com/stepx/stepx/security/SecurityConfig.java) [AuthResponse.java](backend/src/main/java/com/stepx/stepx/security/jwt/AuthResponse.java)  |
+|4| [UserRestController working with images](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/59bdf629c45bc290927c57df1a06d0d4e80dc111) | [GlobalExeptionHandler.java](backend/src/main/java/com/stepx/stepx/controller/rest/GlobalExceptionHandler.java) [UserRestController.java](backend/src/main/java/com/stepx/stepx/controller/rest/UserRestController.java) |
+|5| [Review Controller and Data Mapping]([https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/b7328af214aa3a1a90069ba7d31430fa118fb11b](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/7b24dec76bb5c9e75e2fcedd41f4ed46deb8f71a)) | [ReviewRestController.java](backend/src/main/java/com/stepx/stepx/controller/rest/ReviewRestController.java) [ReviewMapper.java](backend/src/main/java/com/stepx/stepx/mapper/ReviewMapper.java)|
