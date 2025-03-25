@@ -397,16 +397,20 @@ She taked care of:
 
 
 
-
-
-### **Name here**
-
+### **Ronald Sebastian Silvera Llimpe**
+He taked care of:
+- Creation of the REST controllers for Shoe, Stock, OrderItem, and OrderShoe.
+- Update of the controllers to use DTOs.
+- Creation of mappers
+- Update of some HTML files (checkout, shop, singleProduct, profile)
+- Fixing the functionalities of the HTML files
+  
 | Nº    | Commits      | Files      |
 |:------------: |:------------:| :------------:|
-|1|  |  |
-|2|  |  |
-|3|  |  |
-|4|  |  |
-|5|  |  |
+|1| [Checkout page functioning and generates tickets, reacalculate functioning and delete order item from cart too](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/78bd458c02e9cfb415f61ebfd89cacfc173c6804) |[checkout.html](https://github.com/CodeURJC-DAW-2024-25/webapp15/blob/main/backend/src/main/resources/templates/checkout.html)  |
+|2| [Many RestControllers, Shop page withModals, addtocart, singleProduct page, profile page with update information and ordershoes with load more shoes and see orderitems](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/a9069c94df162b1438bf24a5f269b9ab136bfa2a) | [shop.htm](https://github.com/CodeURJC-DAW-2024-25/webapp15/blob/main/backend/src/main/resources/templates/shop.html) |
+|3| [api rest OderShoes](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/87eb6f203f7dc1f14d3b1c178c4e8be4077b2339) | [OrderShoesRestController.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/blob/main/backend/src/main/java/com/stepx/stepx/controller/rest/OrderShoesRestController.java) |
+|4| [Shoe controller to DTO](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/f1cf8cbf0fd98edcfcbbd6cdd2174c2bf9e99788) | [ShoeController.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/58109f9c0cc99c4135d7f01c0540c4ee0ce6716f#diff-c89e201ab52fc99cbc4796098be1d7020c97a677b6106060655b0ee2a9d105f7) |
+|5| [controllers and services adapted to dots](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/b7328af214aa3a1a90069ba7d31430fa118fb11b) | [ShoeService.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/blob/main/backend/src/main/java/com/stepx/stepx/service/ShoeService.java) |
 
 
