@@ -123,7 +123,7 @@ public class ShoeService {
 
         Shoe shoe = new Shoe();
         shoe.setName(shoeDTO.name());
-        shoe.setDescription(shoeDTO.shortDescription());
+        shoe.setDescription(shoeDTO.shortdescription());
         shoe.setLongDescription(shoeDTO.longDescription());
         shoe.setPrice(shoeDTO.price());
         shoe.setBrand(StringToBrand(shoeDTO.brand()));
@@ -234,7 +234,7 @@ public class ShoeService {
 
     Shoe shoe = shoeOp.get();
     shoe.setName(shoeDTO.name());
-    shoe.setDescription(shoeDTO.shortDescription());
+    shoe.setDescription(shoeDTO.shortdescription());
     shoe.setLongDescription(shoeDTO.longDescription());
     shoe.setPrice(shoeDTO.price());
     shoe.setBrand(StringToBrand(shoeDTO.brand()));
@@ -249,8 +249,8 @@ public class ShoeService {
 
     // Actualizar la colección de sizeStocks sin reemplazarla
     List<ShoeSizeStock> sizeStocks = shoeSizeStockService.convertToShoeSizeStock(shoeDTO.sizeStocks());
-    shoe.getSizeStocks().clear(); // Limpiar la colección existente
-    shoe.getSizeStocks().addAll(sizeStocks); // Agregar los nuevos sizeStocks
+    shoe.getSizeStock().clear(); // Limpiar la colección existente
+    shoe.getSizeStock().addAll(sizeStocks); // Agregar los nuevos sizeStocks
 
     Shoe saved = shoeRepository.save(shoe);
     return Optional.of(shoeMapper.toDTO(saved));
@@ -309,7 +309,7 @@ public class ShoeService {
     {   
         Optional<Shoe> shoeOp = shoeRepository.findById(id);
         Shoe shoe = shoeOp.get();
-        ShoeDTO shoeDTO = new ShoeDTO(id, shoe.getName(), shoe.getDescription(), shoe.getLongDescription(), shoe.getPrice(), brandToString(shoe.getBrand()), categoryToString(shoe.getCategory()), convertBlobToBase64(shoe.getImage1()), convertBlobToBase64(shoe.getImage2()), convertBlobToBase64(shoe.getImage3()), shoeSizeStockService.convertToShoeSizeStockDTO(shoe.getSizeStocks()), reviewService.convertToDTOReviewList(shoe.getReviews()));
+        ShoeDTO shoeDTO = new ShoeDTO(id, shoe.getName(), shoe.getDescription(), shoe.getLongDescription(), shoe.getPrice(), brandToString(shoe.getBrand()), categoryToString(shoe.getCategory()), convertBlobToBase64(shoe.getImage1()), convertBlobToBase64(shoe.getImage2()), convertBlobToBase64(shoe.getImage3()), shoeSizeStockService.convertToShoeSizeStockDTO(shoe.getSizeStock()), reviewService.convertToDTOReviewList(shoe.getReviews()));
         shoeRepository.deleteById(id);
         return Optional.of(shoeMapper.toDTO(shoe));
     }
