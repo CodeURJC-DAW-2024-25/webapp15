@@ -350,7 +350,16 @@ Revolutionizes our infrastructure by containerizing our application. The main ad
    ```
    https://shoestore.dawgis.etsii.urjc.es:8443
    ```
-
+---
+## **API Dcoumentation**
+- To access the documentation, you must first run the application and search for the following path in your browser:
+   ```
+   https://localhost:8443/swagger-ui/index.html#/
+   ```
+- Or if you prefer to view it in JSON format, you must enter the following path in the browser:
+  ```
+  https://localhost:8443/v3/api-docs
+  ```
 ---
 
 ## **Application Credentials**
