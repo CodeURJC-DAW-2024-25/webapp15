@@ -15,6 +15,7 @@ import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.http.MediaType;
@@ -55,8 +56,7 @@ public class OrderItemRestController {
     public ResponseEntity<?> getAll(){
         List<OrderItemDTO> orderItems = orderItemService.findAll();
         if (orderItems.isEmpty()) {
-            return ResponseEntity.status(404)
-                    .body(Collections.singletonMap("error", "No OrderItems found"));
+            throw new NoSuchElementException("No OrderItems found");
         }
         return ResponseEntity.ok(orderItems);
     }

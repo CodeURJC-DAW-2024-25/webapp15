@@ -74,17 +74,17 @@ public class SecurityConfig {
 			.authorizeHttpRequests(authorize -> authorize
                     // PRIVATE ENDPOINTS
 						//users
-                    .requestMatchers(HttpMethod.POST,"/api/v1/OrderItem/**", "/api/v1/OrderShoes/**","/api/v1/reviews/**","/api/v1/ShoeSizeStock/**", "/api/v1/user/**").hasRole("USER")
-                    .requestMatchers(HttpMethod.PUT,"/api/v1/OrderItem/**", "/api/v1/reviews/**", "/api/v1/ShoeSizeStock/**").hasRole("USER")
-					.requestMatchers(HttpMethod.GET,"/api/v1/OrderItem/**","/api/v1/OrderShoes/**").hasRole("USER")
+                    .requestMatchers(HttpMethod.POST,"/api/v1/OrderItems/**", "/api/v1/OrderShoes/**","/api/v1/reviews/**","/api/v1/ShoeSizeStocks/**", "/api/v1/user/**").hasRole("USER")
+                    .requestMatchers(HttpMethod.PUT,"/api/v1/OrderItems/**", "/api/v1/reviews/**", "/api/v1/ShoeSizeStocks/**").hasRole("USER")
+					.requestMatchers(HttpMethod.GET,"/api/v1/OrderItems/**","/api/v1/OrderShoes/**").hasRole("USER")
 					.requestMatchers(HttpMethod.DELETE,"/api/v1/admin/**", "/api/v1/OrderItem/**", "/api/v1/reviews/**", "/api/v1/user/**").hasRole("USER")
 						//Admins
-                    .requestMatchers(HttpMethod.DELETE,"/api/v1/admin/**","/api/v1/reviews/**", "/api/v1/Shoe/**", "/api/v1/user/**").hasRole("ADMIN")
-					.requestMatchers(HttpMethod.GET,"/api/v1/admin/**", "/api/v1/reviews/**","/api/v1/Shoe/**", "/api/v1/user/**").hasRole("ADMIN")
-					.requestMatchers(HttpMethod.PUT,"/api/v1/admin/**","/api/v1/ShoeSizeStock/**").hasRole("ADMIN")
-					.requestMatchers(HttpMethod.POST,"/api/v1/admin/**", "/api/v1/Shoe/**","/api/v1/ShoeSizeStock/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.DELETE,"/api/v1/admin/**","/api/v1/reviews/**", "/api/v1/Shoes/**", "/api/v1/user/**").hasRole("ADMIN")
+					.requestMatchers(HttpMethod.GET,"/api/v1/admin/**", "/api/v1/reviews/**","/api/v1/Shoes/**", "/api/v1/user/**").hasRole("ADMIN")
+					.requestMatchers(HttpMethod.PUT,"/api/v1/admin/**","/api/v1/ShoeSizeStocks/**").hasRole("ADMIN")
+					.requestMatchers(HttpMethod.POST,"/api/v1/admin/**", "/api/v1/Shoes/**","/api/v1/ShoeSizeStocks/**").hasRole("ADMIN")
 					// PUBLIC ENDPOINTS
-					.requestMatchers("/api/v1/shoe", "/**/image/**", "/api/v1/Shoe/**").permitAll()
+					.requestMatchers("/api/v1/Shoes", "/**/image/**", "/api/v1/Shoes/**").permitAll()
 					.anyRequest().permitAll()
 			);
 		

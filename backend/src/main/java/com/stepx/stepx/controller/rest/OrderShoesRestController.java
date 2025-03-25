@@ -2,6 +2,8 @@ package com.stepx.stepx.controller.rest;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.URI;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -9,6 +11,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,14 +21,22 @@ import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.stepx.stepx.dto.CouponDTO;
 import com.stepx.stepx.dto.OrderItemDTO;
 import com.stepx.stepx.dto.OrderShoesDTO;
+import com.stepx.stepx.dto.ShoeDTO;
 import com.stepx.stepx.dto.UserDTO;
 import com.stepx.stepx.model.*;
 import com.stepx.stepx.repository.*;
 import com.stepx.stepx.service.*;
+
+
+
+
+
+
 
 @RestController
 @RequestMapping("/api/v1/OrderShoes")
@@ -46,9 +58,6 @@ public class OrderShoesRestController {
     private CouponRepository couponRepository;
 
     @Autowired
-    private PdfService pdfService;
-
-    @Autowired
     private CouponService couponService;
 
     @Autowired
@@ -56,53 +65,85 @@ public class OrderShoesRestController {
     @Autowired
     private UserService userService;
 
-    /**
-     * Method to display the checkout page.
-     */
-    @GetMapping("/user/{id}/order")
-    public ResponseEntity<Map<String, Object>> showCheckout(@PathVariable Long id) {
+    // get an order by orderId
+    @GetMapping("/{orderId}")
+    public ResponseEntity<?> getOrderShoe(@PathVariable Long orderId) {
 
-        // Retrieve cart
-        Optional<OrderShoesDTO> cartOptional = orderShoesService.getCartById(id);
-        if (cartOptional.isEmpty()) {
-            return ResponseEntity.status(404).body(Collections.singletonMap("error", "Cart not found"));
-        }
-
-        // Retrieve the cart details
-        OrderShoesDTO cart = cartOptional.get();
-
-        // Set up cart response
-        Map<String, Object> cartResponse = new HashMap<>();
-        cartResponse.put("cartId", cart.id());
-        cartResponse.put("userId", id);
-        cartResponse.put("total", cart.summary()); // Total summary, could be modified to reflect discount or other
-        cartResponse.put("items", cart.orderItems());
-        cartResponse.put("couponApplied", cart.cuponUsed());
-
-        // Return cart information in the response
-        return ResponseEntity.ok(cartResponse);
+        OrderShoesDTO order = orderShoesService.getOrderById(orderId)
+                .orElseThrow(() -> new NoSuchElementException("Order with ID " + orderId + " not found"));
+        return ResponseEntity.ok(order);
     }
 
-    /**
-     * Method to delete an item from the checkout cart.
-     */
-    @DeleteMapping("user/{idUser}/deleteItem/{id}")
-    public ResponseEntity<Map<String, Object>> deleteItemCheckout(@PathVariable Long id, @PathVariable Long idUser) {
+    // get all orderShoes
+    @GetMapping("/All")
+    public ResponseEntity<?> getAllOrderShoes(@RequestParam String param) {
+        List<OrderShoesDTO> orderList = orderShoesService.getAll();
+        if (orderList.isEmpty()) {
+            throw new NoSuchElementException("No OrderShoes available");
+        }
+        return ResponseEntity.ok(orderList);
+    }
+    
+    //get orders by user id
+    @GetMapping("/User/{userId}")
+    public ResponseEntity<?> getOrdersByUserId(@PathVariable Long userId) {
+        List<OrderShoesDTO> orderShoesList = orderShoesService.findOrdersByUserId(userId);
+        if (orderShoesList.isEmpty()) {
+            throw new NoSuchElementException("No orders found for user ID " + userId);
+        }
+        return ResponseEntity.ok(orderShoesList);
+    }
+    
+    //get paged orderShoes
+    @GetMapping()
+    public ResponseEntity<?> getPaginatedOrderShoes(@RequestParam int page, @RequestParam int size) {
 
-        Optional<OrderShoesDTO> cartOptionalDto = orderShoesService.getCartById(idUser);
-        if (cartOptionalDto.isEmpty()) {
-            return ResponseEntity.status(404).body(Collections.singletonMap("error", "Cart not found"));
+        Page<OrderShoesDTO> orderShoes = orderShoesService.getPagedShoes(page,size);
+
+        if (orderShoes.isEmpty()) {
+            throw new NoSuchElementException("No OrderShoes found for the requested page.");
+        }
+        return ResponseEntity.ok(orderShoes);
+    }
+    
+    //create an orderShoe for a user
+    @PostMapping("/User/{userId}")
+    public ResponseEntity<?> putMethodName(@PathVariable Long userId, @RequestBody OrderShoesDTO orderShoesDTO)throws IOException, SQLException {
+        Optional<OrderShoesDTO> saved= orderShoesService.saveSingleOrderForUser(orderShoesDTO,userId);
+        if (saved.isEmpty()) {
+            throw new IllegalArgumentException("Order items are empty or not in PROCESSED state.");
+        }
+        URI location=ServletUriComponentsBuilder
+        .fromCurrentRequest()
+        .path("/{id}")
+        .buildAndExpand(saved.get().id())
+        .toUri();
+        return ResponseEntity.created(location).body(saved.get());
+    }
+
+    //update an Ordershoe by it id
+    @PutMapping("/{orderShoeId}")
+    public ResponseEntity<?> updateOrderShoe(@PathVariable Long orderShoeId, @RequestBody OrderShoesDTO orderShoesDTO) {
+        Optional<OrderShoesDTO> orderShoeOptional=orderShoesService.updateOrderShoe(orderShoeId,orderShoesDTO);
+        if (orderShoeOptional.isEmpty()) {
+            throw new IllegalArgumentException("Order items are empty, not in PROCESSED state or user id wrong.");
+        }
+        return ResponseEntity.ok(orderShoeOptional.get());
+    }
+
+    //delete orderitem from user
+    @DeleteMapping("/{orderId}/User/{userId}")
+    public ResponseEntity<?> deleteUserOrder(@PathVariable Long orderId, @PathVariable Long userId) {
+        
+        boolean deleted = orderShoesService.deleteOrderByUser(orderId, userId);
+
+        if (!deleted) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Collections.singletonMap("error", "Order not found or does not belong to user"));
         }
 
-        OrderShoesDTO cartDto = cartOptionalDto.get();
+        return ResponseEntity.ok(Collections.singletonMap("message", "Order deleted successfully"));
+        
 
-        // Delete the orderItem from the cart
-        orderShoesService.deleteOrderItems(idUser, id);
-        orderShoesService.saveOrderShoes(cartDto);
-
-        // Return updated cart
-        Map<String, Object> cartResponse = new HashMap<>();
-        cartResponse.put("cart", cartDto); // Replace with actual cart DTO or summary if needed
-        return ResponseEntity.ok(cartResponse);
     }
 }
