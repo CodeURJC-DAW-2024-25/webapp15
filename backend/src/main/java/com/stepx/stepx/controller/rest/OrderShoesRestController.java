@@ -76,7 +76,7 @@ public class OrderShoesRestController {
 
     // get all orderShoes
     @GetMapping("/All")
-    public ResponseEntity<?> getAllOrderShoes(@RequestParam String param) {
+    public ResponseEntity<?> getAllOrderShoes() {
         List<OrderShoesDTO> orderList = orderShoesService.getAll();
         if (orderList.isEmpty()) {
             throw new NoSuchElementException("No OrderShoes available");
@@ -134,7 +134,7 @@ public class OrderShoesRestController {
     //delete orderitem from user
     @DeleteMapping("/{orderId}/User/{userId}")
     public ResponseEntity<?> deleteUserOrder(@PathVariable Long orderId, @PathVariable Long userId) {
-        
+
         boolean deleted = orderShoesService.deleteOrderByUser(orderId, userId);
 
         if (!deleted) {
