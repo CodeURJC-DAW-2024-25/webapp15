@@ -128,14 +128,14 @@ public class UserController {
     @GetMapping("/send-coupon")//a dto
     public String sendCouponEmail(@RequestParam Long userId, RedirectAttributes redirectAttributes) {
         try {
-            Optional<User> optionalUser = userRepository.findById(userId);
-            if (optionalUser.isPresent()) {
-                User user = optionalUser.get();
-                String toEmail = user.getEmail();
+            UserDTO optionalUser = userService.findUserById(userId);
+            if (optionalUser != null) {
+                UserDTO user = optionalUser;
+                String toEmail = user.email();
                 String subject = "Your Special Coupon from StepX";
 
                 Map<String, Object> templateModel = new HashMap<>();
-                templateModel.put("username", user.getUsername());
+                templateModel.put("username", user.username());
 
                 // This will either send a real email or log a mock email based on the
                 // configuration
