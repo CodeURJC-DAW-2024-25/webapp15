@@ -52,7 +52,7 @@ public class OrderItemRestController {
     }
 
     //get all orders items
-    @GetMapping
+    @GetMapping("/All")
     public ResponseEntity<?> getAll(){
         List<OrderItemDTO> orderItems = orderItemService.findAll();
         if (orderItems.isEmpty()) {

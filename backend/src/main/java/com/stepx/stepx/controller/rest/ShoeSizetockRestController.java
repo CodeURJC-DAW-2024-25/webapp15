@@ -39,7 +39,7 @@ public class ShoeSizetockRestController {
     }
 
     //get all shoesstock
-    @GetMapping
+    @GetMapping("/All")
     public ResponseEntity<?> getAll(){
         List<ShoeSizeStockDTO> shoeSizeStocks = shoeSizeStockService.findAll();
         if (shoeSizeStocks.isEmpty()) {
