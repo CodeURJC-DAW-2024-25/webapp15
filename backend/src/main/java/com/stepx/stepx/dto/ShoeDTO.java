@@ -6,7 +6,7 @@ import java.util.List;
 public record ShoeDTO(
     Long id,
     String name,
-    String shortDescription,
+    String shortdescription,
     String longDescription,
     BigDecimal price,
     String brand,
