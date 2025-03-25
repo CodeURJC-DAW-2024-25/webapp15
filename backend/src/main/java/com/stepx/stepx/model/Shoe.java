@@ -169,7 +169,7 @@ public class Shoe {
         this.category = category;
     }
 
-    public List<ShoeSizeStock> getSizeStocks() {
+    public List<ShoeSizeStock> getSizeStock() {
         return sizeStocks;
     }
 

@@ -10,5 +10,6 @@ public record ReviewDTO(
     String description,
     //Shoe shoe, quitamos esto para evitar referencia circular con shoe(un shoe tiene lista de reviews) 
     Long shoeId,
-    Long userId
+    Long userId,
+    String userName
 ) {}
