@@ -2,9 +2,12 @@ package com.stepx.stepx.repository;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.stepx.stepx.model.OrderShoes;
 
 import java.math.BigDecimal;
@@ -39,12 +42,12 @@ public interface OrderShoesRepository extends JpaRepository<OrderShoes, Long> {
             "ORDER BY month", nativeQuery = true)
     List<Map<String, Object>> getMonthlySpendingByUserId(@Param("userId") Long userId);
 
-    @Query(value = "SELECT DATE_FORMAT(date, '%m') AS month, COUNT(*) AS orders_count FROM order_shoes WHERE state = 'Processed' GROUP BY DATE_FORMAT(date, '%Y-%m') ORDER BY month", nativeQuery = true)
+    @Query(value = "SELECT DATE_FORMAT(date, '%m') AS month, COUNT(*) AS orders_count FROM order_shoes WHERE state = 'Processed' GROUP BY YEAR(date), MONTH(date), DATE_FORMAT(date, '%m') ORDER BY month", nativeQuery = true)
     List<Map<String, Object>> getOrderCountsByMonth();
-
-    @Query(value = "SELECT DATE_FORMAT(date, '%m') AS month, SUM(summary) AS total_money FROM order_shoes WHERE state = 'Processed' GROUP BY DATE_FORMAT(date, '%Y-%m') ORDER BY month", nativeQuery = true)
+    
+    @Query(value = "SELECT DATE_FORMAT(date, '%m') AS month, SUM(summary) AS total_money FROM order_shoes WHERE state = 'Processed' GROUP BY YEAR(date), MONTH(date), DATE_FORMAT(date, '%m') ORDER BY month", nativeQuery = true)
     List<Map<String, Object>> getMoneyGainedByMonth();
-
+    
     @Query("SELECT o FROM OrderShoes o WHERE o.user.id = :userId ORDER BY o.id DESC LIMIT 1")
     OrderShoes findTopByUserIdOrderByIdDesc(@Param("userId") Long userId);
 
@@ -53,5 +56,14 @@ public interface OrderShoesRepository extends JpaRepository<OrderShoes, Long> {
 
     @Query("SELECT o FROM OrderShoes o WHERE o.user.id = :userId AND o.state = 'Processed' ORDER BY o.id DESC")
     List<OrderShoes> getPagedOrdersByUserId(@Param("userId") Long userId, Pageable pageable);
+
+
+    @Query("SELECT o FROM OrderShoes o WHERE o.user.id = :userId")
+    List<OrderShoes> findOrdersByUserId(@Param("userId") Long userId);
+
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM order_shoes WHERE id = :orderId", nativeQuery = true)
+    void forceDeleteById(@Param("orderId") Long orderId);
 
 }

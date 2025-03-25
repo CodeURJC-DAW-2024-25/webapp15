@@ -50,7 +50,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 
 @RestController
-@RequestMapping("/api/v1/Shoe")
+@RequestMapping("/api/v1/Shoes")
 public class ShoeRestController {
 
     @Autowired

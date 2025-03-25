@@ -86,7 +86,7 @@
             <div class="product-price py-3">
               <strong class="fs-5 fw-bold">${{price}}</strong>
             </div>
-            <p>{{shortDescription}}</p>
+            <p>{{shortdescription}}</p>
             {{#isAuthenticated}}
             <div class="cart-wrap padding-small">
               <div class="swatch product-select" data-option-index="1">
@@ -214,7 +214,7 @@
                   
                       </div>
                       {{#admin}}
-                      <button id="deleteReviewButton" onclick="deleteReview('{{shoe.id}}','{{id}}')" style="padding-top: 30px;">
+                      <button id="deleteReviewButton" onclick="deleteReview('{{id}}','{{id}}')" style="padding-top: 30px;">
                         <i class="fa-solid fa-trash"></i>
                       </button>
                       {{/admin}}

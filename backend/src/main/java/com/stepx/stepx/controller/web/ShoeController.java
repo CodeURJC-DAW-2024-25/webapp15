@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -120,7 +121,7 @@ public class ShoeController {
         if (isAuthenticated) {
             String username = request.getUserPrincipal().getName();
             Optional<UserDTO> user = userService.findUserByUserName(username);
-            if(!user.isPresent()){
+            if (!user.isPresent()) {
                 throw new RuntimeException("User not found");
             }
             model.addAttribute("username", user.get().username());
@@ -149,7 +150,7 @@ public class ShoeController {
         model.addAttribute("isAuthenticated", isAuthenticated);
         String username = request.getUserPrincipal().getName();
         Optional<UserDTO> user = userService.findUserByUserName(username);
-        if(!user.isPresent()){
+        if (!user.isPresent()) {
             throw new RuntimeException("User not found");
         }
 
@@ -159,17 +160,16 @@ public class ShoeController {
         }
 
         shoeService.createShoeWithImagesAndDefaultStock(
-            name,
-            ShortDescription,
-            LongDescription,
-            price,
-            brand,
-            category,
-            image1,
-            image2,
-            image3
-        );
-       
+                name,
+                ShortDescription,
+                LongDescription,
+                price,
+                brand,
+                category,
+                image1,
+                image2,
+                image3);
+
         return "redirect:/shop"; // Redirect to shop page after creation
     }
 
@@ -190,7 +190,7 @@ public class ShoeController {
         model.addAttribute("isAuthenticated", isAuthenticated);
         String username = request.getUserPrincipal().getName();
         Optional<UserDTO> user = userService.findUserByUserName(username);
-        if(!user.isPresent()){
+        if (!user.isPresent()) {
             throw new RuntimeException("User not found");
         }
 
@@ -216,7 +216,7 @@ public class ShoeController {
         if (isAuthenticated) {
             String username = request.getUserPrincipal().getName();
             Optional<UserDTO> user = userService.findUserByUserName(username);
-            if(!user.isPresent()){
+            if (!user.isPresent()) {
                 throw new RuntimeException("User not found");
             }
             model.addAttribute("username", user.get().username());
@@ -259,7 +259,7 @@ public class ShoeController {
         if (isAuthenticated) {
             String username = request.getUserPrincipal().getName();
             Optional<UserDTO> user = userService.findUserByUserName(username);
-            if(!user.isPresent()){
+            if (!user.isPresent()) {
                 throw new RuntimeException("User not found");
             }
             model.addAttribute("username", user.get().username());
@@ -269,16 +269,17 @@ public class ShoeController {
 
         Optional<ShoeDTO> op = shoeService.getShoeById(id);
         int initialReviewsCount = 2;
-        //a dto
+        // a dto
         List<ReviewDTO> reviewsDto = reviewService.getPagedReviewsByShoeId(id, 0, initialReviewsCount);
 
         if (op.isPresent()) {
             ShoeDTO shoe = op.get();
+
             boolean outOfStockS = isOutOfStock(shoe.sizeStocks(), "S");
             boolean outOfStockM = isOutOfStock(shoe.sizeStocks(), "M");
             boolean outOfStockL = isOutOfStock(shoe.sizeStocks(), "L");
             boolean outOfStockXL = isOutOfStock(shoe.sizeStocks(), "XL");
-            
+
             model.addAttribute("stockS", outOfStockS);
             model.addAttribute("stockM", outOfStockM);
             model.addAttribute("stockL", outOfStockL);
@@ -289,7 +290,7 @@ public class ShoeController {
                 model.addAttribute("review", reviewsDto);
                 model.addAttribute("hasReviews", true);
 
-            }else{
+            } else {
                 model.addAttribute("hasReviews", false);
             }
             return "single-product";
@@ -299,13 +300,14 @@ public class ShoeController {
     }
 
     private boolean isOutOfStock(List<ShoeSizeStockDTO> stocks, String size) {
+        System.out.println("lalistaes: " + stocks);
 
         Optional<ShoeSizeStockDTO> stockForSize = stocks.stream()
-            .filter(s -> s.size().equalsIgnoreCase(size))
-            .findFirst();
+                .filter(s -> s.size().equalsIgnoreCase(size))
+                .findFirst();
         return stockForSize
-            .map(stock -> stock.stock() == 0)
-            .orElse(true);
+                .map(stock -> stock.stock() == 0)
+                .orElse(true);
     }
 
     @GetMapping("/{id}")
@@ -319,7 +321,7 @@ public class ShoeController {
         if (isAuthenticated) {
             String username = request.getUserPrincipal().getName();
             Optional<UserDTO> user = userService.findUserByUserName(username);
-            if(!user.isPresent()){
+            if (!user.isPresent()) {
                 throw new RuntimeException("User not found");
             }
             model.addAttribute("username", user.get().username());
@@ -372,31 +374,30 @@ public class ShoeController {
 
         UserDTO userOptional = userService.findUserById(userId);
         boolean isAuthenticated = request.getUserPrincipal() != null;
-        model.addAttribute("isAuthenticated", isAuthenticated);   
-        if (userOptional!= null) {        
+        model.addAttribute("isAuthenticated", isAuthenticated);
+        if (userOptional != null) {
             try {
                 Resource image = userService.getUserImage(userId);// dudas imagen
                 return ResponseEntity.ok()
                         .header(HttpHeaders.CONTENT_TYPE, "image/jpg")
                         .body(image);
-            }  catch (NoSuchElementException e) {
+            } catch (NoSuchElementException e) {
                 return ResponseEntity.notFound().build();
             } catch (SQLException e) {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             }
-            
+
         }
 
         return ResponseEntity.notFound().build();
     }
 
-
     @GetMapping("/{userId}/imageUserReview")
     public ResponseEntity<Resource> getProfileImageForReview(@PathVariable Long userId, Model model,
             HttpServletRequest request) throws SQLException {
         UserDTO userOptional = userService.findUserById(userId);
-        if (userOptional!=null) {
-            Blob image =shoeService.convertBase64ToBlob(userOptional.imageString());//dudas imagen
+        if (userOptional != null) {
+            Blob image = shoeService.convertBase64ToBlob(userOptional.imageString());// dudas imagen
             if (image != null) {
                 try {
                     Resource file = new InputStreamResource(image.getBinaryStream());
@@ -440,8 +441,8 @@ public class ShoeController {
         model.addAttribute("isAuthenticated", isAuthenticated);
 
         shoeService.updateShoe(
-            id, name, description, LongDescription, price, image1, image2, image3, brand, category); 
-            return "redirect:/shop";
+                id, name, description, LongDescription, price, image1, image2, image3, brand, category);
+        return "redirect:/shop";
     }
 
     @GetMapping("/getByBrand") // first 9 shoes of same brand
@@ -530,13 +531,12 @@ public class ShoeController {
     public String publishReview(
             @PathVariable Long id, // ID of the shoe
             @RequestParam("rating") int rating,
-            @RequestParam String description, Model model, HttpServletRequest request
-    ) {
+            @RequestParam String description, Model model, HttpServletRequest request) {
         boolean isAuthenticated = request.getUserPrincipal() != null;
         model.addAttribute("isAuthenticated", isAuthenticated);
         String username = request.getUserPrincipal().getName();
         Optional<UserDTO> user = userService.findUserByUserName(username);
-        if(!user.isPresent()){
+        if (!user.isPresent()) {
             throw new RuntimeException("User not found");
         }
         // search the shoe by id
@@ -544,7 +544,8 @@ public class ShoeController {
         LocalDate date;
         date = LocalDate.now();
         // Create new review
-        ReviewDTO reviewDto = new ReviewDTO(null,date,rating, description, shoe.id(), user.get().id());
+        ReviewDTO reviewDto = new ReviewDTO(null, date, rating, description, shoe.id(), user.get().id(),
+                user.get().username());
 
         // Saving the review
         reviewService.save(reviewDto);
@@ -561,7 +562,7 @@ public class ShoeController {
         model.addAttribute("isAuthenticated", isAuthenticated);
         String username = request.getUserPrincipal().getName();
         Optional<UserDTO> user = userService.findUserByUserName(username);
-        if(!user.isPresent()){
+        if (!user.isPresent()) {
             throw new RuntimeException("User not found");
         }
         if (isAuthenticated) {
@@ -571,7 +572,7 @@ public class ShoeController {
 
         reviewService.deleteReview(id);
 
-        List<ReviewDTO> reviewDto = reviewService.getReviewsByShoe(productId);//a dto
+        List<ReviewDTO> reviewDto = reviewService.getReviewsByShoe(productId);// a dto
         if (reviewDto != null) {
             model.addAttribute("review", reviewDto);
             return "partials/singleProduct-reviewList";

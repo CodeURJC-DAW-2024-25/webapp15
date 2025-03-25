@@ -1,30 +1,38 @@
 package com.stepx.stepx.service;
 
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.mysql.cj.x.protobuf.MysqlxCrud.Order;
 import com.stepx.stepx.dto.*;
+import com.stepx.stepx.mapper.OrderItemMapper;
 import com.stepx.stepx.mapper.OrderShoesMapper;
 import com.stepx.stepx.mapper.UserMapper;
+import com.stepx.stepx.model.Coupon;
 import com.stepx.stepx.model.OrderItem;
 import com.stepx.stepx.model.OrderShoes;
 import com.stepx.stepx.model.Shoe;
 import com.stepx.stepx.model.User;
+import com.stepx.stepx.repository.CouponRepository;
 import com.stepx.stepx.repository.OrderItemRepository;
 import com.stepx.stepx.repository.OrderShoesRepository;
 import com.stepx.stepx.repository.UserRepository;
 
+import io.jsonwebtoken.security.Jwks.OP;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -35,17 +43,22 @@ public class OrderShoesService {
     private final UserRepository userRepository;
     private final OrderItemRepository orderItemRepository;
     private final ShoeSizeStockService shoeSizeStockService;
+    private final CouponRepository couponRepository;
+
     @Autowired
     private OrderShoesMapper orderShoesMapper;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private OrderItemMapper orderItemMapper;
 
     public OrderShoesService(OrderShoesRepository orderShoesRepository, UserRepository userRepository,
-            OrderItemRepository orderItemRepository, ShoeSizeStockService shoeSizeStockService) {
+            OrderItemRepository orderItemRepository, ShoeSizeStockService shoeSizeStockService,CouponRepository couponRepository) {
         this.orderShoesRepository = orderShoesRepository;
         this.userRepository = userRepository;
         this.orderItemRepository = orderItemRepository;
         this.shoeSizeStockService = shoeSizeStockService;
+        this.couponRepository=couponRepository;
     }
 
     
@@ -151,11 +164,156 @@ public class OrderShoesService {
         shoeSizeStockService.updateStock(stockUpdates);
     }
 
+    //api get by id
     public Optional<OrderShoesDTO> getOrderById(Long orderId) {
         return orderShoesRepository.findById(orderId).
         map(orderShoes -> Optional.ofNullable(orderShoesMapper.toDTO(orderShoes)))
         .orElse(Optional.empty());
     }
+
+    //api find all
+    public List<OrderShoesDTO> getAll(){
+        return orderShoesRepository.findAll()
+                .stream()
+                .map(orderShoesMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    //api find by user id
+    public List<OrderShoesDTO> findOrdersByUserId(Long userId){
+        List<OrderShoes> orderShoesList=orderShoesRepository.findOrdersByUserId(userId);
+        if(orderShoesList.isEmpty()){
+            return List.of();
+        }
+        return orderShoesMapper.toDTOs(orderShoesList);
+    }
+
+    //api paginated ordershoes
+    public Page<OrderShoesDTO> getPagedShoes(int page,int size){
+         Pageable pageable = PageRequest.of(page, size);
+        return orderShoesRepository.findAll(pageable).map(orderShoesMapper::toDTO);
+    } 
+
+    //api create a ordershoe for a user
+    public Optional<OrderShoesDTO> saveSingleOrderForUser(OrderShoesDTO orderShoesDTO,Long userId){
+        
+        Optional<User> userOptional = userRepository.findById(userId);
+
+        if(!userOptional.isPresent()){
+            return Optional.empty();
+        }
+
+        User user = userOptional.get();
+        OrderShoes orderShoes=orderShoesMapper.toDomain(orderShoesDTO);
+        orderShoes.setUser(user);
+        
+        List<OrderItem> orderItems = orderShoesDTO.orderItems().stream()
+        .map(orderItemDTO -> {
+            OrderItem item = orderItemMapper.toDomain(orderItemDTO);
+            item.setOrderShoes(orderShoes);
+            return item;
+        })
+        .collect(Collectors.toList());
+
+        if (orderItems.isEmpty()) {
+            return Optional.empty();
+        }
+
+        boolean allProcessed = orderShoesDTO.state().equals("Processed");
+
+        if (!allProcessed) {
+            return Optional.empty(); // o lanza una excepción también aquí
+        }
+
+        orderShoes.setOrderItems(orderItems);
+        OrderShoes savedOrder=orderShoesRepository.save(orderShoes);
+
+        return Optional.of(orderShoesMapper.toDTO(savedOrder));
+    }
+
+    //update single ordershoe by it id
+    @Transactional
+    public Optional<OrderShoesDTO> updateOrderShoe(Long orderShoeId,OrderShoesDTO orderShoesDTO){
+        
+        Optional<OrderShoes> orderOptional = orderShoesRepository.findById(orderShoeId);
+        Optional<User> userOptional = userRepository.findById(orderShoesDTO.userId());
+        if(!userOptional.isPresent()){
+            return Optional.empty();
+        }
+        if(orderOptional.isEmpty()){
+            return Optional.empty();
+        }
+        boolean allProcessed = orderShoesDTO.state().equals("Processed");
+
+        if (!allProcessed) {
+            return Optional.empty();
+        }
+        
+
+        OrderShoes order = orderOptional.get();
+        order.setDate(orderShoesDTO.date());
+        order.setCountry(orderShoesDTO.country());
+        order.setFirstName(orderShoesDTO.firstName());
+        order.setSecondName(orderShoesDTO.secondName());
+        order.setEmail(orderShoesDTO.email());
+        order.setAddress(orderShoesDTO.address());
+        order.setNumerPhone(orderShoesDTO.numerPhone());
+        order.setSummary(orderShoesDTO.summary());
+        order.setState(orderShoesDTO.state());
+        order.setUser(userOptional.get());
+
+        if (orderShoesDTO.coupon() != null && orderShoesDTO.coupon().id() != null) {
+            Coupon coupon = couponRepository.findById(orderShoesDTO.coupon().id())
+                    .orElse(null);
+            order.setCoupon(coupon);
+        }
+
+        if (orderShoesDTO.orderItems() != null) {
+            // Limpiamos la colección actual
+            order.getOrderItems().clear();
+    
+            for (OrderItemDTO dto : orderShoesDTO.orderItems()) {
+                OrderItem item = orderItemMapper.toDomain(dto);
+                item.setOrderShoes(order); // Setear relación bidireccional
+                order.getOrderItems().add(item); // Agregar a la misma colección
+            }
+        }
+    
+        OrderShoes saved = orderShoesRepository.save(order);
+        return Optional.of(orderShoesMapper.toDTO(saved));
+    }
+
+    //delete order from user
+    @Transactional
+public boolean deleteOrderByUser(Long orderId, Long userId) {
+    Optional<OrderShoes> optionalOrder = orderShoesRepository.findById(orderId);
+
+    if (optionalOrder.isEmpty()) return false;
+
+    OrderShoes order = optionalOrder.get();
+
+    if (order.getUser() == null || !order.getUser().getId().equals(userId)) {
+        return false;
+    }
+
+    // Romper relaciones por seguridad
+    order.getOrderItems().forEach(item -> item.setOrderShoes(null));
+    order.getOrderItems().clear();
+    order.setUser(null);
+    order.setCoupon(null);
+    orderShoesRepository.saveAndFlush(order);
+
+    // ⚠️ Eliminar directo por SQL
+    orderShoesRepository.forceDeleteById(orderId);
+
+    return true;
+}
+
+    
+
+
+//int entero = orderShoesRepository.deleteByIdAndUserId(orderId,userId);    
+
 
     public BigDecimal getTotalPrice(Long orderId) {
         OrderShoes order = orderShoesRepository.findById(orderId)

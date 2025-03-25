@@ -16,15 +16,17 @@ public interface ShoeMapper {
         @Mapping(target = "imageUrl1", expression = "java(\"/shop/\" + shoe.getId() + \"/image/1\")"),
         @Mapping(target = "imageUrl2", expression = "java(\"/shop/\" + shoe.getId() + \"/image/2\")"),
         @Mapping(target = "imageUrl3", expression = "java(\"/shop/\" + shoe.getId() + \"/image/3\")"),
-        @Mapping(target = "shortDescription", source = "description")
+        @Mapping(target = "shortdescription", source = "description"),
+        @Mapping(target = "sizeStocks", source = "sizeStock")
     })
     ShoeDTO toDTO(Shoe shoe);
 
     @Mappings({
-        @Mapping(target = "description", source = "shortDescription"),
+        @Mapping(target = "description", source = "shortdescription"),
         @Mapping(target = "image1", ignore = true),
         @Mapping(target = "image2", ignore = true),
         @Mapping(target = "image3", ignore = true),
+        @Mapping(target = "sizeStock", source = "sizeStocks")
         // sizeStocks y reviews ahora se mapean automáticamente si están bien definidos
     })
     Shoe toDomain(ShoeDTO shoeDTO);

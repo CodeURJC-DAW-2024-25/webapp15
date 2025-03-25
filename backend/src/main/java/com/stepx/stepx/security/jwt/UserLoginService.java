@@ -34,24 +34,27 @@ public class UserLoginService {
 		
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-
+	
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-
-		
+	
 		String username = loginRequest.getUsername();
 		UserDetails user = userDetailsService.loadUserByUsername(username);
-
-		HttpHeaders responseHeaders = new HttpHeaders();
+	
+		// Generamos los tokens
 		var newAccessToken = jwtTokenProvider.generateAccessToken(user);
 		var newRefreshToken = jwtTokenProvider.generateRefreshToken(user);
-
+	
+		// Guardamos los tokens en cookies
 		response.addCookie(buildTokenCookie(TokenType.ACCESS, newAccessToken));
 		response.addCookie(buildTokenCookie(TokenType.REFRESH, newRefreshToken));
-
+	
+		// Enviar los tokens en la respuesta JSON
 		AuthResponse loginResponse = new AuthResponse(AuthResponse.Status.SUCCESS,
-				"Auth successful. Tokens are created in cookie.");
-		return ResponseEntity.ok().headers(responseHeaders).body(loginResponse);
+				"Auth successful. Tokens are created in cookie.", newAccessToken);
+	
+		return ResponseEntity.ok().body(loginResponse);
 	}
+	
 
 	public ResponseEntity<AuthResponse> refresh(HttpServletResponse response, String refreshToken) {
 		try {
