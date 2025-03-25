@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.stepx.stepx.service.OrderShoesService;
-import com.stepx.stepx.repository.OrderShoesRepository;
 
 @RestController
 @RequestMapping("/api/v1/admin")
