@@ -5,10 +5,12 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.sql.rowset.serial.SerialBlob;
 
@@ -36,20 +38,20 @@ import com.stepx.stepx.repository.ShoeRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-
 @Service
 public class ShoeService {
-   
 
     private final ShoeRepository shoeRepository;
 
-    
     @Autowired
     private ShoeMapper shoeMapper;
     @Autowired
     private ShoeSizeStockService shoeSizeStockService;
     @Autowired
     private ReviewService reviewService;
+    @Autowired
+    private OrderItemService orderItemService;
+
 
     public ShoeService(ShoeRepository shoeRepository) {
         this.shoeRepository = shoeRepository;
@@ -57,67 +59,68 @@ public class ShoeService {
 
     // to get first 9 shoes without filter aplicated
     public Page<ShoeDTO> getNineShoes(int page) {
-        int pageSize=9;
-        Page<Shoe> shoePage=shoeRepository.findNineShoes(PageRequest.of(page, pageSize));
+        int pageSize = 9;
+        Page<Shoe> shoePage = shoeRepository.findNineShoes(PageRequest.of(page, pageSize));
         return shoePage.map(shoeMapper::toDTO);
     }
 
-    //obtain the first 9 of a brand
-    public Page<ShoeDTO>getShoesByBrand(int page,String brand){ 
-        int pageSize=9;
-        Page<Shoe> shoePage=shoeRepository.findFirst9ByBrand(brand,PageRequest.of(page, pageSize));
+    // obtain the first 9 of a brand
+    public Page<ShoeDTO> getShoesByBrand(int page, String brand) {
+        int pageSize = 9;
+        Page<Shoe> shoePage = shoeRepository.findFirst9ByBrand(brand, PageRequest.of(page, pageSize));
         return shoePage.map(shoeMapper::toDTO);
     }
 
-    //obtain the next 3 shoes with brand filter aplicated
+    // obtain the next 3 shoes with brand filter aplicated
     public Page<ShoeDTO> getShoesPaginatedByBrand(int currentPage, String selectedBrand) {
         int pageSize = 3;
-        Page<Shoe>paginatedShoe=shoeRepository.findByBrand(selectedBrand, PageRequest.of(currentPage, pageSize));
+        Page<Shoe> paginatedShoe = shoeRepository.findByBrand(selectedBrand, PageRequest.of(currentPage, pageSize));
         return paginatedShoe.map(shoeMapper::toDTO);
-    }    
+    }
 
-    //obtain the first 9 of category
-    public Page<ShoeDTO> getShoesByCategory(int page,String category){  
-        int pageSize=9;
-        Page<Shoe> shoePage=shoeRepository.findFirst9ByCategory(category,PageRequest.of(page,pageSize));
+    // obtain the first 9 of category
+    public Page<ShoeDTO> getShoesByCategory(int page, String category) {
+        int pageSize = 9;
+        Page<Shoe> shoePage = shoeRepository.findFirst9ByCategory(category, PageRequest.of(page, pageSize));
         return shoePage.map(shoeMapper::toDTO);
     }
 
-    //obtain the next 3 shoes with category filter aplicated
-    public Page<ShoeDTO> getShoesPaginatedByCategory(int currentPage, String selectedCategory){
-        int pageSize=3;
-        Page<Shoe> paginatedShoe=shoeRepository.findByCategory(selectedCategory,PageRequest.of(currentPage, pageSize));
+    // obtain the next 3 shoes with category filter aplicated
+    public Page<ShoeDTO> getShoesPaginatedByCategory(int currentPage, String selectedCategory) {
+        int pageSize = 3;
+        Page<Shoe> paginatedShoe = shoeRepository.findByCategory(selectedCategory,
+                PageRequest.of(currentPage, pageSize));
         return paginatedShoe.map(shoeMapper::toDTO);
     }
 
-    //find a single shoe
+    // find a single shoe
     public Optional<ShoeDTO> getShoeById(Long id) {
-        Shoe shoe= shoeRepository.findById(id).orElse(null);
-        
-        if(shoe==null){
+        Shoe shoe = shoeRepository.findById(id).orElse(null);
+
+        if (shoe == null) {
             return Optional.empty();
         }
         ShoeDTO shoeDTO = shoeMapper.toDTO(shoe);
         if (shoeDTO == null) {
             return Optional.empty();
-        }else{
+        } else {
             return Optional.of(shoeDTO);
         }
     }
-    
-    //Paged shoes
-    public Page<ShoeDTO> getPagedShoes(int page, int size){
+
+    // Paged shoes
+    public Page<ShoeDTO> getPagedShoes(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return shoeRepository.findAll(pageable).map(shoeMapper::toDTO);
     }
 
-    //find all shoes API
-    public List<ShoeDTO> findAll(){
-       List<Shoe>shoesList= shoeRepository.findAllShoes();
-       return shoeMapper.toDTOs(shoesList);
+    // find all shoes API
+    public List<ShoeDTO> findAll() {
+        List<Shoe> shoesList = shoeRepository.findAllShoes();
+        return shoeMapper.toDTOs(shoesList);
     }
-    
-    //create shoe
+
+    // create shoe
     @Transactional
     public ShoeDTO saveShoe(ShoeDTO shoeDTO) throws SQLException {
 
@@ -128,32 +131,31 @@ public class ShoeService {
         shoe.setPrice(shoeDTO.price());
         shoe.setBrand(StringToBrand(shoeDTO.brand()));
         shoe.setCategory(StringToCategory(shoeDTO.category()));
-    
-    
+
         Shoe saved = shoeRepository.save(shoe);
 
         List<String> defaultSizes = List.of("S", "M", "L", "XL");
         List<ShoeSizeStockDTO> defaultStocks = defaultSizes.stream()
                 .map(size -> new ShoeSizeStockDTO(null, saved.getId(), size, 10))
                 .toList();
-    
-        shoeSizeStockService.saveStockList(defaultStocks,saved);
 
-        return shoeMapper.toDTO(saved);    
+        shoeSizeStockService.saveStockList(defaultStocks, saved);
+
+        return shoeMapper.toDTO(saved);
     }
 
-    //get image
-    public Resource getImage(Long shoeId, int imageNumber)throws SQLException{
-        Optional<Shoe> shoeOptional= shoeRepository.findById(shoeId);
+    // get image
+    public Resource getImage(Long shoeId, int imageNumber) throws SQLException {
+        Optional<Shoe> shoeOptional = shoeRepository.findById(shoeId);
         if (shoeOptional.isPresent()) {
             Shoe shoe = shoeOptional.get();
-            Blob blob=switch (imageNumber){
+            Blob blob = switch (imageNumber) {
                 case 1 -> shoe.getImage1();
                 case 2 -> shoe.getImage2();
                 case 3 -> shoe.getImage3();
-                default -> throw new IllegalArgumentException("Invalid image number");  
+                default -> throw new IllegalArgumentException("Invalid image number");
             };
-            if(blob==null){
+            if (blob == null) {
                 throw new NoSuchElementException("Image not found");
             }
             return new InputStreamResource(blob.getBinaryStream());
@@ -161,12 +163,12 @@ public class ShoeService {
         throw new NoSuchElementException("Shoe not found");
     }
 
-    //save image
-    public void storeImage(Long shoeId,int imageNumber,InputStream inputStream,long size){
+    // save image
+    public void storeImage(Long shoeId, int imageNumber, InputStream inputStream, long size) {
         Optional<Shoe> shoeOptional = shoeRepository.findById(shoeId);
-        if(shoeOptional.isPresent()){
-            Shoe shoe=shoeOptional.get();
-            Blob image= BlobProxy.generateProxy(inputStream,size);
+        if (shoeOptional.isPresent()) {
+            Shoe shoe = shoeOptional.get();
+            Blob image = BlobProxy.generateProxy(inputStream, size);
             switch (imageNumber) {
                 case 1 -> shoe.setImage1(image);
                 case 2 -> shoe.setImage2(image);
@@ -208,55 +210,54 @@ public class ShoeService {
     }
 
     // public Optional<ShoeDTO> updateAllShoe(ShoeDTO shoeDTO) {
-    //     Optional<Shoe> shoeOp = shoeRepository.findById(shoeDTO.id());
-    //     if (shoeOp.isEmpty()) {
-    //         return Optional.empty();
-    //     }
-    //     Shoe shoe = shoeOp.get();
-    //     shoe.setName(shoeDTO.name());
-    //     shoe.setDescription(shoeDTO.shortDescription());
-    //     shoe.setLongDescription(shoeDTO.longDescription());
-    //     shoe.setPrice(shoeDTO.price());
-    //     shoe.setBrand(StringToBrand(shoeDTO.brand()));
-    //     shoe.setCategory(StringToCategory(shoeDTO.category()));
-    //     shoe.setSizeStock(shoeSizeStockService.convertToShoeSizeStock(shoeDTO.sizeStocks()));
-    //     shoe.setReviews(reviewService.convertToReviewList(shoeDTO.reviews()));
+    // Optional<Shoe> shoeOp = shoeRepository.findById(shoeDTO.id());
+    // if (shoeOp.isEmpty()) {
+    // return Optional.empty();
+    // }
+    // Shoe shoe = shoeOp.get();
+    // shoe.setName(shoeDTO.name());
+    // shoe.setDescription(shoeDTO.shortDescription());
+    // shoe.setLongDescription(shoeDTO.longDescription());
+    // shoe.setPrice(shoeDTO.price());
+    // shoe.setBrand(StringToBrand(shoeDTO.brand()));
+    // shoe.setCategory(StringToCategory(shoeDTO.category()));
+    // shoe.setSizeStock(shoeSizeStockService.convertToShoeSizeStock(shoeDTO.sizeStocks()));
+    // shoe.setReviews(reviewService.convertToReviewList(shoeDTO.reviews()));
 
-    //     Shoe saved = shoeRepository.save(shoe);
-    //     return Optional.of(shoeMapper.toDTO(saved));
+    // Shoe saved = shoeRepository.save(shoe);
+    // return Optional.of(shoeMapper.toDTO(saved));
     // }
 
-    public Optional<ShoeDTO> updateAllShoe(Long shoeId,ShoeDTO shoeDTO) {
-    Optional<Shoe> shoeOp = shoeRepository.findById(shoeId);
-    if (shoeOp.isEmpty()) {
-        return Optional.empty();
+    public Optional<ShoeDTO> updateAllShoe(Long shoeId, ShoeDTO shoeDTO) {
+        Optional<Shoe> shoeOp = shoeRepository.findById(shoeId);
+        if (shoeOp.isEmpty()) {
+            return Optional.empty();
+        }
+
+        Shoe shoe = shoeOp.get();
+        shoe.setName(shoeDTO.name());
+        shoe.setDescription(shoeDTO.shortdescription());
+        shoe.setLongDescription(shoeDTO.longDescription());
+        shoe.setPrice(shoeDTO.price());
+        shoe.setBrand(StringToBrand(shoeDTO.brand()));
+        shoe.setCategory(StringToCategory(shoeDTO.category()));
+
+        // Actualizar la colección de reviews sin reemplazarla
+        List<Review> reviews = reviewService.convertToReviewList(shoeDTO.reviews());
+        if (!shoe.getReviews().equals(reviews)) {
+            shoe.getReviews().clear();
+            shoe.getReviews().addAll(reviews);
+        }
+
+        // Actualizar la colección de sizeStocks sin reemplazarla
+        List<ShoeSizeStock> sizeStocks = shoeSizeStockService.convertToShoeSizeStock(shoeDTO.sizeStocks());
+        shoe.getSizeStock().clear(); // Limpiar la colección existente
+        shoe.getSizeStock().addAll(sizeStocks); // Agregar los nuevos sizeStocks
+
+        Shoe saved = shoeRepository.save(shoe);
+        return Optional.of(shoeMapper.toDTO(saved));
     }
 
-    Shoe shoe = shoeOp.get();
-    shoe.setName(shoeDTO.name());
-    shoe.setDescription(shoeDTO.shortdescription());
-    shoe.setLongDescription(shoeDTO.longDescription());
-    shoe.setPrice(shoeDTO.price());
-    shoe.setBrand(StringToBrand(shoeDTO.brand()));
-    shoe.setCategory(StringToCategory(shoeDTO.category()));
-
-    // Actualizar la colección de reviews sin reemplazarla
-    List<Review> reviews = reviewService.convertToReviewList(shoeDTO.reviews());
-    if (!shoe.getReviews().equals(reviews)) {
-        shoe.getReviews().clear();
-        shoe.getReviews().addAll(reviews);
-    }
-
-    // Actualizar la colección de sizeStocks sin reemplazarla
-    List<ShoeSizeStock> sizeStocks = shoeSizeStockService.convertToShoeSizeStock(shoeDTO.sizeStocks());
-    shoe.getSizeStock().clear(); // Limpiar la colección existente
-    shoe.getSizeStock().addAll(sizeStocks); // Agregar los nuevos sizeStocks
-
-    Shoe saved = shoeRepository.save(shoe);
-    return Optional.of(shoeMapper.toDTO(saved));
-}
-
-    
     public Long saveAndReturnId(ShoeDTO dto) {
         Shoe shoe = shoeMapper.toDomain(dto);
         Shoe saved = shoeRepository.save(shoe);
@@ -300,26 +301,30 @@ public class ShoeService {
                 .map(size -> new ShoeSizeStockDTO(null, saved.getId(), size, 10))
                 .toList();
 
-        shoeSizeStockService.saveStockList(stockDTOs,saved);
+        shoeSizeStockService.saveStockList(stockDTOs, saved);
 
         return saved.getId(); // In case you need the id of the new created shoe
     }
 
-    public Optional<ShoeDTO> deleteShoe(Long id)
-    {   
+    public Optional<ShoeDTO> deleteShoe(Long id) {
         Optional<Shoe> shoeOp = shoeRepository.findById(id);
         Shoe shoe = shoeOp.get();
-        ShoeDTO shoeDTO = new ShoeDTO(id, shoe.getName(), shoe.getDescription(), shoe.getLongDescription(), shoe.getPrice(), brandToString(shoe.getBrand()), categoryToString(shoe.getCategory()), convertBlobToBase64(shoe.getImage1()), convertBlobToBase64(shoe.getImage2()), convertBlobToBase64(shoe.getImage3()), shoeSizeStockService.convertToShoeSizeStockDTO(shoe.getSizeStock()), reviewService.convertToDTOReviewList(shoe.getReviews()));
+        ShoeDTO shoeDTO = new ShoeDTO(id, shoe.getName(), shoe.getDescription(), shoe.getLongDescription(),
+                shoe.getPrice(), brandToString(shoe.getBrand()), categoryToString(shoe.getCategory()),
+                convertBlobToBase64(shoe.getImage1()), convertBlobToBase64(shoe.getImage2()),
+                convertBlobToBase64(shoe.getImage3()),
+                shoeSizeStockService.convertToShoeSizeStockDTO(shoe.getSizeStock()),
+                reviewService.convertToDTOReviewList(shoe.getReviews()));
         shoeRepository.deleteById(id);
         return Optional.of(shoeMapper.toDTO(shoe));
     }
 
     public Page<ShoeDTO> getShoesPaginated(int currentPage) {
-        int pagesize=3;
+        int pagesize = 3;
         Page<Shoe> shoes = shoeRepository.findAll(PageRequest.of(currentPage, pagesize));
         return shoes.map(shoeMapper::toDTO);
     }
-    
+
     public BigDecimal getTotalEarnings() {
         return shoeRepository.sumOfAllPrices();
     }
@@ -330,7 +335,7 @@ public class ShoeService {
         return shoes.size();
     }
 
-   public Resource getShoeImage(Long id, int imageNumber) throws SQLException, IOException {
+    public Resource getShoeImage(Long id, int imageNumber) throws SQLException, IOException {
         Shoe shoe = shoeRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Shoe not found"));
 
@@ -358,45 +363,43 @@ public class ShoeService {
         } catch (SQLException e) {
 
             e.printStackTrace();
-            return ""; 
+            return "";
         }
     }
 
-    public Blob convertBase64ToBlob(String image64) throws SQLException{
+    public Blob convertBase64ToBlob(String image64) throws SQLException {
         if (image64 == null) {
             return null;
         }
-        try{
+        try {
             byte[] decodedByte = Base64.getDecoder().decode(image64);
             Blob b = new SerialBlob(decodedByte);
             return b;
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
     }
-    
 
-    public String brandToString(Brand brand){
+    public String brandToString(Brand brand) {
         return brand.name().toUpperCase();
     }
 
-    public Brand StringToBrand(String brandString){
-      Brand brand = Brand.valueOf(brandString.trim().toUpperCase());
-      return brand;
+    public Brand StringToBrand(String brandString) {
+        Brand brand = Brand.valueOf(brandString.trim().toUpperCase());
+        return brand;
     }
 
-    public Category StringToCategory(String categoryString){
+    public Category StringToCategory(String categoryString) {
         Category category = Category.valueOf(categoryString.trim().toUpperCase());
         return category;
     }
 
-    public String categoryToString(Category category){
+    public String categoryToString(Category category) {
         return category.name().toUpperCase();
     }
 
-    public BigDecimal getPricefromShoe(ShoeDTO shoeDtO){
+    public BigDecimal getPricefromShoe(ShoeDTO shoeDtO) {
         Shoe shoe = shoeMapper.toDomain(shoeDtO);
         return shoe.getPrice();
     }
@@ -430,5 +433,23 @@ public class ShoeService {
         shoeRepository.save(shoe);
     }
 
-    
+    public List<ShoeDTO> getRecommendedShoesForUser(Long userId, int limit) {
+        // Obtiene las marcas de la última compra
+        List<Shoe.Brand> brands = orderItemService.getBrandsFromLastOrder(userId);
+
+        if (brands.isEmpty()) {
+            return new ArrayList<>(); // Si no hay marcas, devuelve una lista vacía
+        }
+
+        // Encuentra productos recomendados basados en las marcas y excluyendo los ya
+        // comprados
+        List<Shoe> recommendedShoes = shoeRepository.findRecommendedShoesByBrandsExcludingPurchased(brands, userId);
+
+        // Limitar la lista a los primeros 10 productos
+        return recommendedShoes.stream()
+                .limit(limit) // Aplica el límite de productos
+                .map(shoeMapper::toDTO) // Usamos MapStruct para la conversión
+                .collect(Collectors.toList());
+    }
+
 }
