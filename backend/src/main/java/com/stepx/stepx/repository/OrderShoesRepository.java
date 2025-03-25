@@ -39,12 +39,12 @@ public interface OrderShoesRepository extends JpaRepository<OrderShoes, Long> {
             "ORDER BY month", nativeQuery = true)
     List<Map<String, Object>> getMonthlySpendingByUserId(@Param("userId") Long userId);
 
-    @Query(value = "SELECT DATE_FORMAT(date, '%m') AS month, COUNT(*) AS orders_count FROM order_shoes WHERE state = 'Processed' GROUP BY DATE_FORMAT(date, '%Y-%m') ORDER BY month", nativeQuery = true)
+    @Query(value = "SELECT DATE_FORMAT(date, '%m') AS month, COUNT(*) AS orders_count FROM order_shoes WHERE state = 'Processed' GROUP BY YEAR(date), MONTH(date), DATE_FORMAT(date, '%m') ORDER BY month", nativeQuery = true)
     List<Map<String, Object>> getOrderCountsByMonth();
-
-    @Query(value = "SELECT DATE_FORMAT(date, '%m') AS month, SUM(summary) AS total_money FROM order_shoes WHERE state = 'Processed' GROUP BY DATE_FORMAT(date, '%Y-%m') ORDER BY month", nativeQuery = true)
+    
+    @Query(value = "SELECT DATE_FORMAT(date, '%m') AS month, SUM(summary) AS total_money FROM order_shoes WHERE state = 'Processed' GROUP BY YEAR(date), MONTH(date), DATE_FORMAT(date, '%m') ORDER BY month", nativeQuery = true)
     List<Map<String, Object>> getMoneyGainedByMonth();
-
+    
     @Query("SELECT o FROM OrderShoes o WHERE o.user.id = :userId ORDER BY o.id DESC LIMIT 1")
     OrderShoes findTopByUserIdOrderByIdDesc(@Param("userId") Long userId);
 
