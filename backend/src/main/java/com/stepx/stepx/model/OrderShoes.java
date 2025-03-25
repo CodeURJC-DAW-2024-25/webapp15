@@ -180,6 +180,10 @@ public class OrderShoes {
         return this.orderItems;
     }
 
+    public void setOrderItems(List<OrderItem> orderItemsList){
+        this.orderItems=orderItemsList;
+    }
+
     public BigDecimal getTotalPrice() {
         BigDecimal total = BigDecimal.ZERO;
 

@@ -54,4 +54,7 @@ public interface OrderShoesRepository extends JpaRepository<OrderShoes, Long> {
     @Query("SELECT o FROM OrderShoes o WHERE o.user.id = :userId AND o.state = 'Processed' ORDER BY o.id DESC")
     List<OrderShoes> getPagedOrdersByUserId(@Param("userId") Long userId, Pageable pageable);
 
+
+    @Query("SELECT o FROM OrderShoes o WHERE o.user.id = :userId")
+    List<OrderShoes> findOrdersByUserId(@Param("userId") Long userId);
 }

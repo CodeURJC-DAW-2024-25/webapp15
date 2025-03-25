@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 
 @RestController
-@RequestMapping("/api/v1/ShoeSizeStock")
+@RequestMapping("/api/v1/ShoeSizeStocks")
 public class ShoeSizetockRestController {
     private final ShoeSizeStockService shoeSizeStockService;
     
