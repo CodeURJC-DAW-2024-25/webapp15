@@ -2,9 +2,12 @@ package com.stepx.stepx.repository;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.stepx.stepx.model.OrderShoes;
 
 import java.math.BigDecimal;
@@ -57,4 +60,10 @@ public interface OrderShoesRepository extends JpaRepository<OrderShoes, Long> {
 
     @Query("SELECT o FROM OrderShoes o WHERE o.user.id = :userId")
     List<OrderShoes> findOrdersByUserId(@Param("userId") Long userId);
+
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM order_shoes WHERE id = :orderId", nativeQuery = true)
+    void forceDeleteById(@Param("orderId") Long orderId);
+
 }

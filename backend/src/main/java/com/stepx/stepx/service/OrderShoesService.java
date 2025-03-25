@@ -232,6 +232,7 @@ public class OrderShoesService {
     }
 
     //update single ordershoe by it id
+    @Transactional
     public Optional<OrderShoesDTO> updateOrderShoe(Long orderShoeId,OrderShoesDTO orderShoesDTO){
         
         Optional<OrderShoes> orderOptional = orderShoesRepository.findById(orderShoeId);
@@ -245,7 +246,7 @@ public class OrderShoesService {
         boolean allProcessed = orderShoesDTO.state().equals("Processed");
 
         if (!allProcessed) {
-            return Optional.empty(); // o lanza una excepción también aquí
+            return Optional.empty();
         }
         
 
@@ -267,16 +268,15 @@ public class OrderShoesService {
             order.setCoupon(coupon);
         }
 
-        if (orderShoesDTO.orderItems() != null && !orderShoesDTO.orderItems().isEmpty()) {
-            List<OrderItem> updatedItems = orderShoesDTO.orderItems()
-                .stream()
-                .map(orderItemDTO -> {
-                    OrderItem item = orderItemMapper.toDomain(orderItemDTO);
-                    item.setOrderShoes(order);
-                    return item;
-                })
-                .collect(Collectors.toList());
-            order.setOrderItems(updatedItems);    
+        if (orderShoesDTO.orderItems() != null) {
+            // Limpiamos la colección actual
+            order.getOrderItems().clear();
+    
+            for (OrderItemDTO dto : orderShoesDTO.orderItems()) {
+                OrderItem item = orderItemMapper.toDomain(dto);
+                item.setOrderShoes(order); // Setear relación bidireccional
+                order.getOrderItems().add(item); // Agregar a la misma colección
+            }
         }
     
         OrderShoes saved = orderShoesRepository.save(order);
@@ -284,23 +284,35 @@ public class OrderShoesService {
     }
 
     //delete order from user
-    public boolean deleteOrderByUser(Long orderId, Long userId) {
-        Optional<OrderShoes> orderOptional = orderShoesRepository.findById(orderId);
-    
-        if (orderOptional.isEmpty()) {
-            return false;
-        }
-    
-        OrderShoes order = orderOptional.get();
-    
-        if (!order.getUser().getId().equals(userId)) {
-            return false;
-        }
-    
-        orderShoesRepository.delete(order);
-        return true;
+    @Transactional
+public boolean deleteOrderByUser(Long orderId, Long userId) {
+    Optional<OrderShoes> optionalOrder = orderShoesRepository.findById(orderId);
+
+    if (optionalOrder.isEmpty()) return false;
+
+    OrderShoes order = optionalOrder.get();
+
+    if (order.getUser() == null || !order.getUser().getId().equals(userId)) {
+        return false;
     }
+
+    // Romper relaciones por seguridad
+    order.getOrderItems().forEach(item -> item.setOrderShoes(null));
+    order.getOrderItems().clear();
+    order.setUser(null);
+    order.setCoupon(null);
+    orderShoesRepository.saveAndFlush(order);
+
+    // ⚠️ Eliminar directo por SQL
+    orderShoesRepository.forceDeleteById(orderId);
+
+    return true;
+}
+
     
+
+
+//int entero = orderShoesRepository.deleteByIdAndUserId(orderId,userId);    
 
 
     public BigDecimal getTotalPrice(Long orderId) {
