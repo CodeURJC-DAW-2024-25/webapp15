@@ -107,4 +107,14 @@ public class ReviewRestController {
         return ResponseEntity.ok(review.get());
     }
 
+    // Reviews Paginadas
+    @GetMapping("/paginated/{id}")
+    public ResponseEntity<List<ReviewDTO>> getPaginatedReviews(@PathVariable Long id, @RequestParam int page, @RequestParam int size) {
+        List<ReviewDTO> reviews = reviewService.getPagedReviewsByShoeId(id, size, page);
+        if (reviews==null) {
+            return ResponseEntity.noContent().build(); // 204 No Content si no hay reseñas
+        }
+        return ResponseEntity.ok(reviews);
+    }
+
 }
