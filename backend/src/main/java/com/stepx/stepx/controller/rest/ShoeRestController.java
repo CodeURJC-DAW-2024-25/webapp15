@@ -140,7 +140,7 @@ public class ShoeRestController {
         return ResponseEntity.ok(shoeOptional.get());
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteShoe(@PathVariable Long id) {
         shoeService.deleteShoe(id);
         return ResponseEntity.ok("Shoe deleted successfully.");

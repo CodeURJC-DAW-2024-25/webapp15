@@ -264,6 +264,7 @@ public class UserController {
         }
 
         OrderShoesDTO orderDto = orderOptionalDto.get();
+        
         // Prearing data to send the template
         Map<String, Object> data = new HashMap<>();
 

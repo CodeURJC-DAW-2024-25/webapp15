@@ -30,6 +30,7 @@ import com.stepx.stepx.model.User;
 import com.stepx.stepx.repository.CouponRepository;
 import com.stepx.stepx.repository.OrderItemRepository;
 import com.stepx.stepx.repository.OrderShoesRepository;
+import com.stepx.stepx.repository.ShoeRepository;
 import com.stepx.stepx.repository.UserRepository;
 
 import io.jsonwebtoken.security.Jwks.OP;
@@ -51,6 +52,8 @@ public class OrderShoesService {
     private UserMapper userMapper;
     @Autowired
     private OrderItemMapper orderItemMapper;
+    @Autowired
+    private ShoeRepository shoeRepository;
 
     public OrderShoesService(OrderShoesRepository orderShoesRepository, UserRepository userRepository,
             OrderItemRepository orderItemRepository, ShoeSizeStockService shoeSizeStockService,CouponRepository couponRepository) {
@@ -84,7 +87,7 @@ public class OrderShoesService {
     }
 
     @Transactional
-    public void deleteOrderItems(Long userId, Long itemId) {
+    public OrderShoesDTO deleteOrderItems(Long userId, Long itemId) {
         Optional<OrderItem> itemOptional = orderItemRepository.findById(itemId);
 
         if (itemOptional.isPresent()) {
@@ -92,12 +95,13 @@ public class OrderShoesService {
             OrderShoes cart = item.getOrderShoes();
 
             if (cart == null || !cart.getUser().getId().equals(userId)) {
-                return;
+                return null;
             }
 
             orderItemRepository.delete(item);
-
             cart.getOrderItems().remove(item);
+            OrderShoes saved=orderShoesRepository.save(cart);
+            return orderShoesMapper.toDTO(saved);
         } else {
             throw new IllegalArgumentException("Not found item with the id " + itemId);
         }
@@ -333,6 +337,16 @@ public boolean deleteOrderByUser(Long orderId, Long userId) {
             String firstName, String lastName, String email, String address, String phone, String couponString,
             BigDecimal totalPrice) {
         OrderShoes order = orderShoesMapper.toDomain(orderDto);
+        for (OrderItem item : order.getOrderItems()) {
+            if (item.getShoe() == null || item.getShoe().getId() == null) continue;
+            Long shoeId = item.getShoe().getId();
+            Shoe shoe = shoeRepository.findById(shoeId).orElse(null); // o repository
+            if (shoe != null) {
+                item.setShoe(shoe);
+                item.setShoeName(shoe.getName());
+            }
+        }
+    
         order.setCountry(country);
         order.setFirstName(firstName);
         order.setSecondName(lastName);

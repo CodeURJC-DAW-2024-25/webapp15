@@ -35,8 +35,11 @@ import com.stepx.stepx.dto.OrderShoesDTO;
 import com.stepx.stepx.dto.UserDTO;
 import com.stepx.stepx.mapper.UserMapper;
 import com.stepx.stepx.model.Review;
+import com.stepx.stepx.model.Shoe;
 import com.stepx.stepx.model.User;
 import com.stepx.stepx.repository.OrderShoesRepository;
+import com.stepx.stepx.repository.ShoeRepository;
+
 import java.sql.Blob;
 
 import com.stepx.stepx.repository.UserRepository;
@@ -52,6 +55,9 @@ public class UserService {
     private final OrderShoesService orderShoesService;
     private final CouponService couponService;
     private final PdfService pdfService;
+
+    @Autowired
+    private ShoeRepository shoeRepository;
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapper userMapper,
             OrderShoesService orderShoesService, CouponService couponService, PdfService pdfService) {
@@ -208,8 +214,21 @@ public class UserService {
         // Fill the order details
         orderDto = orderShoesService.fillDetailsOrder(orderDto, userId, country, couponCode, firstName, lastName, email,
                 address, phone, couponCode, totalPrice);
+
         orderShoesService.saveOrderShoes(orderDto);
         orderShoesService.processOrder(orderDto);
+
+        List<Map<String, Object>> enrichedItems = orderDto.orderItems().stream().map(item -> {
+            Shoe shoe = shoeRepository.findById(item.shoeId()).orElse(null);
+
+            Map<String, Object> map = new HashMap<>();
+            map.put("shoeName", item.shoeName());
+            map.put("brand", shoe != null ? shoe.getBrand() : "N/A");
+            map.put("quantity", item.quantity());
+            map.put("price", item.price());
+            map.put("size", item.size());
+            return map;
+        }).collect(Collectors.toList());
 
         // Prepare data for the PDF
         Map<String, Object> data = new HashMap<>();
@@ -220,7 +239,7 @@ public class UserService {
         data.put("country", country);
         data.put("coupon", couponCode != null && !couponCode.isEmpty() ? couponCode : "No coupon applied");
         data.put("date", orderDto.date());
-        data.put("products", orderDto.orderItems());
+        data.put("products", enrichedItems);
         data.put("total", totalPrice);
 
         return pdfService.generatePdfFromOrder(data);

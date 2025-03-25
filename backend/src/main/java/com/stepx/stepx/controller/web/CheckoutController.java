@@ -166,7 +166,7 @@ public String applyCoupon(@RequestParam String coupon, HttpServletRequest reques
         Optional<OrderShoesDTO> cartOptional = orderShoesService.getCartById(userDto.id());
         if (cartOptional.isEmpty()) {
             model.addAttribute("setSubtotal", false);
-            model.addAttribute("stocskAvailable", false);
+            model.addAttribute("stocksAvailable", false);
             model.addAttribute("cartItems", false);
             return "checkout";
         }
@@ -195,14 +195,19 @@ public String applyCoupon(@RequestParam String coupon, HttpServletRequest reques
             return "partials/checkout-itemsList";
         }
 
-        OrderShoesDTO cartDto = cartOptionalDto.get();
-
         // Delete the orderItem from the cart
-        orderShoesService.deleteOrderItems(userDto.id(), id);
-        orderShoesService.saveOrderShoes(cartDto);
+        OrderShoesDTO edited = orderShoesService.deleteOrderItems(userDto.id(), id);
+        if(edited==null){
+            model.addAttribute("setSubtotal", false);
+            model.addAttribute("stocskAvailable", false);
+            model.addAttribute("cartItems", false);
+            return "partials/checkout-itemsList";
+        }
+
+        //orderShoesService.saveOrderShoes(cartDto);
 
         // Refresh the cart after deletion
-        setModelAttributesForCart(cartDto, model);
+        setModelAttributesForCart(edited, model);
 
         return "partials/checkout-itemsList";
     }
@@ -223,7 +228,7 @@ public String applyCoupon(@RequestParam String coupon, HttpServletRequest reques
         // Basic checks
         if (ids == null || quantities == null || ids.isEmpty() || quantities.isEmpty()) {
             model.addAttribute("setSubtotal", false);
-            model.addAttribute("stocskAvailable", false);
+            model.addAttribute("stocksAvailable", false);
             model.addAttribute("cartItems", false);
             return "partials/checkout-itemsList";
         }
@@ -232,7 +237,7 @@ public String applyCoupon(@RequestParam String coupon, HttpServletRequest reques
         Optional<OrderShoesDTO> cartOptionalDto = orderShoesService.getCartById(userDto.id());
         if (cartOptionalDto.isEmpty() || orderShoesService.getLengthOrderShoes(cartOptionalDto.get()) == 0) {
             model.addAttribute("setSubtotal", false);
-            model.addAttribute("stocskAvailable", false);
+            model.addAttribute("stocksAvailable", false);
             model.addAttribute("cartItems", false);
             return "partials/checkout-itemsList";
         }
@@ -318,12 +323,14 @@ public String applyCoupon(@RequestParam String coupon, HttpServletRequest reques
         boolean stocksAvailable = true;
         List<Map<String, Object>> cartItems = new ArrayList<>();
 
+        System.out.println("Mapa de stocks de lo obtenido en el carrito: "+stockMap);//prueba
+
         // Construir lista de artículos del carrito con información de stock
         for (OrderItemDTO orderItemDto : cart.orderItems()) {
             String stockKey = orderItemDto.shoeId() + "_" + orderItemDto.size();
             boolean stockAvailable = stockMap.getOrDefault(stockKey, 0) > 0;
             stocksAvailable = stocksAvailable && stockAvailable;
-
+            System.out.println("hay stock? "+stocksAvailable);//prueba
             Map<String, Object> item = new HashMap<>();
             item.put("id", orderItemDto.shoeId());
             item.put("name", orderItemDto.shoeName());
@@ -344,7 +351,7 @@ public String applyCoupon(@RequestParam String coupon, HttpServletRequest reques
         }
 
         // Establecer atributos en el modelo
-        model.addAttribute("stocksAvailable", stocksAvailable);
+        model.addAttribute("stocksAvailable", stocksAvailable);//stocskAvailable
         model.addAttribute("setSubtotal", true);
         model.addAttribute("total", total);
         model.addAttribute("cartItems", cartItems);
