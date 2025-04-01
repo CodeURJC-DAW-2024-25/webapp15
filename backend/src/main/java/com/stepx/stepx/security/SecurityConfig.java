@@ -20,8 +20,6 @@ import com.stepx.stepx.controller.web.CustomAuthenticationSuccessHandler;
 import com.stepx.stepx.security.jwt.JwtRequestFilter;
 import com.stepx.stepx.security.jwt.UnauthorizedHandlerJwt;
 
-import aj.org.objectweb.asm.commons.Method;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -78,7 +76,7 @@ public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
             .requestMatchers(HttpMethod.DELETE, "/api/v1/admin/**", "/api/v1/OrderItem/**", "/api/v1/reviews/**", "/api/v1/user/**").hasRole("USER")
             // Admins
             .requestMatchers(HttpMethod.DELETE, "/api/v1/admin/**", "/api/v1/reviews/**", "/api/v1/Shoe/**", "/api/v1/user/**").hasRole("ADMIN")
-            .requestMatchers(HttpMethod.GET, "/api/v1/admin/**", "/api/v1/reviews/**", "/api/v1/Shoe/**", "/api/v1/user/**").hasRole("ADMIN")
+            .requestMatchers(HttpMethod.GET, "/api/v1/admin/**", "/api/v1/reviews/**", "/api/v1/Shoe/**", "/api/v1/user/**","/api/v1/OrderShoes/**").hasRole("ADMIN")
             .requestMatchers(HttpMethod.PUT, "/api/v1/admin/**", "/api/v1/ShoeSizeStock/**").hasRole("ADMIN")
             .requestMatchers(HttpMethod.POST, "/api/v1/admin/**", "/api/v1/Shoe/**", "/api/v1/ShoeSizeStock/**").hasRole("ADMIN")
             // PUBLIC ENDPOINTS
