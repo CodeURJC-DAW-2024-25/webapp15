@@ -79,11 +79,9 @@ public class CouponRestController {
         return ResponseEntity.ok(updatedCoupon.get());
     }
     
-    // Eliminar un cupón
     @DeleteMapping("/{id}")
-    public ResponseEntity<CouponDTO> deleteCoupon(@PathVariable Long id) {
-        Optional<CouponDTO> deleted = couponService.deleteCoupon(id);
-        return deleted.map(ResponseEntity::ok)
-            .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<Void> deleteCoupon(@PathVariable Long id) {
+        couponService.deleteCoupon(id);
+        return ResponseEntity.noContent().build(); // 204 No Content
     }
 }

@@ -75,10 +75,10 @@ public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
             .requestMatchers(HttpMethod.GET, "/api/v1/OrderItem/**", "/api/v1/OrderShoes/**").hasRole("USER")
             .requestMatchers(HttpMethod.DELETE, "/api/v1/admin/**", "/api/v1/OrderItem/**", "/api/v1/reviews/**", "/api/v1/user/**").hasRole("USER")
             // Admins
-            .requestMatchers(HttpMethod.DELETE, "/api/v1/admin/**", "/api/v1/reviews/**", "/api/v1/Shoe/**", "/api/v1/user/**").hasRole("ADMIN")
-            .requestMatchers(HttpMethod.GET, "/api/v1/admin/**", "/api/v1/reviews/**", "/api/v1/Shoe/**", "/api/v1/user/**","/api/v1/OrderShoes/**").hasRole("ADMIN")
-            .requestMatchers(HttpMethod.PUT, "/api/v1/admin/**", "/api/v1/ShoeSizeStock/**").hasRole("ADMIN")
-            .requestMatchers(HttpMethod.POST, "/api/v1/admin/**", "/api/v1/Shoe/**", "/api/v1/ShoeSizeStock/**").hasRole("ADMIN")
+            .requestMatchers(HttpMethod.DELETE, "/api/v1/admin/**", "/api/v1/coupon/**", "/api/v1/reviews/**", "/api/v1/Shoe/**", "/api/v1/user/**").hasRole("ADMIN")
+            .requestMatchers(HttpMethod.GET, "/api/v1/admin/**", "/api/v1/coupon/**", "/api/v1/reviews/**", "/api/v1/Shoe/**", "/api/v1/user/**","/api/v1/OrderShoes/**").hasRole("ADMIN")
+            .requestMatchers(HttpMethod.PUT, "/api/v1/admin/**", "/api/v1/coupon/**", "/api/v1/ShoeSizeStock/**").hasRole("ADMIN")
+            .requestMatchers(HttpMethod.POST, "/api/v1/admin/**", "/api/v1/coupon/**", "/api/v1/Shoe/**", "/api/v1/ShoeSizeStock/**").hasRole("ADMIN")
             // PUBLIC ENDPOINTS
             .requestMatchers("/api/v1/shoe", "/api/v1/image/**", "/api/v1/Shoe/**").permitAll()
             .anyRequest().permitAll()

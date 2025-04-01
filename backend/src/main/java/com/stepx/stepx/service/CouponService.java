@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import com.stepx.stepx.dto.*;
 import com.stepx.stepx.mapper.CouponMapper;
@@ -49,9 +50,10 @@ public class CouponService {
     }
 
     public CouponDTO findById(Long id) {
-        Optional<Coupon> couponOptional = couponRepository.findById(id);
-        return couponOptional.map(couponMapper::toDTO).orElse(null);
-    }
+    return couponRepository.findById(id)
+            .map(couponMapper::toDTO)
+            .orElseThrow(() -> new NoSuchElementException("Coupon with ID " + id + " not found"));
+}
 
     public Optional<CouponDTO> updateCoupon(Long id, CouponDTO couponDTO) {
         Optional<Coupon> existingCouponOptional = couponRepository.findById(id);
@@ -72,18 +74,12 @@ public class CouponService {
     }
     
 
-    public Optional<CouponDTO> deleteCoupon(Long id) {
-        Optional<Coupon> couponOptional = couponRepository.findById(id);
+    public void deleteCoupon(Long id) {
+        Coupon coupon = couponRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Coupon with ID " + id + " not found"));
         
-        if (couponOptional.isEmpty()) {
-            return Optional.empty();
-        }
-        
-        Coupon coupon = couponOptional.get();
         couponRepository.delete(coupon);
-        return Optional.of(couponMapper.toDTO(coupon));
     }
-
    
     
     
