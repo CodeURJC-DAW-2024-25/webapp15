@@ -159,7 +159,7 @@ public class OrderItemService {
 
         orderItem.setOrderShoes(orderShoe);
         orderItem.setShoe(shoe);
-        orderItem.setShoeName(shoe.getName()); // Usamos el nombre correcto del zapato
+        orderItem.setShoeName(orderItemDTO.shoeName()); // Usamos el nombre correcto del zapato
         orderItem.setQuantity(orderItemDTO.quantity());
         orderItem.setSize(orderItemDTO.size());
 
