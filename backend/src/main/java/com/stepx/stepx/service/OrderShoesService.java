@@ -467,4 +467,28 @@ public Map<String, Object> generateMoneyGainedChartData() {
     
     return chartData;
 }
+
+// In OrderShoesService.java (or you might want to create an AdminService for this)
+
+public Map<String, Object> getAdminDashboardStats() {
+    Map<String, Object> stats = new HashMap<>();
+    
+    // Get total number of users
+    long userCount = userRepository.count();
+    stats.put("userCount", userCount);
+    
+    // Get total number of shoes
+    long shoeCount = shoeRepository.count();
+    stats.put("shoeCount", shoeCount);
+    
+    // Get total number of processed orders
+    long processedOrderCount = orderShoesRepository.countProcessedOrders();
+    stats.put("processedOrderCount", processedOrderCount);
+    
+    // Get total money gained from processed orders
+    BigDecimal totalMoneyGained = orderShoesRepository.getTotalMoneyGained();
+    stats.put("totalMoneyGained", totalMoneyGained);
+    
+    return stats;
+}
 }

@@ -46,21 +46,14 @@ public ResponseEntity<Map<String, Object>> getMoneyGainedChart() {
 @GetMapping("/admin")
 public String adminDashboard(Model model) throws JsonProcessingException {
 
-    // Get total number of users
-    long userCount = userRepository.count();
-    model.addAttribute("userCount", userCount);
-
-    // Get total number of shoes
-    long shoeCount = shoeRepository.count();
-    model.addAttribute("shoeCount", shoeCount);
-
-    // Get total number of processed orders
-    long processedOrderCount = orderShoesRepository.countProcessedOrders();
-    model.addAttribute("processedOrderCount", processedOrderCount);
-
-    // Get total money gained from processed orders
-    BigDecimal totalMoneyGained = orderShoesRepository.getTotalMoneyGained();
-    model.addAttribute("totalMoneyGained", totalMoneyGained);
+    // Get dashboard stats from service
+    Map<String, Object> stats = orderShoesService.getAdminDashboardStats();
+    
+    // Add stats to model
+    model.addAttribute("userCount", stats.get("userCount"));
+    model.addAttribute("shoeCount", stats.get("shoeCount"));
+    model.addAttribute("processedOrderCount", stats.get("processedOrderCount"));
+    model.addAttribute("totalMoneyGained", stats.get("totalMoneyGained"));
 
     // Get order count chart data from service
     Map<String, Object> orderChartData = orderShoesService.generateOrderCountChartData();

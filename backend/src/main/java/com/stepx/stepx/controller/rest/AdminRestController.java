@@ -31,4 +31,9 @@ public class AdminRestController {
         Map<String, Object> chartData = orderShoesService.generateMoneyGainedChartData();
         return ResponseEntity.ok(chartData);
     }
+    @GetMapping("/dashboard-stats")
+    public ResponseEntity<Map<String, Object>> getDashboardStats() {
+    Map<String, Object> stats = orderShoesService.getAdminDashboardStats();
+    return ResponseEntity.ok(stats);
+}
 }
