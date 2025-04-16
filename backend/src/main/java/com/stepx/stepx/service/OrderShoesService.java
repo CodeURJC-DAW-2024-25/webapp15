@@ -396,6 +396,75 @@ public boolean deleteOrderByUser(Long orderId, Long userId) {
         
         return result;
     }
+   // In OrderShoesService.java
+// In OrderShoesService.java
 
+public Map<String, Object> generateOrderCountChartData() {
+    // Get order counts by month from repository
+    List<Map<String, Object>> orderCounts = getOrderCountsByMonth();
+    
+    // Create result structure with labels and data arrays
+    Map<String, Object> chartData = new HashMap<>();
+    String[] monthNames = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+    Integer[] monthData = new Integer[12];
+    
+    // Initialize with zeros
+    for (int i = 0; i < 12; i++) {
+        monthData[i] = 0;
+    }
+    
+    // Fill in the actual data
+    for (Map<String, Object> entry : orderCounts) {
+        String monthStr = (String) entry.get("month");
+        Long count = ((Number) entry.get("orders_count")).longValue();
+        
+        // Convert month string to zero-based index (01 -> 0, 02 -> 1, etc.)
+        int monthIndex = Integer.parseInt(monthStr) - 1;
+        if (monthIndex >= 0 && monthIndex < 12) {
+            monthData[monthIndex] = count.intValue();
+        } else {
+            System.out.println("Invalid month index: " + monthIndex + " for month string: " + monthStr);
+        }
+    }
+    
+    chartData.put("labels", monthNames);
+    chartData.put("data", monthData);
+    
+    return chartData;
+}
 
+public Map<String, Object> generateMoneyGainedChartData() {
+    // Get money gained by month
+    List<Map<String, Object>> moneyGained = getMoneyGainedByMonth();
+    
+    // Create result structure with labels and data arrays
+    Map<String, Object> chartData = new HashMap<>();
+    String[] monthNames = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+    Double[] monthData = new Double[12];
+    
+    // Initialize with zeros
+    for (int i = 0; i < 12; i++) {
+        monthData[i] = 0.0;
+    }
+    
+    // Fill in the actual money data
+    for (Map<String, Object> entry : moneyGained) {
+        String monthStr = (String) entry.get("month");
+        Number amount = (Number) entry.get("total_money");
+        Double totalMoney = amount != null ? amount.doubleValue() : 0.0;
+        
+        // Convert month string to zero-based index
+        int monthIndex = Integer.parseInt(monthStr) - 1;
+        if (monthIndex >= 0 && monthIndex < 12) {
+            monthData[monthIndex] = totalMoney;
+        } else {
+            System.out.println("Invalid month index: " + monthIndex + " for month string: " + monthStr);
+        }
+    }
+    
+    chartData.put("labels", monthNames);
+    chartData.put("data", monthData);
+    
+    return chartData;
+}
 }

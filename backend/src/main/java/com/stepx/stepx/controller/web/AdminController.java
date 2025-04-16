@@ -7,6 +7,7 @@ import java.util.List;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import com.stepx.stepx.repository.*;
@@ -29,89 +30,48 @@ public class AdminController {
     private OrderShoesService orderShoesService;
 
 
-    @GetMapping("/admin")
-    public String adminDashboard(Model model) throws JsonProcessingException {
+ // In AdminRestController.java
+@GetMapping("/order-count-chart")
+public ResponseEntity<Map<String, Object>> getOrderCountChart() {
+    Map<String, Object> chartData = orderShoesService.generateOrderCountChartData();
+    return ResponseEntity.ok(chartData);
+}
 
-        // Get total number of users
-        long userCount = userRepository.count();
-        model.addAttribute("userCount", userCount);
+@GetMapping("/money-gained-chart")
+public ResponseEntity<Map<String, Object>> getMoneyGainedChart() {
+    Map<String, Object> chartData = orderShoesService.generateMoneyGainedChartData();
+    return ResponseEntity.ok(chartData);
+}
 
-        // Get total number of shoes
-        long shoeCount = shoeRepository.count();
-        model.addAttribute("shoeCount", shoeCount);
+@GetMapping("/admin")
+public String adminDashboard(Model model) throws JsonProcessingException {
 
-        // Get total number of processed orders
-        long processedOrderCount = orderShoesRepository.countProcessedOrders();
-        model.addAttribute("processedOrderCount", processedOrderCount);
+    // Get total number of users
+    long userCount = userRepository.count();
+    model.addAttribute("userCount", userCount);
 
-        // Get total money gained from processed orders
-        BigDecimal totalMoneyGained = orderShoesRepository.getTotalMoneyGained();
-        model.addAttribute("totalMoneyGained", totalMoneyGained);
+    // Get total number of shoes
+    long shoeCount = shoeRepository.count();
+    model.addAttribute("shoeCount", shoeCount);
 
-        // Get order counts by month from service
-        List<Map<String, Object>> orderCounts = orderShoesService.getOrderCountsByMonth();
+    // Get total number of processed orders
+    long processedOrderCount = orderShoesRepository.countProcessedOrders();
+    model.addAttribute("processedOrderCount", processedOrderCount);
 
-        // Convert to a map for the chart
-        Map<String, Object> chartData = new HashMap<>();
+    // Get total money gained from processed orders
+    BigDecimal totalMoneyGained = orderShoesRepository.getTotalMoneyGained();
+    model.addAttribute("totalMoneyGained", totalMoneyGained);
 
-        // Arrays for labels and data
-        String[] monthNames = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
-        Integer[] orderData = new Integer[12];
-
-        // Initialize with zeros
-        for (int i = 0; i < 12; i++) {
-            orderData[i] = 0;
-        }
-
-        // Fill in the actual data
-        for (Map<String, Object> entry : orderCounts) {
-            String monthStr = (String) entry.get("month");
-            Long count = ((Number) entry.get("orders_count")).longValue();
-
-            // Convert month string to zero-based index (01 -> 0, 02 -> 1, etc.)
-            int monthIndex = Integer.parseInt(monthStr) - 1;
-            if (monthIndex >= 0 && monthIndex < 12) {
-                orderData[monthIndex] = count.intValue();
-            }
-        }
-
-        chartData.put("labels", monthNames);
-        chartData.put("data", orderData);
-
-        String chartDataJson = objectMapper.writeValueAsString(chartData);
-        model.addAttribute("data", "var shoeOrderData = " + chartDataJson + ";");
-
-        // Get money gained by month
-        List<Map<String, Object>> moneyGained = orderShoesService.getMoneyGainedByMonth();
-
-        // Create a new map for money data
-        Map<String, Object> moneyChartData = new HashMap<>();
-        Double[] moneyData = new Double[12];
-
-        // Initialize with zeros
-        for (int i = 0; i < 12; i++) {
-            moneyData[i] = 0.0;
-        }
-
-        // Fill in the actual money data
-        for (Map<String, Object> entry : moneyGained) {
-            String monthStr = (String) entry.get("month");
-            Number amount = (Number) entry.get("total_money");
-            Double totalMoney = amount != null ? amount.doubleValue() : 0.0;
-
-            // Convert month string to zero-based index
-            int monthIndex = Integer.parseInt(monthStr) - 1;
-            if (monthIndex >= 0 && monthIndex < 12) {
-                moneyData[monthIndex] = totalMoney;
-            }
-        }
-
-        moneyChartData.put("labels", monthNames);
-        moneyChartData.put("data", moneyData);
-
-        String moneyChartDataJson = objectMapper.writeValueAsString(moneyChartData);
-        model.addAttribute("moneyData", "var moneyGainedData = " + moneyChartDataJson + ";");
-
-        return "admin-pannel"; // This matches your HTML file name
-    }
+    // Get order count chart data from service
+    Map<String, Object> orderChartData = orderShoesService.generateOrderCountChartData();
+    String chartDataJson = objectMapper.writeValueAsString(orderChartData);
+    model.addAttribute("data", "var shoeOrderData = " + chartDataJson + ";");
+    
+    // Get money gained chart data from service
+    Map<String, Object> moneyChartData = orderShoesService.generateMoneyGainedChartData();
+    String moneyChartDataJson = objectMapper.writeValueAsString(moneyChartData);
+    model.addAttribute("moneyData", "var moneyGainedData = " + moneyChartDataJson + ";");
+    
+    return "admin-pannel";
+}
 }
