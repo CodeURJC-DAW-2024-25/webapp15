@@ -10,13 +10,17 @@ import { HttpClientModule } from '@angular/common/http';
 import { FooterComponent } from './components/footer/footer.component';
 import { CouponComponent } from './components/coupon/coupon.component';
 import { LoginModalComponent } from './components/login-modal/login-modal.component';
+import { ShopComponent } from './components/shop/shop.component';
+import { ShoeCardComponent } from './components/shop/shoe-card.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     FooterComponent,
     CouponComponent,
-    LoginModalComponent
+    LoginModalComponent,
+    ShopComponent,
+    ShoeCardComponent
   ],
   imports: [
     HttpClientModule,

@@ -35,9 +35,14 @@
               "src/assets"
             ],
             "styles": [
+              "src/assets/css/vendor.css",
+              "src/assets/css/style.css",
               "src/styles.css"
             ],
-            "scripts": [],
+            "scripts": [
+              "src/assets/js/jquery-1.11.0.min.js",
+              "src/assets/js/plugins.js"
+            ],
             "server": "src/main.server.ts",
             "prerender": true,
             "ssr": {
@@ -75,7 +80,8 @@
               "buildTarget": "frontend:build:production"
             },
             "development": {
-              "buildTarget": "frontend:build:development"
+              "buildTarget": "frontend:build:development",
+              "proxyConfig": "proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"

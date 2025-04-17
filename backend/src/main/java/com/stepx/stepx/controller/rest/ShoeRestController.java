@@ -102,6 +102,26 @@ public class ShoeRestController {
     }
     
     //get by category
+    @GetMapping("/category")
+    public ResponseEntity<?> getByCategory(
+        @RequestParam String category,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "9") int size) {
+
+            Page<ShoeDTO>pageObj=shoeService.getShoesByCategory(page, category);
+            return ResponseEntity.ok(pageObj);
+    }
+
+    //get by brand
+    @GetMapping("/brand")
+    public ResponseEntity<?> getByBrand(
+        @RequestParam String brand,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "9") int size) {
+            
+            Page<ShoeDTO>pageObj=shoeService.getShoesByBrand(page, brand);
+            return ResponseEntity.ok(pageObj);
+    }
     
 
     //create a shoe
