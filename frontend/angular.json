@@ -102,6 +102,11 @@
               "src/styles.css"
             ],
             "scripts": []
+          },
+          "serve": {
+            "options": {
+              "proxyConfig": "proxy.conf.json"
+            }
           }
         }
       }
