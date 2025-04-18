@@ -32,15 +32,14 @@
       </div>
       
       <div class="button-group">
-        <button type="submit" 
-                [disabled]="!loginForm.valid || isLoading" 
-                class="login-button">
+        <button type="submit"  
+                class="btn-red hvr-sweep-to-right dark-sweep">
           <span *ngIf="!isLoading">Login</span>
           <span *ngIf="isLoading">Verificando...</span>
         </button>
         
         <button type="button" 
-                class="register-button"
+                class="btn-outline-gray hvr-sweep-to-right dark-sweep"
                 (click)="navigateToRegister()">
           Register
         </button>

@@ -48,13 +48,13 @@ export class LoginModalComponent {
             this.isLoading = false;
             if (response.status === 'SUCCESS') {
               this.isSuccess = true;
-              this.message = 'Inicio de sesión exitoso';
+              this.message = 'Successfully logged in.';
               this.loginSuccess.emit();
               this.closeModal.emit();
               this.router.navigate(['/']);
             } else {
               this.isSuccess = false;
-              this.message = response.message || 'Error en la autenticación';
+              this.message = response.message || 'Authentication failed. Please check your credentials and try again.';
               this.loginError = this.message;
             }
           },
@@ -62,14 +62,14 @@ export class LoginModalComponent {
             this.isLoading = false;
             this.isSuccess = false;
             if (err.status === 500) {
-              this.message = 'Usuario o contraseña incorrectos';
+              this.message = 'Incorrect username or password. Please try again';
             } else if (err.status === 0) {
-              this.message = 'No se puede conectar con el servidor';
+              this.message = 'Cannot connect to the server. Please check your internet connection';
             } else {
-              this.message = 'Error inesperado. Intente nuevamente';
+              this.message = 'Unexpected error. Please try again';
             }
             this.loginError = this.message;
-            console.error('Error en login:', err);
+            console.error('Login Error: ', err);
           }
         });
     }
