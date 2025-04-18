@@ -2,10 +2,13 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginModalComponent } from './components/login-modal/login-modal.component';
 import { ShopComponent } from './components/shop/shop.component';
+import { AdminComponent } from './components/admin/admin.component';
 
 const routes: Routes = [
   {path: 'ver-login', component: LoginModalComponent},
-  {path:'shop',component:ShopComponent}
+  {path:'shop',component:ShopComponent},
+  { path: 'admin', component: AdminComponent },
+
 ];
 
 @NgModule({

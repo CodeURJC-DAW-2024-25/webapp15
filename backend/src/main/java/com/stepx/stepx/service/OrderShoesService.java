@@ -396,8 +396,7 @@ public boolean deleteOrderByUser(Long orderId, Long userId) {
         
         return result;
     }
-   // In OrderShoesService.java
-// In OrderShoesService.java
+   
 
 public Map<String, Object> generateOrderCountChartData() {
     // Get order counts by month from repository

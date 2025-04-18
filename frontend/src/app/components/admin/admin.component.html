@@ -1,0 +1,41 @@
+<!-- admin.component.html -->
+<div class="admin-container">
+    <header class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container-fluid">
+        <a [routerLink]="['/index']" class="navbar-brand text-center w-100">
+          <span class="navbar-brand-text h2">Step X Admin Panel</span>
+        </a>
+      </div>
+    </header>
+    
+    <!-- Admin Content Area -->
+    <app-admin-dashboard></app-admin-dashboard>
+    
+    <footer class="footer mt-auto py-3 bg-light">
+      <div class="container-fluid">
+        <div class="row text-muted">
+          <div class="col-6 text-start">
+            <p class="mb-0">
+              <strong>Step X Admin</strong> &copy; 2025
+            </p>
+          </div>
+          <div class="col-6 text-end">
+            <ul class="list-inline mb-0">
+              <li class="list-inline-item">
+                <a class="text-muted" [routerLink]="['/support']">Support</a>
+              </li>
+              <li class="list-inline-item">
+                <a class="text-muted" [routerLink]="['/help']">Help Center</a>
+              </li>
+              <li class="list-inline-item">
+                <a class="text-muted" [routerLink]="['/privacy']">Privacy</a>
+              </li>
+              <li class="list-inline-item">
+                <a class="text-muted" [routerLink]="['/terms']">Terms</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>

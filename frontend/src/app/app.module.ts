@@ -12,6 +12,8 @@ import { CouponComponent } from './components/coupon/coupon.component';
 import { LoginModalComponent } from './components/login-modal/login-modal.component';
 import { ShopComponent } from './components/shop/shop.component';
 import { ShoeCardComponent } from './components/shop/shoe-card.component';
+import { AdminComponent } from './components/admin/admin.component';
+import { AdminDashboardComponent } from './components/admin/admin-dashboard.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +22,9 @@ import { ShoeCardComponent } from './components/shop/shoe-card.component';
     CouponComponent,
     LoginModalComponent,
     ShopComponent,
-    ShoeCardComponent
+    ShoeCardComponent,
+    AdminComponent,
+    AdminDashboardComponent
   ],
   imports: [
     HttpClientModule,
