@@ -11,7 +11,8 @@
   padding: 2rem;
   border-radius: 4px;
   width: 100%;
-  max-width: 320px;
+  max-width: 420px;
+  max-height: 400px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -47,9 +48,8 @@
 
 .button-group {
   display: flex;
-  justify-content: space-between;
   margin-top: 1.5rem;
-  gap: 4px; 
+  gap: 7px; 
   padding: 0 8px; 
 }
 
@@ -120,7 +120,8 @@
   border-radius: 2px;
   z-index: 1;
   text-align: center;
-  min-width: 80px; 
+  min-width: 80px;
+  margin-left:25%; 
 }
 
 
@@ -179,7 +180,7 @@
 .button-group {
   display: flex;
   margin-top: 1.5rem;
-  gap: 2px; 
+  gap: 10px; 
 }
 
 .login-button {
