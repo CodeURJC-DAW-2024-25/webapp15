@@ -1,0 +1,114 @@
+/* profile.component.css */
+.profile-settings {
+    padding: 2rem 0;
+  }
+  
+  .profile-sidebar {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  }
+  
+  .profile-nav a {
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+  
+  .profile-nav a:hover {
+    background-color: #f8f9fa !important;
+  }
+  
+  .profile-nav .active {
+    background-color: #f8f9fa !important;
+    font-weight: 500;
+  }
+  
+  .profile-section {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  }
+  
+  .btn-dark {
+    background-color: #343a40;
+    border-color: #343a40;
+  }
+  
+  .btn-dark:hover {
+    background-color: #23272b;
+    border-color: #1d2124;
+  }
+  
+  .hvr-sweep-to-right {
+    display: inline-block;
+    vertical-align: middle;
+    transform: perspective(1px) translateZ(0);
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+    position: relative;
+    transition-property: color;
+    transition-duration: 0.3s;
+  }
+  
+  .hvr-sweep-to-right:before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #212529;
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+    transition-property: transform;
+    transition-duration: 0.3s;
+    transition-timing-function: ease-out;
+  }
+  
+  .hvr-sweep-to-right:hover:before, 
+  .hvr-sweep-to-right:focus:before, 
+  .hvr-sweep-to-right:active:before {
+    transform: scaleX(1);
+  }
+  
+  .bg-gray {
+    background-color: #f8f9fa;
+  }
+  
+  .rounded-3 {
+    border-radius: 0.5rem;
+  }
+  
+  .padding-small {
+    padding: 1.5rem 0;
+  }
+  
+  /* Loading spinner */
+  .spinner-border {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-width: 0.2em;
+  }
+  
+  /* Form validation */
+  .text-danger {
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 991.98px) {
+    .profile-sidebar {
+      margin-bottom: 2rem;
+    }
+    
+    .profile-nav a {
+      padding: 0.75rem 1rem;
+    }
+  }
+  
+  @media (max-width: 767.98px) {
+    .profile-form .col-md-6 {
+      margin-bottom: 1rem;
+    }
+    
+    #logout-button {
+      margin-top: 1rem;
+    }
+  }

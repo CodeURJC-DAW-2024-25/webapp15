@@ -12,22 +12,29 @@ import { CouponComponent } from './components/coupon/coupon.component';
 import { LoginModalComponent } from './components/login-modal/login-modal.component';
 import { ShopComponent } from './components/shop/shop.component';
 import { ShoeCardComponent } from './components/shop/shoe-card.component';
+import { ProfileDataComponent } from './components/profile-data/profile-data.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { ProfilePurchaseHistoryComponent } from './components/profile-purchase-history/profile-purchase-history.component';
 
 @NgModule({
   declarations: [
+    ProfileDataComponent,
     AppComponent,
     FooterComponent,
     CouponComponent,
     LoginModalComponent,
     ShopComponent,
-    ShoeCardComponent
+    ShoeCardComponent,
+    ProfileDataComponent,
+    ProfilePurchaseHistoryComponent
   ],
   imports: [
     HttpClientModule,
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    RouterModule.forRoot([])
+    RouterModule.forRoot([]),
+    ReactiveFormsModule
   ],
   providers: [
     provideClientHydration(),
