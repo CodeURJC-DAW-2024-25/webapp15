@@ -14,6 +14,9 @@ import { ShopComponent } from './components/shop/shop.component';
 import { ShoeCardComponent } from './components/shop/shoe-card.component';
 import { AdminComponent } from './components/admin/admin.component';
 import { AdminDashboardComponent } from './components/admin/admin-dashboard.component';
+import { OrderCountChartComponent } from './components/admin/order-count-chart.component';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { MoneyGainedChartComponent } from './components/admin/money-gained-chart.component';
 
 @NgModule({
   declarations: [
@@ -24,14 +27,17 @@ import { AdminDashboardComponent } from './components/admin/admin-dashboard.comp
     ShopComponent,
     ShoeCardComponent,
     AdminComponent,
-    AdminDashboardComponent
+    AdminDashboardComponent,
+    OrderCountChartComponent,
+    MoneyGainedChartComponent
   ],
   imports: [
     HttpClientModule,
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    RouterModule.forRoot([])
+    RouterModule.forRoot([]),
+    NgxChartsModule
   ],
   providers: [
     provideClientHydration(),
