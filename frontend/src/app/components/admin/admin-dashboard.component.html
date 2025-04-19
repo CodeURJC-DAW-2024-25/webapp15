@@ -1,0 +1,101 @@
+<!-- admin-dashboard.component.html -->
+<main class="content">
+    <div class="container-fluid p-0">
+      <h1 class="h3 mb-3"><strong>Analytics Dashboard</strong></h1>
+  
+      <div *ngIf="loading" class="text-center my-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2">Loading dashboard statistics...</p>
+      </div>
+  
+      <div *ngIf="error" class="alert alert-danger">
+        Failed to load dashboard statistics. Please try again later.
+      </div>
+  
+      <div *ngIf="!loading && !error">
+        <div class="row">
+          <div class="d-flex">
+            <div class="w-100">
+              <div class="row">
+                <div class="col-sm-6 col-xl-3 mb-3">
+                  <div class="card">
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col mt-0">
+                          <h5 class="card-title">Sales</h5>
+                        </div>
+                        <div class="col-auto">
+                          <div class="stat text-primary">
+                            <i style="color: rgba(32, 97, 163, 0.682);"class="align-middle fa fa-truck"></i>
+                          </div>
+                        </div>
+                      </div>
+                      <h1 class="mt-1 mb-3">${{dashboardStats.totalMoneyGained}}</h1>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="col-sm-6 col-xl-3 mb-3">
+                  <div class="card">
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col mt-0">
+                          <h5 class="card-title">Registered Users</h5>
+                        </div>
+                        <div class="col-auto">
+                          <div class="stat text-primary">
+                            <i style="color: rgba(32, 97, 163, 0.682);" class="align-middle fa fa-users"></i>
+                          </div>
+                        </div>
+                      </div>
+                      <h1 class="mt-1 mb-3">{{dashboardStats.userCount}}</h1>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="col-sm-6 col-xl-3 mb-3">
+                  <div class="card">
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col mt-0">
+                          <h5 class="card-title">Number of Products</h5>
+                        </div>
+                        <div class="col-auto">
+                          <div class="stat text-primary">
+                            <i style="color: rgba(32, 97, 163, 0.682);" class="align-middle fa fa-shopping-bag"></i>
+                          </div>
+                        </div>
+                      </div>
+                      <h1 class="mt-1 mb-3">{{dashboardStats.shoeCount}}</h1>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="col-sm-6 col-xl-3 mb-3">
+                  <div class="card">
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col mt-0">
+                          <h5 class="card-title">Orders</h5>
+                        </div>
+                        <div class="col-auto">
+                          <div class="stat text-primary">
+                            <i style="color: rgba(35, 98, 153, 0.682);" class="align-middle fa fa-shopping-cart"></i>
+                          </div>
+                        </div>
+                      </div>
+                      <h1 class="mt-1 mb-3">{{dashboardStats.processedOrderCount}}</h1>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        
+      </div>
+    </div>
+  </main>

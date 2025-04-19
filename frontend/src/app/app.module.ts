@@ -14,7 +14,11 @@ import { ShopComponent } from './components/shop/shop.component';
 import { ShoeCardComponent } from './components/shop/shoe-card.component';
 import { ProfileDataComponent } from './components/profile-data/profile-data.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { ProfilePurchaseHistoryComponent } from './components/profile-purchase-history/profile-purchase-history.component';
+import { AdminComponent } from './components/admin/admin.component';
+import { AdminDashboardComponent } from './components/admin/admin-dashboard.component';
+import { OrderCountChartComponent } from './components/admin/order-count-chart.component';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { MoneyGainedChartComponent } from './components/admin/money-gained-chart.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +30,10 @@ import { ProfilePurchaseHistoryComponent } from './components/profile-purchase-h
     ShopComponent,
     ShoeCardComponent,
     ProfileDataComponent,
-    ProfilePurchaseHistoryComponent
+    AdminComponent,
+    AdminDashboardComponent,
+    OrderCountChartComponent,
+    MoneyGainedChartComponent
   ],
   imports: [
     HttpClientModule,
@@ -34,7 +41,8 @@ import { ProfilePurchaseHistoryComponent } from './components/profile-purchase-h
     AppRoutingModule,
     FormsModule,
     RouterModule.forRoot([]),
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgxChartsModule
   ],
   providers: [
     provideClientHydration(),
