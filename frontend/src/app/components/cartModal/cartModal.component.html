@@ -1,0 +1,54 @@
+<div class="modal-header border-0">
+    <h2 class="modal-title fs-5">Cart</h2>
+    <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
+  </div>
+  
+  <div class="modal-body px-4">
+    <!-- Items del carrito -->
+    <div *ngIf="cartItems.length > 0">
+      <div class="mini-cart cart-list p-0 mt-3" *ngFor="let item of cartItems">
+        <div class="mini-cart-item d-flex border-bottom pb-3">
+          <div class="col-lg-2 col-md-3 col-sm-2 me-4">
+            <img [src]="'/shop/' + item.id + '/image/1'" class="img-fluid" alt="single-product-item">
+          </div>
+          <div class="col-lg-9 col-md-8 col-sm-8">
+            <div class="product-header d-flex justify-content-between align-items-center mb-3">
+              <h4 class="product-title fs-6 me-5">{{item.name}}</h4>
+            </div>
+            <div class="price-code">
+              <span class="product-price fs-6">${{item.price}}</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mt-2">
+              <span class="fs-6"><strong>Talla:</strong> {{item.size}}</span>
+              <span class="fs-6"><strong>Cantidad:</strong> {{item.quantity}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Carrito vacío -->
+    <div *ngIf="cartItems.length === 0" class="text-center py-4">
+      <p class="mb-0">No items in your bag yet</p>
+    </div>
+  
+    <!-- Subtotal -->
+    <div *ngIf="cartItems.length > 0" class=" mini-cart-total d-flex justify-content-between py-4">
+      <span class="fs-6">Subtotal:</span>
+      <span class="special-price-code">
+        <span class="price-amount amount fs-6" style="opacity: 1;">
+          <bdi>
+            <span class="price-currency-symbol">$</span> {{subtotal}} 
+          </bdi>
+        </span>
+      </span>
+    </div>
+  
+    <!-- Botón de checkout -->
+    <div *ngIf="cartItems.length > 0" class="modal-footer border-0 justify-content-center px-0">
+      <button type="button" class="btn btn-outline-gray hvr-sweep-to-right dark-sweep w-100" 
+              (click)="proceedToCheckout()">
+        Checkout
+      </button>
+    </div>
+  </div>
