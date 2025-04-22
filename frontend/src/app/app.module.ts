@@ -19,17 +19,24 @@ import { AdminDashboardComponent } from './components/admin/admin-dashboard.comp
 import { OrderCountChartComponent } from './components/admin/order-count-chart.component';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { MoneyGainedChartComponent } from './components/admin/money-gained-chart.component';
+import { HeaderComponent } from './components/header/header.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap'; 
+import { CartModalComponent } from './components/cartModal/cartModal.component'
+import { FeaturedProductsComponent } from './components/featuredProducts/featuredProducts.component'; 
+
 
 @NgModule({
   declarations: [
     ProfileDataComponent,
+    FeaturedProductsComponent,
     AppComponent,
+    CartModalComponent,
     FooterComponent,
+    HeaderComponent,
     CouponComponent,
     LoginModalComponent,
     ShopComponent,
     ShoeCardComponent,
-    ProfileDataComponent,
     AdminComponent,
     AdminDashboardComponent,
     OrderCountChartComponent,
@@ -38,6 +45,7 @@ import { MoneyGainedChartComponent } from './components/admin/money-gained-chart
   imports: [
     HttpClientModule,
     BrowserModule,
+    NgbModule,
     AppRoutingModule,
     FormsModule,
     RouterModule.forRoot([]),
