@@ -66,7 +66,7 @@
         <div class="product-content product-store d-flex justify-content-between flex-wrap">
 
             <div class="col-lg-4 col-md-12 col-sm-12 mb-4 pe-3" *ngFor="let shoe of shoes">
-                <app-shoe-card [shoe]="shoe"></app-shoe-card>
+                <app-shoe-card [shoe]="shoe" (shoeDeleted)="onShoeDeleted($event)"></app-shoe-card>
             </div>
 
         </div>

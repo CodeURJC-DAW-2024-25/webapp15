@@ -82,25 +82,9 @@ export class ShopComponent implements OnInit {
         this.hasMoreShoes = true;
     }
 
-    openDeleteModal(shoe: ShoeDTO): void {
-        this.selectedShoe = shoe; // Set the selected shoe to be deleted
-    }
+    onShoeDeleted(shoeId: number): void {
+        console.log('Shoe deleted:', shoeId); // Log the deleted shoe ID
+        this.shoes = this.shoes.filter(shoe => shoe.id !== shoeId); // Remove the deleted shoe from the list
 
-    deleteShoe(){
-        if(!this.selectedShoe) return; // If no shoe is selected, do nothing
-
-        this.shoeService.deleteShoe(this.selectedShoe.id!).subscribe({
-            next:() =>{
-                this.shoes = this.shoes.filter(shoe => shoe.id !== this.selectedShoe?.id); // Remove the deleted shoe from the list
-                this.selectedShoe = undefined; // Reset the selected shoe
-                const modal = document.getElementById('modaltoggle');
-                // Ensure Bootstrap's JavaScript is available
-                const bootstrapModal = (window as any).bootstrap.Modal.getInstance(modal!); // Get the Bootstrap modal instance
-                bootstrapModal?.hide(); // Hide the modal
-            },
-            error: () => {
-                console.error('Error deleting shoe'); // Log error if deletion fails
-            }
-        });
     }
 }

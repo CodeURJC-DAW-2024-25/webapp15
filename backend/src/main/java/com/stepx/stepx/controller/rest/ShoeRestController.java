@@ -171,7 +171,7 @@ public class ShoeRestController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteShoe(@PathVariable Long id) {
         shoeService.deleteShoe(id);
-        return ResponseEntity.ok("Shoe deleted successfully.");
+        return ResponseEntity.noContent().build();
     }
 
 }

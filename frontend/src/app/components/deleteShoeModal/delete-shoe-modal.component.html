@@ -1,0 +1,15 @@
+<div class="modal-header">
+    <h5 class="modal-title">Confirm Deletion</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="cancel()"></button>
+  </div>
+  <div class="modal-body">
+    Are you sure you want to delete <strong>{{ shoe.name }}</strong>?
+  </div>
+  <div class="image-holder">
+    <img [src]="shoeService.getImageUrl(shoe.id, 1)" alt="Shoes" style="width: 100%; max-height: 100%;">
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-secondary" (click)="cancel()">Cancel</button>
+    <button class="btn btn-danger" (click)="confirmDelete()">Delete</button>
+  </div>
+  
