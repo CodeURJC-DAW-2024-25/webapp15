@@ -1,0 +1,108 @@
+<section class="login-detail py-5">
+    <div class="container">
+      <div class="row">
+        <!-- Form Column -->
+        <div class="col-lg-9 mx-auto">
+          <div class="login-form bg-light p-5" style="background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(50px); -webkit-backdrop-filter: blur(50px); border-radius: 10px; padding: 20px; box-shadow: 0px 40px 100px rgba(73, 2, 2, 0.5);">
+            <h2 class="text-center mb-4">Create Shoe Product</h2>
+            
+            <form [formGroup]="shoeForm" (ngSubmit)="submitForm()">
+              <!-- Error message -->
+              <div *ngIf="errorMessage" class="alert alert-danger">
+                {{ errorMessage }}
+              </div>
+  
+              <h5 class="widget-title text-decoration-underline pe-2">Shoe Information:</h5>
+              
+              <div class="mb-3">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" id="name" formControlName="name" class="form-control ps-3 text-input">
+                <div *ngIf="formControls['name'].invalid && formControls['name'].touched" class="text-danger mt-1">
+                  Name is required
+                </div>
+              </div>
+            
+              <div class="mb-3">
+                <label for="shortDescription" class="form-label">Short Description</label>
+                <textarea id="shortDescription" formControlName="shortDescription" class="form-control ps-3 text-input" rows="3"></textarea>
+                <div *ngIf="formControls['shortDescription'].invalid && formControls['shortDescription'].touched" class="text-danger mt-1">
+                  Short description is required
+                </div>
+              </div>
+              
+              <div class="mb-3">
+                <label for="longDescription" class="form-label">Long Description</label>
+                <textarea id="longDescription" formControlName="longDescription" class="form-control ps-3 text-input" rows="5"></textarea>
+                <div *ngIf="formControls['longDescription'].invalid && formControls['longDescription'].touched" class="text-danger mt-1">
+                  Long description is required
+                </div>
+              </div>
+  
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="price" class="form-label">Price</label>
+                  <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input type="number" id="price" formControlName="price" class="form-control">
+                  </div>
+                  <div *ngIf="formControls['price'].invalid && formControls['price'].touched" class="text-danger mt-1">
+                    Price is required and must be greater than 0
+                  </div>
+                </div>
+              </div>
+            
+              <h5 class="widget-title text-decoration-underline pe-2">Shoe Images:</h5>
+              
+              <div class="mb-3">
+                <label for="picture1" class="form-label">Picture 1 (Main Image)</label>
+                <input type="file" id="picture1" class="form-control ps-3 text-input" accept="image/*" (change)="onFileSelected($event, 1)">
+                <small class="text-danger" *ngIf="!selectedFiles['image1'] && formControls['name'].touched">This image is required</small>
+              </div>
+              
+              <div class="mb-3">
+                <label for="picture2" class="form-label">Picture 2 (Optional)</label>
+                <input type="file" id="picture2" class="form-control ps-3 text-input" accept="image/*" (change)="onFileSelected($event, 2)">
+              </div>
+              
+              <div class="mb-3">
+                <label for="picture3" class="form-label">Picture 3 (Optional)</label>
+                <input type="file" id="picture3" class="form-control ps-3 text-input" accept="image/*" (change)="onFileSelected($event, 3)">
+              </div>
+            
+              <h5 class="widget-title text-decoration-underline pe-2">Brand and Category:</h5>
+            
+              <div class="mb-3">
+                <label for="category" class="form-label">Category</label>
+                <select id="category" formControlName="category" class="form-control ps-3 text-input">
+                  <option value="" selected>Select a category</option>
+                  <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
+                </select>
+                <div *ngIf="formControls['category'].invalid && formControls['category'].touched" class="text-danger mt-1">
+                  Category is required
+                </div>
+              </div>
+            
+              <div class="mb-3">
+                <label for="brand" class="form-label">Brand</label>
+                <select id="brand" formControlName="brand" class="form-control ps-3 text-input">
+                  <option value="" selected>Select Brand</option>
+                  <option *ngFor="let brand of brands" [value]="brand">{{ brand }}</option>
+                </select>
+                <div *ngIf="formControls['brand'].invalid && formControls['brand'].touched" class="text-danger mt-1">
+                  Brand is required
+                </div>
+              </div>
+            
+              <div class="d-grid gap-2 mt-4">
+                <button type="submit" class="btn btn-red hvr-sweep-to-right dark-sweep" [disabled]="isSubmitting">
+                  <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                  Publish Shoe
+                </button>
+                <button type="button" class="btn btn-outline-gray hvr-sweep-to-right dark-sweep" (click)="cancel()">Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>

@@ -22,7 +22,8 @@ import { MoneyGainedChartComponent } from './components/admin/money-gained-chart
 import { HeaderComponent } from './components/header/header.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap'; 
 import { CartModalComponent } from './components/cartModal/cartModal.component'
-import { FeaturedProductsComponent } from './components/featuredProducts/featuredProducts.component'; 
+import { FeaturedProductsComponent } from './components/featuredProducts/featuredProducts.component';
+import { CreateShoeComponent } from './components/create-shoe/create-shoe.component'; 
 
 
 @NgModule({
@@ -40,7 +41,8 @@ import { FeaturedProductsComponent } from './components/featuredProducts/feature
     AdminComponent,
     AdminDashboardComponent,
     OrderCountChartComponent,
-    MoneyGainedChartComponent
+    MoneyGainedChartComponent,
+    CreateShoeComponent
   ],
   imports: [
     HttpClientModule,

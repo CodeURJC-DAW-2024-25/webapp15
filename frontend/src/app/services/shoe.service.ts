@@ -46,6 +46,17 @@ export class ShoeService {
 
     getShoeById(shoeId: number): Observable<ShoeDTO> {
         return this.http.get<ShoeDTO>(`${this.baseUrl}/${shoeId}`);
+  
     } 
-    
+    createShoe(shoe: ShoeDTO): Observable<ShoeDTO> {
+        return this.http.post<ShoeDTO>(this.baseUrl, shoe);
+    }
+
+    uploadImage(shoeId: number, imageNumber: number, formData: FormData): Observable<any> {
+        // Make sure Content-Type is not set automatically (let browser set it with boundary)
+        return this.http.post(`${this.baseUrl}/${shoeId}/image/${imageNumber}`, formData, {
+            reportProgress: true,
+            observe: 'response'
+        });
+    }
 }
