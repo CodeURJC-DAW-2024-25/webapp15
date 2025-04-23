@@ -12,9 +12,10 @@ interface AuthResponse {
 
 @Injectable({ providedIn: 'root' })
 export class LoginService {
-  private readonly API_URL = "/api/v1";
+  private readonly API_URL = "https://localhost:8443/api/v1";
   public user: UserDTO | null = null;
   public logged: boolean = false;
+  public isAdmin: boolean = false;
 
   constructor(private http: HttpClient) {}
 
@@ -31,19 +32,21 @@ export class LoginService {
 
   public reqIsLogged() {
     this.http.get<UserDTO>(`${this.API_URL}/user/me`, { withCredentials: true })
-      .subscribe(
-        (response) => {
-          console.log("User logged: " + JSON.stringify(response));
+      .subscribe({
+        next: (response) => {
           this.user = response;
           this.logged = true;
+          this.isAdmin = response.roles.includes("ADMIN");
         },
-        (error) => {
+        error: (error) => {
           this.user = null;
           this.logged = false;
+          this.isAdmin = false;
+
           if (error.status !== 404) {
             console.error("Error when asking if logged: " + JSON.stringify(error));
           }
         }
-      );
+      });
   }
 }

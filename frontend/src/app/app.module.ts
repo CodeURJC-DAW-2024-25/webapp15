@@ -25,7 +25,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CartModalComponent } from './components/cartModal/cartModal.component'
 import { FeaturedProductsComponent } from './components/featuredProducts/featuredProducts.component';
 import { CreateShoeComponent } from './components/create-shoe/create-shoe.component'; 
-import { DeleteShoeModalComponent } from './components/deleteShoeModal/delete-shoe-modal.component';
+import { DeleteShoeModalComponent } from './components/modals/deleteShoeModal/delete-shoe-modal.component';
 
 
 @NgModule({

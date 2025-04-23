@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { ShoeDTO } from '../../dtos/shoe.dto';
-import { ShoeService } from '../../services/shoe.service';
+import { ShoeDTO } from '../../../dtos/shoe.dto';
+import { ShoeService } from '../../../services/shoe.service';
 
 @Component({
   selector: 'app-delete-shoe-modal',
