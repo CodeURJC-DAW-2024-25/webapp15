@@ -65,7 +65,7 @@ export class CreateShoeComponent implements OnInit {
     const shoeData: ShoeDTO = {
       id: 0,
       name: this.shoeForm.value.name,
-      shortDescription: this.shoeForm.value.shortDescription,
+      shortdescription: this.shoeForm.value.shortDescription,
       longDescription: this.shoeForm.value.longDescription,
       price: this.shoeForm.value.price,
       brand: this.shoeForm.value.brand,

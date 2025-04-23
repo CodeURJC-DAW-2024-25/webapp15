@@ -6,6 +6,7 @@ import { ShoeDTO } from '../../dtos/shoe.dto';
 @Component({
     selector: 'app-shoe-edit',
     templateUrl: './shoe-edit.component.html',
+    styleUrl: '../../../assets/css/style.css'
 
 })
 export class ShoeEditComponent implements OnInit{
