@@ -1,5 +1,5 @@
 // money-gained-chart.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { AdminDataService } from '../../services/admin.service';
 
 @Component({
@@ -23,7 +23,7 @@ export class MoneyGainedChartComponent implements OnInit {
   showYAxisLabel = true;
   yAxisLabel = 'Revenue ($)';
   timeline = false;
-  colorScheme: string = 'natural'; // or other predefined scheme like 'natural', 'cool', etc.
+  colorScheme: string = 'cool'; // or other predefined scheme like 'natural', 'cool', etc.
 
 
   
@@ -34,6 +34,7 @@ export class MoneyGainedChartComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadChartData();
+    this.updateChartSize();
   }
 
   loadChartData(): void {
@@ -67,6 +68,17 @@ export class MoneyGainedChartComponent implements OnInit {
   
    resizeChart(width: any): void {
     this.view = [width, 320]
+  }
+
+  @HostListener('window:resize')
+  onResize() {
+    this.updateChartSize();
+  }
+
+  updateChartSize() {
+    const width = window.innerWidth * 0.9;
+    const height = window.innerHeight * 0.6;
+    this.view = [width, height];
   }
 
   // Format the y-axis tick values as dollars

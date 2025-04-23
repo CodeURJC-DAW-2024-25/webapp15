@@ -7,15 +7,21 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.mysql.cj.x.protobuf.MysqlxCrud.Order;
 import com.stepx.stepx.dto.CouponDTO;
 import com.stepx.stepx.dto.OrderItemDTO;
+import com.stepx.stepx.dto.UserDTO;
 import com.stepx.stepx.model.OrderItem;
 import com.stepx.stepx.service.CouponService;
+import com.stepx.stepx.service.EmailService;
 import com.stepx.stepx.service.OrderItemService;
-
+import com.stepx.stepx.service.UserService;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +33,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 
 @RestController
+
 @RequestMapping("/api/v1/coupon")
+
 public class CouponRestController {
         private final CouponService couponService;
 
@@ -35,6 +43,10 @@ public class CouponRestController {
         public CouponRestController(CouponService couponService) {
         this.couponService = couponService;
     }
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private EmailService emailService;
 
     // Obtener un cupón por ID
     @GetMapping("/{id}")
@@ -44,6 +56,34 @@ public class CouponRestController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(coupon);
+    }
+        @GetMapping("/send")
+    public ResponseEntity<Map<String, Object>> sendCouponEmailRest(@RequestParam Long userId) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            UserDTO user = userService.findUserById(userId);
+            if (user != null) {
+                String toEmail = user.email();
+                String subject = "Your Special Coupon from StepX";
+
+                Map<String, Object> templateModel = new HashMap<>();
+                templateModel.put("username", user.username());
+
+                emailService.sendEmail(toEmail, subject, templateModel);
+
+                response.put("success", true);
+                response.put("message", "Coupon sent to email: " + toEmail);
+                return ResponseEntity.ok(response);
+            } else {
+                response.put("success", false);
+                response.put("message", "User not found");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Error: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
 
     // Obtener todos los cupones

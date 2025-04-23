@@ -125,7 +125,7 @@ public class UserController {
         return "partials/quick-view-cart-modal";
     }
 
-    @GetMapping("/send-coupon")//a dto
+    @GetMapping("/send-coupon")
     public String sendCouponEmail(@RequestParam Long userId, RedirectAttributes redirectAttributes) {
         try {
             UserDTO optionalUser = userService.findUserById(userId);

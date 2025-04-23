@@ -16,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,6 +38,7 @@ import com.stepx.stepx.model.User;
 import com.stepx.stepx.repository.*;
 import com.stepx.stepx.service.*;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentRequest;
 
@@ -81,8 +83,9 @@ private ObjectMapper objectMapper;
         }
         return ResponseEntity.ok(userDto);
     }
+   
     @GetMapping("/chartuser/{userId}")
-public ResponseEntity<String> getUserMonthlySpendingChart(@PathVariable Long userId) {
+public ResponseEntity<Map<String, Object>> getUserMonthlySpendingChart(@PathVariable Long userId) {
     // Get monthly spending data for the user
     List<Map<String, Object>> monthlySpending = userService.getMonthlySpendingByUserId(userId);
 
@@ -112,14 +115,9 @@ public ResponseEntity<String> getUserMonthlySpendingChart(@PathVariable Long use
     chartData.put("labels", monthNames);
     chartData.put("data", spendingData);
 
-    try {
-        // Convert to JSON 
-        String chartDataJson = objectMapper.writeValueAsString(chartData);
-        return ResponseEntity.ok(chartDataJson);
-    } catch (JsonProcessingException e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing chart data");
-    }
+    return ResponseEntity.ok(chartData);
 }
+
 
     // create User
     @PostMapping
@@ -189,5 +187,12 @@ public ResponseEntity<String> getUserMonthlySpendingChart(@PathVariable Long use
 
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/me")
+    public ResponseEntity<UserDTO> getCurrentUser() {
+        UserDTO userDTO = userService.getAuthenticatedUser();
+        return ResponseEntity.ok(userDTO);
+    }
+
 
 }

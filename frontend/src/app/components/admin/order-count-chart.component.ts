@@ -1,5 +1,5 @@
 // order-count-chart.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { AdminDataService } from '../../services/admin.service';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 
@@ -34,8 +34,10 @@ export class OrderCountChartComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadChartData();
+    this.updateChartSize();
   }
  
+
 
 
   loadChartData(): void {
@@ -56,6 +58,16 @@ export class OrderCountChartComponent implements OnInit {
   resizeChart(width: any): void {
     this.view = [width, 320]
   }
+    @HostListener('window:resize')
+    onResize() {
+      this.updateChartSize();
+    }
+  
+    updateChartSize() {
+      const width = window.innerWidth * 0.9;
+      const height = window.innerHeight * 0.6;
+      this.view = [width, height];
+    }
 
   // Transform data from API format to ngx-charts format
   private transformChartData(response: any): any[] {
@@ -72,6 +84,9 @@ export class OrderCountChartComponent implements OnInit {
       }
     ];
   }
+  yAxisTickFormatting = (value: number) => {
+    return value % 1 === 0 ? value.toString() : '';
+  };
 
   onSelect(event: any): void {
     console.log('Item clicked', event);
