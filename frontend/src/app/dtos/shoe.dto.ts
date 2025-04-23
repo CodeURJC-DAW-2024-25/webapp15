@@ -5,7 +5,7 @@ import { ShoeSizeStockDTO } from './shoesizestock.dto';
 export interface ShoeDTO {
     id: number;                    // Long in Java mapped to number in TypeScript
     name: string;
-    shortDescription: string;       // Short description of the shoe
+    shortdescription: string;       // Short description of the shoe
     longDescription: string;       // Long description of the shoe
     price: number;                  // BigDecimal in Java mapped to number in TypeScript
     brand: string;

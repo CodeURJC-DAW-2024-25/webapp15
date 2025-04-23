@@ -12,6 +12,7 @@ import { CouponComponent } from './components/coupon/coupon.component';
 import { LoginModalComponent } from './components/login-modal/login-modal.component';
 import { ShopComponent } from './components/shop/shop.component';
 import { ShoeCardComponent } from './components/shop/shoe-card.component';
+import { ShoeEditComponent } from './components/shoe-edit/shoe-edit.component';
 import { ProfileDataComponent } from './components/profile-data/profile-data.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AdminComponent } from './components/admin/admin.component';
@@ -29,6 +30,7 @@ import { MoneyGainedChartComponent } from './components/admin/money-gained-chart
     LoginModalComponent,
     ShopComponent,
     ShoeCardComponent,
+    ShoeEditComponent,
     ProfileDataComponent,
     AdminComponent,
     AdminDashboardComponent,

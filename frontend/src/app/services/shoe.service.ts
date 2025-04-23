@@ -40,6 +40,13 @@ export class ShoeService {
         return this.http.put<ShoeDTO>(`${this.baseUrl}/${shoeId}`, shoe);
     }
 
+    updateImage(id:number,number: 1|2|3, file:File){
+        const form = new FormData();
+        form.append('file',file);
+        return this.http.put(`${this.baseUrl}/${id}/image/${number}`,form); // Making a PUT request to update the shoe image
+    }
+
+
     deleteShoe(shoeId: number): Observable<any> {
         return this.http.delete(`${this.baseUrl}/${shoeId}`);
     }

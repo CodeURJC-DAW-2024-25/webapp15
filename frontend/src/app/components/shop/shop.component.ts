@@ -24,6 +24,8 @@ export class ShopComponent implements OnInit {
     
     selectedCategory : string |null = null; // Variable to hold the selected category for filtering
 
+    selectedShoe?:ShoeDTO;
+
     constructor(private shoeService: ShoeService) { } // Injecting the ShoeService
     
     ngOnInit(): void {
@@ -78,5 +80,27 @@ export class ShopComponent implements OnInit {
         this.shoes = [];
         this.currentPage = 0;
         this.hasMoreShoes = true;
+    }
+
+    openDeleteModal(shoe: ShoeDTO): void {
+        this.selectedShoe = shoe; // Set the selected shoe to be deleted
+    }
+
+    deleteShoe(){
+        if(!this.selectedShoe) return; // If no shoe is selected, do nothing
+
+        this.shoeService.deleteShoe(this.selectedShoe.id!).subscribe({
+            next:() =>{
+                this.shoes = this.shoes.filter(shoe => shoe.id !== this.selectedShoe?.id); // Remove the deleted shoe from the list
+                this.selectedShoe = undefined; // Reset the selected shoe
+                const modal = document.getElementById('modaltoggle');
+                // Ensure Bootstrap's JavaScript is available
+                const bootstrapModal = (window as any).bootstrap.Modal.getInstance(modal!); // Get the Bootstrap modal instance
+                bootstrapModal?.hide(); // Hide the modal
+            },
+            error: () => {
+                console.error('Error deleting shoe'); // Log error if deletion fails
+            }
+        });
     }
 }
