@@ -16,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,6 +38,7 @@ import com.stepx.stepx.model.User;
 import com.stepx.stepx.repository.*;
 import com.stepx.stepx.service.*;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentRequest;
 
@@ -185,5 +187,12 @@ public ResponseEntity<Map<String, Object>> getUserMonthlySpendingChart(@PathVari
 
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/me")
+    public ResponseEntity<UserDTO> getCurrentUser() {
+        UserDTO userDTO = userService.getAuthenticatedUser();
+        return ResponseEntity.ok(userDTO);
+    }
+
 
 }
