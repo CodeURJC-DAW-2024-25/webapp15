@@ -2,6 +2,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LoginService } from '../../services/login.service';
+import * as Cookies from 'js-cookie'; // Importa js-cookie
 
 @Component({
   selector: 'app-login-modal',
@@ -30,7 +31,6 @@ export class LoginModalComponent {
     private loginService: LoginService
   ) {}
 
- 
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
   }
@@ -42,13 +42,27 @@ export class LoginModalComponent {
       this.loginError = null;
       this.isSuccess = false;
 
+      alert('[FRONTEND] Credenciales enviadas: al form: username' + this.credentials.username + " con password: " + this.credentials.password);  // Agrega trazas para verificar las credenciales
+
       this.loginService.logIn(this.credentials.username, this.credentials.password)
         .subscribe({
           next: (response) => {
-            this.isLoading = false;
             if (response.status === 'SUCCESS') {
               this.isSuccess = true;
               this.message = 'Successfully logged in.';
+              
+              this.loginService.getCurrentUser().subscribe({
+                next: (user) => {
+                  if (user) {
+                    Cookies.set('userId', user.id.toString(), { expires: 7, path: '/' });
+                    alert('[FRONTEND] ID de usuario guardado en la cookie: ' + user.id);
+                  }
+                },
+                error: (err) => {
+                  console.error('[FRONTEND] Error al obtener usuario:', err);
+                }
+              });
+
               this.loginSuccess.emit();
               this.closeModal.emit();
               this.router.navigate(['/']);
@@ -61,17 +75,12 @@ export class LoginModalComponent {
           error: (err) => {
             this.isLoading = false;
             this.isSuccess = false;
-            if (err.status === 500) {
-              this.message = 'Incorrect username or password. Please try again';
-            } else if (err.status === 0) {
-              this.message = 'Cannot connect to the server. Please check your internet connection';
-            } else {
-              this.message = 'Unexpected error. Please try again';
-            }
+            this.message = err.message || 'Unexpected error. Please try again';
             this.loginError = this.message;
-            console.error('Login Error: ', err);
           }
         });
+    } else {
+      return;
     }
   }
 
