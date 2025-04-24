@@ -144,6 +144,15 @@ public class User implements UserDetails {
         return roles;
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        for (String role : roles) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + role)); // Add "ROLE_" prefix
+        }
+        return authorities; // Return the converted roles as GrantedAuthority
+    }
+
     public void setRoles(List<String> roles) {
         this.roles = roles;
     }
@@ -161,15 +170,6 @@ public class User implements UserDetails {
     }
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        for (String role : roles) {
-            authorities.add(new SimpleGrantedAuthority(role));
-        }
-        return authorities;
-    }
-
-    @Override
     public String getPassword() {
         return encodedPassword;
     }
@@ -183,4 +183,6 @@ public class User implements UserDetails {
         this.orders.add(orderShoes);
         orderShoes.setUser(this);
     }
+
+    
 }

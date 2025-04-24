@@ -23,14 +23,14 @@
                   
 
                     <!--modal of carriage(check)-->
-                    <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#modaltoggle">
+                    <button type="button" class="btn btn-light" (click)="openAddToCartModal()" >
                         <svg class="shopping-carriage">
                           <use xlink:href="#shopping-carriage"></use>
                         </svg>
                     </button>
                           
                     <!--modal of preview (check)-->
-                      <button type="button" class="btn btn-light"  data-bs-toggle="modal" data-bs-target="#modaltoggle">
+                      <button type="button" class="btn btn-light"  (click)="openPreviewShoesModal()">
                         <svg class="quick-view">
                             <use xlink:href="#quick-view"></use>
                         </svg>

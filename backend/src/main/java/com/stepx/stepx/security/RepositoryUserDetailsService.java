@@ -1,7 +1,9 @@
 package com.stepx.stepx.security;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,17 +29,20 @@ public class RepositoryUserDetailsService implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		User user = userRepository.findByUsername(username)
-				.orElseThrow(() -> {
-					return new UsernameNotFoundException("User not found");
-				});
+            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-		List<GrantedAuthority> roles = new ArrayList<>();// spring grantedAuthority
-		for (String role : user.getRoles()) {
-			roles.add(new SimpleGrantedAuthority("ROLE_" + role));// spring waits until roles start as ROLE_
-		}
+    List<GrantedAuthority> roles = new ArrayList<>();
+    for (String role : user.getRoles()) {
+        roles.add(new SimpleGrantedAuthority("ROLE_" + role));
+    }
 
-		return new org.springframework.security.core.userdetails.User(user.getUsername(),
-				user.getEncodedPassword(), roles);
+	Collection<? extends GrantedAuthority> grantedAuthorities = user.getAuthorities();
 
-	}
+   List<String> rolesAsStrings = grantedAuthorities.stream()
+    .map(GrantedAuthority::getAuthority) 
+    .collect(Collectors.toList());
+
+	user.setRoles(rolesAsStrings);
+    return user; 
+}
 }
