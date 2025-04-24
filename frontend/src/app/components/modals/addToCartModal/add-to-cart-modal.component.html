@@ -1,0 +1,33 @@
+
+<button type="button" class="btn-close" (click)="cancel()" aria-label="Close" style="position: relative; left: 95%;"></button>
+
+  
+  <div class="modal-body">
+    <div class="message-confirmation">
+      <h1 class="text-center" style="font-family: sans-serif; font-size: xx-large;">DO YOU WANT IT IN YOUR ORDER?</h1>
+    </div>
+  
+    <div class="image-confirmation text-center">
+      <img src="https://cdn-icons-gif.flaticon.com/6172/6172531.gif"
+           alt="cart-image-confirmation"
+           style="height: 150px; width: auto; margin: 0 auto;">
+  
+      <div class="d-flex justify-content-center align-items-center gap-4 shadow p-3 my-4">
+        <img [src]="shoeService.getImageUrl(shoe.id, 1)"
+             alt="Product Image"
+             style="width: 30%; max-height: 30%;">
+  
+        <div class="info-confirmation text-start w-50">
+          <h4 class="text-uppercase">{{ shoe.name }}</h4>
+          <p><strong>SIZE:</strong> <span class="text-dark">M</span></p>
+          <p><strong>PRICE:</strong> <span class="text-dark">${{ shoe.price }}</span></p>
+          <p class="text-dark">{{ shoe.shortdescription }}</p>
+        </div>
+      </div>
+    </div>
+  
+    <div class="text-center">
+      <button class="btn btn-red hvr-sweep-to-right dark-sweep" (click)="confirmAddToCart()">Add to cart</button>
+    </div>
+  </div>
+  

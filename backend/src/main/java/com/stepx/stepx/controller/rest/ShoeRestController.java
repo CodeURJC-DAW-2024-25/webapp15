@@ -42,6 +42,7 @@ import com.stepx.stepx.service.ShoeService;
 import com.stepx.stepx.service.ShoeSizeStockService;
 import com.stepx.stepx.service.UserService;
 
+import elemental2.dom.Response;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -160,10 +161,17 @@ public class ShoeRestController {
         return ResponseEntity.ok(shoeOptional.get());
     }
 
+    @PutMapping("/{shoeId}/image/{number}")
+    public ResponseEntity<?> updateImage(@PathVariable Long shoeId, @PathVariable int number, @RequestParam("file") MultipartFile file) throws IOException {
+        shoeService.storeImage(shoeId, number, file.getInputStream(), file.getSize());
+        return ResponseEntity.ok().build();
+    }
+    
+
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteShoe(@PathVariable Long id) {
         shoeService.deleteShoe(id);
-        return ResponseEntity.ok("Shoe deleted successfully.");
+        return ResponseEntity.noContent().build();
     }
 
 }

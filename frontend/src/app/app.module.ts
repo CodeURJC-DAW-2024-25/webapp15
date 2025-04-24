@@ -12,6 +12,7 @@ import { CouponComponent } from './components/coupon/coupon.component';
 import { LoginModalComponent } from './components/login-modal/login-modal.component';
 import { ShopComponent } from './components/shop/shop.component';
 import { ShoeCardComponent } from './components/shop/shoe-card.component';
+import { ShoeEditComponent } from './components/shoe-edit/shoe-edit.component';
 import { ProfileDataComponent } from './components/profile-data/profile-data.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AdminComponent } from './components/admin/admin.component';
@@ -22,7 +23,9 @@ import { MoneyGainedChartComponent } from './components/admin/money-gained-chart
 import { HeaderComponent } from './components/header/header.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap'; 
 import { CartModalComponent } from './components/cartModal/cartModal.component'
-import { FeaturedProductsComponent } from './components/featuredProducts/featuredProducts.component'; 
+import { FeaturedProductsComponent } from './components/featuredProducts/featuredProducts.component';
+import { CreateShoeComponent } from './components/create-shoe/create-shoe.component'; 
+import { DeleteShoeModalComponent } from './components/modals/deleteShoeModal/delete-shoe-modal.component';
 
 
 @NgModule({
@@ -37,10 +40,13 @@ import { FeaturedProductsComponent } from './components/featuredProducts/feature
     LoginModalComponent,
     ShopComponent,
     ShoeCardComponent,
+    ShoeEditComponent,
     AdminComponent,
     AdminDashboardComponent,
     OrderCountChartComponent,
-    MoneyGainedChartComponent
+    MoneyGainedChartComponent,
+    CreateShoeComponent,
+    DeleteShoeModalComponent
   ],
   imports: [
     HttpClientModule,

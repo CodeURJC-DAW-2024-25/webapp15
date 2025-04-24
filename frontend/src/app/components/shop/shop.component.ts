@@ -24,6 +24,8 @@ export class ShopComponent implements OnInit {
     
     selectedCategory : string |null = null; // Variable to hold the selected category for filtering
 
+    selectedShoe?:ShoeDTO;
+
     constructor(private shoeService: ShoeService) { } // Injecting the ShoeService
     
     ngOnInit(): void {
@@ -78,5 +80,11 @@ export class ShopComponent implements OnInit {
         this.shoes = [];
         this.currentPage = 0;
         this.hasMoreShoes = true;
+    }
+
+    onShoeDeleted(shoeId: number): void {
+        console.log('Shoe deleted:', shoeId); // Log the deleted shoe ID
+        this.shoes = this.shoes.filter(shoe => shoe.id !== shoeId); // Remove the deleted shoe from the list
+
     }
 }

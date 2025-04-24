@@ -18,23 +18,7 @@ export class LoginService {
     private router: Router // Inyectar Router
   ) {}
 
-  // Método para iniciar sesión
-  // logIn(username: string, password: string): Observable<AuthResponse> {
-  //   return this.http.post<AuthResponse>(
-  //     `${this.API_URL}/auth/login`, 
-  //     { username, password }, 
-  //     { withCredentials: true }
-  //   ).pipe(
-  //     tap((res) => {
-  //       if (res.status === 'SUCCESS') {
-  //         alert('[TRACE] Login exitoso');
-  //       } else {
-  //         alert('[TRACE] Error al iniciar sesión');
-  //       }
-  //     })
-  //   );
-  // }
-
+  
   logIn(username: string, password: string): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(
       `${this.API_URL}/auth/login`,
@@ -81,27 +65,7 @@ export class LoginService {
   
   
 
-  // Obtener información del usuario autenticado
-  // getCurrentUser(): Observable<UserDTO | null> {
-  //   return this.http.get<UserDTO>(`${this.API_URL}/auth/me`, {
-  //     withCredentials: true
-  //   }).pipe(
-  //     catchError((error: HttpErrorResponse) => {
-  //       if (error.status === 401) {
-  //         return this.refreshToken().pipe(
-  //           switchMap(() => this.getCurrentUser()),
-  //           catchError(() => {
-  //             this.router.navigate(['/login']);
-  //             alert('[Traza Eli] Error al autenticar el login');
-  //             return of(null);
-  //           })
-  //         );
-  //       }
-  //       return of(null);
-  //     })
-  //   );
-  // }
-
+  
   getCurrentUser(): Observable<UserDTO | null> {
     let userData: UserDTO | null = null;
   
@@ -146,5 +110,4 @@ export class LoginService {
       })
     );
   }
-
 }

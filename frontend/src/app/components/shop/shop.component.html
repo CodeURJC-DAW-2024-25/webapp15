@@ -55,8 +55,8 @@
       <main class="col-lg-10 col-md-8">
         <div>
             <div class="btn-wrap">
-                <a href="/create-product">
-                    <button href="/create-product" class="btn btn-black btn-medium text-uppercase hvr-sweep-to-right"
+                <a routerLink="/create-shoe">
+                    <button routerLink="/create-shoe" class="btn btn-black btn-medium text-uppercase hvr-sweep-to-right"
                         style="margin-bottom: 30px;">Create Shoe</button>
                 </a>
             </div>
@@ -66,7 +66,7 @@
         <div class="product-content product-store d-flex justify-content-between flex-wrap">
 
             <div class="col-lg-4 col-md-12 col-sm-12 mb-4 pe-3" *ngFor="let shoe of shoes">
-                <app-shoe-card [shoe]="shoe"></app-shoe-card>
+                <app-shoe-card [shoe]="shoe" (shoeDeleted)="onShoeDeleted($event)"></app-shoe-card>
             </div>
 
         </div>
@@ -85,4 +85,6 @@
     </div> 
   </div>
 </div>
+
+
   
