@@ -80,7 +80,7 @@ public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
             .requestMatchers(HttpMethod.PUT, "/api/v1/admin/**", "/api/v1/coupon/**", "/api/v1/ShoeSizeStock/**").hasRole("ADMIN")
             .requestMatchers(HttpMethod.POST, "/api/v1/admin/**", "/api/v1/coupon/**", "/api/v1/Shoe/**", "/api/v1/ShoeSizeStock/**").hasRole("ADMIN")
             // PUBLIC ENDPOINTS
-            .requestMatchers("/api/v1/shoe", "/api/v1/image/**", "/api/v1/Shoe/**").permitAll()
+            .requestMatchers("/api/v1/Shoes", "/api/v1/image/**", "/api/v1/Shoe/**").permitAll()
             .anyRequest().permitAll()
         );
 

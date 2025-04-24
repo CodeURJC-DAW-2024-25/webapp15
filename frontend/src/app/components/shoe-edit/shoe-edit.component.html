@@ -1,0 +1,114 @@
+<section class="login-detail py-5">
+    <!-- Spinner -->
+    <p class="text-center" *ngIf="loading">Loading…</p>
+  
+    <!-- Formulario -->
+    <div class="container" *ngIf="!loading">
+      <div class="row">
+        <div class="col-lg-9 mx-auto">
+          <div class="login-form bg-light p-5"
+               style="background:rgba(0,0,0,.2);backdrop-filter:blur(50px);
+                      border-radius:10px;box-shadow:0 40px 100px rgba(73,2,2,.5);">
+  
+            <h2 class="text-center mb-4">Edit Shoe Product</h2>
+  
+            <!--  ─── NgForm ───  -->
+            <form *ngIf="shoe" #f="ngForm" (ngSubmit)="save()" enctype="multipart/form-data" novalidate>
+  
+              <!-- ‣ Shoe information -->
+              <h5 class="widget-title text-decoration-underline pe-2">Shoe information</h5>
+  
+              <div class="mb-3">
+                <label class="form-label">Name</label>
+                <input class="form-control" name="name"
+                       [(ngModel)]="shoe.name" required>
+              </div>
+  
+              <div class="mb-3">
+                <label class="form-label">Short description</label>
+                <textarea class="form-control" rows="3"
+                          name="shortdescription"
+                          [(ngModel)]="shoe.shortdescription" required></textarea>
+              </div>
+  
+              <div class="mb-3">
+                <label class="form-label">Long description</label>
+                <textarea class="form-control" rows="5"
+                          name="longDescription"
+                          [(ngModel)]="shoe.longDescription"></textarea>
+              </div>
+  
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Price</label>
+                  <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input type="number" class="form-control"
+                           name="price"
+                           [(ngModel)]="shoe.price"
+                           min="0" step="0.01" required>
+                  </div>
+                </div>
+              </div>
+  
+              <!-- ‣ Images -->
+              <h5 class="widget-title text-decoration-underline pe-2">Shoe images</h5>
+              <div class="mb-3">
+                <label class="form-label">Image 1</label>
+                <input type="file" class="form-control"
+                       (change)="onFileChange($event,'image1')">
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Image 2</label>
+                <input type="file" class="form-control"
+                       (change)="onFileChange($event,'image2')">
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Image 3</label>
+                <input type="file" class="form-control"
+                       (change)="onFileChange($event,'image3')">
+              </div>
+  
+              <!-- ‣ Brand & Category -->
+              <h5 class="widget-title text-decoration-underline pe-2">Brand & Category</h5>
+  
+              <div class="mb-3">
+                <label class="form-label">Category</label>
+                <select class="form-select" name="category"
+                        [(ngModel)]="shoe.category" required>
+                  <option value="SPORT">Sport</option>
+                  <option value="CASUAL">Casual</option>
+                  <option value="URBAN">Urban</option>
+                </select>
+              </div>
+  
+              <div class="mb-3">
+                <label class="form-label">Brand</label>
+                <select class="form-select" name="brand"
+                        [(ngModel)]="shoe.brand" required>
+                  <option value="NIKE">Nike</option>
+                  <option value="PUMA">Puma</option>
+                  <option value="ADIDAS">Adidas</option>
+                  <option value="NEW_BALANCE">New Balance</option>
+                </select>
+              </div>
+  
+              <!-- Botones -->
+              <div class="d-grid gap-2 mt-4">
+                <button class="btn btn-red"
+                        type="submit">Update shoe</button>
+  
+                <button type="button"
+                        class="btn btn-outline-gray"
+                        (click)="cancel()">Cancel</button>
+              </div>
+            </form>
+  
+            <!-- mensaje de error -->
+            <p class="text-danger text-center mt-3" *ngIf="error">{{ error }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  

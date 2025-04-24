@@ -65,21 +65,25 @@
                     </li>
 
                     <!-- Icono de usuario (login/profile) -->
-                    <li *ngIf="!isAuthenticated" class="pe-3">
+                    <li *ngIf="!loginService.logged" class="pe-3">
                         <a [routerLink]="['/login']" data-bs-toggle="modal" data-bs-target="#modallogin" class="border-0">
                             <svg class="user" width="24" height="24">
                                 <use xlink:href="#user"></use>
                             </svg>
                         </a>
                     </li>
+                    
 
-                    <li *ngIf="isAuthenticated" class="pe-3">
+                    <li *ngIf="loginService.logged" class="pe-3">
                         <a [routerLink]="['/profile']" class="border-0">
                             <svg class="user" width="24" height="24">
                                 <use xlink:href="#user"></use>
                             </svg>
                         </a>
                     </li>
+
+                    <a class="ms-2">Hola, {{ loginService.user?.username }}</a>
+
 
                     <!-- Carrito (solo para usuarios autenticados no admin) -->
                     <li *ngIf="isAuthenticated && !admin" class="pe-3">
