@@ -131,13 +131,16 @@ public class JwtTokenProvider {
 		var currentDate = new Date();
 		var expiryDate = Date.from(new Date().toInstant().plus(tokenType.duration));
 		Long userId = null;
+		String username = null;
 
         userId = ((User) userDetails).getId();
+		username = ((User) userDetails).getUsername();
 		System.out.println("Adjunto el id del usuario autenticado: " + userId);
     	
 		
 		return Jwts.builder()
 			.claim("userId", userId)
+			.claim("username", username)
 			.claim("roles", userDetails.getAuthorities())
 			.claim("type", tokenType.name())
 			.subject(userDetails.getUsername())

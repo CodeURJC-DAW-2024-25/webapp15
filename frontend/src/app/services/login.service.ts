@@ -12,6 +12,8 @@ interface AuthResponse {
 @Injectable({ providedIn: 'root' })
 export class LoginService {
   private readonly API_URL = '/api/v1';
+  public logged: boolean = false;
+  public user: UserDTO | null = null;
   
   constructor(
     private http: HttpClient,
@@ -30,13 +32,13 @@ export class LoginService {
           return this.getCurrentUser().pipe(
             map((user: UserDTO | null): AuthResponse => {
               if (user) {
-                alert(' Login exitoso en loginservice con el ID del usuario: ' + user.id);
+                this.logged = true;
+                this.user = user;
                 return { 
                   status: 'SUCCESS' as const,
                   message: 'Autenticación completada'
                 };
               } else {
-                alert(' Usuario no encontrado en service login');
                 return { 
                   status: 'FAILURE' as const, 
                   message: 'Usuario no encontrado' 
@@ -106,5 +108,20 @@ export class LoginService {
         return of(false);
       })
     );
+  }
+
+  reqIsLogged(): void {
+    this.checkSession().subscribe((isLogged) => {
+      this.logged = isLogged;
+      console.log('verificacando la sesion:', isLogged);
+      if (isLogged) {
+        this.getCurrentUser().subscribe((user) => {
+          console.log('Usuario:', user);
+          this.user = user;
+        });
+      } else {
+        this.user = null;
+      }
+    });
   }
 }

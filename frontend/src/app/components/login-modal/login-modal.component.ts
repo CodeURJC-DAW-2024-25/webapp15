@@ -2,7 +2,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LoginService } from '../../services/login.service';
-import * as Cookies from 'js-cookie'; // Importa js-cookie
+import Cookies from 'js-cookie';// Importa js-cookie
 
 @Component({
   selector: 'app-login-modal',
