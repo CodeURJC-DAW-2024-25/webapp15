@@ -39,7 +39,6 @@ export class LoginService {
                   message: 'Autenticación completada'
                 };
               } else {
-                alert(' Usuario no encontrado en service login');
                 return { 
                   status: 'FAILURE' as const, 
                   message: 'Usuario no encontrado' 

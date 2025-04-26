@@ -148,10 +148,13 @@ public class User implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
         for (String role : roles) {
-            authorities.add(new SimpleGrantedAuthority("ROLE_" + role)); // Add "ROLE_" prefix
+            // Evita duplicar el prefijo "ROLE_"
+            String cleanRole = role.startsWith("ROLE_") ? role : "ROLE_" + role;
+            authorities.add(new SimpleGrantedAuthority(cleanRole));
         }
-        return authorities; // Return the converted roles as GrantedAuthority
+        return authorities;
     }
+    
 
     public void setRoles(List<String> roles) {
         this.roles = roles;

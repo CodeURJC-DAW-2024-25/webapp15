@@ -14,6 +14,7 @@ import com.stepx.stepx.dto.UserDTO;
 import com.stepx.stepx.mapper.UserMapper;
 import com.stepx.stepx.model.User;
 import com.stepx.stepx.security.jwt.AuthResponse;
+import com.stepx.stepx.security.jwt.AuthResponse.Status;
 import com.stepx.stepx.security.jwt.LoginRequest;
 import com.stepx.stepx.security.jwt.UserLoginService;
 
@@ -89,5 +90,9 @@ public class LoginController {
         
         return result;
     }
+    @PostMapping("/logout")
+	public ResponseEntity<AuthResponse> logOut(HttpServletResponse response) {
+		return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, userService.logout(response)));
+	}
 
 }

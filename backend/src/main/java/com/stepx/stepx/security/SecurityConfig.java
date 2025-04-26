@@ -14,11 +14,14 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.stepx.stepx.controller.web.CustomAuthenticationSuccessHandler;
 import com.stepx.stepx.security.jwt.JwtRequestFilter;
 import com.stepx.stepx.security.jwt.UnauthorizedHandlerJwt;
+import com.stepx.stepx.security.jwt.AccessDeniedHandlerJwt;
+
 
 @Configuration
 @EnableWebSecurity
@@ -32,6 +35,9 @@ public class SecurityConfig {
 
 	@Autowired
 	private UnauthorizedHandlerJwt unauthorizedHandlerJwt;
+
+    @Autowired
+	private AccessDeniedHandler accessDeniedHandler;
 
 
 	public SecurityConfig(RepositoryUserDetailsService userDetailsService) {
@@ -64,8 +70,11 @@ public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
     http.authenticationProvider(authenticationProvider());
 
     http
-        .securityMatcher("/api/v1/**")
-        .exceptionHandling(handling -> handling.authenticationEntryPoint(unauthorizedHandlerJwt));
+    .securityMatcher("/api/v1/**")
+    .exceptionHandling(handling -> handling
+        .authenticationEntryPoint(unauthorizedHandlerJwt)
+        .accessDeniedHandler(accessDeniedHandler) // 👈 Añade esta línea
+    );
 
     http
         .authorizeHttpRequests(authorize -> authorize

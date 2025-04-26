@@ -2,6 +2,7 @@ package com.stepx.stepx.security.jwt;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,39 +30,10 @@ public class UserLoginService {
 		this.jwtTokenProvider = jwtTokenProvider;
 	}
 
-	// public ResponseEntity<AuthResponse> login(HttpServletResponse response, LoginRequest loginRequest) {
-		
-	// 	Authentication authentication = authenticationManager.authenticate(
-	// 			new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-	
-	// 	SecurityContextHolder.getContext().setAuthentication(authentication);
-	
-	// 	String username = loginRequest.getUsername();
-	// 	UserDetails user = userDetailsService.loadUserByUsername(username);
-	
-	// 	// Generamos los tokens
-	// 	var newAccessToken = jwtTokenProvider.generateAccessToken(user);
-	// 	var newRefreshToken = jwtTokenProvider.generateRefreshToken(user);
-
-	// 	jwtTokenProvider.addTokenToResponse(response, newAccessToken, newRefreshToken);
-	
-	// 	// Guardamos los tokens en cookies
-	// 	response.addCookie(buildTokenCookie(TokenType.ACCESS, newAccessToken));
-	// 	response.addCookie(buildTokenCookie(TokenType.REFRESH, newRefreshToken));
-	
-	// 	// Enviar los tokens en la respuesta JSON
-	// 	AuthResponse loginResponse = new AuthResponse(AuthResponse.Status.SUCCESS,
-	// 			"Auth successful. Tokens are created in cookie.", newAccessToken);
-	
-	// 	return ResponseEntity.ok().body(loginResponse);
-	// }
-
-
 	public ResponseEntity<AuthResponse> login(HttpServletResponse response, LoginRequest loginRequest) {
+		
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-
-
 	
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 	
@@ -71,13 +43,12 @@ public class UserLoginService {
 		// Generamos los tokens
 		var newAccessToken = jwtTokenProvider.generateAccessToken(user);
 		var newRefreshToken = jwtTokenProvider.generateRefreshToken(user);
-
-		System.out.println("PERRO AREPA Generated new access token: {}" + newAccessToken);
 	
-		// Setear cookies con ResponseCookie
-		jwtTokenProvider.addTokenToResponse(response, newAccessToken, newRefreshToken);
+		// Guardamos los tokens en cookies
+		response.addCookie(buildTokenCookie(TokenType.ACCESS, newAccessToken));
+		response.addCookie(buildTokenCookie(TokenType.REFRESH, newRefreshToken));
 	
-		// Respuesta JSON
+		// Enviar los tokens en la respuesta JSON
 		AuthResponse loginResponse = new AuthResponse(AuthResponse.Status.SUCCESS,
 				"Auth successful. Tokens are created in cookie.", newAccessToken);
 	
@@ -90,11 +61,8 @@ public class UserLoginService {
 			var claims = jwtTokenProvider.validateToken(refreshToken);
 			UserDetails user = userDetailsService.loadUserByUsername(claims.getSubject());
 
-			System.out.println("Este es el nombre del recién llegado ahhh" + user.getUsername());
-
 			var newAccessToken = jwtTokenProvider.generateAccessToken(user);
 			response.addCookie(buildTokenCookie(TokenType.ACCESS, newAccessToken));
-
 
 			AuthResponse loginResponse = new AuthResponse(AuthResponse.Status.SUCCESS,
 					"Auth successful. Tokens are created in cookie.");
