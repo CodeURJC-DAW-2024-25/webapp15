@@ -22,53 +22,28 @@ export class OrderHistoryComponent implements OnInit {
     private authService: LoginService
   ) {}
 
-  // ngOnInit(): void {
-  //   // Suscribirse al observable de getCurrentUser() para obtener el usuario autenticado
-  //   this.authService.getCurrentUser().subscribe({
-  //     next: (user) => {
-  //       if (user) {
-  //         this.userId = user.id; // Asignar el userId obtenido del backend
-  //         alert('[TRAZA ELI] ID de usuario obtenido dentro de getCurrentUser:' + this.userId);
-  //         this.loadOrders(this.userId); // Cargar las órdenes del usuario
-  //       } else {
-  //         this.error = 'Usuario no autenticado';
-  //         this.isLoading = false;
-  //       }
-  //     },
-  //     error: (err) => {
-  //       console.error('Error al obtener el usuario:', err);
-  //       this.error = 'Error al obtener los datos del usuario.';
-  //       this.isLoading = false;
-  //     }
-  //   });
-  // }
+  
 
   ngOnInit(): void {
-    alert('[TRAZA ELI] Iniciando ngOnInit...');
   
     this.authService.getCurrentUser().subscribe({
       next: (user) => {
         if (user) {
-          alert('[TRAZA ELI] Usuario recibido desde getCurrentUser con id: ' + user.id);
   
           if (user.id !== undefined && user.id !== null) {
             this.userId = user.id;
-            alert('[TRAZA ELI] ID de usuario obtenido: ' + this.userId);
             this.loadOrders(user.id);
           } else {
-            alert('[TRAZA ELI] El objeto user existe pero no contiene ID. user: ' + JSON.stringify(user));
             this.error = 'Usuario sin ID válido';
             this.isLoading = false;
           }
   
         } else {
-          alert('[TRAZA ELI] No se recibió un usuario (null o undefined)');
           this.error = 'Usuario no autenticado';
           this.isLoading = false;
         }
       },
       error: (err) => {
-        alert('[TRAZA ELI] Error al obtener el usuario');
         console.error('Error al obtener el usuario:', err);
         this.error = 'Error al obtener los datos del usuario.';
         this.isLoading = false;

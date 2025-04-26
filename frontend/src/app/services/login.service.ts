@@ -54,7 +54,6 @@ export class LoginService {
         }
       }),
       catchError((err): Observable<AuthResponse> => {
-        alert('[TRACE] Error al iniciar sesión desde el service login: ' + err.message);
         return of({ 
           status: 'FAILURE' as const, 
           message: 'Error en la conexión con el servidor desde el servicio login' 
@@ -79,7 +78,6 @@ export class LoginService {
             switchMap(() => this.getCurrentUser()),
             catchError(() => {
               this.router.navigate(['/login']);
-              alert('Error al autenticar el login desde el login service (getcurrentUser)');
               return of(null);
             })
           );
