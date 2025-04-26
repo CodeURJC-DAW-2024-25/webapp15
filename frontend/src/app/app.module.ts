@@ -26,7 +26,8 @@ import { CartModalComponent } from './components/cartModal/cartModal.component'
 import { FeaturedProductsComponent } from './components/featuredProducts/featuredProducts.component';
 import { CreateShoeComponent } from './components/create-shoe/create-shoe.component'; 
 import { DeleteShoeModalComponent } from './components/modals/deleteShoeModal/delete-shoe-modal.component';
-import { ShoeInfoComponent } from './components/singleProduct/shoeInfo.component'
+import { ShoeInfoComponent } from './components/singleProduct/shoeInfo.component';
+import { RegisterComponent } from './components/register/register.component'
 
 
 @NgModule({
@@ -48,7 +49,8 @@ import { ShoeInfoComponent } from './components/singleProduct/shoeInfo.component
     OrderCountChartComponent,
     MoneyGainedChartComponent,
     CreateShoeComponent,
-    DeleteShoeModalComponent
+    DeleteShoeModalComponent,
+    RegisterComponent
   ],
   imports: [
     HttpClientModule,
