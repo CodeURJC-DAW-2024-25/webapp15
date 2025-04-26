@@ -16,14 +16,20 @@ public interface UserMapper {
 
     @Mappings({
         
-        @Mapping(source = "encodedPassword", target = "password") // Agregar este mapeo en toDTO
+        @Mapping(source = "encodedPassword", target = "password") ,// Agregar este mapeo en toDTO
+        @Mapping(source = "firstName", target = "firstname") ,// Agregar este mapeo en toDTO
+
+
+
 
     })
     UserDTO toDTO(User user);
 
     @Mappings({   
         @Mapping(target = "imageUser", ignore = true),
-        @Mapping(source = "password", target = "encodedPassword") // Agregar este mapeo en toDomain
+        @Mapping(source = "password", target = "encodedPassword") ,// Agregar este mapeo en toDomain
+        @Mapping(source = "firstname", target = "firstname") ,// Agregar este mapeo en toDTO
+
     })
     User toDomain(UserDTO userDTO);
 

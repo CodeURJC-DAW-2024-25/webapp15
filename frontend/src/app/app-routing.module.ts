@@ -8,6 +8,8 @@ import { ShoeEditComponent } from './components/shoe-edit/shoe-edit.component';
 import { CreateShoeComponent } from './components/create-shoe/create-shoe.component';
 
 import { ShoeInfoComponent } from './components/singleProduct/shoeInfo.component';
+import { RegisterComponent } from './components/register/register.component';
+
 
 const routes: Routes = [
   {path: 'ver-login', component: LoginModalComponent},
@@ -16,7 +18,9 @@ const routes: Routes = [
   { path: 'admin', component: AdminComponent },
   { path: 'profileData', component: ProfileDataComponent },
   { path: 'create-shoe', component: CreateShoeComponent },
-  { path: 'shop/single-product/:id', component: ShoeInfoComponent}
+  { path: 'shop/single-product/:id', component: ShoeInfoComponent},
+  { path: 'register', component: RegisterComponent },
+
 ];
 
 @NgModule({
