@@ -42,8 +42,6 @@ export class LoginModalComponent {
       this.loginError = null;
       this.isSuccess = false;
 
-      alert('[FRONTEND] Credenciales enviadas: al form: username' + this.credentials.username + " con password: " + this.credentials.password);  // Agrega trazas para verificar las credenciales
-
       this.loginService.logIn(this.credentials.username, this.credentials.password)
         .subscribe({
           next: (response) => {
@@ -55,11 +53,10 @@ export class LoginModalComponent {
                 next: (user) => {
                   if (user) {
                     Cookies.set('userId', user.id.toString(), { expires: 7, path: '/' });
-                    alert('[FRONTEND] ID de usuario guardado en la cookie: ' + user.id);
                   }
                 },
                 error: (err) => {
-                  console.error('[FRONTEND] Error al obtener usuario:', err);
+                  console.error(' Error al obtener usuario:', err);
                 }
               });
 
