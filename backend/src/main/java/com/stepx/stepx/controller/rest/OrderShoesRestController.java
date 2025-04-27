@@ -55,9 +55,6 @@ public class OrderShoesRestController {
     private ShoeSizeStockService shoeSizeStockService;
 
     @Autowired
-    private CouponRepository couponRepository;
-
-    @Autowired
     private CouponService couponService;
 
     @Autowired
@@ -92,6 +89,24 @@ public class OrderShoesRestController {
             throw new NoSuchElementException("No orders found for user ID " + userId);
         }
         return ResponseEntity.ok(orderShoesList);
+    }
+
+    //get cart by user id
+    @GetMapping("/User/{userId}/Cart")
+    public ResponseEntity<?> getCartByUserId(@PathVariable Long userId) {
+        Optional<OrderShoesDTO> existingCart = orderShoesService.getCartById(userId);
+
+        if (existingCart.isPresent()) {
+            return ResponseEntity.ok(existingCart.get());
+        }
+    
+        UserDTO userOptional = userService.findUserById(userId);
+        if (userOptional == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+    
+        OrderShoesDTO newCart = orderShoesService.createCartForUser(userOptional);
+        return ResponseEntity.ok(newCart);
     }
     
     //get paged orderShoes
@@ -145,5 +160,40 @@ public class OrderShoesRestController {
         return ResponseEntity.ok(Collections.singletonMap("message", "Order deleted successfully"));
         
 
+    }
+
+    @GetMapping("/User/{userId}/Coupon")
+    public ResponseEntity<BigDecimal> applyCouponToCart(
+            @PathVariable Long userId,
+            @RequestParam String couponCode) {
+
+        // 1. Buscar carrito
+        Optional<OrderShoesDTO> cartOptional = orderShoesService.getCartById(userId);
+
+        if (cartOptional.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        OrderShoesDTO cart = cartOptional.get();
+
+        // 2. Buscar el cupón válido para este usuario
+        Optional<CouponDTO> couponOptional = couponService.findByCodeAndId(couponCode, userId);
+
+        if (couponOptional.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        CouponDTO coupon = couponOptional.get();
+
+        // 3. Calcular subtotal original
+        BigDecimal subtotal = orderShoesService.getTotalPriceExcludingOutOfStock(cart.id());
+
+        // 4. Aplicar descuento
+        BigDecimal discountMultiplier = BigDecimal.valueOf(1)
+                .subtract(coupon.discount().divide(BigDecimal.valueOf(100.0)));
+        BigDecimal discountedTotal = subtotal.multiply(discountMultiplier);
+
+        // Devolver el nuevo total SIN tocar base de datos
+        return ResponseEntity.ok(discountedTotal);
     }
 }

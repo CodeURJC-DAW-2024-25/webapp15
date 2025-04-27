@@ -28,6 +28,9 @@ import { CreateShoeComponent } from './components/create-shoe/create-shoe.compon
 import { DeleteShoeModalComponent } from './components/modals/deleteShoeModal/delete-shoe-modal.component';
 import { ShoeInfoComponent } from './components/singleProduct/shoeInfo.component';
 import { RegisterComponent } from './components/register/register.component'
+import { CheckoutComponent } from './components/CheckOut/checkout.component';
+import { ShippingFormComponent } from './components/CheckOut/shipping-form/shipping-form.component';
+import { CartSummaryComponent } from './components/CheckOut/cart-summary/cart-summary.component';
 
 
 @NgModule({
@@ -50,7 +53,10 @@ import { RegisterComponent } from './components/register/register.component'
     MoneyGainedChartComponent,
     CreateShoeComponent,
     DeleteShoeModalComponent,
-    RegisterComponent
+    RegisterComponent,
+    CheckoutComponent,
+    ShippingFormComponent,
+    CartSummaryComponent,
   ],
   imports: [
     HttpClientModule,

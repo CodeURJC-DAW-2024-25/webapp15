@@ -9,7 +9,7 @@ import { CreateShoeComponent } from './components/create-shoe/create-shoe.compon
 
 import { ShoeInfoComponent } from './components/singleProduct/shoeInfo.component';
 import { RegisterComponent } from './components/register/register.component';
-
+import { CheckoutComponent } from './components/CheckOut/checkout.component';
 
 const routes: Routes = [
   {path: 'ver-login', component: LoginModalComponent},
@@ -20,6 +20,7 @@ const routes: Routes = [
   { path: 'create-shoe', component: CreateShoeComponent },
   { path: 'shop/single-product/:id', component: ShoeInfoComponent},
   { path: 'register', component: RegisterComponent },
+  {path: 'checkout', component: CheckoutComponent},
 
 ];
 
