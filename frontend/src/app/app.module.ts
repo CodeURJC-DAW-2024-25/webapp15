@@ -33,6 +33,7 @@ import { ShippingFormComponent } from './components/CheckOut/shipping-form/shipp
 import { CartSummaryComponent } from './components/CheckOut/cart-summary/cart-summary.component';
 
 
+
 @NgModule({
   declarations: [
     ProfileDataComponent,
@@ -70,7 +71,7 @@ import { CartSummaryComponent } from './components/CheckOut/cart-summary/cart-su
   ],
   providers: [
     provideClientHydration(),
-    provideHttpClient(withFetch())
+    provideHttpClient(withFetch()),
   ],
   bootstrap: [AppComponent]
 })

@@ -7,6 +7,7 @@ import { UserDTO } from '../dtos/user.dto';
 interface AuthResponse {
   status: 'SUCCESS' | 'FAILURE';
   message?: string;
+  accessToken?: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -14,11 +15,11 @@ export class LoginService {
   private readonly API_URL = '/api/v1';
   public logged: boolean = false;
   public user: UserDTO | null = null;
-  
+
   constructor(
     private http: HttpClient,
     private router: Router // Inyectar Router
-  ) {}
+  ) { }
 
 
   logIn(username: string, password: string): Observable<AuthResponse> {
@@ -34,38 +35,39 @@ export class LoginService {
               if (user) {
                 this.logged = true;
                 this.user = user;
-                return { 
+                localStorage.setItem('accessToken', loginResponse.accessToken ?? '');
+                return {
                   status: 'SUCCESS' as const,
                   message: 'Autenticación completada'
                 };
               } else {
-                return { 
-                  status: 'FAILURE' as const, 
-                  message: 'Usuario no encontrado' 
+                return {
+                  status: 'FAILURE' as const,
+                  message: 'Usuario no encontrado'
                 };
               }
             })
           );
         } else {
-          return of({ 
-            status: 'FAILURE' as const, 
-            message: loginResponse.message || 'Error al iniciar sesión desde el service login' 
+          return of({
+            status: 'FAILURE' as const,
+            message: loginResponse.message || 'Error al iniciar sesión desde el service login'
           });
         }
       }),
       catchError((err): Observable<AuthResponse> => {
-        return of({ 
-          status: 'FAILURE' as const, 
-          message: 'Error en la conexión con el servidor desde el servicio login' 
+        return of({
+          status: 'FAILURE' as const,
+          message: 'Error en la conexión con el servidor desde el servicio login'
         });
       })
     );
   }
-  
-  
+
+
   getCurrentUser(): Observable<UserDTO | null> {
     let userData: UserDTO | null = null;
-  
+
     return this.http.get<UserDTO>(`${this.API_URL}/auth/me`, {
       withCredentials: true
     }).pipe(
@@ -96,9 +98,16 @@ export class LoginService {
 
   // Verificar si la sesión es válida
   checkSession(): Observable<boolean> {
+    const token = localStorage.getItem('accessToken');
+
     return this.http.get<boolean>(
-      `${this.API_URL}/auth/check`, 
-      { withCredentials: true }
+      `${this.API_URL}/auth/check`,
+      {
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
     ).pipe(
       catchError(err => {
         console.error('Error comprobando sesión:', err);
@@ -106,6 +115,8 @@ export class LoginService {
       })
     );
   }
+
+
 
   reqIsLogged(): void {
     this.checkSession().subscribe((isLogged) => {
