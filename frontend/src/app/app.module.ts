@@ -30,6 +30,7 @@ import { ShoeInfoComponent } from './components/singleProduct/shoeInfo.component
 import { RegisterComponent } from './components/register/register.component'
 
 
+
 @NgModule({
   declarations: [
     ProfileDataComponent,
@@ -64,7 +65,7 @@ import { RegisterComponent } from './components/register/register.component'
   ],
   providers: [
     provideClientHydration(),
-    provideHttpClient(withFetch())
+    provideHttpClient(withFetch()),
   ],
   bootstrap: [AppComponent]
 })
