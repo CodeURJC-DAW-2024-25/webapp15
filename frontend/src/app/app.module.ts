@@ -27,6 +27,8 @@ import { FeaturedProductsComponent } from './components/featuredProducts/feature
 import { CreateShoeComponent } from './components/create-shoe/create-shoe.component'; 
 import { DeleteShoeModalComponent } from './components/modals/deleteShoeModal/delete-shoe-modal.component';
 import { ShoeInfoComponent } from './components/singleProduct/shoeInfo.component'
+import { OrderHistoryComponent } from './components/order-history/order-history.component';
+import { ProfilePageComponent } from './components/profile-page/profile-page.component';
 
 
 @NgModule({
@@ -48,7 +50,9 @@ import { ShoeInfoComponent } from './components/singleProduct/shoeInfo.component
     OrderCountChartComponent,
     MoneyGainedChartComponent,
     CreateShoeComponent,
-    DeleteShoeModalComponent
+    DeleteShoeModalComponent,
+    OrderHistoryComponent,
+    ProfilePageComponent
   ],
   imports: [
     HttpClientModule,

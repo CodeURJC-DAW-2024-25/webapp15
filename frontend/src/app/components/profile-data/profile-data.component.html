@@ -1,94 +1,97 @@
 <!-- profile-data.component.html -->
 <section class="profile-settings padding-small">
-    <div class="container">
-      <div class="row">
-        <!-- Profile Sidebar -->
-        <div class="col-lg-3">
-          <div class="profile-sidebar bg-gray p-4 rounded-3">
-            <div class="profile-image text-center mb-4">
-              <div class="image-wrapper mb-3" id="user-image">
-                <img [src]="profileImage" alt="Profile Picture" class="rounded-circle"
-                  style="width: 150px; height: 150px; object-fit: cover;">
-              </div>
-              <input type="file" id="photoInput" style="display: none;" accept="image/*" (change)="onFileSelected($event)">
-              <button type="button" (click)="changePhoto()" class="btn btn-outline-dark btn-sm">Change Photo</button>
+  <div class="container">
+    <div class="row">
+      <!-- Profile Sidebar -->
+      <div class="col-lg-3">
+        <div class="profile-sidebar bg-gray p-4 rounded-3">
+          <div class="profile-image text-center mb-4">
+            <div class="image-wrapper mb-3" id="user-image">
+              <img [src]="profileImage" alt="Profile Picture" class="rounded-circle"
+                style="width: 150px; height: 150px; object-fit: cover;">
             </div>
-            <div class="profile-nav">
-              <ul class="list-unstyled">
-                <li class="mb-2">
-                  <a href="javascript:void(0)" (click)="navigateTo('profile-info')" 
-                     class="d-block p-2 bg-white rounded" 
-                     [class.active]="activeSection === 'profile-info'">Profile Information</a>
-                </li>
-                <li class="mb-2" *ngIf="!isAdmin">
-                  <a href="javascript:void(0)" (click)="navigateTo('purchase-history')" 
-                     class="d-block p-2 text-dark"
-                     [class.active]="activeSection === 'purchase-history'">Purchase History</a>
-                </li>
-              </ul>
-            </div>
+            <input type="file" id="photoInput" style="display: none;" accept="image/*"
+              (change)="onFileSelected($event)">
+            <button type="button" (click)="changePhoto()" class="btn btn-outline-dark btn-sm">Change Photo</button>
           </div>
-        </div>
-  
-        <!-- Profile Content -->
-        <div class="col-lg-9">
-          <!-- Profile Information -->
-          <div id="profile-info" class="profile-section bg-white p-4 rounded-3 mb-4" *ngIf="activeSection === 'profile-info'">
-            <h2 class="section-title mb-4">Profile Information</h2>
-            
-            <form class="profile-form" [formGroup]="profileForm">
-                <div class="row">
-                  <!-- First Name -->
-                  <div class="col-md-6 mb-3" *ngIf="!isAdmin">
-                    <label class="form-label">First Name</label>
-                    <input type="text" class="form-control" formControlName="firstname" required>
-                    <div *ngIf="profileForm.get('firstname')?.invalid && profileForm.get('firstname')?.touched" class="text-danger">
-                      First name is required
-                    </div>
-                  </div>
-                  
-                  <!-- Last Name -->
-                  <div class="col-md-6 mb-3" *ngIf="!isAdmin">
-                    <label class="form-label">Last Name</label>
-                    <input type="text" class="form-control" formControlName="lastname" required>
-                    <div *ngIf="profileForm.get('lastname')?.invalid && profileForm.get('lastname')?.touched" class="text-danger">
-                      Last name is required
-                    </div>
-                  </div>
-                  
-                  <!-- Username -->
-                  <div class="col-md-6 mb-3">
-                    <label class="form-label">Username</label>
-                    <input type="text" class="form-control" formControlName="username" required>
-                    <div *ngIf="profileForm.get('username')?.invalid && profileForm.get('username')?.touched" class="text-danger">
-                      Username is required
-                    </div>
-                  </div>
-                  
-                  <!-- Email -->
-                  <div class="col-md-6 mb-3">
-                    <label class="form-label">Email</label>
-                    <input type="email" class="form-control" formControlName="email" required>
-                    <div *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched" class="text-danger">
-                      Valid email is required
-                    </div>
-                  </div>
-                  
-                  <div class="col-12">
-                    <button type="button" (click)="updateProfile()" 
-                            class="btn btn-dark hvr-sweep-to-right" 
-                            [disabled]="profileForm.invalid || isLoading">
-                      <span *ngIf="!isLoading">Save Changes</span>
-                      <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                    </button>
-                    <button (click)="logout()" class="logout-btn">
-                      <i class="fas fa-sign-out-alt"></i> Log Out
-                    </button>
-                  </div>
-                </div>
-              </form>
+          <div class="profile-nav">
+            <ul class="list-unstyled">
+              <li class="mb-2">
+                <a href="javascript:void(0)" (click)="navigateTo('profile-info')" class="d-block p-2 bg-white rounded"
+                  [class.active]="activeSection === 'profile-info'">Profile Information</a>
+              </li>
+              <li class="mb-2" *ngIf="!isAdmin">
+                <a href="javascript:void(0)" (click)="navigateTo('purchase-history')" class="d-block p-2 text-dark"
+                  [class.active]="activeSection === 'purchase-history'">Purchase History</a>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
+
+      <!-- Profile Content -->
+      <div class="col-lg-9">
+        <!-- Profile Information -->
+        <div id="profile-info" class="profile-section bg-white p-4 rounded-3 mb-4"
+          *ngIf="activeSection === 'profile-info'">
+          <h2 class="section-title mb-4">Profile Information</h2>
+
+          <form class="profile-form" [formGroup]="profileForm">
+            <div class="row">
+              <!-- First Name -->
+              <div class="col-md-6 mb-3" *ngIf="!isAdmin">
+                <label class="form-label">First Name</label>
+                <input type="text" class="form-control" formControlName="firstname" required>
+                <div *ngIf="profileForm.get('firstname')?.invalid && profileForm.get('firstname')?.touched"
+                  class="text-danger">
+                  First name is required
+                </div>
+              </div>
+
+              <!-- Last Name -->
+              <div class="col-md-6 mb-3" *ngIf="!isAdmin">
+                <label class="form-label">Last Name</label>
+                <input type="text" class="form-control" formControlName="lastname" required>
+                <div *ngIf="profileForm.get('lastname')?.invalid && profileForm.get('lastname')?.touched"
+                  class="text-danger">
+                  Last name is required
+                </div>
+              </div>
+
+              <!-- Username -->
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Username</label>
+                <input type="text" class="form-control" formControlName="username" required>
+                <div *ngIf="profileForm.get('username')?.invalid && profileForm.get('username')?.touched"
+                  class="text-danger">
+                  Username is required
+                </div>
+              </div>
+
+              <!-- Email -->
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-control" formControlName="email" required>
+                <div *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched" class="text-danger">
+                  Valid email is required
+                </div>
+              </div>
+
+              <div class="col-12">
+                <button type="button" (click)="updateProfile()" class="btn btn-dark hvr-sweep-to-right"
+                  [disabled]="profileForm.invalid || isLoading">
+                  <span *ngIf="!isLoading">Save Changes</span>
+                  <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status"
+                    aria-hidden="true"></span>
+                </button>
+                <button (click)="logout()" class="btn btn-dark hvr-sweep-to-right">
+                  <i class="fas fa-sign-out-alt"></i> Log Out
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
-  </section>
+  </div>
+</section>

@@ -125,4 +125,8 @@
     .logout-btn:hover {
       background: #cc0000;
     }
+
+    .rightboton{
+      margin-right: 40%;
+    }
   }
