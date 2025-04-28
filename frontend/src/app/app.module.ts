@@ -26,9 +26,14 @@ import { CartModalComponent } from './components/cartModal/cartModal.component'
 import { FeaturedProductsComponent } from './components/featuredProducts/featuredProducts.component';
 import { CreateShoeComponent } from './components/create-shoe/create-shoe.component'; 
 import { DeleteShoeModalComponent } from './components/modals/deleteShoeModal/delete-shoe-modal.component';
+import { OrderHistoryComponent } from './components/order-history/order-history.component';
+import { ProfilePageComponent } from './components/profile-page/profile-page.component';
 import { ShoeInfoComponent } from './components/singleProduct/shoeInfo.component';
 import { RegisterComponent } from './components/register/register.component';
 import { ImageCollageBigComponent } from './components/image-collage-big/image-collage-big.component'
+import { CheckoutComponent } from './components/CheckOut/checkout.component';
+import { ShippingFormComponent } from './components/CheckOut/shipping-form/shipping-form.component';
+import { CartSummaryComponent } from './components/CheckOut/cart-summary/cart-summary.component';
 
 
 
@@ -52,8 +57,7 @@ import { ImageCollageBigComponent } from './components/image-collage-big/image-c
     MoneyGainedChartComponent,
     CreateShoeComponent,
     DeleteShoeModalComponent,
-    RegisterComponent,
-    ImageCollageBigComponent
+    RegisterComponent
   ],
   imports: [
     HttpClientModule,

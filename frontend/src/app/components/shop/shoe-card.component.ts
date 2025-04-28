@@ -5,6 +5,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DeleteShoeModalComponent } from '../modals/deleteShoeModal/delete-shoe-modal.component';
 import{AddToCartModalComponent} from '../modals/addToCartModal/add-to-cart-modal.component';
 import{PreviewShoeModalComponent} from '../modals/previewShoeModal/preview-shoe-modal.component';
+import { LoginService } from '../../services/login.service';
 
 @Component({
     selector: 'app-shoe-card',
@@ -17,12 +18,14 @@ import{PreviewShoeModalComponent} from '../modals/previewShoeModal/preview-shoe-
    
     @Output() shoeDeleted = new EventEmitter<number>();
 
-    constructor(public shoeService: ShoeService, private modalService: NgbModal) {}
+    @Input() isAdmin: boolean = false; // Flag to check if the user is an admin
+    @Input() isUser: boolean = false; // Flag to check if the user is a regular user
+
+
+    constructor(public shoeService: ShoeService,private modalService: NgbModal,) {}
 
     openDeleteModal(){
-      const modalRef=this.modalService.open(DeleteShoeModalComponent,{
-        centered:true
-      });
+      const modalRef=this.modalService.open(DeleteShoeModalComponent,{centered:true});
       
       modalRef.componentInstance.shoe=this.shoe; //pass the shoe object to the modal
 
@@ -37,6 +40,7 @@ import{PreviewShoeModalComponent} from '../modals/previewShoeModal/preview-shoe-
         this.shoeDeleted.emit(this.shoe.id!); // Emit the shoe ID to the parent component
       });
     }
+
 
     openAddToCartModal():void{
       const modalRef=this.modalService.open(AddToCartModalComponent,{

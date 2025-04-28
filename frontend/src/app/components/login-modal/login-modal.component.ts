@@ -2,7 +2,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LoginService } from '../../services/login.service';
-import Cookies from 'js-cookie';// Importa js-cookie
+import Cookies from 'js-cookie';// Import js-cookie
 
 @Component({
   selector: 'app-login-modal',
@@ -53,6 +53,10 @@ export class LoginModalComponent {
                 next: (user) => {
                   if (user && user.id !== undefined && user.id !== null) {
                     Cookies.set('userId', user.id.toString(), { expires: 7, path: '/' });
+                    Cookies.set('username', user.username, { expires: 7, path: '/' });
+                    Cookies.set('email', user.email, { expires: 7, path: '/' });
+                    Cookies.set('firstname', user.firstname, { expires: 7, path: '/' });
+                    Cookies.set('lastname', user.lastName, { expires: 7, path: '/' });
                   } else {
                     console.error('User ID is undefined or null, cannot set cookie.');
                   }

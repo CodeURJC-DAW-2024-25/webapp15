@@ -53,7 +53,7 @@ public class User implements UserDetails {
         this.imageString = imageString;
     }
 
-    public String getFirstName() {
+    public String getFirstname() {
         return firstname;
     }
 

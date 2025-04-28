@@ -4,30 +4,31 @@
             <img [src]="shoeService.getImageUrl(shoe.id, 1)" class="product-image img-fluid"[alt]="shoe.name"/>
             <div class="cart-concern position-absolute d-flex justify-content-center">
                 <div class="cart-button d-flex gap-2 justify-content-center align-items-center">
-                    
+             
+                  <ng-container *ngIf="isAdmin">
                     <!-- Botón Eliminar -->
-                    <button type="button" class="btn btn-light"
-                    (click)="openDeleteModal()">
+                    <button type="button" class="btn btn-light" (click)="openDeleteModal()">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
                         <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
                       </svg>
                     </button>
-
-
-                    <!--Edit Buttom-->
-                        <button type="button" class="btn btn-light" [routerLink]="['/shop/edit', shoe.id]">
-                          <svg class="icon-pencil">
-                            <use xlink:href="#icon-pencil"></use>
-                          </svg>
-                        </button>
-                  
+          
+                    <!-- Botón Editar -->
+                    <button type="button" class="btn btn-light" [routerLink]="['/shop/edit', shoe.id]">
+                      <svg class="icon-pencil">
+                        <use xlink:href="#icon-pencil"></use>
+                      </svg>
+                    </button>
+                  </ng-container>
 
                     <!--modal of carriage(check)-->
-                    <button type="button" class="btn btn-light" (click)="openAddToCartModal()" >
+                    <ng-container *ngIf="isUser">
+                      <button type="button" class="btn btn-light" (click)="openAddToCartModal()">
                         <svg class="shopping-carriage">
                           <use xlink:href="#shopping-carriage"></use>
                         </svg>
-                    </button>
+                      </button>
+                    </ng-container>
                           
                     <!--modal of preview (check)-->
                       <button type="button" class="btn btn-light"  (click)="openPreviewShoesModal()">
