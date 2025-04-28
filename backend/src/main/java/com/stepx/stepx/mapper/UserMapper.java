@@ -23,14 +23,15 @@ import org.mapstruct.Mappings;
 public interface UserMapper {
 
     @Mappings({
+        //@Mapping(source = "firstname", target = "firstname") ,// Agregar este mapeo en toDTO
         @Mapping(source = "encodedPassword", target = "password"),
         @Mapping(target = "imageString", expression = "java(convertBlobToBase64(user.getImageUser()))") // Blob → Base64
     })
     UserDTO toDTO(User user);
 
-    @Mappings({
-        @Mapping(source = "password", target = "encodedPassword"),
-        @Mapping(target = "imageUser", expression = "java(convertBase64ToBlob(userDTO.imageString()))") // Base64 → Blob
+    @Mappings({   
+        @Mapping(target = "imageUser", ignore = true),
+        @Mapping(source = "password", target = "encodedPassword") // Agregar este mapeo en toDomain
     })
     User toDomain(UserDTO userDTO);
 

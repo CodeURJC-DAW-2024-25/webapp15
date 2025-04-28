@@ -9,6 +9,8 @@ import { CreateShoeComponent } from './components/create-shoe/create-shoe.compon
 import { ShoeInfoComponent } from './components/singleProduct/shoeInfo.component';
 import { OrderHistoryComponent } from './components/order-history/order-history.component';
 import { ProfilePageComponent } from './components/profile-page/profile-page.component';
+import { RegisterComponent } from './components/register/register.component';
+import { CheckoutComponent } from './components/CheckOut/checkout.component';
 
 const routes: Routes = [
   {path: 'ver-login', component: LoginModalComponent},
@@ -20,6 +22,8 @@ const routes: Routes = [
   { path: 'shop/single-product/:id', component: ShoeInfoComponent},
   { path: 'orderHistory/:id', component: OrderHistoryComponent },
   { path: 'profilePage/:id', component: ProfilePageComponent },
+  { path: 'register', component: RegisterComponent },
+  {path: 'checkout', component: CheckoutComponent},
 
 ];
 

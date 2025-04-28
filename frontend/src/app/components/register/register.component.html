@@ -1,0 +1,87 @@
+<!-- register.component.html -->
+<section class="login-detail py-5">
+    <div class="container">
+      <div class="row">
+        <!-- Image Column -->
+        <div class="col-lg-6 mb-4 mb-lg-0">
+          <div class="product-image-container">
+            <img src="../../../assets/images/NikeShoePurple.png" alt="Shoe" class="img-fluid rounded" id="currentProductImage"
+              style="max-width: 100%; height: auto;">
+          </div>
+        </div>
+  
+        <!-- Form Column -->
+        <div class="col-lg-6">
+          <div class="login-form bg-light p-5">
+            <h2 class="text-center mb-4">Create an account</h2>
+            
+            <div *ngIf="error" class="alert alert-danger" role="alert">
+              <strong>{{ error }}</strong>
+            </div>
+            
+            <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+              <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" value="pac" id="username" formControlName="username" class="form-control ps-3 text-input">
+                <div *ngIf="registerForm.get('username')?.invalid && registerForm.get('username')?.touched" class="text-danger">
+                  Username is required
+                </div>
+              </div>
+              
+              <div class="mb-3">
+                <label for="firstName" class="form-label">First Name</label>
+                <input type="text" id="firstName" formControlName="firstName" class="form-control ps-3 text-input">
+                <div *ngIf="registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched" class="text-danger">
+                  First name is required
+                </div>
+              </div>
+              
+              <div class="mb-3">
+                <label for="lastName" class="form-label">Last Name</label>
+                <input type="text" id="lastName" formControlName="lastName" class="form-control ps-3 text-input">
+                <div *ngIf="registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched" class="text-danger">
+                  Last name is required
+                </div>
+              </div>
+  
+              <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" id="email" formControlName="email" class="form-control ps-3 text-input">
+                <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" class="text-danger">
+                  Please enter a valid email address
+                </div>
+              </div>
+  
+              <div class="mb-3">
+                <label for="emailRepeated" class="form-label">Repeat email</label>
+                <input type="email" id="emailRepeated" formControlName="emailRepeated" class="form-control ps-3 text-input">
+                <div *ngIf="registerForm.get('emailRepeated')?.hasError('emailMismatch') && registerForm.get('emailRepeated')?.touched" class="text-danger">
+                  Emails do not match
+                </div>
+                <div *ngIf="registerForm.get('emailRepeated')?.hasError('required') && registerForm.get('emailRepeated')?.touched" class="text-danger">
+                  Please confirm your email
+                </div>
+              </div>
+  
+              <div class="mb-3">
+                <label for="password">Password</label>
+                <input type="password" id="password" formControlName="password" class="form-control ps-3 text-input">
+                <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" class="text-danger">
+                  Password must be at least 6 characters
+                </div>
+              </div>
+  
+              <div class="d-grid gap-2 mt-4">
+                <button type="submit" class="btn btn-success hvr-sweep-to-right dark-sweep" [disabled]="isSubmitting">
+                  {{ isSubmitting ? 'Registering...' : 'Register account' }}
+                </button>
+                <button type="button" class="btn btn-outline-gray hvr-sweep-to-right dark-sweep" (click)="cancel()">
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>

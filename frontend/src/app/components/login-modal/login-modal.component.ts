@@ -51,18 +51,22 @@ export class LoginModalComponent {
               
               this.loginService.getCurrentUser().subscribe({
                 next: (user) => {
-                  if (user) {
+                  if (user && user.id !== undefined && user.id !== null) {
                     Cookies.set('userId', user.id.toString(), { expires: 7, path: '/' });
                     Cookies.set('username', user.username, { expires: 7, path: '/' });
                     Cookies.set('email', user.email, { expires: 7, path: '/' });
                     Cookies.set('firstname', user.firstname, { expires: 7, path: '/' });
                     Cookies.set('lastname', user.lastName, { expires: 7, path: '/' });
+                  } else {
+                    console.error('User ID is undefined or null, cannot set cookie.');
                   }
                 },
                 error: (err) => {
-                  console.error(' Error al obtener usuario:', err);
+                  console.error('Error al obtener usuario:', err);
                 }
               });
+              
+            
 
               this.loginSuccess.emit();
               this.closeModal.emit();

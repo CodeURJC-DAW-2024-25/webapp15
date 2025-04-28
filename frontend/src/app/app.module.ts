@@ -26,9 +26,14 @@ import { CartModalComponent } from './components/cartModal/cartModal.component'
 import { FeaturedProductsComponent } from './components/featuredProducts/featuredProducts.component';
 import { CreateShoeComponent } from './components/create-shoe/create-shoe.component'; 
 import { DeleteShoeModalComponent } from './components/modals/deleteShoeModal/delete-shoe-modal.component';
-import { ShoeInfoComponent } from './components/singleProduct/shoeInfo.component'
 import { OrderHistoryComponent } from './components/order-history/order-history.component';
 import { ProfilePageComponent } from './components/profile-page/profile-page.component';
+import { ShoeInfoComponent } from './components/singleProduct/shoeInfo.component';
+import { RegisterComponent } from './components/register/register.component'
+import { CheckoutComponent } from './components/CheckOut/checkout.component';
+import { ShippingFormComponent } from './components/CheckOut/shipping-form/shipping-form.component';
+import { CartSummaryComponent } from './components/CheckOut/cart-summary/cart-summary.component';
+
 
 
 @NgModule({
@@ -52,7 +57,11 @@ import { ProfilePageComponent } from './components/profile-page/profile-page.com
     CreateShoeComponent,
     DeleteShoeModalComponent,
     OrderHistoryComponent,
-    ProfilePageComponent
+    ProfilePageComponent,
+    RegisterComponent,
+    CheckoutComponent,
+    ShippingFormComponent,
+    CartSummaryComponent,
   ],
   imports: [
     HttpClientModule,
@@ -66,7 +75,7 @@ import { ProfilePageComponent } from './components/profile-page/profile-page.com
   ],
   providers: [
     provideClientHydration(),
-    provideHttpClient(withFetch())
+    provideHttpClient(withFetch()),
   ],
   bootstrap: [AppComponent]
 })

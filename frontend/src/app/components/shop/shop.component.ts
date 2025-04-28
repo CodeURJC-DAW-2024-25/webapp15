@@ -2,6 +2,7 @@ import { Component,OnInit } from "@angular/core";
 //import { CommonModule } from '@angular/common';
 import { ShoeService } from '../../services/shoe.service';
 import { ShoeDTO } from '../../dtos/shoe.dto';
+import { LoginService } from "../../services/login.service";
 //import { ShoeCardComponent } from '../shop/shoe-card.component';
 //import { response } from "express";
 
@@ -26,10 +27,17 @@ export class ShopComponent implements OnInit {
 
     selectedShoe?:ShoeDTO;
 
-    constructor(private shoeService: ShoeService) { } // Injecting the ShoeService
+    isAdmin: boolean = false; // Flag to check if the user is an admin
+    isUser: boolean = false; // Flag to check if the user is a regular user
+
+    constructor(private shoeService: ShoeService,public loginService:LoginService) { } // Injecting the ShoeService
     
     ngOnInit(): void {
         this.loadShoes(); // Load shoes when the component initializes
+        if(this.loginService.user){
+            this.isAdmin=this.loginService.user.roles.includes('ADMIN'); // Check if the user has the 'ADMIN' role
+            this.isUser=this.loginService.user.roles.includes('USER'); // Check if the user has the 'USER' role
+        }
     }
 
     loadShoes(): void {

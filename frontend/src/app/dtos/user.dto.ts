@@ -2,7 +2,7 @@ import { OrderShoesDTO } from './ordershoes.dto';
 
 
 export interface UserDTO {
-    id: number;
+    id?: number;
     imageString?: string | null;
     firstname: string;
     lastName: string;
