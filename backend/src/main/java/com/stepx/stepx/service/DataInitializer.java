@@ -1,30 +1,34 @@
 package com.stepx.stepx.service;
 
-import javax.sql.rowset.serial.SerialBlob;
-import java.sql.Blob;
-
-import com.stepx.stepx.model.*;
-
-import com.stepx.stepx.repository.ShoeRepository;
-import com.stepx.stepx.repository.ShoeSizeStockRepository;
-import com.stepx.stepx.repository.CouponRepository;
-import com.stepx.stepx.repository.OrderShoesRepository;
-import com.stepx.stepx.repository.ReviewRepository;
-import com.stepx.stepx.repository.UserRepository;
-
-import java.util.List;
-import java.util.Optional;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
-import org.springframework.core.io.Resource;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.core.io.ClassPathResource;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.sql.Blob;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
+import javax.sql.rowset.serial.SerialBlob;
+
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+
+import com.stepx.stepx.model.Coupon;
+import com.stepx.stepx.model.OrderShoes;
+import com.stepx.stepx.model.Review;
+import com.stepx.stepx.model.Shoe;
+import com.stepx.stepx.model.ShoeSizeStock;
+import com.stepx.stepx.model.User;
+import com.stepx.stepx.repository.CouponRepository;
+import com.stepx.stepx.repository.OrderShoesRepository;
+import com.stepx.stepx.repository.ReviewRepository;
+import com.stepx.stepx.repository.ShoeRepository;
+import com.stepx.stepx.repository.ShoeSizeStockRepository;
+import com.stepx.stepx.repository.UserRepository;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
@@ -1242,71 +1246,83 @@ public class DataInitializer implements CommandLineRunner {
                 Optional<User> user1 = userRepository.findById(1L); // Gabi
                 Optional<User> user2 = userRepository.findById(2L); // Gonzalo
 
-                if (user1.isPresent()) {
-                        User gabi = user1.get();
-                        createOrdersForUser(gabi, 10, "Processed");
-                }
 
                 if (user2.isPresent()) {
-                        User gonzalo = user2.get();
-                        createOrdersForUser(gonzalo, 12, "Processed");
+                createOrdersForUser(
+                        user2.get(),                       // Usuario
+                        10,                           // Número de pedidos
+                        "Processed",                   // Estado
+                        LocalDate.of(2025, 2, 15),   // Fecha inicio
+                        2,                           // Mínimo items por pedido
+                        4,                           // Máximo items por pedido
+                        2,                           // Mínima cantidad por item
+                        5);                          // Máxima cantidad por item
+                
                 }
         }
 
-        private void createOrdersForUser(User user, int numberOfOrders, String state) {
-                LocalDate startDate = LocalDate.of(2025, 1, 1);
+        private void createOrdersForUser(User user, int numberOfOrders, String state, 
+                LocalDate startDate, 
+                int minItemsPerOrder, int maxItemsPerOrder, 
+                int minQuantity, int maxQuantity) {
 
                 for (int i = 0; i < numberOfOrders; i++) {
-                        OrderShoes order = new OrderShoes(user);
-                        order.setState(state);
+                OrderShoes order = new OrderShoes(user);
+                order.setState(state);
+                BigDecimal orderSummary = BigDecimal.ZERO;
 
-                        // Generate a random date from 2025 year
-                        int month = (i % 12) + 1;
-                        int day = (int) (Math.random() * 28) + 1; // Random day between 1 y 28
-                        LocalDate orderDate = LocalDate.of(2025, month, day);
-                        order.setDate(orderDate);
 
-                        // Generate random summary between 50 and 300
-                        double randomSummary = 50 + Math.random() * 250; // Number between 50 and 300
-                        BigDecimal summary = BigDecimal.valueOf(randomSummary).setScale(2, BigDecimal.ROUND_HALF_UP); // Round
-                                                                                                                      // two
-                                                                                                                      // decimal
-                                                                                                                      // places
-                        order.setSummary(summary);
-                        orderShoesRepository.save(order);
+                // Calcular fecha sumando i meses a la fecha de inicio
+                LocalDate orderDate = startDate.plusMonths(i);
+                order.setDate(orderDate);
 
-                        // Crear OrderItems para esta orden
-                        int numberOfItems = (int) (Math.random() * 3) + 1; // Generar entre 1 y 3 productos por pedido
+                // Crear OrderItems para esta orden
+                int numberOfItems = minItemsPerOrder + (i % (maxItemsPerOrder - minItemsPerOrder + 1));
 
-                        for (int j = 0; j < numberOfItems; j++) {
-                                // Seleccionar un producto (shoe) aleatorio. Esto puede ser modificado según tu
-                                // lógica.
-                                Optional<Shoe> randomShoe = shoeRepository
-                                                .findById((long) (Math.random() * shoeRepository.count()) + 1);
+                for (int j = 0; j < numberOfItems; j++) {
+                // Seleccionar un producto (shoe) secuencial
+                Long shoeId = (long) (j % shoeRepository.count()) + 1;
+                Optional<Shoe> shoe = shoeRepository.findById(shoeId);
 
-                                if (randomShoe.isPresent()) {
-                                        Shoe shoe = randomShoe.get();
+                if (shoe.isPresent()) {
+                Shoe currentShoe = shoe.get();
 
-                                        // Generar una cantidad aleatoria para el producto
-                                        int quantity = (int) (Math.random() * 5) + 1; // Entre 1 y 5 unidades
+                // Calcular cantidad de forma determinista
+                int quantity = minQuantity + (j % (maxQuantity - minQuantity + 1));
 
-                                        // Seleccionar una talla aleatoria para el producto
-                                        String size = generateRandomSize();
+                // Seleccionar talla de forma determinista
+                String size = getSizeByIndex(j % 5);
 
-                                        // Crear el OrderItem
-                                        order.addItem(shoe, quantity, size); // Asumiendo que addItem ya se encarga de
-                                                                             // agregar a orderItems
-                                }
-                        }
+                BigDecimal itemTotal = currentShoe.getPrice().multiply(BigDecimal.valueOf(quantity));
+                orderSummary = orderSummary.add(itemTotal);
 
-                        user.addOrderShoe(order);
+                // Agregar item a la orden (esto actualizará el summary automáticamente)
+                order.addItem(currentShoe, quantity, size);
+                }
+        }
 
-                        System.out.println("Pedido creado para " + user.getUsername() + " con ID: " + order.getId() +
-                                        ", fecha: " + orderDate + ", summary: " + summary);
+        // El summary se calcula automáticamente al agregar los items
+                order.setSummary(orderSummary);
+                orderShoesRepository.save(order);
+                user.addOrderShoe(order);
+
+                System.out.println("Pedido creado para " + user.getUsername() + 
+                " con ID: " + order.getId() +
+                ", fecha: " + orderDate + 
+                ", summary: " + order.getSummary());
                 }
 
                 userRepository.save(user);
         }
+
+
+        // Método auxiliar para obtener tallas de forma determinista
+        private String getSizeByIndex(int index) {
+                String[] sizes = {"S", "M", "L", "XL"};
+                return sizes[index % sizes.length];
+        }
+
+        
 
         private String generateRandomSize() {
                 String[] sizes = { "S", "M", "L", "XL" };

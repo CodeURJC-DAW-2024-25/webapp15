@@ -51,10 +51,8 @@ public class LoginController {
 
     @GetMapping("/me")
     public ResponseEntity<UserDTO> getCurrentUser(@AuthenticationPrincipal User user) {
-        System.out.println("[TRACE BACK] Llamada a /me recibida");
-
+ 
         if (user == null) {
-            System.out.println("[ERROR BACK] Usuario no autenticado en /me");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
@@ -68,7 +66,6 @@ public class LoginController {
 
             return ResponseEntity.ok(userDto);
         } catch (Exception e) {
-            System.out.println("[ERROR BACK] Error en /me: " + e.getMessage());
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }

@@ -3,13 +3,13 @@ import { OrderShoesDTO } from './ordershoes.dto';
 
 export interface UserDTO {
     id?: number;
-    imageString?: string;
+    imageString?: string | null;
     firstname: string;
     lastName: string;
     roles: string[];
     username: string;
     email: string;
-    orders: OrderShoesDTO[] | null;  // Definir OrderShoesDTO también en TypeScript
+    orders?: OrderShoesDTO[] | null;
     password: string;
   }
   

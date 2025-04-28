@@ -136,8 +136,8 @@ public class OrderShoes {
         return summary;
     }
 
-    public void setSummary(BigDecimal summary) {
-        this.summary = summary;
+    public void setSummary(BigDecimal summary2) {
+        this.summary = summary2;
     }
 
     public String getState() {
