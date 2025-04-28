@@ -1,25 +1,46 @@
-// order.service.ts
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { catchError, Observable, tap, throwError } from 'rxjs';
 import { OrderShoesDTO } from '../dtos/ordershoes.dto';
+import { environment } from '../../environments/environment';
+import { LoginService } from '../services/login.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OrderService {
-  private apiUrl = 'https://localhost:8443/api/v1/OrderShoes';
+  private apiUrl = `${environment.apiUrl}/OrderShoes`;
+  private readonly API_URL = "/api/v1";
+ 
+  constructor(private http: HttpClient, private loginService: LoginService) {
+  }
 
-  constructor(private http: HttpClient) { }
+  getOrdersByUserId(userId: number, page: number, size: number): Observable<OrderShoesDTO[]> {
+    return this.http.get<OrderShoesDTO[]>(
+      `${this.API_URL}/OrderShoes/User/${userId}?page=${page}&size=${size}`,
+      { withCredentials: true } // Esto envía las cookies de sesión
+    );
+  }
 
-  getOrdersByUserId(userId: number, page?: number, size?: number): Observable<OrderShoesDTO[]> {
-    let params = new HttpParams();
-    
-    if (page !== undefined && size !== undefined) {
-      params = params.set('page', page.toString())
-                    .set('size', size.toString());
+  private createErrorMessage(error: HttpErrorResponse): string {
+    if (error.status === 0) {
+      return `Error de conexión: 
+        - Verifica que el backend esté corriendo en https://localhost:8443
+        - Revisa la configuración del proxy
+        - Prueba acceder manualmente a ${error.url}`;
     }
-    
-    return this.http.get<OrderShoesDTO[]>(`${this.apiUrl}/User/${userId}`, { params });
+    return error.error?.message || error.message;
+  }
+
+
+
+  getOrderDetails(orderId: number): Observable<OrderShoesDTO> {
+    return this.http.get<OrderShoesDTO>(`${this.apiUrl}/${orderId}`);
+  }
+
+  downloadTicket(orderId: number): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/download/${orderId}`, {
+      responseType: 'blob'
+    });
   }
 }
