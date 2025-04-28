@@ -36,39 +36,27 @@ public class LoginController {
             @RequestBody LoginRequest loginRequest,
             HttpServletResponse response) {
 
-        System.out.println("[TRACE BACK] Llamada a /login recibida");
-        System.out.println("Usuario recibido: " + loginRequest.getUsername());
         
         ResponseEntity<AuthResponse> result = userService.login(response, loginRequest);
         
         System.out.println("[TRACE BACK] Respuesta de /login: " + 
             (result.getBody() != null ? result.getBody().getStatus() : "null"));
 
-        System.out.println("[TRACE BACK] Estado de resultado retornado por controller /login: " + result.toString());
-        
         return result;
     }
 
     @GetMapping("/me")
     public ResponseEntity<UserDTO> getCurrentUser(@AuthenticationPrincipal User user) {
-        System.out.println("[TRACE BACK] Llamada a /me recibida");
-
+ 
         if (user == null) {
-            System.out.println("[ERROR BACK] Usuario no autenticado en /me");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        System.out.println("[TRACE BACK] Usuario autenticado: " + user.getUsername() + 
-                        " ID: " + user.getId());
-
         try {
             UserDTO userDto = userMapper.toDTO(user);
-            System.out.println("[TRACE BACK] Datos usuario a devolver: " + 
-                userDto.toString());
 
             return ResponseEntity.ok(userDto);
         } catch (Exception e) {
-            System.out.println("[ERROR BACK] Error en /me: " + e.getMessage());
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
@@ -79,17 +67,12 @@ public class LoginController {
     public ResponseEntity<AuthResponse> refreshToken(
             @CookieValue(name = "RefreshToken", required = false) String refreshToken, 
             HttpServletResponse response) {
-
-        System.out.println("[TRACE BACK] Llamada a /refresh recibida");
-        System.out.println("Refresh token recibido: " + (refreshToken != null ? "presente" : "ausente"));
         
         ResponseEntity<AuthResponse> result = userService.refresh(response, refreshToken);
         
-        System.out.println("[TRACE BACK] Resultado refresh: " + 
-            (result.getBody() != null ? result.getBody().getStatus() : "null"));
-        
         return result;
     }
+
     @PostMapping("/logout")
 	public ResponseEntity<AuthResponse> logOut(HttpServletResponse response) {
 		return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, userService.logout(response)));
