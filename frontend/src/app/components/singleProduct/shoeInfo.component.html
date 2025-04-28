@@ -59,7 +59,7 @@
                     </div>
                     <p>{{product.shortdescription}}</p>
 
-                    <div *ngIf="isAuthenticated; else loginRequired">
+                    <div *ngIf="loginService.logged; else loginRequired">
                         <div class="cart-wrap padding-small">
                             <div class="swatch product-select" data-option-index="1">
                                 <h5 class="widget-title text-decoration-underline pe-2">Size:</h5>

@@ -27,7 +27,8 @@ import { FeaturedProductsComponent } from './components/featuredProducts/feature
 import { CreateShoeComponent } from './components/create-shoe/create-shoe.component'; 
 import { DeleteShoeModalComponent } from './components/modals/deleteShoeModal/delete-shoe-modal.component';
 import { ShoeInfoComponent } from './components/singleProduct/shoeInfo.component';
-import { RegisterComponent } from './components/register/register.component'
+import { RegisterComponent } from './components/register/register.component';
+import { ImageCollageBigComponent } from './components/image-collage-big/image-collage-big.component'
 
 
 
@@ -51,7 +52,8 @@ import { RegisterComponent } from './components/register/register.component'
     MoneyGainedChartComponent,
     CreateShoeComponent,
     DeleteShoeModalComponent,
-    RegisterComponent
+    RegisterComponent,
+    ImageCollageBigComponent
   ],
   imports: [
     HttpClientModule,

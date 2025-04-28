@@ -12,7 +12,7 @@ Swiper.use([Navigation, Pagination, Thumbs]);
 @Component({
   selector: 'app-product-info',
   templateUrl: './shoeInfo.component.html',
-  styleUrls: ['../../../assets/css/style.css']
+  styleUrls: ['../../../assets/css/style.css','../../../assets/css/starCss.css']
 })
 export class ShoeInfoComponent implements OnInit, AfterViewInit {
   product: ShoeDTO | null = null;
@@ -24,7 +24,7 @@ export class ShoeInfoComponent implements OnInit, AfterViewInit {
   constructor(
     private route: ActivatedRoute,
     private productService: SingleProductService,
-    private loginService: LoginService,
+    public loginService: LoginService,
     public shoeService: ShoeService
   ) {}
 
