@@ -1,21 +1,10 @@
 package com.stepx.stepx.service;
 
-import org.hibernate.engine.jdbc.BlobProxy;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.URI;
+import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
@@ -24,24 +13,29 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpStatus;
-
 import javax.sql.rowset.serial.SerialBlob;
 import javax.sql.rowset.serial.SerialException;
+
+import org.hibernate.engine.jdbc.BlobProxy;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.stepx.stepx.dto.CouponDTO;
 import com.stepx.stepx.dto.OrderShoesDTO;
 import com.stepx.stepx.dto.UserDTO;
 import com.stepx.stepx.mapper.UserMapper;
-import com.stepx.stepx.model.Review;
 import com.stepx.stepx.model.Shoe;
 import com.stepx.stepx.model.User;
 import com.stepx.stepx.repository.OrderShoesRepository;
 import com.stepx.stepx.repository.ShoeRepository;
-
-import java.sql.Blob;
-
 import com.stepx.stepx.repository.UserRepository;
 
 @Service
@@ -350,25 +344,20 @@ public class UserService {
         userRepository.delete(user);
         return userMapper.toDTO(user);
     }
+    
 
     public UserDTO replaceUser(long id, UserDTO updatedUserDTO) throws SQLException {
-
         User oldUser = userRepository.findById(id).orElseThrow();
-        if (oldUser == null) {
-            throw new NoSuchElementException("User not found");
-        }
+        
         User updatedUser = userMapper.toDomain(updatedUserDTO);
         updatedUser.setId(id);
-
-        if (oldUser.getImageUser() != null) {
-            // Set the image in the updated post
-            updatedUser.setImageUser(BlobProxy.generateProxy(oldUser.getImageUser().getBinaryStream(),
-                    oldUser.getImageUser().length()));
+        
+        // Preserva manualmente la imagen si no se envió nueva
+        if(updatedUserDTO.imageString() == null) {
             updatedUser.setImageUser(oldUser.getImageUser());
         }
-
+        
         userRepository.save(updatedUser);
-
         return userMapper.toDTO(updatedUser);
     }
 

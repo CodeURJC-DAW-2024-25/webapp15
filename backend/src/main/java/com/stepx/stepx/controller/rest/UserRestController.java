@@ -73,7 +73,7 @@ private ObjectMapper objectMapper;
         return ResponseEntity.ok(users);
     }
 
-    // get a order item by id
+    // get a user by id
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
         UserDTO userDto = userService.findUserById(id);
