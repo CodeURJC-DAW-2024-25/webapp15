@@ -29,11 +29,11 @@ import { DeleteShoeModalComponent } from './components/modals/deleteShoeModal/de
 import { OrderHistoryComponent } from './components/order-history/order-history.component';
 import { ProfilePageComponent } from './components/profile-page/profile-page.component';
 import { ShoeInfoComponent } from './components/singleProduct/shoeInfo.component';
-import { RegisterComponent } from './components/register/register.component';
-import { ImageCollageBigComponent } from './components/image-collage-big/image-collage-big.component'
+import { RegisterComponent } from './components/register/register.component'
 import { CheckoutComponent } from './components/CheckOut/checkout.component';
 import { ShippingFormComponent } from './components/CheckOut/shipping-form/shipping-form.component';
 import { CartSummaryComponent } from './components/CheckOut/cart-summary/cart-summary.component';
+import { ImageCollageBigComponent } from './components/image-collage-big/image-collage-big.component';
 
 
 
@@ -42,6 +42,7 @@ import { CartSummaryComponent } from './components/CheckOut/cart-summary/cart-su
     ProfileDataComponent,
     ShoeInfoComponent,
     FeaturedProductsComponent,
+    ImageCollageBigComponent,
     AppComponent,
     CartModalComponent,
     FooterComponent,
@@ -57,7 +58,12 @@ import { CartSummaryComponent } from './components/CheckOut/cart-summary/cart-su
     MoneyGainedChartComponent,
     CreateShoeComponent,
     DeleteShoeModalComponent,
-    RegisterComponent
+    OrderHistoryComponent,
+    ProfilePageComponent,
+    RegisterComponent,
+    CheckoutComponent,
+    ShippingFormComponent,
+    CartSummaryComponent,
   ],
   imports: [
     HttpClientModule,
