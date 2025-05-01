@@ -24,18 +24,13 @@ export class UserService {
 
   // Obtener imagen como Blob
   getUserImage(userId: number): Observable<Blob> {
-    console.log('Fetching user image for ID:', userId);
     return this.http.get(`${this.API_URL}/${userId}/image`, {
       responseType: 'blob',
       withCredentials: true,
       observe: 'response' // Añade esto para obtener la respuesta completa
     }).pipe(
       tap(response => {
-        console.log('Image response:', {
-          status: response.status,
-          headers: response.headers,
-          bodySize: response.body?.size
-        });
+        console.log();
       }),
       map(response => response.body as Blob),
       catchError(error => {

@@ -85,13 +85,8 @@ export class ProfileDataComponent implements OnInit, OnDestroy {
   
     this.imageSubscription = this.userService.getUserImage(this.userId).subscribe({
       next: (blob: Blob) => {
-        console.log('Received blob:', {
-          size: blob.size,
-          type: blob.type
-        });
   
         if (blob.size === 0) {
-          console.error('Received empty blob');
           this.profileImage = 'https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg'; /*ERASE*/
           return;
         }
@@ -104,12 +99,10 @@ export class ProfileDataComponent implements OnInit, OnDestroy {
         }
   
         this.currentImageUrl = URL.createObjectURL(blob);
-        console.log('Object URL created:', this.currentImageUrl);
   
         // Test: Crea una imagen temporal para verificar el blob
         const img = new Image();
         img.onload = () => {
-          console.log('Image loaded successfully in test');
           this.profileImage = this.userService.blobToSafeUrl(blob);
         };
         img.onerror = () => {
