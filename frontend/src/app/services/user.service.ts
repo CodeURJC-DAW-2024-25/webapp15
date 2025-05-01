@@ -53,7 +53,7 @@ export class UserService {
       undefined;
     
     return this.http.get<any>(
-      `${this.API_URL}/user/chartuser/${userId}`,
+      `${this.API_URL}/chartuser/${userId}`,
       { headers, withCredentials: true }
     ).pipe(
       tap(response => console.log('Raw API response:', response)),
