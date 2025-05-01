@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { catchError, map, Observable, tap, throwError } from 'rxjs';
+import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { UserDTO } from '../dtos/user.dto';
 
@@ -40,6 +40,30 @@ export class UserService {
     );
   }
 
+  /**
+   * Get monthly spending chart data for a specific user
+   * @param userId The ID of the user to get spending data for
+   * @returns Observable with labels and data for the chart
+   */
+  getUserMonthlySpendingChart(userId: number): Observable<any> {
+    // Add auth token if available
+    const token = localStorage.getItem('accessToken');
+    const headers = token ? 
+      new HttpHeaders().set('Authorization', `Bearer ${token}`) : 
+      undefined;
+    
+    return this.http.get<any>(
+      `${this.API_URL}/user/chartuser/${userId}`,
+      { headers, withCredentials: true }
+    ).pipe(
+      tap(response => console.log('Raw API response:', response)),
+      catchError(error => {
+        console.error('Error fetching user spending chart data:', error);
+        return of({ labels: [], data: [] });
+      })
+    );
+  }
+
   // Actualizar datos del usuario
   updateUser(userId: number, userData: UserDTO): Observable<UserDTO> {
     return this.http.put<UserDTO>(`${this.API_URL}/${userId}`, userData, {
@@ -71,4 +95,5 @@ export class UserService {
       `data:${mimeType};base64,${base64}`
     );
   }
+  
 }
