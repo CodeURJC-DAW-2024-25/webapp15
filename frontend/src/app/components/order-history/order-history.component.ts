@@ -4,6 +4,7 @@ import { OrderShoesDTO } from '../../dtos/ordershoes.dto';
 import { saveAs } from 'file-saver';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { LoginService } from '../../services/login.service';
 
 interface EnhancedOrder extends OrderShoesDTO {
   showDetails: boolean;
@@ -24,25 +25,22 @@ export class OrderHistoryComponent implements OnInit {
   hasMoreOrders = false;
   currentPage = 0;
   pageSize = 5;
+  allOrders: EnhancedOrder[] = [];
 
   constructor(
     private orderService: OrderService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private loginService: LoginService
   ) {}
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe((params: ParamMap) => {
-      const routeUserId = params.get('userId');
-      
-      if (routeUserId) {
-        this.id = +routeUserId;
+    this.loginService.getCurrentUser().subscribe((user) => {
+      if (user && user.id) {
+        this.id = user.id;
         this.loadOrders(this.id);
       } else {
-        // Temporalmente cargamos órdenes de un usuario fijo (ejemplo: ID 2)
-        // Esto es solo para pruebas, quitar en producción
-        this.id = 2;
-        this.loadOrders(this.id);
+        this.handleError('No se pudo obtener el usuario.', true);
       }
     });
   }
@@ -56,15 +54,17 @@ export class OrderHistoryComponent implements OnInit {
     }
   }
 
-  private loadOrders(id: number, page: number = 0, size: number = this.pageSize): void {
+  private loadOrders(id: number): void {
     this.isLoading = true;
     this.error = null;
   
-    this.orderService.getOrdersByUserId(id, page, size).subscribe({
-      next: (orders) => {
-        this.orders = this.enhanceOrders(orders);
+    this.orderService.getOrdersByUserId(id).subscribe({
+      next: (allOrders) => {
+        const sorted = this.enhanceOrders(allOrders);
+        this.allOrders = sorted;
+        this.orders = sorted.slice(0, this.pageSize);
+        this.hasMoreOrders = sorted.length > this.pageSize;
         this.isLoading = false;
-        this.hasMoreOrders = orders.length === size;
       },
       error: (err) => {
         this.handleError('Error al cargar pedidos: ' + err.message);
@@ -73,35 +73,25 @@ export class OrderHistoryComponent implements OnInit {
   }
 
   private enhanceOrders(orders: OrderShoesDTO[]): EnhancedOrder[] {
-    return orders.map(order => ({
-      ...order,
-      showDetails: false,
-      totalItems: this.calculateTotalItems(order),
-      formattedDate: this.formatDate(order.date)
-    }));
+    return orders
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+      .map(order => ({
+        ...order,
+        showDetails: false,
+        totalItems: this.calculateTotalItems(order),
+        formattedDate: this.formatDate(order.date)
+      }));
   }
 
-  // Resto de los métodos permanecen igual...
   loadMoreOrders(): void {
-    if (!this.id || !this.hasMoreOrders) return;
-
+    const nextIndex = (this.currentPage + 1) * this.pageSize;
+    const nextChunk = this.allOrders.slice(nextIndex, nextIndex + this.pageSize);
+  
+    this.orders = [...this.orders, ...nextChunk];
     this.currentPage++;
-    this.isLoading = true;
-
-    this.orderService.getOrdersByUserId(this.id, this.currentPage, this.pageSize)
-      .subscribe({
-        next: (newOrders) => {
-          this.orders = [...this.orders, ...this.enhanceOrders(newOrders)];
-          this.hasMoreOrders = newOrders.length === this.pageSize;
-          this.isLoading = false;
-        },
-        error: (err) => {
-          this.handleError('Failed to load more orders.');
-          console.error('Error loading more orders:', err);
-        }
-      });
+    this.hasMoreOrders = this.allOrders.length > this.orders.length;
   }
-
+  
   toggleOrderDetails(orderId: number): void {
     const order = this.orders.find(o => o.id === orderId);
     if (!order) return;
