@@ -123,7 +123,6 @@ export class LoginService {
   reqIsLogged(): void {
     this.checkSession().subscribe((isLogged) => {
       this.logged = isLogged;
-      console.log('verificacando la sesion:', isLogged);
       if (isLogged) {
         this.getCurrentUser().subscribe((user) => {
           console.log('Usuario:', user);
@@ -142,19 +141,16 @@ export class LoginService {
       { withCredentials: true }
     ).pipe(
       tap(() => {
-        // Limpiar el estado local
+
         this.logged = false;
         this.user = null;
         
-        // Redirigir al login
         this.router.navigate(['/']);
         
-        // Forzar recarga para limpiar cualquier estado residual
         window.location.reload();
       }),
       catchError(error => {
         console.error('Error durante logout:', error);
-        // Asegurarse de limpiar el estado incluso si hay error
         this.logged = false;
         this.user = null;
         this.router.navigate(['/']);

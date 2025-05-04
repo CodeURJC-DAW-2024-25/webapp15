@@ -35,6 +35,8 @@ import { ShippingFormComponent } from './components/CheckOut/shipping-form/shipp
 import { CartSummaryComponent } from './components/CheckOut/cart-summary/cart-summary.component';
 import { ImageCollageBigComponent } from './components/image-collage-big/image-collage-big.component';
 import { RecommendedProductsComponent } from './components/recommendedProducts/recommendedProducts.component'
+import { UserSpendingChartComponent } from './components/profile-data/profile-chart.component';
+
 
 
 
@@ -66,6 +68,7 @@ import { RecommendedProductsComponent } from './components/recommendedProducts/r
     CheckoutComponent,
     ShippingFormComponent,
     CartSummaryComponent,
+    UserSpendingChartComponent
   ],
   imports: [
     HttpClientModule,

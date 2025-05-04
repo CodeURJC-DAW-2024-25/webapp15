@@ -5,7 +5,7 @@ declare var jarallax: any; // <- para que TypeScript no se queje
 @Component({
   selector: 'app-image-collage-big',
   templateUrl: './image-collage-big.component.html',
-  styleUrls: ['../../../assets/css/style.css']
+  styleUrls: ['../../../assets/css/style.css','./image-collage-big.component.css']
 })
 export class ImageCollageBigComponent {
 
