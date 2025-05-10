@@ -2,6 +2,7 @@ package com.stepx.stepx.controller.rest;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
@@ -89,4 +90,32 @@ public class ShoeSizetockRestController {
         return shoeSizeSOptional.map(ResponseEntity::ok)
             .orElseGet(()-> ResponseEntity.notFound().build());
     }
+
+    @PostMapping("/CheckStock")
+    public ResponseEntity<?> checkStockAvailability(@RequestBody Map<String, List<?>> body) {
+        try {
+            
+            Object shoeIdsObject = body.get("shoeIds");
+            List<Long> shoeIds = shoeIdsObject instanceof List<?> 
+                ? ((List<?>) shoeIdsObject).stream()
+                    .filter(item -> item instanceof Long)
+                    .map(item -> (Long) item)
+                    .toList()
+                : Collections.emptyList();
+
+            List<?> sizesObject = body.get("sizes");
+            List<String> sizes = sizesObject instanceof List<?> 
+                ? sizesObject.stream()
+                    .filter(item -> item instanceof String)
+                    .map(item -> (String) item)
+                    .toList()
+                : Collections.emptyList();
+
+            Map<String, Integer> stockMap = shoeSizeStockService.getAllStocksForShoes(shoeIds, sizes);
+            return ResponseEntity.ok(stockMap);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Invalid request format");
+        }
+    }
+
 }

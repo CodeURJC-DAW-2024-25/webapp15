@@ -22,6 +22,9 @@ export class CartModalComponent implements OnInit {
   {}
 
   ngOnInit():void {
+
+    this.loginService.reqIsLogged();
+    
     const userId=this.loginService.user?.id;
     
     if(!userId){

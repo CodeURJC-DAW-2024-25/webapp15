@@ -57,7 +57,10 @@ import { CartSummaryComponent } from './components/CheckOut/cart-summary/cart-su
     MoneyGainedChartComponent,
     CreateShoeComponent,
     DeleteShoeModalComponent,
-    RegisterComponent
+    RegisterComponent,
+    CheckoutComponent,
+    ShippingFormComponent,
+    CartSummaryComponent,
   ],
   imports: [
     HttpClientModule,
