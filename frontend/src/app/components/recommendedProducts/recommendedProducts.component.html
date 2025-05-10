@@ -1,4 +1,4 @@
-<section id="recommended-products" class="product-store py-2 my-2 py-md-5 my-md-5 pt-0" *ngIf="isAuthenticated && hasRecommendedShoes">
+<section id="recommended-products" class="product-store py-2 my-2 py-md-5 my-md-5 pt-0" *ngIf="loginService.logged && hasRecommendedShoes">
     <div class="container-md">
       <div class="display-header d-flex align-items-center justify-content-between">
         <h2 class="section-title text-uppercase">Recommended Products</h2>

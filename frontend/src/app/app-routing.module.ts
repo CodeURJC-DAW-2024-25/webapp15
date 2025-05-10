@@ -17,7 +17,7 @@ const routes: Routes = [
   { path: 'admin', component: AdminComponent },
   { path: 'create-shoe', component: CreateShoeComponent },
   { path: 'shop/single-product/:id', component: ShoeInfoComponent},
-  { path: 'profilePage/:id', component: ProfilePageComponent },
+  { path: 'profilePage', component: ProfilePageComponent },
   { path: 'register', component: RegisterComponent },
   {path: 'checkout', component: CheckoutComponent},
 

@@ -98,11 +98,13 @@
       <p class="text-muted">No orders found</p>
       <button class="btn btn-primary" routerLink="/shop">Start Shopping</button>
     </div>
-  </div>
-
-  <div *ngIf="hasMoreOrders" class="col-12 text-center mt-3">
-    <button (click)="loadMoreOrders()" class="btn btn-dark hvr-sweep-to-right" style="width: 70%;">
-      Load More Orders
-    </button>
-  </div>
+    
+    <div *ngIf="hasMoreOrders" class="col-12 text-center mt-3">
+      <button (click)="loadMoreOrders()" 
+              class="btn btn-dark hvr-sweep-to-right" 
+              style="width: 70%;"
+              [disabled]="isLoading">
+        {{ isLoading ? 'Loading...' : 'Load More Orders' }}
+      </button>
+    </div>
 </div>

@@ -15,11 +15,10 @@ interface Product {
 
 @Component({
   selector: 'app-recommended-products',
-  templateUrl: './recommended-products.component.html',
+  templateUrl: './recommendedProducts.component.html',
   styleUrls: [
     '../../../assets/css/style.css',
-    '../../../assets/css/vendor.css',
-    './recommended-products.component.css'
+    '../../../assets/css/vendor.css'
   ]
 })
 export class RecommendedProductsComponent implements OnInit, AfterViewInit {
@@ -28,26 +27,20 @@ export class RecommendedProductsComponent implements OnInit, AfterViewInit {
   isLoading: boolean = true;
   errorMessage: string | null = null;
   isAuthenticated: boolean = false;
-  hasRecommendedShoes: boolean = false;
+  hasRecommendedShoes: boolean = true;
 
   constructor(
     public recommendedProductsService: RecommendedProductsService,
-    private loginService: LoginService
+    public loginService: LoginService
   ) { }
 
   ngOnInit(): void {
-    this.checkAuthentication();
-    if (this.isAuthenticated) {
-      this.loadRecommendedProducts();
-    }
+    this.loginService.reqIsLogged();
+    this.loadRecommendedProducts();
   }
 
   ngAfterViewInit(): void {
     this.initSwiper();
-  }
-
-  checkAuthentication(): void {
-    //this.isAuthenticated = this.loginService.isAuthenticated();
   }
 
   loadRecommendedProducts(): void {

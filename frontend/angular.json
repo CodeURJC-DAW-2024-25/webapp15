@@ -41,7 +41,8 @@
             ],
             "scripts": [
               "src/assets/js/jquery-1.11.0.min.js",
-              "src/assets/js/plugins.js"
+              "src/assets/js/plugins.js",
+              "src/assets/js/script.js"
             ],
             "server": "src/main.server.ts",
             "prerender": true,
