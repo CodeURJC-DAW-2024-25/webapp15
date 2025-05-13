@@ -101,7 +101,8 @@
     margin-left: -16px;
     margin-top: -16px;
     z-index: 11;
-    background: url(../../images/chocolat/loader.gif);
+    /*background: url(../../images/chocolat/loader.gif);*/
+    background: url('/assets/css/images/chocolat/loader.gif');
     opacity: 0;
   }
   
@@ -150,7 +151,7 @@
     width: 50px;
     height: 100px;
     cursor: pointer;
-    background: url(../../images/chocolat/left.png) 50% 50% no-repeat;
+    background: url('/assets/css/images/chocolat/left.png') 50% 50% no-repeat;
     z-index: 17;
     visibility: hidden;
   }
@@ -188,7 +189,7 @@
     width: 50px;
     height: 100px;
     cursor: pointer;
-    background: url(../../images/chocolat/right.png) 50% 50% no-repeat;
+    background: url('/assets/css/images/chocolat/right.png') 50% 50% no-repeat;
     z-index: 17;
     visibility: hidden;
   }
@@ -215,7 +216,7 @@
     position: absolute;
     top: 0;
     right: 0;
-    background: url(../../images/chocolat/close.png) 50% 50% no-repeat;
+    background: url('/assets/css/images/chocolat/close.png') 50% 50% no-repeat;
   }
   
   .chocolat-wrapper .chocolat-bottom {
@@ -250,7 +251,7 @@
   .chocolat-wrapper .chocolat-fullscreen {
     width: 16px;
     height: 40px;
-    background: url(../../images/chocolat/close.png) 50% 50% no-repeat;
+    background: url('/assets/css/images/chocolat/close.png') 50% 50% no-repeat;
     display: block;
     cursor: pointer;
     float: right;

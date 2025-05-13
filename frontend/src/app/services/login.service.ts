@@ -11,16 +11,33 @@ interface AuthResponse {
   accessToken?: string;
 }
 
+// @Injectable({ providedIn: 'root' })
+// export class LoginService {
+//   private readonly API_URL = '/api/v1';
+//   public logged: boolean = false;
+//   public user: UserDTO | null = null;
+
+//   constructor(
+//     private http: HttpClient,
+//     private router: Router // Inyectar Router
+//   ) { }
+
 @Injectable({ providedIn: 'root' })
 export class LoginService {
-  private readonly API_URL = '/api/v1';
+  private readonly API_URL: string;
   public logged: boolean = false;
   public user: UserDTO | null = null;
 
   constructor(
     private http: HttpClient,
-    private router: Router // Inyectar Router
-  ) { }
+    private router: Router
+  ) {
+    const isServer = typeof window === 'undefined';
+    this.API_URL = isServer
+      ? process.env['API_URL'] ?? 'http://localhost:4200/api/v1'
+      : '/api/v1';
+  }
+
 
 
   logIn(username: string, password: string): Observable<AuthResponse> {
@@ -99,24 +116,38 @@ export class LoginService {
   }
 
   // Verificar si la sesión es válida
-  checkSession(): Observable<boolean> {
-    const token = localStorage.getItem('accessToken');
+  // checkSession(): Observable<boolean> {
+  //   const token = localStorage.getItem('accessToken');
 
-    return this.http.get<boolean>(
-      `${this.API_URL}/auth/check`,
-      {
-        withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      }
-    ).pipe(
-      catchError(err => {
-        console.error('Error comprobando sesión:', err);
-        return of(false);
-      })
-    );
-  }
+  //   return this.http.get<boolean>(
+  //     `${this.API_URL}/auth/check`,
+  //     {
+  //       withCredentials: true,
+  //       headers: {
+  //         Authorization: `Bearer ${token}`
+  //       }
+  //     }
+  //   ).pipe(
+  //     catchError(err => {
+  //       console.error('Error comprobando sesión:', err);
+  //       return of(false);
+  //     })
+  //   );
+  // }
+
+  checkSession(): Observable<boolean> {
+  return this.http.get<boolean>(
+    `${this.API_URL}/auth/check`,
+    {
+      withCredentials: true
+    }
+  ).pipe(
+    catchError(err => {
+      console.error('Error comprobando sesión:', err);
+      return of(false);
+    })
+  );
+}
 
 
 

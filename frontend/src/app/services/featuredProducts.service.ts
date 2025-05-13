@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class FeaturedProductsService {
-  private apiUrl = '/api/v1/index/bestSelling'; 
+  private apiUrl = '/api/v1/index/bestSelling';
   private baseUrl = '/api/v1/Shoes';
 
   constructor(private http: HttpClient) { }

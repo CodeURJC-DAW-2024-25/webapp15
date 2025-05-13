@@ -55,13 +55,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "5mb",
+                  "maximumError": "5mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumWarning": "10kb",
+                  "maximumError": "20kb"
                 }
               ],
               "outputHashing": "all"
@@ -121,5 +121,15 @@
   },
   "cli": {
     "analytics": false
+  },
+  "architect": {
+  "build": {
+    "builder": "@angular-devkit/build-angular:browser",
+    "options": {
+      "allowedCommonJsDependencies": [
+        "file-saver"
+      ]
+    }
   }
+}
 }

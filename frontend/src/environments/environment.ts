@@ -1,5 +1,4 @@
-// src/environments/environment.ts
 export const environment = {
-    production: false,
-    apiUrl: '/api/v1' // Ruta base para todas las API
-  };
+  production: false,
+  apiUrl: '/api/v1' // Will be proxied in dev, relative in prod
+};
