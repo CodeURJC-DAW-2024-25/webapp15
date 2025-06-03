@@ -247,12 +247,7 @@ public class OrderShoesService {
         if(orderOptional.isEmpty()){
             return Optional.empty();
         }
-        boolean allProcessed = orderShoesDTO.state().equals("Processed");
-
-        if (!allProcessed) {
-            return Optional.empty();
-        }
-        
+    
 
         OrderShoes order = orderOptional.get();
         order.setDate(orderShoesDTO.date());
@@ -262,7 +257,7 @@ public class OrderShoesService {
         order.setEmail(orderShoesDTO.email());
         order.setAddress(orderShoesDTO.address());
         order.setNumerPhone(orderShoesDTO.numerPhone());
-        order.setSummary(orderShoesDTO.summary());
+
         order.setState(orderShoesDTO.state());
         order.setUser(userOptional.get());
 
@@ -272,7 +267,7 @@ public class OrderShoesService {
             order.setCoupon(coupon);
         }
 
-        if (orderShoesDTO.orderItems() != null) {
+        
             // Limpiamos la colección actual
             order.getOrderItems().clear();
     
@@ -281,7 +276,13 @@ public class OrderShoesService {
                 item.setOrderShoes(order); // Setear relación bidireccional
                 order.getOrderItems().add(item); // Agregar a la misma colección
             }
-        }
+        
+            BigDecimal total = order.getOrderItems()
+                    .stream()
+                    .map(i -> i.getPrice().multiply(BigDecimal.valueOf(i.getQuantity())))
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+            order.setSummary(total);
     
         OrderShoes saved = orderShoesRepository.save(order);
         return Optional.of(orderShoesMapper.toDTO(saved));

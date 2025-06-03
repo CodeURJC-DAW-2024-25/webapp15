@@ -1,5 +1,5 @@
 export interface OrderItemDTO {
-    id: number;
+    id?: number;
     orderId: number;  
     shoeId: number;   
     shoeName: string;

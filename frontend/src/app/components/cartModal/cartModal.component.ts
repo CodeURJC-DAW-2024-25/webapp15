@@ -3,6 +3,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { LoginService } from '../../services/login.service';
 import { OrderShoesDTO } from '../../dtos/ordershoes.dto';
 import { OrderShoesService } from '../../services/order-shoes.service';
+import { ShoeService } from '../../services/shoe.service';
 
 @Component({
   selector: 'app-cart-modal',
@@ -18,7 +19,8 @@ export class CartModalComponent implements OnInit {
   constructor(
     public activeModal: NgbActiveModal,
     public loginService:LoginService,
-    private orderShoesService: OrderShoesService,)
+    private orderShoesService: OrderShoesService,
+    public shoeService: ShoeService)
   {}
 
   ngOnInit():void {
@@ -37,6 +39,7 @@ export class CartModalComponent implements OnInit {
       next : (cart: OrderShoesDTO)=>{
         this.cartItems = cart.orderItems||[];
         this.subtotal = cart.summary;
+        console.log('sumatory: ', this.subtotal);
       },
       error : (err)=>{
         console.log("Error fetching cart items: ", err);

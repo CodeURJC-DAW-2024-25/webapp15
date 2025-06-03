@@ -21,6 +21,7 @@ import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.stepx.stepx.dto.CouponDTO;
@@ -141,7 +142,8 @@ public class OrderShoesRestController {
     public ResponseEntity<?> updateOrderShoe(@PathVariable Long orderShoeId, @RequestBody OrderShoesDTO orderShoesDTO) {
         Optional<OrderShoesDTO> orderShoeOptional=orderShoesService.updateOrderShoe(orderShoeId,orderShoesDTO);
         if (orderShoeOptional.isEmpty()) {
-            throw new IllegalArgumentException("Order items are empty, not in PROCESSED state or user id wrong.");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Order item is empty");
+
         }
         return ResponseEntity.ok(orderShoeOptional.get());
     }

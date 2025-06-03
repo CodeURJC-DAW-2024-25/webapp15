@@ -27,18 +27,33 @@ export class ShopComponent implements OnInit {
 
     selectedShoe?:ShoeDTO;
 
+    isAuthenticated: boolean = false; // Flag to check if the user is authenticated
+
     isAdmin: boolean = false; // Flag to check if the user is an admin
     isUser: boolean = false; // Flag to check if the user is a regular user
 
     constructor(private shoeService: ShoeService,public loginService:LoginService) { } // Injecting the ShoeService
     
     ngOnInit(): void {
-        this.loadShoes(); // Load shoes when the component initializes
-        if(this.loginService.user){
-            this.isAdmin=this.loginService.user.roles.includes('ADMIN'); // Check if the user has the 'ADMIN' role
-            this.isUser=this.loginService.user.roles.includes('USER'); // Check if the user has the 'USER' role
-        }
+        this.loginService.reqIsLogged(); // Inicia la verificación asíncrona
+
+        setTimeout(() => {
+            // Ahora los valores deberían estar actualizados
+            this.isAuthenticated = this.loginService.logged;
+            this.isAdmin = this.loginService.user?.roles.includes('ROLE_ADMIN') ?? false;
+            this.isUser = this.loginService.user?.roles.includes('ROLE_USER') ?? false;
+
+            console.log("User is admin:", this.isAdmin);
+            console.log("User is regular user:", this.isUser);
+
+            // Ya puedes cargar los zapatos
+            this.loadShoes();
+        }, 300); // Espera corta para que reqIsLogged() tenga tiempo de completar
     }
+
+
+
+
 
     loadShoes(): void {
 
