@@ -29,17 +29,20 @@
                             <div class="swiper-wrapper">
                                 <div class="swiper-slide">
                                     <div class="image-zoom" data-scale="2.5" data-image="images/product-large-1.jpg">
-                                        <img [src]="shoeService.getImageUrl(product.id, 1)" [alt]="product.name" class="img-fluid">
+                                        <img [src]="shoeService.getImageUrl(product.id, 1)" [alt]="product.name"
+                                            class="img-fluid">
                                     </div>
                                 </div>
                                 <div class="swiper-slide">
                                     <div class="image-zoom" data-scale="2.5" data-image="images/product-large-2.jpg">
-                                        <img [src]="shoeService.getImageUrl(product.id, 2)" [alt]="product.name" class="img-fluid">
+                                        <img [src]="shoeService.getImageUrl(product.id, 2)" [alt]="product.name"
+                                            class="img-fluid">
                                     </div>
                                 </div>
                                 <div class="swiper-slide">
                                     <div class="image-zoom" data-scale="2.5" data-image="images/product-large-3.jpg">
-                                        <img [src]="shoeService.getImageUrl(product.id, 3)" [alt]="product.name" class="img-fluid">
+                                        <img [src]="shoeService.getImageUrl(product.id, 3)" [alt]="product.name"
+                                            class="img-fluid">
                                     </div>
                                 </div>
                             </div>
@@ -141,6 +144,118 @@
                             <ul class="select-list list-unstyled d-flex">
                                 <li data-value="S" class="select-item">{{product.brand}}</li>
                             </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="product-info-tabs">
+    <div class="container">
+        <div class="row">
+            <div class="tabs-listing">
+                <nav>
+                    <div class="nav nav-tabs d-flex flex-wrap justify-content-center" id="nav-tab" role="tablist">
+                        <button class="nav-link active text-dark fs-5" id="nav-home-tab" data-bs-toggle="tab"
+                            data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home"
+                            aria-selected="true">Description</button>
+                        <button class="nav-link text-dark fs-5" id="nav-review-tab" data-bs-toggle="tab"
+                            data-bs-target="#nav-review" type="button" role="tab" aria-controls="nav-review"
+                            aria-selected="false">Reviews</button>
+                    </div>
+                </nav>
+
+                <div class="tab-content" id="nav-tabContent">
+                    <!-- Descripción -->
+                    <div class="tab-pane fade show active padding-small" id="nav-home" role="tabpanel"
+                        aria-labelledby="nav-home-tab">
+                        <p>Product Description</p>
+                        <p>{{ product?.longDescription }}</p>
+                    </div>
+
+                    <!-- Reseñas -->
+                    <div class="tab-pane fade padding-small" id="nav-review" role="tabpanel"
+                        aria-labelledby="nav-review-tab">
+                        <div id="ReviewsList">
+                            <div class="review-box d-flex flex-wrap">
+                                <!-- Lista de reseñas -->
+                                <ng-container *ngIf="reviews && reviews.length > 0; else noReviews">
+                                    <div *ngFor="let r of reviews" class="col-lg-6 d-flex flex-wrap">
+                                        <div class="col-md-2 me-3 mb-3">
+                                            <div class="image-wrapper mb-3">
+                                                <img [src]="userService.getUserImage(r.userId)"alt="review"
+                                                    class="rounded-circle"
+                                                    style="width: 75px; height: 75px; object-fit: cover;">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-8">
+                                            <div class="review-content">
+                                                <div class="rating-container d-flex align-items-center mb-3">
+                                                    <div class="rating">
+                                                        <span>Rating: {{r.rating}}/5</span>
+                                                        <i *ngFor="let i of getStarsArray(r.rating)" class="fa-solid fa-star"></i>
+                        
+                                                    </div>
+                                                </div>
+                                                <div class="review-header">
+                                                    <span class="author-name">{{ r.userName }} </span>
+                                                    <span class="review-date">{{ r.date }}</span>
+                                                </div>
+                                                <p id="textReview">{{ r.description }}</p>
+                                            </div>
+
+                                            <button *ngIf="isAdmin" id="deleteReviewButton"
+                                                (click)="deleteReview(r.id)" style="padding-top: 30px;">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </ng-container>
+
+                                <!-- Si no hay reseñas -->
+                                <ng-template #noReviews>
+                                    <div class="col-lg-12 d-flex justify-content-center">
+                                        <div class="review-content">
+                                            <p>No reviews yet</p>
+                                        </div>
+                                    </div>
+                                </ng-template>
+                            </div>
+
+                            <!-- Botón de cargar más -->
+                            <div *ngIf="reviews &&reviews.length > 0" id="loadMoreReviewsButtom">
+                                <div class="btn-wrap">
+                                    <button *ngIf="product"class="btn btn-black btn-medium text-uppercase hvr-sweep-to-right"
+                                        style="margin-bottom: 30px;" (click)="loadMoreReviews(product.id)">
+                                        More Reviews
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Formulario -->
+                            <div class="add-review mt-5">
+                                <h3>Add a review</h3>
+                                <p>Your personal information will not be published. Required fields are marked *</p>
+                                <form [formGroup]="reviewForm" (ngSubmit)="submitReview()">
+                                    <div class="pb-3" style="width:11%">
+                                        <label>Your Rating *</label>
+                                        <select class="form-control" formControlName="rating" required>
+                                            <option value="" disabled selected>Select a rating</option>
+                                            <option *ngFor="let n of [1,2,3,4,5]" [value]="n">{{ n }}</option>
+                                        </select>
+                                    </div>
+                                    <div class="pb-3">
+                                        <label>Your Review *</label>
+                                        <textarea class="form-control" placeholder="Write your review here"
+                                            formControlName="description" required></textarea>
+                                    </div>
+                                    <button type="submit"
+                                        class="btn btn-dark btn-large text-uppercase w-100">Submit</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
