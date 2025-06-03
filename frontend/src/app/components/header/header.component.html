@@ -70,7 +70,7 @@
                     <!-- Icono de usuario (login/profile) -->
                     <li *ngIf="!loginService.logged" class="pe-3">
                         <a [routerLink]="['/login']" data-bs-toggle="modal" data-bs-target="#modallogin"
-                            class="border-0">
+                            class="border-0" (click)="openLoginModal()">
                             <svg class="user" width="24" height="24">
                                 <use xlink:href="#user"></use>
                             </svg>

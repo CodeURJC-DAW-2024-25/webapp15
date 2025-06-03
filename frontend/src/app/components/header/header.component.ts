@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CartModalComponent } from '../cartModal/cartModal.component';
+import { LoginModalComponent } from '../login-modal/login-modal.component';
 import { LoginService } from '../../services/login.service';
 
 @Component({
@@ -25,5 +26,10 @@ export class HeaderComponent {
     const modalRef = this.modalService.open(CartModalComponent, {
       centered: true
     });
+  }
+  openLoginModal() {
+    const modalRef = this.modalService.open(LoginModalComponent,{
+      centered: true
+    })
   }
 }
