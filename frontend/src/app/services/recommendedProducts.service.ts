@@ -7,15 +7,16 @@ import { Observable } from 'rxjs';
 })
 export class RecommendedProductsService {
   private apiUrl = '/api/v1/index/recommended-products'; // Ajusta según tu endpoint
+  private baseUrl = '/api/v1/Shoes';
 
   constructor(private http: HttpClient) { }
 
-  getRecommendedProducts(): Observable<any> {
+  getRecommendedProducts(limit: number = 10): Observable<any> {
     console.log('Calling getRecommendedProducts...');
     console.log('estos on los recomendados' + this.http.get(this.apiUrl));
-    return this.http.get(this.apiUrl);
+    return this.http.get(`${this.apiUrl}?limit=${limit}`);
   }
   getImageUrl(shoeId:number, imageNumber:number):string{
-    return `${this.apiUrl}/${shoeId}/image/${imageNumber}`; // Constructing the image URL for a specific shoe and image number
+    return `${this.baseUrl}/${shoeId}/image/${imageNumber}`; // Constructing the image URL for a specific shoe and image number
 }
 }
