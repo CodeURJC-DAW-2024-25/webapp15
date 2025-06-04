@@ -48,6 +48,7 @@ export class ShoeInfoComponent implements OnInit, AfterViewInit {
     this.loginService.reqIsLogged();
     this.isAuthenticated = this.loginService.logged;
 
+
     this.reviewForm = this.fb.group({
       description: ['', Validators.required],
       rating: [null, Validators.required]
@@ -93,9 +94,9 @@ export class ShoeInfoComponent implements OnInit, AfterViewInit {
         this.product = product;
         // También intentar inicializar el swiper aquí por si se cargó después
         setTimeout(() => this.tryInitSwiper(), 100);
-        this.currentPage=0
+        this.currentPage = 0
         // ✅ Cargar reseñas iniciales del producto
-        this.reviewService.getReviewsByShoeId(productId,this.currentPage).subscribe({
+        this.reviewService.getReviewsByShoeId(productId, this.currentPage).subscribe({
           next: (reviews) => {
             this.reviews = reviews;
           },
@@ -147,60 +148,61 @@ export class ShoeInfoComponent implements OnInit, AfterViewInit {
     // Lógica para eliminar la reseña
     console.log('Eliminando reseña con ID:', reviewId);
   }
-  
+
   loadMoreReviews(productId: number): void {
-  this.currentPage++; // Incrementar la página
-  this.reviewService.getReviewsByShoeId(productId, this.currentPage).subscribe({
-    next: (newReviews) => {
-      if (newReviews.length === 0) {
-        console.log('No hay más reseñas para cargar.');
-        this.currentPage--; // Si no hay más, deshacer el incremento
-        return;
-      }
-       // ✅ Filtrar duplicados por ID
-       // Crea un Set con los ids ya cargados
-      const existingIds = new Set(this.reviews.map(r => r.id));
-      
-      // Filtra las nuevas reseñas que no estén ya cargadas
-      const uniqueNewReviews = newReviews.filter(r => !existingIds.has(r.id));
-      this.reviews = [...this.reviews, ...uniqueNewReviews]; // Agregar a las ya cargadas
-    },
-    error: (err) => {
-      console.error('Error al cargar más reseñas:', err);
-      this.currentPage--; // Revertir incremento en caso de error
-    }
-  });
-}
+    this.currentPage++; // Incrementar la página
+    this.reviewService.getReviewsByShoeId(productId, this.currentPage).subscribe({
+      next: (newReviews) => {
+        if (newReviews.length === 0) {
+          console.log('No hay más reseñas para cargar.');
+          this.currentPage--; // Si no hay más, deshacer el incremento
+          return;
+        }
+        // ✅ Filtrar duplicados por ID
+        // Crea un Set con los ids ya cargados
+        const existingIds = new Set(this.reviews.map(r => r.id));
 
-  submitReview(): void {
-  if (this.reviewForm.valid && this.product && this.loginService.user) {
-    const reviewData: ReviewDTO = {
-      ...this.reviewForm.value,
-      shoeId: this.product.id,
-      userId: this.loginService.user.id
-    };
-
-    console.log('📤 Enviando reseña:', reviewData);
-
-    this.reviewService.submitReview(reviewData).subscribe({
-      next: (savedReview) => {
-        console.log('✅ Reseña guardada:', savedReview);
-
-        // Limpia el formulario
-        this.reviewForm.reset();
-
-        // Inserta la nueva reseña al inicio
-        this.reviews.unshift(savedReview);
+        // Filtra las nuevas reseñas que no estén ya cargadas
+        const uniqueNewReviews = newReviews.filter(r => !existingIds.has(r.id));
+        this.reviews = [...this.reviews, ...uniqueNewReviews]; // Agregar a las ya cargadas
       },
       error: (err) => {
-        console.error('❌ Error al guardar la reseña:', err);
-        alert('Hubo un problema al enviar tu reseña.');
+        console.error('Error al cargar más reseñas:', err);
+        this.currentPage--; // Revertir incremento en caso de error
       }
     });
-  } else {
-    alert('Por favor completa todos los campos antes de enviar.');
   }
-}
+
+  submitReview(): void {
+    if (this.reviewForm.valid && this.product && this.loginService.user) {
+      const reviewData: ReviewDTO = {
+        ...this.reviewForm.value,
+        shoeId: this.product.id,
+        userId: this.loginService.user.id
+      };
+
+      console.log('📤 Enviando reseña:', reviewData);
+
+      this.reviewService.submitReview(reviewData).subscribe({
+        next: (savedReview) => {
+          console.log('✅ Reseña guardada:', savedReview);
+
+          // Limpia el formulario
+          this.reviewForm.reset();
+
+          // Inserta la nueva reseña al inicio
+          this.reviews.unshift(savedReview);
+        },
+        error: (err) => {
+          console.error('❌ Error al guardar la reseña:', err);
+          alert('Hubo un problema al enviar tu reseña.');
+        }
+      });
+    } else {
+      alert('Por favor completa todos los campos antes de enviar.');
+    }
+  }
+  
 
 
 

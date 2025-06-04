@@ -185,7 +185,7 @@
                                     <div *ngFor="let r of reviews" class="col-lg-6 d-flex flex-wrap">
                                         <div class="col-md-2 me-3 mb-3">
                                             <div class="image-wrapper mb-3">
-                                                <img [src]="userService.getUserImage(r.userId)"alt="review"
+                                                <img [src]="userService.getImageUrl(r.userId)"alt="review"
                                                     class="rounded-circle"
                                                     style="width: 75px; height: 75px; object-fit: cover;">
                                             </div>
@@ -236,7 +236,7 @@
                             </div>
 
                             <!-- Formulario -->
-                            <div class="add-review mt-5">
+                            <div *ngIf="loginService.logged" class="add-review mt-5">
                                 <h3>Add a review</h3>
                                 <p>Your personal information will not be published. Required fields are marked *</p>
                                 <form [formGroup]="reviewForm" (ngSubmit)="submitReview()">
