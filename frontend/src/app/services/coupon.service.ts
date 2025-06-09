@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { CouponDTO } from '../dtos/coupon.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -20,4 +21,13 @@ export class CouponService {
       params: { userId: userId.toString() }
     });
   }
+
+  validateCoupon(userId: number, code: string) {
+    return this.http.get<CouponDTO>(
+      `/api/v1/coupon/validate`,
+      { params: { userId, code } }
+    );
+  }
+
+
 }

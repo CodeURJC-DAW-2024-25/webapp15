@@ -98,8 +98,8 @@ public class ShoeSizetockRestController {
             Object shoeIdsObject = body.get("shoeIds");
             List<Long> shoeIds = shoeIdsObject instanceof List<?> 
                 ? ((List<?>) shoeIdsObject).stream()
-                    .filter(item -> item instanceof Long)
-                    .map(item -> (Long) item)
+                    .filter(item -> item instanceof Number)
+                    .map(item -> ((Number) item).longValue())
                     .toList()
                 : Collections.emptyList();
 

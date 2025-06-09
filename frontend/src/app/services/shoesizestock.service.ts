@@ -9,8 +9,14 @@ export class ShoeSizeStockService {
 
   constructor(private http: HttpClient) {}
 
-  checkStock(shoeIds: number[], sizes: string[]): Observable<{ [key: string]: number }> {
-    const payload = { shoeIds, sizes };
-    return this.http.post<{ [key: string]: number }>(`${this.API_URL}/CheckStock`, payload);
-  }
+  checkStock(shoeIds: number[], sizes: string[]): Observable<{[key: string]: number}> {
+  const body = { shoeIds, sizes };               // 👈 estructura exacta
+  return this.http.post<{[key: string]: number}>(
+    '/api/v1/ShoeSizeStocks/CheckStock',
+    body
+  );
+}
+
+
+
 }

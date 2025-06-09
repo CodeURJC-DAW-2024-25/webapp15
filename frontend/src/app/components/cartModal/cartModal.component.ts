@@ -4,6 +4,7 @@ import { LoginService } from '../../services/login.service';
 import { OrderShoesDTO } from '../../dtos/ordershoes.dto';
 import { OrderShoesService } from '../../services/order-shoes.service';
 import { ShoeService } from '../../services/shoe.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-cart-modal',
@@ -20,7 +21,9 @@ export class CartModalComponent implements OnInit {
     public activeModal: NgbActiveModal,
     public loginService:LoginService,
     private orderShoesService: OrderShoesService,
-    public shoeService: ShoeService)
+    public shoeService: ShoeService,
+    private router: Router,
+    )
   {}
 
   ngOnInit():void {
@@ -59,7 +62,7 @@ export class CartModalComponent implements OnInit {
 
   // Método para proceder al checkout
   proceedToCheckout() {
-    this.checkout.emit();
-    this.closeModal();
+    this.activeModal.close('checkout');
+    this.router.navigate(['/checkout']);
   }
 }

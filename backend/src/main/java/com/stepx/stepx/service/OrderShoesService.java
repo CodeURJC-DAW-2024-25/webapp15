@@ -250,6 +250,7 @@ public class OrderShoesService {
     
 
         OrderShoes order = orderOptional.get();
+        boolean goingToProcessed =!"Processed".equals(order.getState()) && "Processed".equals(orderShoesDTO.state());
         order.setDate(orderShoesDTO.date());
         order.setCountry(orderShoesDTO.country());
         order.setFirstName(orderShoesDTO.firstName());
@@ -257,34 +258,49 @@ public class OrderShoesService {
         order.setEmail(orderShoesDTO.email());
         order.setAddress(orderShoesDTO.address());
         order.setNumerPhone(orderShoesDTO.numerPhone());
-
         order.setState(orderShoesDTO.state());
         order.setUser(userOptional.get());
-
+        
+        order.setCuponUsed(orderShoesDTO.cuponUsed());
         if (orderShoesDTO.coupon() != null && orderShoesDTO.coupon().id() != null) {
-            Coupon coupon = couponRepository.findById(orderShoesDTO.coupon().id())
-                    .orElse(null);
-            order.setCoupon(coupon);
+            couponRepository.findById(orderShoesDTO.coupon().id()).ifPresent(order::setCoupon);
+        }else{
+            order.setCoupon(null);
         }
 
         
             // Limpiamos la colección actual
-            order.getOrderItems().clear();
+        order.getOrderItems().clear();
     
-            for (OrderItemDTO dto : orderShoesDTO.orderItems()) {
-                OrderItem item = orderItemMapper.toDomain(dto);
-                item.setOrderShoes(order); // Setear relación bidireccional
-                order.getOrderItems().add(item); // Agregar a la misma colección
-            }
+        for (OrderItemDTO dto : orderShoesDTO.orderItems()) {
+            OrderItem item = orderItemMapper.toDomain(dto);
+            item.setOrderShoes(order); // Setear relación bidireccional
+            order.getOrderItems().add(item); // Agregar a la misma colección
+        }
         
-            BigDecimal total = order.getOrderItems()
+         /*    BigDecimal total = order.getOrderItems()
                     .stream()
                     .map(i -> i.getPrice().multiply(BigDecimal.valueOf(i.getQuantity())))
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-            order.setSummary(total);
+            order.setSummary(total);*/
+         // 1️⃣ COPIA el subtotal con descuento
+        order.setSummary(orderShoesDTO.summary());
     
         OrderShoes saved = orderShoesRepository.save(order);
+        if (goingToProcessed) {
+
+            // Mapa <shoeId, <size, qty>>
+            Map<Long, Map<String, Integer>> stockMap = orderShoesDTO.orderItems().stream()
+                    .collect(Collectors.groupingBy(
+                            OrderItemDTO::shoeId,
+                            Collectors.toMap(
+                                    OrderItemDTO::size,
+                                    OrderItemDTO::quantity,
+                                    Integer::sum)));
+
+            shoeSizeStockService.updateStock(stockMap);
+}
         return Optional.of(orderShoesMapper.toDTO(saved));
     }
 

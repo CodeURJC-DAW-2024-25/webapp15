@@ -1,36 +1,69 @@
 import { Component, Input } from '@angular/core';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { ShoeDTO } from '../../../dtos/shoe.dto';
 import { ShoeService } from '../../../services/shoe.service';
 import { LoginService } from '../../../services/login.service';
 import { OrderShoesService } from '../../../services/order-shoes.service';
 import { OrderItemDTO } from '../../../dtos/orderitem.dto';
+import { ShoeSizeStockService } from '../../../services/shoesizestock.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-add-to-cart-modal',
+  standalone: true,
   templateUrl: './add-to-cart-modal.component.html',
+  imports: [
+    CommonModule,
+    NgbModalModule,
+  ]
 })
 export class AddToCartModalComponent {
   @Input() shoe!: ShoeDTO;
+  stockAvailable: boolean | null = null;
 
+  selectedSize = 'M'; // lógica rápida
+  quantity = 1;
   constructor(
-  public activeModal: NgbActiveModal,
-  public shoeService: ShoeService,
-  private loginService: LoginService,
-  private orderShoesService: OrderShoesService
+  public  activeModal       : NgbActiveModal,
+    public  shoeService       : ShoeService,
+    private loginService      : LoginService,
+    private orderShoesService : OrderShoesService,
+    private stockService      : ShoeSizeStockService
 ) {}
+
+ngOnInit(): void {
+  const shoeId = this.shoe.id;
+
+  /* ①  solicitamos stock */
+  this.stockService.checkStock([shoeId], [this.selectedSize]).subscribe({
+    next: map => {
+      const key = `${shoeId}_${this.selectedSize}`;
+      const available = map[key] ?? 0;
+
+      /* ②  aquí SÍ tengo el dato real */
+      this.stockAvailable = available >= this.quantity;
+      console.log('stockAvailable dentro del subscribe ➜', this.stockAvailable);
+      //              └── debería mostrar true / false
+    },
+    error: () => {
+      this.stockAvailable = false;
+      console.error('Error consultando stock');
+    }
+  });
+
+  /* ③  este log se ejecuta inmediatamente → todavía null */
+  console.log('stockAvailable justo después de llamar ➜', this.stockAvailable);
+}
 
 
   confirmAddToCart() {
+  if (!this.stockAvailable) { return; }  
   const userId = this.loginService.user?.id;
 
   if (!userId) {
     alert("Debes iniciar sesión para añadir al carrito.");
     return;
   }
-
-  const selectedSize = 'M'; // lógica rápida
-  const quantity = 1;
 
   // 1. Obtener el carrito actual
   this.orderShoesService.getCartByUserId(userId).subscribe({
@@ -39,20 +72,20 @@ export class AddToCartModalComponent {
 
       // 2. Ver si ya existe un item con ese zapato y talla
       const existingItem = updatedCart.orderItems?.find(item =>
-        item.shoeId === this.shoe.id && item.size === selectedSize
+        item.shoeId === this.shoe.id && item.size === this.selectedSize
       );
 
       if (existingItem) {
         // Solo actualiza cantidad
-        existingItem.quantity += quantity;
+        existingItem.quantity += this.quantity;
       } else {
         // Crea nuevo item
         const newItem: OrderItemDTO = {
           orderId: updatedCart.id,
           shoeId: this.shoe.id,
           shoeName: this.shoe.name,
-          quantity: quantity,
-          size: selectedSize,
+          quantity: this.quantity,
+          size: this.selectedSize,
           price: this.shoe.price
         };
 

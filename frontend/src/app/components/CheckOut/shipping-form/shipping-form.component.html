@@ -20,8 +20,14 @@
         <div class="input-group">
           <input type="text" class="form-control ps-3 text-input" formControlName="coupon" placeholder="Enter your coupon code">
         </div>
+        <div *ngIf="couponValid === false" class="text-danger mt-1">
+          coupon does not exist
+        </div>
+        <div *ngIf="couponValid === true" class="text-success mt-1">
+          coupon applied
+        </div>
 
-        <button class="btn btn-red hvr-sweep-to-right dark-sweep" type="button">Apply Coupon</button>
+        <button class="btn btn-red hvr-sweep-to-right dark-sweep" type="button" (click)="applyCoupon()">Apply Coupon</button>
       </div>
   
       <!-- Personal Information -->

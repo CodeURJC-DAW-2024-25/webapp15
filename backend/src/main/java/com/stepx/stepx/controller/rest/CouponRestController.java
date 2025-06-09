@@ -57,7 +57,8 @@ public class CouponRestController {
         }
         return ResponseEntity.ok(coupon);
     }
-        @GetMapping("/send")
+    
+    @GetMapping("/send")
     public ResponseEntity<Map<String, Object>> sendCouponEmailRest(@RequestParam Long userId) {
         Map<String, Object> response = new HashMap<>();
         try {
@@ -124,4 +125,17 @@ public class CouponRestController {
         couponService.deleteCoupon(id);
         return ResponseEntity.noContent().build(); // 204 No Content
     }
+
+    // GET /api/v1/coupon/validate?userId=3&code=SUMMER20
+    @GetMapping("/validate")
+    public ResponseEntity<?> validateCoupon(@RequestParam String code,@RequestParam Long userId) {
+
+        return couponService
+                .findByCodeAndId(code, userId) // devuelve Optional<CouponDTO>
+                .<ResponseEntity<?>>map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Coupon not found for this user"));
+    }
+
+
 }

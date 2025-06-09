@@ -27,7 +27,8 @@
     </div>
   
     <div class="text-center">
-      <button class="btn btn-red hvr-sweep-to-right dark-sweep" (click)="confirmAddToCart()">Add to cart</button>
+      <button *ngIf="stockAvailable" class="btn btn-red hvr-sweep-to-right dark-sweep" (click)="confirmAddToCart()">Add to cart</button>
+      <p *ngIf="stockAvailable === false"class="text-danger fw-bold mb-0">❌ No stock available</p>
     </div>
   </div>
   
