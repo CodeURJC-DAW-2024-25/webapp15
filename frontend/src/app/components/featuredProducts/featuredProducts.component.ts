@@ -58,7 +58,7 @@ export class FeaturedProductsComponent implements OnInit, AfterViewInit {
 
   initSwiper(): void {
     if (this.bestSellingShoes.length > 0) {
-      this.swiper = new Swiper('.swiper-container', {
+      this.swiper = new Swiper('.swipperFeatured', {
         slidesPerView: 5,
         spaceBetween: 20, 
         navigation: {

@@ -95,5 +95,9 @@ export class UserService {
       `data:${mimeType};base64,${base64}`
     );
   }
+
+  getImageUrl(userId: number):string{
+    return `${this.API_URL}/${userId}/image`;
+  }
   
 }

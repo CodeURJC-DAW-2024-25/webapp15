@@ -18,7 +18,7 @@ interface Product {
   templateUrl: './recommendedProducts.component.html',
   styleUrls: [
     '../../../assets/css/style.css',
-    '../../../assets/css/vendor.css'
+    '../../../assets/css/vendor.css','./recommendedProducts.component.css'
   ]
 })
 export class RecommendedProductsComponent implements OnInit, AfterViewInit {
@@ -46,20 +46,30 @@ export class RecommendedProductsComponent implements OnInit, AfterViewInit {
   loadRecommendedProducts(): void {
     this.isLoading = true;
     this.errorMessage = null;
-    
+
     this.recommendedProductsService.getRecommendedProducts().subscribe({
       next: (response: any) => {
-        this.recommendedShoes = response.recommendedShoes?.map((product: any) => ({
-          id: product.id,
-          name: product.name,
-          price: product.price,
-          imageUrl1: product.imageUrl1
-        })) || [];
-        
-        this.hasRecommendedShoes = this.recommendedShoes.length > 0;
+        console.log('API Response:', response);
+        if (Array.isArray(response.recommendedProducts) && response.recommendedProducts.length > 0) {
+          this.recommendedShoes = response.recommendedProducts.map((product: any) => ({
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            imageUrl1: product.imageUrl1
+          }));
+          this.hasRecommendedShoes = true;
+        } else {
+          this.recommendedShoes = [];
+          this.hasRecommendedShoes = false;
+        }
+
+        console.log('recommendedShoes:', this.recommendedShoes);
+        console.log('hasRecommendedShoes:', this.hasRecommendedShoes);
+
         this.isLoading = false;
         setTimeout(() => this.initSwiper(), 0);
-      },
+      }
+      ,
       error: (err) => {
         console.error('Error loading recommended products:', err);
         this.isLoading = false;
@@ -71,7 +81,7 @@ export class RecommendedProductsComponent implements OnInit, AfterViewInit {
 
   initSwiper(): void {
     if (this.recommendedShoes.length > 0) {
-      this.swiper = new Swiper('.swiper-container', {
+      this.swiper = new Swiper('.swipperRecommended', {
         slidesPerView: 5,
         spaceBetween: 20,
         navigation: {
@@ -81,6 +91,7 @@ export class RecommendedProductsComponent implements OnInit, AfterViewInit {
         observer: true,
         observeParents: true,
         watchOverflow: true,
+        loop:true,
         breakpoints: {
           320: { slidesPerView: 1, spaceBetween: 10 },
           640: { slidesPerView: 2, spaceBetween: 15 },
