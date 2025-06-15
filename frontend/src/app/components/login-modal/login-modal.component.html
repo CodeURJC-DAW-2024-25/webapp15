@@ -1,49 +1,36 @@
-<div class="login-modal-container">
-  <div class="login-modal-content">
-    <h2 class="login-title">Login</h2>
-    
-    <!-- Updated error message section -->
-    <div *ngIf="message && !isSuccess" class="alert alert-danger">
-      {{ message }}
-    </div>
-    
-    <!-- Optional success message -->
-    <div *ngIf="message && isSuccess" class="alert alert-success">
-      {{ message }}
+<div class="login-modal-content">
+  <h2 class="login-title">Login</h2>
+
+  <!-- Updated error message section -->
+  <div *ngIf="message && !isSuccess" class="alert alert-danger">
+    {{ message }}
+  </div>
+
+  <!-- Optional success message -->
+  <div *ngIf="message && isSuccess" class="alert alert-success" >
+    {{ message }}
+  </div>
+
+  <form #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)" class="login-form">
+    <div class="form-group">
+      <input type="text" name="username" placeholder="Username *" [(ngModel)]="credentials.username" required
+        class="form-input">
     </div>
 
-    <form #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)" class="login-form">
-      <div class="form-group">
-        <input type="text" 
-               name="username" 
-               placeholder="Username *" 
-               [(ngModel)]="credentials.username" 
-               required
-               class="form-input">
-      </div>
-      
-      <div class="form-group">
-        <input type="password" 
-               name="password" 
-               placeholder="Password" 
-               [(ngModel)]="credentials.password" 
-               required
-               class="form-input">
-      </div>
-      
-      <div class="button-group">
-        <button type="submit"  
-                class="btn-red hvr-sweep-to-right dark-sweep">
-          <span *ngIf="!isLoading">Login</span>
-          <span *ngIf="isLoading">Verificando...</span>
-        </button>
-        
-        <button type="button" 
-                class="btn-outline-gray hvr-sweep-to-right dark-sweep"
-                (click)="navigateToRegister()">
-          Register
-        </button>
-      </div>
-    </form>
-  </div>
+    <div class="form-group">
+      <input type="password" name="password" placeholder="Password" [(ngModel)]="credentials.password" required
+        class="form-input">
+    </div>
+
+    <div class="button-group">
+      <button type="submit" class="btn-red hvr-sweep-to-right dark-sweep">
+        <span *ngIf="!isLoading">Login</span>
+        <span *ngIf="isLoading">Verificando...</span>
+      </button>
+
+      <button type="button" class="btn-outline-gray hvr-sweep-to-right dark-sweep" (click)="navigateToRegister()">
+        Register
+      </button>
+    </div>
+  </form>
 </div>

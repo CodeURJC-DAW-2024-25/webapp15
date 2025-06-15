@@ -74,7 +74,12 @@ public class ShoeSizeStockService {
             for (Map.Entry<String, Integer> sizeEntry : entry.getValue().entrySet()) {
                 String size = sizeEntry.getKey();
                 int quantity = sizeEntry.getValue();
-                shoeSizeStockRepository.reduceStock(shoeId, size, quantity);
+                 int rows = shoeSizeStockRepository.reduceStock(shoeId, size, quantity);
+
+            if (rows == 0) {
+                throw new IllegalStateException(
+                   "Not enough stock for shoe " + shoeId + ", size " + size);
+            }
             }
         }
     }

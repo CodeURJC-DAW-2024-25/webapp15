@@ -1,24 +1,33 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
-import { catchError, Observable, tap, throwError } from 'rxjs';
+import { catchError, Observable, throwError } from 'rxjs';
 import { OrderShoesDTO } from '../dtos/ordershoes.dto';
 import { environment } from '../../environments/environment';
-import { LoginService } from '../services/login.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OrderService {
-  private apiUrl = `${environment.apiUrl}/OrderShoes`;
-  private readonly API_URL = "/api/v1";
- 
-  constructor(private http: HttpClient, private loginService: LoginService) {
-  }
+  private readonly API_URL = environment.apiUrl;
 
-  getOrdersByUserId(userId: number, page: number, size: number): Observable<OrderShoesDTO[]> {
+  constructor(private http: HttpClient) {}
+
+  getOrdersByUserId(userId: number, page: number = 0, size: number = 5): Observable<OrderShoesDTO[]> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+      
     return this.http.get<OrderShoesDTO[]>(
-      `${this.API_URL}/OrderShoes/User/${userId}?page=${page}&size=${size}`,
-      { withCredentials: true } // Esto envía las cookies de sesión
+      `${this.API_URL}/OrderShoes/User/${userId}`,
+      { 
+        params: params,
+        withCredentials: true
+      }
+    ).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.error('Error fetching orders:', error);
+        return throwError(() => this.createErrorMessage(error));
+      })
     );
   }
 
@@ -32,14 +41,12 @@ export class OrderService {
     return error.error?.message || error.message;
   }
 
-
-
   getOrderDetails(orderId: number): Observable<OrderShoesDTO> {
-    return this.http.get<OrderShoesDTO>(`${this.apiUrl}/${orderId}`);
+    return this.http.get<OrderShoesDTO>(`${this.API_URL}/OrderShoes/${orderId}`);
   }
 
   downloadTicket(orderId: number): Observable<Blob> {
-    return this.http.get(`${this.apiUrl}/download/${orderId}`, {
+    return this.http.get(`${this.API_URL}/OrderShoes/download/${orderId}`, {
       responseType: 'blob'
     });
   }

@@ -5,34 +5,38 @@
     <div *ngIf="cartItems.length > 0; else emptyCart">
       <div class="order-items">
   
-        <div *ngFor="let item of cartItems" class="order-item d-flex align-items-center mb-4">
+        <div *ngFor="let cart of cartItems" class="order-item d-flex align-items-center mb-4">
           <div class="col-lg-2 col-md-3 col-sm-2 me-4">
-            <img [src]="shoeService.getImageUrl(item.shoeId, 1)" class="img-fluid" alt="Product Image">
+            <img [src]="shoeService.getImageUrl(cart.item.shoeId, 1)" class="img-fluid" alt="Product Image">
           </div>
-          [src]="shoeService.getImageUrl(item.shoeId, 1)"
           <div class="ms-3 flex-grow-1">
-            <h5 class="mb-2">{{ item.shoeName }}</h5>
+            <h5 class="mb-2">{{ cart.item.shoeName }}</h5>
   
             <div class="d-flex justify-content-between align-items-center flex-wrap">
-  
-              <!-- Selector de cantidad -->
-              <div class="input-group product-qty">
-                <button type="button" class="quantity-left-minus btn btn-light rounded-0 rounded-start" (click)="decreaseQuantity(item)">
-                  -
-                </button>
-  
-                <input type="text" class="form-control input-number quantity quantity-input" [value]="item.quantity" readonly>
-  
-                <button type="button" class="quantity-right-plus btn btn-light rounded-0 rounded-end" (click)="increaseQuantity(item)">
-                  +
-                </button>
-              </div>
-  
+              <ng-container *ngIf="cart.stockAvailable; else noStock">
+                <!-- Selector de cantidad -->
+                <div class="input-group product-qty">
+                  <button type="button" class="quantity-left-minus btn btn-light rounded-0 rounded-start" (click)="decreaseQuantity(cart.item)">
+                    -
+                  </button>
+    
+                  <input type="text" class="form-control input-number quantity quantity-input" [value]="cart.item.quantity" readonly>
+    
+                  <button type="button" class="quantity-right-plus btn btn-light rounded-0 rounded-end" (click)="increaseQuantity(cart.item)">
+                    +
+                  </button>
+                </div>
+              </ng-container>
+
+              <ng-template #noStock>
+                <p class="text-danger mb-2">❌ No stock available</p>
+              </ng-template>
+              
               <div class="price-wrapper mb-2 ms-3">
-                <span class="fw-bold">{{ item.price | currency }}</span>
+                <span class="fw-bold">{{ cart.item.price | currency }}</span>
               </div>
   
-              <button class="btn btn-link text-danger p-0 mb-2 ms-3" (click)="removeItem(item)">
+              <button class="btn btn-link text-danger p-0 mb-2 ms-3" (click)="removeItem(cart.item)">
                 🗑️
               </button>
   
@@ -43,7 +47,7 @@
       </div>
   
       <!-- Botón para recalcular -->
-      <button type="button" class="btn btn-red hvr-sweep-to-right dark-sweep w-100 mb-3" (click)="recalculateTotal()">
+      <button type="button" class="btn btn-red hvr-sweep-to-right dark-sweep w-100 mb-3" (click)="recalculateTotal()" [disabled]="couponLocked">
         Recalculate
       </button>
   
@@ -51,7 +55,7 @@
       <div class="mt-4 pt-4 border-top">
         <div class="d-flex justify-content-between mb-2">
           <span>Subtotal:</span>
-          <span class="fw-bold">{{ subtotal | currency }}</span>
+          <span class="fw-bold">{{ displayedSubtotal  | currency }}</span>
         </div>
         <div class="d-flex justify-content-between mb-2">
           <span>Shipping:</span>
@@ -59,7 +63,7 @@
         </div>
         <div class="d-flex justify-content-between mt-3 pt-3 border-top">
           <span class="h5">Total:</span>
-          <span class="h5">{{ subtotal | currency }}</span>
+          <span class="h5">{{ totalAfterDiscount  | currency }}</span>
         </div>
       </div>
     </div>

@@ -23,5 +23,16 @@ export class OrderShoesService {
       withCredentials: true
     });
   }
+
+  updateOrderShoe(orderShoeId: number, updatedOrder: OrderShoesDTO): Observable<OrderShoesDTO> {
+  return this.http.put<OrderShoesDTO>(`/api/v1/OrderShoes/${orderShoeId}`, updatedOrder, {
+    withCredentials: true
+    });
+  }
   // Aquí puedes luego añadir más métodos: crear orden, finalizar compra, etc.
+  //addToCart(userId: number, shoeId: number, size: string, quantity:number): Observable<OrderShoesDTO> {
+  //}
+  // order-shoes.service.ts
+ 
+
 }

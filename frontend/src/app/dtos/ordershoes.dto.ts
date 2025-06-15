@@ -14,6 +14,6 @@ export interface OrderShoesDTO {
   summary: number;  
   state: string;
   userId: number;
-  coupon: CouponDTO;  
+  coupon?: CouponDTO|null;  
   orderItems: OrderItemDTO[]; 
 }

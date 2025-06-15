@@ -1,5 +1,6 @@
 package com.stepx.stepx.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -63,7 +64,9 @@ public class ReviewService {
         review.setDescription(reviewDto.description());
         review.setShoe(shoe);
         review.setUser(user);
-        review.setDate(reviewDto.date());
+        if (reviewDto.date() == null) {
+            review.setDate(LocalDate.now());  // asigna fecha actual si no viene
+        }
         shoe.addReview(review);
 
         System.out.println("⚙️ Review in shoe: " + shoe.getReviews());
@@ -83,7 +86,7 @@ public class ReviewService {
         return Optional.empty();
     }
 
-    public List<ReviewDTO> getPagedReviewsByShoeId(Long shoeId, int page, int limit) {
+    public List<ReviewDTO> getPagedReviewsByShoeId(Long shoeId, int limit,int page  ) {
         Pageable pageable = PageRequest.of(page, limit);
         List<Review> reviews = reviewRepository.findByShoeId(shoeId, pageable).getContent();
         return reviews != null ? reviewMapper.toDTOs(reviews) : List.of();

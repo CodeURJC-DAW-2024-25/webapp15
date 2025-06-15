@@ -21,6 +21,7 @@ import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.stepx.stepx.dto.CouponDTO;
@@ -32,6 +33,8 @@ import com.stepx.stepx.model.*;
 import com.stepx.stepx.repository.*;
 import com.stepx.stepx.service.*;
 
+import org.springframework.http.MediaType;
+import org.springframework.http.HttpHeaders;
 
 
 
@@ -61,6 +64,9 @@ public class OrderShoesRestController {
     private UserRepository userRepository;
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private PdfService pdfService;
 
     // get an order by orderId
     @GetMapping("/{orderId}")
@@ -141,7 +147,8 @@ public class OrderShoesRestController {
     public ResponseEntity<?> updateOrderShoe(@PathVariable Long orderShoeId, @RequestBody OrderShoesDTO orderShoesDTO) {
         Optional<OrderShoesDTO> orderShoeOptional=orderShoesService.updateOrderShoe(orderShoeId,orderShoesDTO);
         if (orderShoeOptional.isEmpty()) {
-            throw new IllegalArgumentException("Order items are empty, not in PROCESSED state or user id wrong.");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Order item is empty");
+
         }
         return ResponseEntity.ok(orderShoeOptional.get());
     }
@@ -196,4 +203,46 @@ public class OrderShoesRestController {
         // Devolver el nuevo total SIN tocar base de datos
         return ResponseEntity.ok(discountedTotal);
     }
+
+
+    @GetMapping("/download/{orderId}")
+public ResponseEntity<byte[]> downloadTicket(@PathVariable Long orderId) {
+
+    OrderShoesDTO dto = orderShoesService.getOrderById(orderId)
+        .orElseThrow(() ->
+            new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
+
+    Map<String, Object> data = Map.of(
+        "date",         dto.date(),
+        "customerName", dto.firstName() + " " + dto.secondName(),
+        "email",        dto.email(),
+        "phone",        dto.numerPhone(),
+        "address",      dto.address(),
+        "country",      dto.country(),
+        "coupon",       dto.cuponUsed(),
+        "total",        dto.summary(),
+        "products", dto.orderItems().stream()
+            .map(i -> Map.of(
+                 "shoeName", i.shoeName(),
+                 "quantity", i.quantity(),
+                 "price",    i.price(),
+                 "size",     i.size()
+            ))
+            .toList()
+    );
+
+    byte[] pdfBytes = pdfService.generatePdfFromOrder(data);
+    if (pdfBytes == null) {
+        throw new ResponseStatusException(
+            HttpStatus.INTERNAL_SERVER_ERROR, "Error generating PDF");
+    }
+
+    return ResponseEntity.ok()
+        .contentType(MediaType.APPLICATION_PDF)
+        .header(HttpHeaders.CONTENT_DISPOSITION,
+                "attachment; filename=\"ticket_" + orderId + ".pdf\"")
+        .body(pdfBytes);
+}
+
+
 }

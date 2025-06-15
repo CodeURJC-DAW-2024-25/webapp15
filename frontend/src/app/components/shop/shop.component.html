@@ -64,16 +64,15 @@
         
         </div>
 
-        <div class="product-content product-store d-flex justify-content-between flex-wrap">
-
+      
+          <div class="product-content product-store d-flex justify-content-between flex-wrap">
             <div class="col-lg-4 col-md-12 col-sm-12 mb-4 pe-3" *ngFor="let shoe of shoes">
-                <app-shoe-card [shoe]="shoe"
-                [isAdmin]="isAdmin"
-                [isUser]="isUser"
-                (shoeDeleted)="onShoeDeleted($event)"></app-shoe-card>
+              <app-shoe-card [shoe]="shoe" [isAdmin]="isAdmin" [isUser]="isUser" (shoeDeleted)="onShoeDeleted($event)">
+              </app-shoe-card>
             </div>
+          </div>
+       
 
-        </div>
   
         <div class="text-center mt-4" *ngIf="hasMoreShoes">
 

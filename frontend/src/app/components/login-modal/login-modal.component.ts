@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
 import { LoginService } from '../../services/login.service';
 import Cookies from 'js-cookie';// Import js-cookie
@@ -28,6 +29,7 @@ export class LoginModalComponent {
 
   constructor(
     private router: Router,
+    public activeModalLogin: NgbActiveModal,
     private loginService: LoginService
   ) {}
 
@@ -48,6 +50,7 @@ export class LoginModalComponent {
             if (response.status === 'SUCCESS') {
               this.isSuccess = true;
               this.message = 'Successfully logged in.';
+              this.closeModalLogin();
               
               this.loginService.getCurrentUser().subscribe({
                 next: (user) => {
@@ -92,5 +95,15 @@ export class LoginModalComponent {
   navigateToRegister(): void {
     this.closeModal.emit();
     this.router.navigate(['/']);
+  }
+
+  // Método para cerrar el modal
+  closeModalLogin() {
+    this.activeModalLogin.dismiss();
+
+    const cartButton = document.getElementById('cart-button');
+    if (cartButton) {
+      cartButton.focus();
+    }
   }
 }

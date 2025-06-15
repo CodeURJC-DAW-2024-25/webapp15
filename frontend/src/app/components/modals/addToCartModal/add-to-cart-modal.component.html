@@ -13,7 +13,7 @@
            style="height: 150px; width: auto; margin: 0 auto;">
   
       <div class="d-flex justify-content-center align-items-center gap-4 shadow p-3 my-4">
-        <img [src]="shoeService.getImageUrl(shoe.id, 1)"
+        <img [src]="shoeService.getImageUrl(shoe.id,1)"
              alt="Product Image"
              style="width: 30%; max-height: 30%;">
   
@@ -27,7 +27,8 @@
     </div>
   
     <div class="text-center">
-      <button class="btn btn-red hvr-sweep-to-right dark-sweep" (click)="confirmAddToCart()">Add to cart</button>
+      <button *ngIf="stockAvailable" class="btn btn-red hvr-sweep-to-right dark-sweep" (click)="confirmAddToCart()">Add to cart</button>
+      <p *ngIf="stockAvailable === false"class="text-danger fw-bold mb-0">❌ No stock available</p>
     </div>
   </div>
   

@@ -101,7 +101,8 @@
   margin-left: -16px;
   margin-top: -16px;
   z-index: 11;
-  background: url(../images/chocolat/loader.gif);
+  /*background: url(../images/chocolat/loader.gif);*/
+  background: url('/assets/css/images/chocolat/loader.gif');
   opacity: 0;
 }
 

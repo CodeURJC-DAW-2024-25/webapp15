@@ -9,7 +9,7 @@
       <div class="mini-cart cart-list p-0 mt-3" *ngFor="let item of cartItems">
         <div class="mini-cart-item d-flex border-bottom pb-3">
           <div class="col-lg-2 col-md-3 col-sm-2 me-4">
-            <img [src]="'/shop/' + item.id + '/image/1'" class="img-fluid" alt="single-product-item">
+            <img [src]="shoeService.getImageUrl(item.shoeId,1)" class="img-fluid" alt="single-product-item">
           </div>
           <div class="col-lg-9 col-md-8 col-sm-8">
             <div class="product-header d-flex justify-content-between align-items-center mb-3">

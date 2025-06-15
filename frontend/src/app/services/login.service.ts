@@ -11,16 +11,33 @@ interface AuthResponse {
   accessToken?: string;
 }
 
+// @Injectable({ providedIn: 'root' })
+// export class LoginService {
+//   private readonly API_URL = '/api/v1';
+//   public logged: boolean = false;
+//   public user: UserDTO | null = null;
+
+//   constructor(
+//     private http: HttpClient,
+//     private router: Router // Inyectar Router
+//   ) { }
+
 @Injectable({ providedIn: 'root' })
 export class LoginService {
-  private readonly API_URL = '/api/v1';
+  private readonly API_URL: string;
   public logged: boolean = false;
   public user: UserDTO | null = null;
 
   constructor(
     private http: HttpClient,
-    private router: Router // Inyectar Router
-  ) { }
+    private router: Router
+  ) {
+    const isServer = typeof window === 'undefined';
+    this.API_URL = isServer
+      ? process.env['API_URL'] ?? 'http://localhost:4200/api/v1'
+      : '/api/v1';
+  }
+
 
 
   logIn(username: string, password: string): Observable<AuthResponse> {
@@ -99,31 +116,44 @@ export class LoginService {
   }
 
   // Verificar si la sesión es válida
-  checkSession(): Observable<boolean> {
-    const token = localStorage.getItem('accessToken');
+  // checkSession(): Observable<boolean> {
+  //   const token = localStorage.getItem('accessToken');
 
-    return this.http.get<boolean>(
-      `${this.API_URL}/auth/check`,
-      {
-        withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      }
-    ).pipe(
-      catchError(err => {
-        console.error('Error comprobando sesión:', err);
-        return of(false);
-      })
-    );
-  }
+  //   return this.http.get<boolean>(
+  //     `${this.API_URL}/auth/check`,
+  //     {
+  //       withCredentials: true,
+  //       headers: {
+  //         Authorization: `Bearer ${token}`
+  //       }
+  //     }
+  //   ).pipe(
+  //     catchError(err => {
+  //       console.error('Error comprobando sesión:', err);
+  //       return of(false);
+  //     })
+  //   );
+  // }
+
+  checkSession(): Observable<boolean> {
+  return this.http.get<boolean>(
+    `${this.API_URL}/auth/check`,
+    {
+      withCredentials: true
+    }
+  ).pipe(
+    catchError(err => {
+      console.error('Error comprobando sesión:', err);
+      return of(false);
+    })
+  );
+}
 
 
 
   reqIsLogged(): void {
     this.checkSession().subscribe((isLogged) => {
       this.logged = isLogged;
-      console.log('verificacando la sesion:', isLogged);
       if (isLogged) {
         this.getCurrentUser().subscribe((user) => {
           console.log('Usuario:', user);
@@ -142,19 +172,16 @@ export class LoginService {
       { withCredentials: true }
     ).pipe(
       tap(() => {
-        // Limpiar el estado local
+
         this.logged = false;
         this.user = null;
         
-        // Redirigir al login
         this.router.navigate(['/']);
         
-        // Forzar recarga para limpiar cualquier estado residual
         window.location.reload();
       }),
       catchError(error => {
         console.error('Error durante logout:', error);
-        // Asegurarse de limpiar el estado incluso si hay error
         this.logged = false;
         this.user = null;
         this.router.navigate(['/']);

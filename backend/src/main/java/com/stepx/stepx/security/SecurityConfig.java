@@ -20,7 +20,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.stepx.stepx.controller.web.CustomAuthenticationSuccessHandler;
 import com.stepx.stepx.security.jwt.JwtRequestFilter;
 import com.stepx.stepx.security.jwt.UnauthorizedHandlerJwt;
-import com.stepx.stepx.security.jwt.AccessDeniedHandlerJwt;
 
 
 @Configuration
@@ -78,20 +77,24 @@ public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
 
     http
         .authorizeHttpRequests(authorize -> authorize
-            // PRIVATE ENDPOINTS
-            .requestMatchers(HttpMethod.POST, "/api/v1/OrderItem/**", "/api/v1/OrderShoes/**", "/api/v1/reviews/**", "/api/v1/ShoeSizeStock/**", "/api/v1/user/**").hasRole("USER")
-            .requestMatchers(HttpMethod.PUT, "/api/v1/OrderItem/**", "/api/v1/reviews/**", "/api/v1/ShoeSizeStock/**").hasRole("USER")
-            .requestMatchers(HttpMethod.GET, "/api/v1/OrderItem/**", "/api/v1/coupon/**","api/v1/user/chartuser/**", "/api/v1/OrderShoes/**").hasRole("USER")
-            .requestMatchers(HttpMethod.DELETE, "/api/v1/admin/**", "/api/v1/OrderItem/**", "/api/v1/reviews/**", "/api/v1/user/**").hasRole("USER")
+            
+            //PRIVATE ENDPOINTS
+            .requestMatchers(HttpMethod.POST, "/api/v1/OrderItem/*", "/api/v1/OrderShoes/", "/api/v1/reviews", "/api/v1/ShoeSizeStock/", "/api/v1/user/*").hasRole("USER")
+            .requestMatchers(HttpMethod.PUT, "/api/v1/OrderItem/*", "/api/v1/reviews/{id}", "/api/v1/ShoeSizeStock/*").hasRole("USER")
+            .requestMatchers(HttpMethod.GET, "/api/v1/OrderItem/*", "/api/v1/coupon/","api/v1/user/chartuser/", "/api/v1/OrderShoes/*","/api/v1/user/{id}/image").hasRole("USER")
+            .requestMatchers(HttpMethod.GET, "/api/v1/OrderItem/*", "/api/v1/coupon/", "/api/v1/OrderShoes/*").hasRole("USER")
+            .requestMatchers(HttpMethod.DELETE, "/api/v1/admin/*", "/api/v1/OrderItem/", "/api/v1/reviews/{id}", "/api/v1/user/*").hasRole("USER")
             // Admins
-            .requestMatchers(HttpMethod.DELETE, "/api/v1/admin/**", "/api/v1/coupon/**", "/api/v1/reviews/**", "/api/v1/Shoe/**", "/api/v1/user/**").hasRole("ADMIN")
-            .requestMatchers(HttpMethod.GET, "/api/v1/admin/**", "/api/v1/reviews/**", "/api/v1/Shoe/**", "/api/v1/user/**","/api/v1/OrderShoes/**").hasRole("ADMIN")
-            .requestMatchers(HttpMethod.PUT, "/api/v1/admin/**", "/api/v1/coupon/**", "/api/v1/ShoeSizeStock/**").hasRole("ADMIN")
-            .requestMatchers(HttpMethod.POST, "/api/v1/admin/**", "/api/v1/coupon/**", "/api/v1/Shoe/**", "/api/v1/ShoeSizeStock/**").hasRole("ADMIN")
+            .requestMatchers(HttpMethod.DELETE, "/api/v1/admin/*", "/api/v1/coupon/", "/api/v1/reviews/", "/api/v1/Shoe/", "/api/v1/user/*").hasRole("ADMIN")
+            .requestMatchers(HttpMethod.GET, "/api/v1/admin/*", "/api/v1/Shoe/", "/api/v1/user/","/api/v1/OrderShoes/*").hasRole("ADMIN")
+            .requestMatchers(HttpMethod.PUT, "/api/v1/admin/*", "/api/v1/coupon/", "/api/v1/ShoeSizeStock/*").hasRole("ADMIN")
+            .requestMatchers(HttpMethod.POST, "/api/v1/admin/*", "/api/v1/coupon/", "/api/v1/Shoe/", "/api/v1/ShoeSizeStock/*","/api/v1/reviews").hasRole("ADMIN")
             // PUBLIC ENDPOINTS
-            .requestMatchers("/api/v1/Shoes", "/api/v1/image/**", "/api/v1/Shoe/**").permitAll()
+            .requestMatchers("/api/v1/Shoes", "/api/v1/image/*",  "/api/v1/Shoe/*").permitAll()
+            .requestMatchers(HttpMethod.GET, "/api/v1/reviews/*", "/api/v1/user/*/image").permitAll()
             .anyRequest().permitAll()
         );
+
 
     http.formLogin(formLogin -> formLogin.disable());
     http.csrf(csrf -> csrf.disable());

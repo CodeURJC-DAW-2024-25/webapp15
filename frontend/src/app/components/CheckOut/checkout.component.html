@@ -3,13 +3,19 @@
       <div class="row">
   
         <!-- Formulario de Shipping -->
-        <div class="col-lg-7 mb-4 mb-lg-0">
-          <app-shipping-form (formSubmit)="onSubmit($event)"></app-shipping-form>
-        </div>
+         <div class="col-lg-7 mb-4 mb-lg-0">
+
+        <app-shipping-form
+          [orderShoe]="cartSummary?.orderShoe!"  
+          (couponApplied)="onCouponApplied($event)" 
+          (formSubmit)="onSubmit($event)"
+        ></app-shipping-form>
+
+      </div>
   
         <!-- Resumen del Carrito -->
         <div class="col-lg-5">
-          <app-cart-summary></app-cart-summary>
+          <app-cart-summary #cartSummary></app-cart-summary>
         </div>
   
       </div>
