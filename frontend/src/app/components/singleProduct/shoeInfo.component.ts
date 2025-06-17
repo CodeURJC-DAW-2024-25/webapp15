@@ -10,6 +10,9 @@ import { Navigation, Pagination, Thumbs } from 'swiper/modules';
 import { ReviewDTO } from '../../dtos/review.dto';
 import { ReviewService } from '../../services/reviews.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { OrderShoesService } from '../../services/order-shoes.service';
+import { ShoeSizeStockService } from '../../services/shoesizestock.service';
+import { OrderItemDTO } from '../../dtos/orderitem.dto';
 
 Swiper.use([Navigation, Pagination, Thumbs]);
 
@@ -37,7 +40,10 @@ export class ShoeInfoComponent implements OnInit, AfterViewInit {
     public userService: UserService,
     public shoeService: ShoeService,
     private reviewService: ReviewService,// <- NUEVO
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private orderShoesService: OrderShoesService,
+    private stockService: ShoeSizeStockService
+
   ) { }
 
   ngOnInit(): void {
@@ -138,14 +144,7 @@ export class ShoeInfoComponent implements OnInit, AfterViewInit {
     }
   }
 
-  addToCart(): void {
-    if (!this.product || !this.selectedSize) {
-      console.error('Product or size not selected');
-      return;
-    }
-
-    console.log(`Adding to cart: Product ID ${this.product.id}, Size ${this.selectedSize}, Quantity ${this.quantity}`);
-  }
+  
 
   isSizeOutOfStock(size: string): boolean {
     if (!this.product) return false;
@@ -217,7 +216,7 @@ export class ShoeInfoComponent implements OnInit, AfterViewInit {
       alert('No tienes permisos para esta acción');
       return;
     }
-    
+
     if (confirm('¿Estás seguro de que quieres eliminar esta reseña?')) {
       this.reviewService.deleteReview(reviewId).subscribe({
         next: () => {
@@ -237,6 +236,84 @@ export class ShoeInfoComponent implements OnInit, AfterViewInit {
       });
     }
   }
+
+  addToCart(): void {
+  if (!this.product || !this.selectedSize) {
+    console.error('Product or size not selected');
+    return;
+  }
+
+  const userId = this.loginService.user?.id;
+  if (!userId) {
+    alert("Debes iniciar sesión para añadir al carrito.");
+    return;
+  }
+
+  // Verificar stock antes de continuar
+  this.stockService.checkStock([this.product.id], [this.selectedSize]).subscribe({
+    next: (stockMap) => {
+      const key = `${this.product!.id}_${this.selectedSize}`;
+      const availableStock = stockMap[key] ?? 0;
+
+      if (availableStock < this.quantity) {
+        alert('No hay suficiente stock disponible');
+        return;
+      }
+
+      // Obtener el carrito actual
+      this.orderShoesService.getCartByUserId(userId).subscribe({
+        next: (cart) => {
+          const updatedCart = { ...cart };
+
+          // Buscar si ya existe el mismo producto/talla
+          const existingItem = updatedCart.orderItems?.find(item =>
+            item.shoeId === this.product!.id && item.size === this.selectedSize
+          );
+
+          if (existingItem) {
+            // Actualizar cantidad si ya existe
+            existingItem.quantity += this.quantity;
+          } else {
+            // Crear nuevo item
+            const newItem: OrderItemDTO = {
+              orderId: updatedCart.id,
+              shoeId: this.product!.id,
+              shoeName: this.product!.name,
+              quantity: this.quantity,
+              size: this.selectedSize!,
+              price: this.product!.price
+            };
+
+            updatedCart.orderItems = [...(updatedCart.orderItems || []), newItem];
+          }
+
+          // Actualizar estado del carrito
+          updatedCart.state = 'notFinished';
+
+          // Enviar actualización
+          this.orderShoesService.updateOrderShoe(updatedCart.id, updatedCart).subscribe({
+            next: () => {
+              console.log("Producto añadido al carrito");
+              alert("Producto añadido al carrito");
+            },
+            error: (err) => {
+              console.error("Error actualizando carrito:", err);
+              alert("No se pudo añadir al carrito");
+            }
+          });
+        },
+        error: (err) => {
+          console.error("Error obteniendo carrito:", err);
+          alert("Error obteniendo carrito del usuario");
+        }
+      });
+    },
+    error: () => {
+      console.error('Error consultando stock');
+      alert('Error al verificar disponibilidad');
+    }
+  });
+}
 
 
 
