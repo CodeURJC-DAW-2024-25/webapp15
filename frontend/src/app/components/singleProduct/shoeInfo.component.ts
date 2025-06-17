@@ -26,6 +26,7 @@ export class ShoeInfoComponent implements OnInit, AfterViewInit {
   swiperInitialized: boolean = false;
   reviews: ReviewDTO[] = [];
   isAdmin: boolean = false;
+  isUser: boolean = false;
   reviewForm!: FormGroup;
   currentPage: number = 0;
 
@@ -46,13 +47,24 @@ export class ShoeInfoComponent implements OnInit, AfterViewInit {
     });
 
     this.loginService.reqIsLogged();
-    this.isAuthenticated = this.loginService.logged;
+    setTimeout(() => {
+      // Ahora los valores deberían estar actualizados
+      this.isAuthenticated = this.loginService.logged;
+      this.isAdmin = this.loginService.user?.roles.includes('ROLE_ADMIN') ?? false;
+      this.isUser = this.loginService.user?.roles.includes('ROLE_USER') ?? false;
+
+      console.log("prueba de que es admin:", this.isAdmin);
+      console.log("Prueba de que es user:", this.isUser);
+
+    }, 300);
 
 
     this.reviewForm = this.fb.group({
       description: ['', Validators.required],
       rating: [null, Validators.required]
     });
+
+
   }
 
   ngAfterViewInit(): void {
@@ -144,11 +156,6 @@ export class ShoeInfoComponent implements OnInit, AfterViewInit {
     return Array(rating).fill(0);
   }
 
-  deleteReview(reviewId: number): void {
-    // Lógica para eliminar la reseña
-    console.log('Eliminando reseña con ID:', reviewId);
-  }
-
   loadMoreReviews(productId: number): void {
     this.currentPage++; // Incrementar la página
     this.reviewService.getReviewsByShoeId(productId, this.currentPage).subscribe({
@@ -202,7 +209,35 @@ export class ShoeInfoComponent implements OnInit, AfterViewInit {
       alert('Por favor completa todos los campos antes de enviar.');
     }
   }
-  
+
+  deleteReview(reviewId: number): void {
+    if (!reviewId || !this.product) return;
+
+    if (!this.isAdmin) {
+      alert('No tienes permisos para esta acción');
+      return;
+    }
+    
+    if (confirm('¿Estás seguro de que quieres eliminar esta reseña?')) {
+      this.reviewService.deleteReview(reviewId).subscribe({
+        next: () => {
+          // Actualizar lista de reseñas localmente
+          this.reviews = this.reviews.filter(r => r.id !== reviewId);
+
+          // Recargar las reseñas desde el backend (opcional)
+          this.reviewService.getReviewsByShoeId(this.product!.id, this.currentPage)
+            .subscribe(updatedReviews => {
+              this.reviews = updatedReviews;
+            });
+        },
+        error: (err) => {
+          console.error('Error eliminando reseña:', err);
+          alert('No se pudo eliminar la reseña');
+        }
+      });
+    }
+  }
+
 
 
 

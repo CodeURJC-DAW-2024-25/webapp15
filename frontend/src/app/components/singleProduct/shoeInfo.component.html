@@ -206,11 +206,12 @@
                                                 </div>
                                                 <p id="textReview">{{ r.description }}</p>
                                             </div>
-
-                                            <button *ngIf="isAdmin" id="deleteReviewButton"
-                                                (click)="deleteReview(r.id)" style="padding-top: 30px;">
-                                                <i class="fa-solid fa-trash"></i>
-                                            </button>
+                                            <ng-container *ngIf="isAdmin">
+                                                <button id="deleteReviewButton"
+                                                    (click)="deleteReview(r.id)" style="padding-top: 30px;">
+                                                    <div>Borrar</div>
+                                                </button>
+                                            </ng-container>
                                         </div>
                                     </div>
                                 </ng-container>
