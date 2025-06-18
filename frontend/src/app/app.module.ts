@@ -37,6 +37,7 @@ import { ImageCollageBigComponent } from './components/image-collage-big/image-c
 import { RecommendedProductsComponent } from './components/recommendedProducts/recommendedProducts.component'
 import { UserSpendingChartComponent } from './components/profile-data/profile-chart.component';
 import { ImageCollageSmallComponent } from './components/image-collage-small/image-collage-small.component';
+import { MainComponent } from './components/main/main.component';
 
 
 
@@ -69,7 +70,8 @@ import { ImageCollageSmallComponent } from './components/image-collage-small/ima
     ShippingFormComponent,
     CartSummaryComponent,
     UserSpendingChartComponent,
-    ImageCollageSmallComponent
+    ImageCollageSmallComponent,
+    MainComponent
   ],
   imports: [
     HttpClientModule,
