@@ -2,7 +2,7 @@ package com.stepx.stepx.security.jwt;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -10,93 +10,127 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import jakarta.servlet.http.Cookie;
+import com.stepx.stepx.dto.UserDTO;
+import com.stepx.stepx.mapper.UserMapper;
+import com.stepx.stepx.model.User;
+import com.stepx.stepx.repository.UserRepository;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Service
 public class UserLoginService {
 
-	private static final Logger log = LoggerFactory.getLogger(UserLoginService.class);
+    private static final Logger log = LoggerFactory.getLogger(UserLoginService.class);
 
-	private final AuthenticationManager authenticationManager;
-	private final UserDetailsService userDetailsService;
-	private final JwtTokenProvider jwtTokenProvider;
+    private final AuthenticationManager authenticationManager;
+    private final UserDetailsService userDetailsService;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
-	public UserLoginService(AuthenticationManager authenticationManager, UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
-		this.authenticationManager = authenticationManager;
-		this.userDetailsService = userDetailsService;
-		this.jwtTokenProvider = jwtTokenProvider;
-	}
+    public UserLoginService(
+            AuthenticationManager authenticationManager,
+            UserDetailsService userDetailsService,
+            JwtTokenProvider jwtTokenProvider,
+            UserRepository userRepository,
+            UserMapper userMapper) {
+        this.authenticationManager = authenticationManager;
+        this.userDetailsService = userDetailsService;
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.userRepository = userRepository;
+        this.userMapper = userMapper;
+    }
 
-	public ResponseEntity<AuthResponse> login(HttpServletResponse response, LoginRequest loginRequest) {
-		
-		Authentication authentication = authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-	
-		SecurityContextHolder.getContext().setAuthentication(authentication);
-	
-		String username = loginRequest.getUsername();
-		UserDetails user = userDetailsService.loadUserByUsername(username);
-	
-		// Generamos los tokens
-		var newAccessToken = jwtTokenProvider.generateAccessToken(user);
-		var newRefreshToken = jwtTokenProvider.generateRefreshToken(user);
-	
-		// Guardamos los tokens en cookies
-		response.addCookie(buildTokenCookie(TokenType.ACCESS, newAccessToken));
-		response.addCookie(buildTokenCookie(TokenType.REFRESH, newRefreshToken));
-	
-		// Enviar los tokens en la respuesta JSON
-		AuthResponse loginResponse = new AuthResponse(AuthResponse.Status.SUCCESS,
-				"Auth successful. Tokens are created in cookie.", newAccessToken);
-	
-		return ResponseEntity.ok().body(loginResponse);
-	}
-	
+    public ResponseEntity<AuthResponse> login(HttpServletResponse response, LoginRequest loginRequest) {
+        try {
+            // 1. Autenticar credenciales
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequest.getUsername(), loginRequest.getPassword())
+            );
 
-	public ResponseEntity<AuthResponse> refresh(HttpServletResponse response, String refreshToken) {
-		try {
-			var claims = jwtTokenProvider.validateToken(refreshToken);
-			UserDetails user = userDetailsService.loadUserByUsername(claims.getSubject());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-			var newAccessToken = jwtTokenProvider.generateAccessToken(user);
-			response.addCookie(buildTokenCookie(TokenType.ACCESS, newAccessToken));
+            // 2. Cargar detalles del usuario
+            UserDetails user = userDetailsService.loadUserByUsername(loginRequest.getUsername());
 
-			AuthResponse loginResponse = new AuthResponse(AuthResponse.Status.SUCCESS,
-					"Auth successful. Tokens are created in cookie.");
-			return ResponseEntity.ok().body(loginResponse);
+            // 3. Generar tokens
+            String accessToken = jwtTokenProvider.generateAccessToken(user);
+            String refreshToken = jwtTokenProvider.generateRefreshToken(user);
 
-		} catch (Exception e) {
-			log.error("Error while processing refresh token", e);
-			AuthResponse loginResponse = new AuthResponse(AuthResponse.Status.FAILURE,
-					"Failure while processing refresh token");
-			return ResponseEntity.ok().body(loginResponse);
-		}
-	}
+            // 4. Agregar tokens a las cookies
+            jwtTokenProvider.addTokensToResponse(response, accessToken, refreshToken, true);
 
-	public String logout(HttpServletResponse response) {
-		SecurityContextHolder.clearContext();
-		response.addCookie(removeTokenCookie(TokenType.ACCESS));
-		response.addCookie(removeTokenCookie(TokenType.REFRESH));
+            return ResponseEntity.ok(new AuthResponse(
+                    AuthResponse.Status.SUCCESS,
+                    "Authentication successful. Tokens set in cookies.",
+                    accessToken
+            ));
+        } catch (Exception e) {
+            log.error("Login error: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new AuthResponse(AuthResponse.Status.FAILURE, "Invalid credentials"));
+        }
+    }
 
-		return "logout successfully";
-	}
+    public ResponseEntity<UserDTO> getCurrentUser(HttpServletRequest request) {
+        try {
+            // 1. Validar token y extraer claims
+            Claims claims = jwtTokenProvider.validateAndParseToken(request, true);
+            String username = claims.getSubject();
 
-	private Cookie buildTokenCookie(TokenType type, String token) {
-		Cookie cookie = new Cookie(type.cookieName, token);
-		cookie.setMaxAge((int) type.duration.getSeconds());
-		cookie.setHttpOnly(true);
-		cookie.setPath("/");
-		return cookie;
-	}
+            // 2. Buscar usuario
+            User user = userRepository.findByUsername(username)
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-	private Cookie removeTokenCookie(TokenType type){
-		Cookie cookie = new Cookie(type.cookieName, "");
-		cookie.setMaxAge(0);
-		cookie.setHttpOnly(true);
-		cookie.setPath("/");
-		return cookie;
-	}
+            // 3. Retornar DTO
+            return ResponseEntity.ok(userMapper.toDTO(user));
+        } catch (JwtException | UsernameNotFoundException e) {
+            log.error("Error retrieving current user: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
+
+    public ResponseEntity<AuthResponse> refresh(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            // 1. Validar y parsear token desde cookie
+            Claims claims = jwtTokenProvider.validateAndParseToken(request, true);
+
+            // 2. Verificar tipo de token
+            String tokenType = claims.get("type", String.class);
+            if (!"REFRESH".equals(tokenType)) {
+                throw new JwtException("Token is not a refresh token");
+            }
+
+            // 3. Cargar usuario y generar nuevo token de acceso
+            UserDetails user = userDetailsService.loadUserByUsername(claims.getSubject());
+            String newAccessToken = jwtTokenProvider.generateAccessToken(user);
+
+            // 4. Actualizar cookie del access token
+            jwtTokenProvider.addTokensToResponse(response, newAccessToken, null, true);
+
+            return ResponseEntity.ok(new AuthResponse(
+                    AuthResponse.Status.SUCCESS,
+                    "Access token refreshed successfully",
+                    newAccessToken
+            ));
+
+        } catch (JwtException e) {
+            log.error("Token refresh error: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new AuthResponse(AuthResponse.Status.FAILURE, "Invalid refresh token"));
+        }
+    }
+
+    public String logout(HttpServletResponse response) {
+        SecurityContextHolder.clearContext();
+        jwtTokenProvider.removeAuthCookies(response);
+        return "Logout successful";
+    }
 }

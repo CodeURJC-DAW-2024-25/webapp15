@@ -1,162 +1,215 @@
 package com.stepx.stepx.security.jwt;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.crypto.SecretKey;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import com.stepx.stepx.model.User;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtBuilder;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class JwtTokenProvider {
+    private static final Logger log = LoggerFactory.getLogger(JwtTokenProvider.class);
 
-	private final SecretKey jwtSecret = Jwts.SIG.HS256.key().build();
-	private final JwtParser jwtParser = Jwts.parser().verifyWith(jwtSecret).build();
+    private static final String ACCESS_TOKEN_COOKIE_NAME = "AccessToken";
+    private static final String REFRESH_TOKEN_COOKIE_NAME = "RefreshToken";
 
-	public String tokenStringFromHeaders(HttpServletRequest req){
-		String bearerToken = req.getHeader(HttpHeaders.AUTHORIZATION);
-		if (bearerToken == null) {
-			throw new IllegalArgumentException("Missing Authorization header");
-		}
-		if(!bearerToken.startsWith("Bearer ")){
-			throw new IllegalArgumentException("Authorization header does not start with Bearer: " + bearerToken);
-		}
-		return bearerToken.substring(7);
-	}
+    private static final String TOKEN_TYPE_ACCESS = "ACCESS";
+    private static final String TOKEN_TYPE_REFRESH = "REFRESH";
 
-	private String tokenStringFromCookies(HttpServletRequest request) {
-		var cookies = request.getCookies();
-		if (cookies == null) {
-			throw new IllegalArgumentException("No cookies found in request");
-		}
+    private static final long ACCESS_TOKEN_EXPIRATION_MINUTES = 15;
+    private static final long REFRESH_TOKEN_EXPIRATION_DAYS = 7;
 
-		for (Cookie cookie : cookies) {
-			if (TokenType.ACCESS.cookieName.equals(cookie.getName())) {
-				String accessToken = cookie.getValue();
-				if (accessToken == null) {
-					throw new IllegalArgumentException("Cookie %s has null value".formatted(TokenType.ACCESS.cookieName));
-				}
+    private final SecretKey jwtSecret;
+    private final JwtParser jwtParser;
 
-				return accessToken;
-			}
-		}
-		throw new IllegalArgumentException("No access token cookie found in request");
-	}
-
-	public Claims validateToken(HttpServletRequest req, boolean fromCookie){
-		var token = fromCookie?
-				tokenStringFromCookies(req):
-				tokenStringFromHeaders(req);
-		return validateToken(token);
-	}
-
-	public Claims validateToken(String token) {
-		return jwtParser.parseSignedClaims(token).getPayload();
-	}
-
-	public String generateAccessToken(UserDetails userDetails) {
-        System.out.println("[TRACE BACK] Generando access token para: " + userDetails.getUsername());
-        String token = buildToken(TokenType.ACCESS, userDetails).compact();
-        System.out.println("Token generado: " + token.substring(0, 10) + "...");
-        return token;
+    public JwtTokenProvider() {
+        this.jwtSecret = Jwts.SIG.HS256.key().build();
+        this.jwtParser = Jwts.parser().verifyWith(jwtSecret).build();
     }
 
-	public String generateRefreshToken(UserDetails userDetails) {
-		var token = buildToken(TokenType.REFRESH, userDetails);
-        return token.compact();
-	}
+    // ==================== TOKEN RESOLUTION ====================
 
-	// public void addTokenToResponse(HttpServletResponse response, String accessToken, String refreshToken) {
-    //     // Crear las cookies para los tokens
-    //     var accessTokenCookie = ResponseCookie.from(TokenType.ACCESS.cookieName, accessToken)
-    //         .httpOnly(true)
-    //         .secure(true) // Si estás utilizando HTTPS, si no, remueve esto en desarrollo
-    //         .path("/")
-    //         .sameSite("None") // Importante para que funcione entre dominios
-    //         .maxAge(TokenType.ACCESS.duration)
-    //         .build();
-
-    //     var refreshTokenCookie = ResponseCookie.from(TokenType.REFRESH.cookieName, refreshToken)
-    //         .httpOnly(true)
-    //         .secure(true) // Si estás utilizando HTTPS, si no, remueve esto en desarrollo
-    //         .path("/")
-    //         .sameSite("None") // Importante para que funcione entre dominios
-    //         .maxAge(TokenType.REFRESH.duration)
-    //         .build();
-
-    //     // Agregar las cookies a la respuesta
-    //     response.addHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
-    //     response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
-    // }
-
-	public void addTokenToResponse(HttpServletResponse response, String accessToken, String refreshToken) {
-        System.out.println("[TRACE BACK] Generando cookies para tokens");
-        System.out.println("Access Token: " + accessToken.substring(0, 10) + "...");
-        System.out.println("Refresh Token: " + refreshToken.substring(0, 10) + "...");
-
-        ResponseCookie accessCookie = ResponseCookie.from("AccessToken", accessToken)
-            .httpOnly(true)
-            .path("/")
-            .maxAge(7 * 24 * 60 * 60)
-            .build();
-
-        ResponseCookie refreshCookie = ResponseCookie.from("RefreshToken", refreshToken)
-            .httpOnly(true)
-            .path("/")
-            .maxAge(7 * 24 * 60 * 60)
-            .build();
-
-        response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
-        response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
-        
-        System.out.println("[TRACE BACK] Cookies establecidas en respuesta");
+    public String resolveToken(HttpServletRequest request, boolean fromCookie) {
+        try {
+            return fromCookie ? getTokenFromCookies(request) : getTokenFromHeaders(request);
+        } catch (IllegalArgumentException e) {
+            log.debug("Token resolution failed: {}", e.getMessage());
+            return null;
+        }
     }
 
+    private String getTokenFromHeaders(HttpServletRequest request) {
+        String bearer = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (!StringUtils.hasText(bearer)) {
+            throw new IllegalArgumentException("Authorization header is missing");
+        }
+        if (!bearer.startsWith("Bearer ")) {
+            throw new IllegalArgumentException("Authorization header must start with 'Bearer '");
+        }
+        return bearer.substring(7);
+    }
 
-	private JwtBuilder buildToken(TokenType tokenType, UserDetails userDetails) {
-		var currentDate = new Date();
-		var expiryDate = Date.from(new Date().toInstant().plus(tokenType.duration));
-		Long userId = null;
-		String username = null;
+    private String getTokenFromCookies(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) throw new IllegalArgumentException("No cookies found");
 
-        userId = ((User) userDetails).getId();
-		username = ((User) userDetails).getUsername();
-		System.out.println("Adjunto el id del usuario autenticado: " + userId);
-    	
-		
-		return Jwts.builder()
-			.claim("userId", userId)
-			.claim("username", username)
-			.claim("roles", userDetails.getAuthorities())
-			.claim("type", tokenType.name())
-			.subject(userDetails.getUsername())
-			.issuedAt(currentDate)
-			.expiration(expiryDate)
-			.signWith(jwtSecret);
-	}
+        for (Cookie cookie : cookies) {
+            if (ACCESS_TOKEN_COOKIE_NAME.equals(cookie.getName())) {
+                String value = cookie.getValue();
+                if (!StringUtils.hasText(value)) {
+                    throw new IllegalArgumentException("AccessToken cookie is empty");
+                }
+                return value;
+            }
+        }
+        throw new IllegalArgumentException("AccessToken cookie not found");
+    }
 
-	public List<String> getRolesFromToken(HttpServletRequest request, boolean fromCookie) {
-		Claims claims = validateToken(request, fromCookie);
-		@SuppressWarnings("unchecked")
-		List<String> roles = claims.get("roles", List.class);
-		return roles != null ? roles : Collections.emptyList();
-	}
+    // ==================== TOKEN VALIDATION ====================
 
-	public boolean hasRole(HttpServletRequest request, String roleName, boolean fromCookie) {
-		return getRolesFromToken(request, fromCookie).contains(roleName);
-	}
+    public boolean isTokenValid(String token) {
+        try {
+            parseToken(token);
+            return true;
+        } catch (JwtException | IllegalArgumentException e) {
+            log.warn("Token validation failed: {}", e.getMessage());
+            return false;
+        }
+    }
+
+    public Claims parseToken(String token) throws JwtException {
+        try {
+            return jwtParser.parseSignedClaims(token).getPayload();
+        } catch (ExpiredJwtException e) {
+            log.warn("Token expired: {}", e.getMessage());
+            throw new JwtException("Token expired", e);
+        } catch (MalformedJwtException e) {
+            log.warn("Malformed token: {}", e.getMessage());
+            throw new JwtException("Invalid token format", e);
+        } catch (SignatureException e) {
+            log.warn("Invalid signature: {}", e.getMessage());
+            throw new JwtException("Invalid token signature", e);
+        } catch (IllegalArgumentException e) {
+            log.warn("Empty claims: {}", e.getMessage());
+            throw new JwtException("Token claims are empty", e);
+        } catch (Exception e) {
+            log.error("Unexpected token error", e);
+            throw new JwtException("Token validation error", e);
+        }
+    }
+
+    public Claims validateAndParseToken(HttpServletRequest request, boolean fromCookie) {
+        String token = resolveToken(request, fromCookie);
+        if (token == null) throw new JwtException("Token not found");
+        return parseToken(token);
+    }
+
+    // ==================== TOKEN GENERATION ====================
+
+    public String generateAccessToken(UserDetails userDetails) {
+        return buildToken(userDetails, ACCESS_TOKEN_EXPIRATION_MINUTES, TOKEN_TYPE_ACCESS).compact();
+    }
+
+    public String generateRefreshToken(UserDetails userDetails) {
+        return buildToken(userDetails, REFRESH_TOKEN_EXPIRATION_DAYS * 24 * 60, TOKEN_TYPE_REFRESH).compact();
+    }
+
+    public String refreshAccessToken(UserDetails userDetails) {
+        try {
+            return generateAccessToken(userDetails);
+        } catch (Exception e) {
+            log.error("Token refresh failed for {}: {}", userDetails.getUsername(), e.getMessage());
+            throw new JwtException("Token refresh failed", e);
+        }
+    }
+
+    private JwtBuilder buildToken(UserDetails userDetails, long expirationMinutes, String tokenType) {
+        if (!(userDetails instanceof User user)) {
+            throw new IllegalArgumentException("UserDetails must be of type User");
+        }
+
+        Instant now = Instant.now();
+
+        return Jwts.builder()
+                .claim("userId", user.getId())
+                .claim("username", user.getUsername())
+                .claim("roles", user.getAuthorities().stream()
+                        .map(GrantedAuthority::getAuthority)
+                        .toList())
+                .claim("type", tokenType)
+                .subject(user.getUsername())
+                .issuedAt(Date.from(now))
+                .expiration(Date.from(now.plusMillis(TimeUnit.MINUTES.toMillis(expirationMinutes))))
+                .signWith(jwtSecret);
+    }
+
+    // ==================== COOKIE MANAGEMENT ====================
+
+    public void addTokensToResponse(HttpServletResponse response, String accessToken, String refreshToken, boolean secure) {
+        response.addHeader(HttpHeaders.SET_COOKIE, buildCookie(ACCESS_TOKEN_COOKIE_NAME, accessToken, ACCESS_TOKEN_EXPIRATION_MINUTES, secure).toString());
+        response.addHeader(HttpHeaders.SET_COOKIE, buildCookie(REFRESH_TOKEN_COOKIE_NAME, refreshToken, REFRESH_TOKEN_EXPIRATION_DAYS * 24 * 60, secure).toString());
+        log.debug("Tokens added to response cookies");
+    }
+
+    private ResponseCookie buildCookie(String name, String value, long maxAgeMinutes, boolean secure) {
+        return ResponseCookie.from(name, value)
+                .httpOnly(true)
+                .secure(secure)
+                .path("/")
+                .sameSite(secure ? "None" : "Lax")
+                .maxAge(TimeUnit.MINUTES.toSeconds(maxAgeMinutes))
+                .build();
+    }
+
+    public void removeAuthCookies(HttpServletResponse response) {
+        response.addHeader(HttpHeaders.SET_COOKIE, buildCookie(ACCESS_TOKEN_COOKIE_NAME, "", 0, true).toString());
+        response.addHeader(HttpHeaders.SET_COOKIE, buildCookie(REFRESH_TOKEN_COOKIE_NAME, "", 0, true).toString());
+        log.debug("Auth cookies removed");
+    }
+
+    // ==================== CLAIMS EXTRACTION ====================
+
+    public List<String> getRolesFromToken(HttpServletRequest request, boolean fromCookie) {
+        Claims claims = validateAndParseToken(request, fromCookie);
+        @SuppressWarnings("unchecked")
+        List<String> roles = claims.get("roles", List.class);
+        return roles != null ? roles : Collections.emptyList();
+    }
+
+    public boolean hasRole(HttpServletRequest request, String roleName, boolean fromCookie) {
+        return getRolesFromToken(request, fromCookie).contains(roleName);
+    }
+
+    public Long getUserIdFromToken(String token) {
+        return parseToken(token).get("userId", Long.class);
+    }
+
+    public String getUsernameFromToken(String token) {
+        return parseToken(token).getSubject();
+    }
 }

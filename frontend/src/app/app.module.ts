@@ -37,6 +37,8 @@ import { ImageCollageBigComponent } from './components/image-collage-big/image-c
 import { RecommendedProductsComponent } from './components/recommendedProducts/recommendedProducts.component'
 import { UserSpendingChartComponent } from './components/profile-data/profile-chart.component';
 import { ImageCollageSmallComponent } from './components/image-collage-small/image-collage-small.component';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { SslInterceptor } from './auth/ssl.interceptor';
 
 
 
@@ -84,6 +86,7 @@ import { ImageCollageSmallComponent } from './components/image-collage-small/ima
   providers: [
     provideClientHydration(),
     provideHttpClient(withFetch()),
+    { provide: HTTP_INTERCEPTORS, useClass: SslInterceptor, multi: true },
   ],
   bootstrap: [AppComponent]
 })
