@@ -9,8 +9,11 @@ import { ShoeInfoComponent } from './components/singleProduct/shoeInfo.component
 import { ProfilePageComponent } from './components/profile-page/profile-page.component';
 import { RegisterComponent } from './components/register/register.component';
 import { CheckoutComponent } from './components/CheckOut/checkout.component';
+import { MainComponent } from './components/main/main.component';
+
 
 const routes: Routes = [
+  { path: '', component: MainComponent },
   {path: 'ver-login', component: LoginModalComponent},
   {path:'shop',component:ShopComponent},
   {path:'shop/edit/:id', component:ShoeEditComponent},

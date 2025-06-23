@@ -132,67 +132,39 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // Configuración para páginas web (form login)
-    @Bean
-    @Order(2)
-    public SecurityFilterChain webFilterChain(HttpSecurity http, CustomAuthenticationSuccessHandler successHandler) throws Exception {
-        http
-            .authenticationProvider(authenticationProvider())
-            .authorizeHttpRequests(authorize -> authorize
-                // Páginas públicas
-                .requestMatchers(
-                    "/",
-                    "/index",
-                    "/register-user",
-                    "/shop/**",
-                    "/partials/**",
-                    "/createAccount",
-                    "/errorPage",
-                    "/login",
-                    "/v3/api-docs/**",
-                    "/swagger-ui/**",
-                    "/swagger-ui.html",
-                    "/css/**",
-                    "/js/**",
-                    "/images/**"
-                ).permitAll()
-                
-                // Páginas de usuario
-                .requestMatchers(
-                    "/profile/**",
-                    "/shop/single-product/loadMoreReviews",
-                    "/user/updateInformation",
-                    "/OrderItem/addItem",
-                    "/checkout/**",
-                    "/user/**"
-                ).hasAnyRole("USER", "ADMIN")
-                
-                // Páginas de admin
-                .requestMatchers(
-                    "/edit-product/**",
-                    "/admin/**",
-                    "/create-product",
-                    "/shop/delete/**"
-                ).hasRole("ADMIN")
-                
-                .anyRequest().authenticated()
-            )
-            .formLogin(form -> form
-                .loginPage("/login")
-                .successHandler(successHandler)
-                .failureUrl("/login?error=true")
-                .permitAll()
-            )
-            .logout(logout -> logout
-                .logoutSuccessUrl("/index")
-                .logoutUrl("/logout")
-                .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID", "AccessToken", "RefreshToken")
-                .permitAll()
-            )
-            .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-            );
+
+@Bean
+@Order(2)
+public SecurityFilterChain filterChain(HttpSecurity http, CustomAuthenticationSuccessHandler successHandler) throws Exception {
+    http.authenticationProvider(authenticationProvider());
+
+    http
+        .authorizeHttpRequests(authorize -> authorize
+            // PUBLIC PAGES
+            .requestMatchers("/v3/api-docs/**","/index", "/register-user", "/shop/**", "/partials/**", "/createAccount", "/errorPage").permitAll()
+            .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
+                                .requestMatchers("/new").permitAll()
+                    .requestMatchers("/new/**").permitAll()
+            .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+
+            // PRIVATE PAGES
+            .requestMatchers("/profile/orders", "/shop/single-product/loadMoreReviews", "/user/updateInformation", "/profile").hasAnyRole("USER", "ADMIN")
+            .requestMatchers("/OrderItem/addItem", "/checkout/**", "/user/**").hasAnyRole("USER")
+            .requestMatchers("/edit-product/**", "/admin", "/create-product", "/shop/delete/**").hasAnyRole("ADMIN")
+        )
+        .formLogin(formLogin -> formLogin
+            .loginPage("/login")
+            .defaultSuccessUrl("/index", true)
+            .failureUrl("/?error=true")
+            .permitAll()
+        )
+        .logout(logout -> logout
+            .logoutSuccessUrl("/index")
+            .logoutUrl("/logout")
+            .invalidateHttpSession(true)
+            .deleteCookies("JSESSIONID")
+            .permitAll()
+        );
 
         return http.build();
     }

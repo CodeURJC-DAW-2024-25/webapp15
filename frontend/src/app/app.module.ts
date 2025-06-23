@@ -39,6 +39,7 @@ import { UserSpendingChartComponent } from './components/profile-data/profile-ch
 import { ImageCollageSmallComponent } from './components/image-collage-small/image-collage-small.component';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { SslInterceptor } from './auth/ssl.interceptor';
+import { MainComponent } from './components/main/main.component';
 
 
 
@@ -71,7 +72,8 @@ import { SslInterceptor } from './auth/ssl.interceptor';
     ShippingFormComponent,
     CartSummaryComponent,
     UserSpendingChartComponent,
-    ImageCollageSmallComponent
+    ImageCollageSmallComponent,
+    MainComponent
   ],
   imports: [
     HttpClientModule,

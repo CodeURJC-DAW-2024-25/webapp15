@@ -13,7 +13,8 @@ IMAGE_NAME="gabim23/webapp-test"
 TAG="latest"
 
 echo "Building the Docker image ${IMAGE_NAME}:${TAG}..."
-docker build -t ${IMAGE_NAME}:${TAG} .
+cd ..
+docker build -t ${IMAGE_NAME}:${TAG} -f ./docker/Dockerfile .
 if [ $? -eq 0 ]; then
     echo "The Docker image ${IMAGE_NAME}:${TAG} has been successfully built."
 else

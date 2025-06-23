@@ -86,11 +86,18 @@ public class ReviewService {
         return Optional.empty();
     }
 
-    public List<ReviewDTO> getPagedReviewsByShoeId(Long shoeId, int limit,int page  ) {
-        Pageable pageable = PageRequest.of(page, limit);
-        List<Review> reviews = reviewRepository.findByShoeId(shoeId, pageable).getContent();
-        return reviews != null ? reviewMapper.toDTOs(reviews) : List.of();
+   public List<ReviewDTO> getPagedReviewsByShoeId(Long shoeId, int limit, int page) {
+    if (limit < 1) {
+        limit = 1; // puedes también lanzar IllegalArgumentException si prefieres
     }
+    if (page < 0) {
+        page = 0;
+    }
+
+    Pageable pageable = PageRequest.of(page, limit);
+    List<Review> reviews = reviewRepository.findByShoeId(shoeId, pageable).getContent();
+    return reviews != null ? reviewMapper.toDTOs(reviews) : List.of();
+}
 
     public List<ReviewDTO> convertToDTOReviewList(List<Review> reviews) {
         List<ReviewDTO> reviewDTOs = new ArrayList<>();
