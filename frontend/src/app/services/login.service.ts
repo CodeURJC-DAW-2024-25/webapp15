@@ -93,6 +93,17 @@ export class LoginService {
     );
   }
 
+  getCurrentUserRoles(): string[] {
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  return user.roles || [];
+}
+
+isAdmin(): boolean {
+  const roles = this.getCurrentUserRoles();
+  return roles.includes('ADMIN') || roles.includes('ROLES_ADMIN');
+}
+
+
   private handleAuthError(): void {
     this.logged = false;
     this.user = null;

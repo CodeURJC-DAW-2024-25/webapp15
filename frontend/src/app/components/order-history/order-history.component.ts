@@ -26,7 +26,7 @@ export class OrderHistoryComponent implements OnInit {
   currentPage = 0;
   pageSize = 5;
   allOrders: EnhancedOrder[] = [];
-
+  isAdmin: boolean = false;
   constructor(
     private orderService: OrderService,
     private route: ActivatedRoute,
@@ -38,7 +38,12 @@ export class OrderHistoryComponent implements OnInit {
     this.loginService.getCurrentUser().subscribe((user) => {
       if (user && user.id) {
         this.id = user.id;
+        this.isAdmin = user.id === 1;
+        if (!this.isAdmin) {
         this.loadOrders(this.id);
+      } else {
+        this.isLoading = false;
+      }
       } else {
         this.handleError('No se pudo obtener el usuario.', true);
       }

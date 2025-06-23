@@ -67,7 +67,7 @@ export class ProfileDataComponent implements OnInit, OnDestroy {
             email: user.email
           });
           this.loadProfileImage();
-          this.isAdmin = user.roles?.includes('ADMIN') || false;
+          this.isAdmin = user.id === 1;
         }
         this.isLoading = false;
       },
@@ -137,6 +137,7 @@ export class ProfileDataComponent implements OnInit, OnDestroy {
   }
 
   updateProfile(): void {
+    this.profileForm.updateValueAndValidity();
     if (this.profileForm.invalid || !this.userId) return;
     this.isLoading = true;
 

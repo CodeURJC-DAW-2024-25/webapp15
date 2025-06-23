@@ -1,3 +1,4 @@
+<div *ngIf="!isAdmin">
 <div id="purchase-history" class="profile-section bg-white p-4 rounded-3">
   <h2 class="section-title mb-4">Purchase History</h2>
   
@@ -107,4 +108,5 @@
         {{ isLoading ? 'Loading...' : 'Load More Orders' }}
       </button>
     </div>
+</div>
 </div>
