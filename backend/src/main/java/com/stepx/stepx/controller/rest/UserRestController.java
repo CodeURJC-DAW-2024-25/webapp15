@@ -6,11 +6,16 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,7 +40,6 @@ public class UserRestController {
     @Autowired
     private UserService userService;
 
-
     // get all users
     @GetMapping
     public ResponseEntity<List<UserDTO>> getAllUsers() {
@@ -56,53 +60,81 @@ public class UserRestController {
         }
         return ResponseEntity.ok(userDto);
     }
-   
+
     @GetMapping("/chartuser/{userId}")
-public ResponseEntity<Map<String, Object>> getUserMonthlySpendingChart(@PathVariable Long userId) {
-    // Get monthly spending data for the user
-    List<Map<String, Object>> monthlySpending = userService.getMonthlySpendingByUserId(userId);
+    public ResponseEntity<Map<String, Object>> getUserMonthlySpendingChart(@PathVariable Long userId) {
+        
+        Map<String, Object> response = new HashMap<>();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-    // Prepare data for the chart
-    Map<String, Object> chartData = new HashMap<>();
-    String[] monthNames = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
-    Double[] spendingData = new Double[12];
-
-    // Initialize with zeros
-    for (int i = 0; i < 12; i++) {
-        spendingData[i] = 0.0;
-    }
-
-    // Fill in the actual spending data
-    for (Map<String, Object> entry : monthlySpending) {
-        String monthStr = (String) entry.get("month");
-        Number amount = (Number) entry.get("total_spent");
-        Double totalSpent = amount != null ? amount.doubleValue() : 0.0;
-
-        // Convert month string to zero-based index
-        int monthIndex = Integer.parseInt(monthStr) - 1;
-        if (monthIndex >= 0 && monthIndex < 12) {
-            spendingData[monthIndex] = totalSpent;
+        if (authentication == null || !(authentication.getPrincipal() instanceof UserDetails)) {
+            response.put("recommendedProducts", "User not authenticated");
+            return ResponseEntity.status(401).body(response);
         }
+
+        String username = authentication.getName();
+        Optional<UserDTO> authenticatedUser = userService.findUserByUserName(username);
+
+        if (authenticatedUser.isEmpty()) {
+            response.put("recommendedProducts", "Authenticated user not found");
+            return ResponseEntity.status(404).body(response);
+        }
+
+        // ✅ Corregimos: obtenemos bien los roles
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equalsIgnoreCase("ROLE_ADMIN"));
+
+        // ✅ Comparar correctamente el ID
+        if (!isAdmin && !authenticatedUser.get().id().equals(userId)) {
+            response.put("recommendedProducts", "Access denied");
+            return ResponseEntity.status(403).body(response);
+        }
+        
+        
+        
+        // Get monthly spending data for the user
+        List<Map<String, Object>> monthlySpending = userService.getMonthlySpendingByUserId(userId);
+
+        // Prepare data for the chart
+        Map<String, Object> chartData = new HashMap<>();
+        String[] monthNames = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+        Double[] spendingData = new Double[12];
+
+        // Initialize with zeros
+        for (int i = 0; i < 12; i++) {
+            spendingData[i] = 0.0;
+        }
+
+        // Fill in the actual spending data
+        for (Map<String, Object> entry : monthlySpending) {
+            String monthStr = (String) entry.get("month");
+            Number amount = (Number) entry.get("total_spent");
+            Double totalSpent = amount != null ? amount.doubleValue() : 0.0;
+
+            // Convert month string to zero-based index
+            int monthIndex = Integer.parseInt(monthStr) - 1;
+            if (monthIndex >= 0 && monthIndex < 12) {
+                spendingData[monthIndex] = totalSpent;
+            }
+        }
+
+        chartData.put("labels", monthNames);
+        chartData.put("data", spendingData);
+
+        return ResponseEntity.ok(chartData);
     }
-
-    chartData.put("labels", monthNames);
-    chartData.put("data", spendingData);
-
-    return ResponseEntity.ok(chartData);
-}
-
 
     // create User
     @PostMapping
     public ResponseEntity<UserDTO> createUserAPI(@RequestBody UserDTO userDto) {
         UserDTO createdUser = userService.createUserAPI(userDto);
-  
+
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(createdUser.id())
                 .toUri();
-    
+
         return ResponseEntity.created(location).body(createdUser);
     }
 
@@ -133,6 +165,32 @@ public ResponseEntity<Map<String, Object>> getUserMonthlySpendingChart(@PathVari
     @PostMapping("/{id}/image")
     public ResponseEntity<Object> createUserImage(@PathVariable long id, @RequestParam MultipartFile imageFile)
             throws IOException {
+         Map<String, Object> response = new HashMap<>();
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !(authentication.getPrincipal() instanceof UserDetails)) {
+            response.put("recommendedProducts", "User not authenticated");
+            return ResponseEntity.status(401).body(response);
+        }
+
+        String username = authentication.getName();
+        Optional<UserDTO> authenticatedUser = userService.findUserByUserName(username);
+
+        if (authenticatedUser.isEmpty()) {
+            response.put("recommendedProducts", "Authenticated user not found");
+            return ResponseEntity.status(404).body(response);
+        }
+
+        // ✅ Corregimos: obtenemos bien los roles
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equalsIgnoreCase("ROLE_ADMIN"));
+
+        // ✅ Comparar correctamente el ID
+        if (!isAdmin && !authenticatedUser.get().id().equals(id)) {
+            response.put("recommendedProducts", "Access denied");
+            return ResponseEntity.status(403).body(response);
+        }
 
         URI location = fromCurrentRequest().build().toUri();
 
@@ -154,6 +212,33 @@ public ResponseEntity<Map<String, Object>> getUserMonthlySpendingChart(@PathVari
     @DeleteMapping("/{id}/image")
     public ResponseEntity<Object> deleteUserImage(@PathVariable long id)
             throws IOException {
+        
+                 Map<String, Object> response = new HashMap<>();
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !(authentication.getPrincipal() instanceof UserDetails)) {
+            response.put("recommendedProducts", "User not authenticated");
+            return ResponseEntity.status(401).body(response);
+        }
+
+        String username = authentication.getName();
+        Optional<UserDTO> authenticatedUser = userService.findUserByUserName(username);
+
+        if (authenticatedUser.isEmpty()) {
+            response.put("recommendedProducts", "Authenticated user not found");
+            return ResponseEntity.status(404).body(response);
+        }
+
+        // ✅ Corregimos: obtenemos bien los roles
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equalsIgnoreCase("ROLE_ADMIN"));
+
+        // ✅ Comparar correctamente el ID
+        if (!isAdmin && !authenticatedUser.get().id().equals(id)) {
+            response.put("recommendedProducts", "Access denied");
+            return ResponseEntity.status(403).body(response);
+        }
 
         userService.deleteUserImage(id);
 
@@ -165,6 +250,5 @@ public ResponseEntity<Map<String, Object>> getUserMonthlySpendingChart(@PathVari
         UserDTO userDTO = userService.getAuthenticatedUser();
         return ResponseEntity.ok(userDTO);
     }
-
 
 }

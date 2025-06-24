@@ -16,6 +16,7 @@ export class ProfileDataComponent implements OnInit, OnDestroy {
   userId: number | null | undefined = null;
   profileImage: SafeUrl | string = 'https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg'; /*Erase*/
   isAdmin: boolean = false;
+  isAuthenticated: boolean = false;
   activeSection: string = 'profile-info';
   selectedFile: File | null = null;
   isLoading: boolean = false;
@@ -38,6 +39,8 @@ export class ProfileDataComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadCurrentUserProfile();
+    this.isAuthenticated = this.loginService.logged;
+    this.isAdmin = this.loginService.user?.roles.includes('ROLE_ADMIN') ?? false;
   }
 
   ngOnDestroy(): void {

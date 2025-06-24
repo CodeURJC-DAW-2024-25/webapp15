@@ -1,3 +1,4 @@
+
 <!-- profile-data.component.html -->
 <section class="profile-settings padding-small">
   <div class="container">
@@ -19,10 +20,6 @@
               <li class="mb-2">
                 <a href="javascript:void(0)" (click)="navigateTo('profile-info')" class="d-block p-2 bg-white rounded"
                   [class.active]="activeSection === 'profile-info'">Profile Information</a>
-              </li>
-              <li class="mb-2" *ngIf="!isAdmin">
-                <a href="javascript:void(0)" (click)="navigateTo('purchase-history')" class="d-block p-2 text-dark"
-                  [class.active]="activeSection === 'purchase-history'">Purchase History</a>
               </li>
             </ul>
           </div>

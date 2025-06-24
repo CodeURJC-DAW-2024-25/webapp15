@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -62,6 +65,34 @@ public class OrderShoesRestController {
     //get orders by user id
     @GetMapping("/User/{userId}")
     public ResponseEntity<?> getOrdersByUserId(@PathVariable Long userId) {
+
+         Map<String, Object> response = new HashMap<>();
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !(authentication.getPrincipal() instanceof UserDetails)) {
+            response.put("recommendedProducts", "User not authenticated");
+            return ResponseEntity.status(401).body(response);
+        }
+
+        String username = authentication.getName();
+        Optional<UserDTO> authenticatedUser = userService.findUserByUserName(username);
+
+        if (authenticatedUser.isEmpty()) {
+            response.put("recommendedProducts", "Authenticated user not found");
+            return ResponseEntity.status(404).body(response);
+        }
+
+        // ✅ Corregimos: obtenemos bien los roles
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equalsIgnoreCase("ROLE_ADMIN"));
+
+        // ✅ Comparar correctamente el ID
+        if (!isAdmin && !authenticatedUser.get().id().equals(userId)) {
+            response.put("recommendedProducts", "Access denied");
+            return ResponseEntity.status(403).body(response);
+        }
+        
         List<OrderShoesDTO> orderShoesList = orderShoesService.findOrdersByUserId(userId);
         if (orderShoesList.isEmpty()) {
             throw new NoSuchElementException("No orders found for user ID " + userId);
