@@ -1,0 +1,1324 @@
+{
+	"info": {
+		"_postman_id": "df419635-442a-4a2f-baab-393192a39d11",
+		"name": "StepXCollection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43347468",
+		"_collection_link": "https://martian-spaceship-721703.postman.co/workspace/StepXApiRest~a5ba63e3-010d-495e-a113-385758eddf1f/collection/43347468-df419635-442a-4a2f-baab-393192a39d11?action=share&source=collection_link&creator=43347468"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"Gaby\",\n    \"password\": \"pass\"\n} ",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "check",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"Gaby\",\n    \"password\": \"pass\"\n} ",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/check",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"check"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getMe",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"Gaby\",\n    \"password\": \"pass\"\n} ",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/me",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/logout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "ProfileImages",
+					"item": [
+						{
+							"name": "GetImage",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/user/3/image",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"user",
+										"3",
+										"image"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CreateUserImage",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "imageFile",
+											"type": "file",
+											"src": "/Users/alexanderpearson/Downloads/bed3e2053045a23e76c0d92e85936469.png"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/user/3/image",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"user",
+										"3",
+										"image"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DeleteImageUser",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/user/2/image",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"user",
+										"2",
+										"image"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ReplaceImage",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "imageFile",
+											"type": "file",
+											"src": "/Users/alexanderpearson/Downloads/jd_727469_b.jpg"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/user/1/image?imageFile",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"user",
+										"1",
+										"image"
+									],
+									"query": [
+										{
+											"key": "imageFile",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "RecomendedProducts",
+					"item": [
+						{
+							"name": "Recommeded-products Actual User",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/index/recommended-products",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"index",
+										"recommended-products"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Recomended",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/index/recommended-products/users/1",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"index",
+										"recommended-products",
+										"users",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "bestSelling",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/index/bestSelling",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"index",
+										"bestSelling"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"imageUser\": \"/user/2/image/\",\n    \"firstname\": null,\n    \"lastName\": \"Gutierrez Peña\",\n    \"roles\": [\n        \"USER\"\n    ],\n    \"username\": \"Eli\",\n    \"email\": \"eli@gmail.com\",\n    \"orders\": null,\n    \"password\": \"pass\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/user/2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateUser",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstname\": null,\n    \"lastName\": \"Gutierrez Peña\",\n    \"roles\": [\n        \"USER\"\n    ],\n    \"username\": \"Eli\",\n    \"email\": \"eli@gmail.com\",\n    \"orders\": null,\n    \"password\": \"pass\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/user",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetUser",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/user/2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetAllUsers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/user",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ReplaceUser",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstname\": null,\n    \"lastName\": \"Gutierrez Peña\",\n    \"roles\": [\n        \"USER\"\n    ],\n    \"username\": \"maricon x2\",\n    \"email\": \"maricccon\",\n    \"orders\": null,\n    \"password\": \"$2a$10$vsB5o6XGequXB99Su.ga4uvaKepeEOtT.Aa06ps9VVjmqV/LLJz0G\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/user/2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Chart User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/user/chartuser/2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user",
+								"chartuser",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Coupon",
+			"item": [
+				{
+					"name": "GET all coupons",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/coupon",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"coupon"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET one coupon",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/coupon/2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"coupon",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST coupon",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"code\": \"STEPXDISCOUNT33\",\r\n    \"discount\": 0.77,\r\n    \"userId\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/coupon",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"coupon"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "EDIT coupon",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \r\n    \"code\": \"STEPXDISCOUNT90\",\r\n    \"discount\": 0.10,\r\n    \"userId\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/coupon/2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"coupon",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE coupon",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/coupon/3",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"coupon",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SEND Coupon",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/coupon/send?userId=1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"coupon",
+								"send"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Reviews",
+			"item": [
+				{
+					"name": "Get Review",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/reviews/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"reviews",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Reviews",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/reviews/Shoe/2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"reviews",
+								"Shoe",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create review",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n        \"id\": 2,\n        \"date\": \"2025-03-24\",\n        \"rating\": 5,\n        \"description\": \"Me parece bien pero no me termina de convencer\",\n        \"shoeId\": 2,\n        \"userId\": null\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PaginatedReviews",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/reviews/2?page=2&size=0",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"reviews",
+								"2"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "2"
+								},
+								{
+									"key": "size",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteReview",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/reviews/2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"reviews",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ReplaceReview",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n        \"date\": \"2027-03-24\",\n        \"rating\": 1,\n        \"description\": \"Es una asquerosidad de producto\",\n        \"shoeId\": 2\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/reviews/3",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"reviews",
+								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Shoe",
+			"item": [
+				{
+					"name": "AddImage",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "c:\\Users\\Sebastian\\Pictures\\Screenshots\\Captura de pantalla 2025-02-17 145305.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://localhost:8443/api/v1/Shoes/61/image/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8443",
+							"path": [
+								"api",
+								"v1",
+								"Shoes",
+								"61",
+								"image",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createShoe",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": null,\r\n    \"name\": \"Adidas Campus 00s Alpha\",\r\n    \"shortDescription\": \"A classic silhouette with a modern twist.\",\r\n    \"longDescription\": \"The Adidas Campus 00s Beta brings retro vibes with a fresh update. Featuring a premium suede upper, a padded collar for all-day comfort, and a durable rubber outsole for enhanced traction. The signature 3-Stripes design adds an iconic touch, making this sneaker perfect for urban wear. Whether paired with casual or sporty outfits, its timeless aesthetic ensures a stylish and versatile look.\",\r\n    \"price\": 120.00,\r\n    \"brand\": \"ADIDAS\",\r\n    \"category\": \"URBAN\",\r\n    \"sizeStocks\": [],\r\n    \"reviews\": []\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/Shoes",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"Shoes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateShoe",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"name\": \"Adidas Campus 00s Beta\",\r\n    \"shortDescription\": \"A classic silhouette with a modern twist.\",\r\n    \"longDescription\": \"The Adidas Campus 00s Beta brings retro vibes with a fresh update. Featuring a premium suede upper, a padded collar for all-day comfort, and a durable rubber outsole for enhanced traction. The signature 3-Stripes design adds an iconic touch, making this sneaker perfect for urban wear. Whether paired with casual or sporty outfits, its timeless aesthetic ensures a stylish and versatile look.\",\r\n    \"price\": 120.00,\r\n    \"brand\": \"ADIDAS\",\r\n    \"category\": \"URBAN\",\r\n    \"imageUrl1\": \"/Shop/1/image/1\",\r\n    \"imageUrl2\": \"/Shop/1/image/2\",\r\n    \"imageUrl3\": \"/Shop/1/image/3\",\r\n    \"sizeStocks\": [\r\n        {\r\n            \"id\": 1,\r\n            \"shoeId\": 1,\r\n            \"size\": \"S\",\r\n            \"stock\": 10\r\n        },\r\n        {\r\n            \"id\": 2,\r\n            \"shoeId\": 1,\r\n            \"size\": \"M\",\r\n            \"stock\": 15\r\n        },\r\n        {\r\n            \"id\": 3,\r\n            \"shoeId\": 1,\r\n            \"size\": \"L\",\r\n            \"stock\": 15\r\n        },\r\n        {\r\n            \"id\": 4,\r\n            \"shoeId\": 1,\r\n            \"size\": \"XL\",\r\n            \"stock\": 110\r\n        }\r\n    ],\r\n    \"reviews\": [\r\n        {\r\n            \"id\": 1,\r\n            \"date\": \"2025-03-24\",\r\n            \"rating\": 5,\r\n            \"description\": \"mierdon de producto\",\r\n            \"shoeId\": 1,\r\n            \"userId\": 2\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8443/api/v1/Shoes/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8443",
+							"path": [
+								"api",
+								"v1",
+								"Shoes",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetOneShoe",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8443/api/v1/Shoes/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8443",
+							"path": [
+								"api",
+								"v1",
+								"Shoes",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetAllShoes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8443/api/v1/Shoes/All",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8443",
+							"path": [
+								"api",
+								"v1",
+								"Shoes",
+								"All"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteShoeById",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/Shoes/44",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"Shoes",
+								"44"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "OrderShoes",
+			"item": [
+				{
+					"name": "GetOrderShoe",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/OrderShoes/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"OrderShoes",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetAllorderShoes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/OrderShoes/All",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"OrderShoes",
+								"All"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetOrdersByUserId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/OrderShoes/User/2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"OrderShoes",
+								"User",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetOrdersPaginated",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/OrderShoes?page=3&size=4",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"OrderShoes"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "3"
+								},
+								{
+									"key": "size",
+									"value": "4"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateOrderForUser",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"id\": null,\r\n        \"date\": \"2025-01-02\",\r\n        \"cuponUsed\": null,\r\n        \"country\": null,\r\n        \"firstName\": null,\r\n        \"secondName\": null,\r\n        \"email\": null,\r\n        \"address\": null,\r\n        \"numerPhone\": null,\r\n        \"summary\": 267.79,\r\n        \"state\": \"Processed\",\r\n        \"userId\": 2,\r\n        \"coupon\": null,\r\n        \"orderItems\": [\r\n            {\r\n                \"id\": null,\r\n                \"orderId\": 11,\r\n                \"shoeId\": 41,\r\n                \"shoeName\": \"Adidas Samba Originals OG Red\",\r\n                \"quantity\": 4,\r\n                \"size\": \"XL\",\r\n                \"price\": 80.00\r\n            },\r\n            {\r\n                \"id\": null,\r\n                \"orderId\": 11,\r\n                \"shoeId\": 57,\r\n                \"shoeName\": \"Adidas ZX Originals Flux 2\",\r\n                \"quantity\": 2,\r\n                \"size\": \"XL\",\r\n                \"price\": 80.00\r\n            }\r\n        ]\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/OrderShoes/User/2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"OrderShoes",
+								"User",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateOrder",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 23,\r\n    \"date\": \"2025-01-02\",\r\n    \"cuponUsed\": null,\r\n    \"country\": null,\r\n    \"firstName\": null,\r\n    \"secondName\": null,\r\n    \"email\": null,\r\n    \"address\": null,\r\n    \"numerPhone\": null,\r\n    \"summary\": 267.79,\r\n    \"state\": \"Processed\",\r\n    \"userId\": 2,\r\n    \"coupon\": null,\r\n    \"orderItems\": [\r\n        {\r\n            \"id\": 42,\r\n            \"orderId\": 24,\r\n            \"shoeId\": 41,\r\n            \"shoeName\": null,\r\n            \"quantity\": 12,\r\n            \"size\": \"XL\",\r\n            \"price\": 80.00\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/OrderShoes/23",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"OrderShoes",
+								"23"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteOrderShoeFromUser",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/OrderShoes/23/User/2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"OrderShoes",
+								"23",
+								"User",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ShoeSizeStock",
+			"item": [
+				{
+					"name": "GetStockById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/ShoeSizeStocks/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"ShoeSizeStocks",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetAllStocks",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/ShoeSizeStocks/All",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"ShoeSizeStocks",
+								"All"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetStockByShoeId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/ShoeSizeStocks/Shoe/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"ShoeSizeStocks",
+								"Shoe",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AddStockShoe",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": null,\r\n    \"shoeId\": 1,\r\n    \"size\": \"XXL\",\r\n    \"stock\": 10\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/ShoeSizeStocks",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"ShoeSizeStocks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateStockBySizeAndShoe",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 241,\r\n    \"shoeId\": 1,\r\n    \"size\": \"XXL\",\r\n    \"stock\": 30\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/ShoeSizeStocks/XXL/Shoe/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"ShoeSizeStocks",
+								"XXL",
+								"Shoe",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteStockBySizeAndShoe",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/ShoeSizeStocks/XL/Shoe/9",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"ShoeSizeStocks",
+								"XL",
+								"Shoe",
+								"9"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "OrderItem",
+			"item": [
+				{
+					"name": "GetOrderItemById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/OrderItem/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"OrderItem",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetAllOrderItems",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/OrderItem/All",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"OrderItem",
+								"All"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateOrderItemForOrder",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"id\": null,\r\n        \"orderId\": 22,\r\n        \"shoeId\": 3,\r\n        \"shoeName\": \"Nike 270\",\r\n        \"quantity\": 4,\r\n        \"size\": \"S\",\r\n        \"price\": 150.00\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/OrderItem",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"OrderItem"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateOrderItemById",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"id\": 44,\r\n        \"orderId\": 22,\r\n        \"shoeId\": 3,\r\n        \"shoeName\": \"Nike 270\",\r\n        \"quantity\": 10,\r\n        \"size\": \"S\",\r\n        \"price\": 150.00\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/OrderItem/44",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"OrderItem",
+								"44"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteOrderItemById",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/OrderItem/44",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"OrderItem",
+								"44"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "money-gained-chart",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/admin/money-gained-chart",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"admin",
+								"money-gained-chart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "order-count-chart",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/admin/order-count-chart",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"admin",
+								"order-count-chart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dashboard-stats",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/admin/dashboard-stats",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"admin",
+								"dashboard-stats"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
