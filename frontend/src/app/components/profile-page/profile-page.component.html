@@ -1,4 +1,20 @@
+<ng-container *ngIf="loading; else content">
+  <div class="loading-container">
+    <p>Cargando perfil...</p>
+  </div>
+</ng-container>
 
-<app-profile-data></app-profile-data>
-<app-order-history></app-order-history>
-<app-user-spending-chart></app-user-spending-chart>
+<ng-template #content>
+  <div class="profile-container">
+    <h2>Perfil del Usuario</h2>
+
+    <!-- Datos del perfil -->
+    <app-profile-data *ngIf="!loading && !error"></app-profile-data>
+
+    <!-- Historial de pedidos -->
+    <app-order-history *ngIf="!loading && !error"></app-order-history>
+
+    <!-- Gráfico de gastos -->
+    <app-user-spending-chart *ngIf="!loading && !error"></app-user-spending-chart>
+  </div>
+</ng-template>
