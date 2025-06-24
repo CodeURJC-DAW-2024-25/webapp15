@@ -48,8 +48,31 @@
             <div class="user-items ps-0 ps-md-5">
                 <ul class="d-flex justify-content-end list-unstyled align-item-center m-0">
 
+                    
+
+                    <!-- Icono de usuario (login/profile) -->
+                    <li *ngIf="!loginService.logged" class="pe-3">
+                        <a [routerLink]="['/login']" data-bs-toggle="modal" data-bs-target="#modallogin"
+                            class="border-0" (click)="openLoginModal()">
+                            <svg class="user" width="24" height="24">
+                                <use xlink:href="#user"></use>
+                            </svg>
+                        </a>
+                    </li>
+
+
+                    <li *ngIf="isAuthenticated" class="pe-3">
+                        <a class="ms-2" style=" margin-right: 11px;">Hello, {{ loginService.user?.username }}</a>
+                        <a [routerLink]="['/profilePage']" class="border-0">
+                            <svg class="user" width="24" height="24">
+                                <use xlink:href="#user"></use>
+                            </svg>
+                        </a>
+
+                    </li>
+
                     <!-- Panel de administrador (solo visible para admins) -->
-                    <li *ngIf="admin" class="pe-3">
+                    <li *ngIf="isAdmin" class="pe-3">
                         <a [routerLink]="['/admin']" class="border-0">
                             <svg viewBox="0 0 24 24" class="chart" width="24" height="24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
@@ -67,31 +90,10 @@
                         </a>
                     </li>
 
-                    <!-- Icono de usuario (login/profile) -->
-                    <li *ngIf="!loginService.logged" class="pe-3">
-                        <a [routerLink]="['/login']" data-bs-toggle="modal" data-bs-target="#modallogin"
-                            class="border-0" (click)="openLoginModal()">
-                            <svg class="user" width="24" height="24">
-                                <use xlink:href="#user"></use>
-                            </svg>
-                        </a>
-                    </li>
-
-
-                    <li *ngIf="loginService.logged" class="pe-3">
-                        <a class="ms-2" style=" margin-right: 11px;">Hello, {{ loginService.user?.username }}</a>
-                        <a [routerLink]="['/profile']" class="border-0">
-                            <svg class="user" width="24" height="24">
-                                <use xlink:href="#user"></use>
-                            </svg>
-                        </a>
-
-                    </li>
-
 
 
                     <!-- Carrito (solo para usuarios autenticados no admin) -->
-                    <li *ngIf="isAuthenticated && !admin" class="pe-3">
+                    <li *ngIf="isAuthenticated" class="pe-3">
                         <a href="#" data-bs-toggle="modal" data-bs-target="#modaltoggle" class="border-0"
                             (click)="openCartModal()">
                             <svg class="shopping-cart" width="24" height="24">

@@ -11,7 +11,7 @@ import Cookies from 'js-cookie';// Import js-cookie
   styleUrls: ['./login-modal.component.css']
 })
 export class LoginModalComponent {
-  
+
   @Output() closeModal = new EventEmitter<void>();
   @Output() loginSuccess = new EventEmitter<void>();
 
@@ -19,7 +19,7 @@ export class LoginModalComponent {
     username: '',
     password: ''
   };
-  
+
   // Properties to fix issues or errors
   isLoading = false;
   message = '';
@@ -31,7 +31,7 @@ export class LoginModalComponent {
     private router: Router,
     public activeModalLogin: NgbActiveModal,
     private loginService: LoginService
-  ) {}
+  ) { }
 
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
@@ -51,7 +51,7 @@ export class LoginModalComponent {
               this.isSuccess = true;
               this.message = 'Successfully logged in.';
               this.closeModalLogin();
-              
+
               this.loginService.getCurrentUser().subscribe({
                 next: (user) => {
                   if (user && user.id !== undefined && user.id !== null) {
@@ -60,6 +60,12 @@ export class LoginModalComponent {
                     Cookies.set('email', user.email, { expires: 7, path: '/' });
                     Cookies.set('firstname', user.firstname, { expires: 7, path: '/' });
                     Cookies.set('lastname', user.lastName, { expires: 7, path: '/' });
+
+
+                    this.loginSuccess.emit();
+                    this.closeModal.emit();
+                    window.location.href = '/';
+
                   } else {
                     console.error('User ID is undefined or null, cannot set cookie.');
                   }
@@ -68,12 +74,10 @@ export class LoginModalComponent {
                   console.error('Error al obtener usuario:', err);
                 }
               });
-              
-            
 
-              this.loginSuccess.emit();
-              this.closeModal.emit();
-              this.router.navigate(['/']);
+
+
+
             } else {
               this.isSuccess = false;
               this.message = response.message || 'Authentication failed. Please check your credentials and try again.';
