@@ -5,7 +5,11 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -73,7 +77,22 @@ public class ReviewRestController {
     
     @DeleteMapping("/{id}")
     public ResponseEntity<ReviewDTO> deleteReview(@PathVariable Long id) {
-        Optional<ReviewDTO> deleted = reviewService.deleteReview(id);
+        // 🔐 get autentication
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !(authentication.getPrincipal() instanceof UserDetails)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); 
+        }
+
+        // 🔐 Verificar si es admin
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equalsIgnoreCase("ROLE_ADMIN"));
+
+        if (!isAdmin) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); 
+        }
+
+        Optional<ReviewDTO> deleted = reviewService.deleteReview(id); 
 
         return deleted.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -82,7 +101,23 @@ public class ReviewRestController {
     // update a orderitem
     @PutMapping("/{id}")
     public ResponseEntity<ReviewDTO> updateReview(@PathVariable Long id, @RequestBody ReviewDTO reviewDto) {
-        Optional<ReviewDTO> review = reviewService.updateReview(id, reviewDto);// get orderitem
+
+        // 🔐 get autentication
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !(authentication.getPrincipal() instanceof UserDetails)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); 
+        }
+
+        // 🔐 Verify if admin
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equalsIgnoreCase("ROLE_ADMIN"));
+
+        if (!isAdmin) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // Access denied for non-admins
+        }
+        
+        Optional<ReviewDTO> review = reviewService.updateReview(id, reviewDto);
         if (review.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -91,10 +126,11 @@ public class ReviewRestController {
 
     // Reviews
     @GetMapping("/pages/{id}")
-    public ResponseEntity<List<ReviewDTO>> getPaginatedReviews(@PathVariable Long id, @RequestParam int page, @RequestParam int size) {
+    public ResponseEntity<List<ReviewDTO>> getPaginatedReviews(@PathVariable Long id, @RequestParam int page,
+            @RequestParam int size) {
         List<ReviewDTO> reviews = reviewService.getPagedReviewsByShoeId(id, size, page);
-        if (reviews==null) {
-            return ResponseEntity.noContent().build(); // 204 No Content 
+        if (reviews == null) {
+            return ResponseEntity.noContent().build(); 
         }
         return ResponseEntity.ok(reviews);
     }
