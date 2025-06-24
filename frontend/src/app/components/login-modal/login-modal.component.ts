@@ -71,7 +71,7 @@ export class LoginModalComponent {
                   }
                 },
                 error: (err) => {
-                  console.error('Error al obtener usuario:', err);
+                  console.error('Error at get user:', err);
                 }
               });
 

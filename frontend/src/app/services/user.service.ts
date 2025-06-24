@@ -15,14 +15,14 @@ export class UserService {
     private sanitizer: DomSanitizer
   ) { }
 
-  // Obtener datos del usuario
+  
   getUser(userId: number): Observable<UserDTO> {
     return this.http.get<UserDTO>(`${this.API_URL}/${userId}`, {
       withCredentials: true
     });
   }
 
-  // Obtener imagen como Blob
+ 
   getUserImage(userId: number): Observable<Blob> {
     return this.http.get(`${this.API_URL}/${userId}/image`, {
       responseType: 'blob',
@@ -64,14 +64,14 @@ export class UserService {
     );
   }
 
-  // Actualizar datos del usuario
+  
   updateUser(userId: number, userData: UserDTO): Observable<UserDTO> {
     return this.http.put<UserDTO>(`${this.API_URL}/${userId}`, userData, {
       withCredentials: true
     });
   }
 
-  // Subir nueva imagen
+
   uploadUserImage(userId: number, imageFile: File): Observable<any> {
     const formData = new FormData();
     formData.append('imageFile', imageFile);
@@ -83,13 +83,13 @@ export class UserService {
     });
   }
 
-  // Convertir Blob a SafeUrl
+
   blobToSafeUrl(blob: Blob): SafeUrl {
     const url = URL.createObjectURL(blob);
     return this.sanitizer.bypassSecurityTrustUrl(url);
   }
 
-  // Convertir Base64 a SafeUrl
+  
   base64ToSafeUrl(base64: string, mimeType: string = 'image/jpeg'): SafeUrl {
     return this.sanitizer.bypassSecurityTrustUrl(
       `data:${mimeType};base64,${base64}`

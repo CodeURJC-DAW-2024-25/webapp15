@@ -39,7 +39,7 @@ export class ShoeInfoComponent implements OnInit, AfterViewInit {
     public loginService: LoginService,
     public userService: UserService,
     public shoeService: ShoeService,
-    private reviewService: ReviewService,// <- NUEVO
+    private reviewService: ReviewService,
     private fb: FormBuilder,
     private orderShoesService: OrderShoesService,
     private stockService: ShoeSizeStockService
@@ -54,7 +54,7 @@ export class ShoeInfoComponent implements OnInit, AfterViewInit {
 
     this.loginService.reqIsLogged();
     setTimeout(() => {
-      // Ahora los valores deberían estar actualizados
+   
       this.isAuthenticated = this.loginService.logged;
       this.isAdmin = this.loginService.user?.roles.includes('ROLE_ADMIN') ?? false;
       this.isUser = this.loginService.user?.roles.includes('ROLE_USER') ?? false;
@@ -98,7 +98,7 @@ export class ShoeInfoComponent implements OnInit, AfterViewInit {
           });
 
           this.swiperInitialized = true;
-        }, 100); // delay para asegurar que el DOM esté listo
+        }, 100); 
       }
     };
 
@@ -110,10 +110,10 @@ export class ShoeInfoComponent implements OnInit, AfterViewInit {
     this.productService.getProductById(productId).subscribe({
       next: (product) => {
         this.product = product;
-        // También intentar inicializar el swiper aquí por si se cargó después
+        // try to init swiper
         setTimeout(() => this.tryInitSwiper(), 100);
         this.currentPage = 0
-        // ✅ Cargar reseñas iniciales del producto
+        // load comments of the shoe
         this.reviewService.getReviewsByShoeId(productId, this.currentPage).subscribe({
           next: (reviews) => {
             this.reviews = reviews;
@@ -156,25 +156,25 @@ export class ShoeInfoComponent implements OnInit, AfterViewInit {
   }
 
   loadMoreReviews(productId: number): void {
-    this.currentPage++; // Incrementar la página
+    this.currentPage++; // increase page 
     this.reviewService.getReviewsByShoeId(productId, this.currentPage).subscribe({
       next: (newReviews) => {
         if (newReviews.length === 0) {
           console.log('No hay más reseñas para cargar.');
-          this.currentPage--; // Si no hay más, deshacer el incremento
+          this.currentPage--; //if there is no more, decrement
           return;
         }
-        // ✅ Filtrar duplicados por ID
-        // Crea un Set con los ids ya cargados
+        // ✅ filter duplicates by ID
+        //create a Set with already loaded ids
         const existingIds = new Set(this.reviews.map(r => r.id));
 
-        // Filtra las nuevas reseñas que no estén ya cargadas
+        // filter new reviews that are not already loaded
         const uniqueNewReviews = newReviews.filter(r => !existingIds.has(r.id));
-        this.reviews = [...this.reviews, ...uniqueNewReviews]; // Agregar a las ya cargadas
+        this.reviews = [...this.reviews, ...uniqueNewReviews]; // add the new reviews to the existing ones
       },
       error: (err) => {
         console.error('Error al cargar más reseñas:', err);
-        this.currentPage--; // Revertir incremento en caso de error
+        this.currentPage--; // revert increment in case of error
       }
     });
   }
@@ -193,10 +193,10 @@ export class ShoeInfoComponent implements OnInit, AfterViewInit {
         next: (savedReview) => {
           console.log('✅ Reseña guardada:', savedReview);
 
-          // Limpia el formulario
+          //  clean the form
           this.reviewForm.reset();
 
-          // Inserta la nueva reseña al inicio
+          // insert the review at the beginning
           this.reviews.unshift(savedReview);
         },
         error: (err) => {
@@ -220,10 +220,10 @@ export class ShoeInfoComponent implements OnInit, AfterViewInit {
     if (confirm('¿Estás seguro de que quieres eliminar esta reseña?')) {
       this.reviewService.deleteReview(reviewId).subscribe({
         next: () => {
-          // Actualizar lista de reseñas localmente
+        
           this.reviews = this.reviews.filter(r => r.id !== reviewId);
 
-          // Recargar las reseñas desde el backend (opcional)
+          
           this.reviewService.getReviewsByShoeId(this.product!.id, this.currentPage)
             .subscribe(updatedReviews => {
               this.reviews = updatedReviews;
@@ -249,7 +249,7 @@ export class ShoeInfoComponent implements OnInit, AfterViewInit {
     return;
   }
 
-  // Verificar stock antes de continuar
+  // verify stock before continuing
   this.stockService.checkStock([this.product.id], [this.selectedSize]).subscribe({
     next: (stockMap) => {
       const key = `${this.product!.id}_${this.selectedSize}`;
@@ -260,21 +260,20 @@ export class ShoeInfoComponent implements OnInit, AfterViewInit {
         return;
       }
 
-      // Obtener el carrito actual
+      //  get the current cart
       this.orderShoesService.getCartByUserId(userId).subscribe({
         next: (cart) => {
           const updatedCart = { ...cart };
-
-          // Buscar si ya existe el mismo producto/talla
+          
           const existingItem = updatedCart.orderItems?.find(item =>
             item.shoeId === this.product!.id && item.size === this.selectedSize
           );
 
           if (existingItem) {
-            // Actualizar cantidad si ya existe
+            // update cuantity if it already exists
             existingItem.quantity += this.quantity;
           } else {
-            // Crear nuevo item
+            //create a new order item
             const newItem: OrderItemDTO = {
               orderId: updatedCart.id,
               shoeId: this.product!.id,
@@ -287,10 +286,10 @@ export class ShoeInfoComponent implements OnInit, AfterViewInit {
             updatedCart.orderItems = [...(updatedCart.orderItems || []), newItem];
           }
 
-          // Actualizar estado del carrito
+          
           updatedCart.state = 'notFinished';
 
-          // Enviar actualización
+          // send update to the server
           this.orderShoesService.updateOrderShoe(updatedCart.id, updatedCart).subscribe({
             next: () => {
               console.log("Producto añadido al carrito");

@@ -35,10 +35,10 @@ export class ShopComponent implements OnInit {
     constructor(private shoeService: ShoeService,public loginService:LoginService) { } // Injecting the ShoeService
     
     ngOnInit(): void {
-        this.loginService.reqIsLogged(); // Inicia la verificación asíncrona
+        this.loginService.reqIsLogged(); 
 
         setTimeout(() => {
-            // Ahora los valores deberían estar actualizados
+        
             this.isAuthenticated = this.loginService.logged;
             this.isAdmin = this.loginService.user?.roles.includes('ROLE_ADMIN') ?? false;
             this.isUser = this.loginService.user?.roles.includes('ROLE_USER') ?? false;
@@ -46,9 +46,9 @@ export class ShopComponent implements OnInit {
             console.log("User is admin:", this.isAdmin);
             console.log("User is regular user:", this.isUser);
 
-            // Ya puedes cargar los zapatos
+           
             this.loadShoes();
-        }, 300); // Espera corta para que reqIsLogged() tenga tiempo de completar
+        }, 300); 
     }
 
 
@@ -98,7 +98,7 @@ export class ShopComponent implements OnInit {
         this.loadShoes();
     }
       
-      /* factoriza el reseteo para no repetir código */
+    
     private resetState(): void {
         this.shoes = [];
         this.currentPage = 0;

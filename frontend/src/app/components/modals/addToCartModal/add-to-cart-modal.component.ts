@@ -21,7 +21,7 @@ export class AddToCartModalComponent {
   @Input() shoe!: ShoeDTO;
   stockAvailable: boolean | null = null;
 
-  selectedSize = 'M'; // lógica rápida
+  selectedSize = 'M';
   quantity = 1;
   constructor(
   public  activeModal       : NgbActiveModal,
@@ -34,16 +34,16 @@ export class AddToCartModalComponent {
 ngOnInit(): void {
   const shoeId = this.shoe.id;
 
-  /* ①  solicitamos stock */
+  /* ①  get stock */
   this.stockService.checkStock([shoeId], [this.selectedSize]).subscribe({
     next: map => {
       const key = `${shoeId}_${this.selectedSize}`;
       const available = map[key] ?? 0;
 
-      /* ②  aquí SÍ tengo el dato real */
+    
       this.stockAvailable = available >= this.quantity;
       console.log('stockAvailable dentro del subscribe ➜', this.stockAvailable);
-      //              └── debería mostrar true / false
+               
     },
     error: () => {
       this.stockAvailable = false;
@@ -51,7 +51,6 @@ ngOnInit(): void {
     }
   });
 
-  /* ③  este log se ejecuta inmediatamente → todavía null */
   console.log('stockAvailable justo después de llamar ➜', this.stockAvailable);
 }
 
@@ -65,21 +64,21 @@ ngOnInit(): void {
     return;
   }
 
-  // 1. Obtener el carrito actual
+  // 1. get  cart 
   this.orderShoesService.getCartByUserId(userId).subscribe({
     next: (cart) => {
       const updatedCart = { ...cart };
 
-      // 2. Ver si ya existe un item con ese zapato y talla
+      // 2. check if an order item already exist 
       const existingItem = updatedCart.orderItems?.find(item =>
         item.shoeId === this.shoe.id && item.size === this.selectedSize
       );
 
       if (existingItem) {
-        // Solo actualiza cantidad
+        // update quantity
         existingItem.quantity += this.quantity;
       } else {
-        // Crea nuevo item
+        // vreate new order item
         const newItem: OrderItemDTO = {
           orderId: updatedCart.id,
           shoeId: this.shoe.id,
@@ -92,10 +91,10 @@ ngOnInit(): void {
         updatedCart.orderItems = [...(updatedCart.orderItems || []), newItem];
       }
 
-      // ⚠️ Asegurar que el estado sea el adecuado para el carrito (por ejemplo "notFinished")
+      // make sure the state is appropriate for the cart (e.g., "notFinished")
       updatedCart.state = 'notFinished';
 
-      // 3. Enviar actualización del carrito
+      // 3.send cart update
       this.orderShoesService.updateOrderShoe(updatedCart.id, updatedCart).subscribe({
         next: () => {
           console.log("Zapato añadido al carrito.");

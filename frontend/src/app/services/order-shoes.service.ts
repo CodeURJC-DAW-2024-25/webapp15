@@ -29,10 +29,5 @@ export class OrderShoesService {
     withCredentials: true
     });
   }
-  // Aquí puedes luego añadir más métodos: crear orden, finalizar compra, etc.
-  //addToCart(userId: number, shoeId: number, size: string, quantity:number): Observable<OrderShoesDTO> {
-  //}
-  // order-shoes.service.ts
  
-
 }

@@ -91,7 +91,7 @@ export class ProfileDataComponent implements OnInit, OnDestroy {
           return;
         }
   
-        // Verifica el tipo MIME
+      
         if (!blob.type.startsWith('image/')) {
           console.error('Invalid blob type:', blob.type);
           this.profileImage = 'https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg'; /*ERASE*/
@@ -100,7 +100,7 @@ export class ProfileDataComponent implements OnInit, OnDestroy {
   
         this.currentImageUrl = URL.createObjectURL(blob);
   
-        // Test: Crea una imagen temporal para verificar el blob
+       
         const img = new Image();
         img.onload = () => {
           this.profileImage = this.userService.blobToSafeUrl(blob);
@@ -128,7 +128,7 @@ export class ProfileDataComponent implements OnInit, OnDestroy {
 
     this.selectedFile = file;
 
-    // Mostrar vista previa
+   
     const reader = new FileReader();
     reader.onload = (e: any) => {
       this.profileImage = this.sanitizer.bypassSecurityTrustUrl(e.target.result);
@@ -140,14 +140,14 @@ export class ProfileDataComponent implements OnInit, OnDestroy {
     if (this.profileForm.invalid || !this.userId) return;
     this.isLoading = true;
 
-    // Primero actualizamos los datos del usuario
+
     const updatedUser: UserDTO = {
       id: this.userId,
       firstname: this.profileForm.value.firstname,
       lastName: this.profileForm.value.lastname,
       username: this.profileForm.value.username,
       email: this.profileForm.value.email,
-      password: '', // No se actualiza la contraseña aquí
+      password: '', 
       roles: ['USER'],
       orders: []
     };
@@ -161,7 +161,7 @@ export class ProfileDataComponent implements OnInit, OnDestroy {
           email: user.email
         });
 
-        // Si hay una nueva imagen seleccionada, la subimos
+     
         if (this.selectedFile) {
           this.uploadImage();
         } else {
@@ -183,7 +183,7 @@ export class ProfileDataComponent implements OnInit, OnDestroy {
 
     this.userService.uploadUserImage(this.userId, this.selectedFile).subscribe({
       next: () => {
-        // Recargar la imagen después de subirla
+ 
         this.loadProfileImage();
         this.isLoading = false;
         this.selectedFile = null;

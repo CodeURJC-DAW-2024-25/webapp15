@@ -8,7 +8,7 @@ import { ReviewDTO } from '../dtos/review.dto';
   providedIn: 'root'
 })
 export class ReviewService {
-  private baseUrl = '/api/v1/reviews'; // ajusta si tu puerto o ruta base es distinta
+  private baseUrl = '/api/v1/reviews';
 
   constructor(private http: HttpClient) { }
 
@@ -22,14 +22,10 @@ export class ReviewService {
 
 
   }
-  // Añade este método en ReviewService
+
   deleteReview(reviewId: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/${reviewId}`, { responseType: 'text' });
   }
 
 
-  // Si en el futuro quieres añadir más funciones:
-  // createReview(dto: ReviewDTO): Observable<ReviewDTO> { ... }
-  // deleteReview(id: number): Observable<ReviewDTO> { ... }
-  // updateReview(id: number, dto: ReviewDTO): Observable<ReviewDTO> { ... }
 }

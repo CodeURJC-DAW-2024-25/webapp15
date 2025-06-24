@@ -1,4 +1,4 @@
-/* ------------  IMPORTS  ------------ */
+
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LoginService }      from '../../../services/login.service';
@@ -6,7 +6,7 @@ import { CouponService }     from '../../../services/coupon.service';
 import { OrderShoesDTO }     from '../../../dtos/ordershoes.dto';
 import { CouponDTO }         from '../../../dtos/coupon.dto';
 
-/* ------------  DATOS DEL FORM  ------------ */
+
 export interface ShippingFormData {
   country   : string;
   coupon    : string;
@@ -24,15 +24,15 @@ export interface ShippingFormData {
 })
 export class ShippingFormComponent {
 
-  /* ──────────────────── inputs/outputs ─────────────────── */
+
   @Input()  orderShoe?: OrderShoesDTO;
   @Output() couponApplied = new EventEmitter<{ couponDto: CouponDTO; discountPercent: number } | null>();
   @Output() formSubmit    = new EventEmitter<ShippingFormData & { discountPercent: number }>();
 
-  /* ───────────────────── form & helpers ────────────────── */
+  
   shippingForm : FormGroup;
   couponValid  : boolean | null = null;
-  discountPercent = 0;                 // % real (0-100)
+  discountPercent = 0;               
 
   constructor(
     private fb           : FormBuilder,
@@ -50,7 +50,7 @@ export class ShippingFormComponent {
     });
   }
 
-  /* ---------- click “Apply coupon” ---------- */
+
   applyCoupon(): void {
     const code = this.shippingForm.get('coupon')?.value?.trim();
     if (!code) { this.couponValid = null; return; }
@@ -60,7 +60,7 @@ export class ShippingFormComponent {
 
     this.couponService.validateCoupon(userId, code).subscribe({
       next: (dto) => {
-        /* dto.discount = 0.85  ➟  15 % */
+    
         const percent = dto.discount <= 1
           ? (1 - dto.discount) * 100
           : dto.discount;
@@ -81,7 +81,6 @@ export class ShippingFormComponent {
     });
   }
 
-  /* ---------- click “Continue with Order” ---------- */
   submitForm(): void {
     if (this.shippingForm.invalid) { return; }
 

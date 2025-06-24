@@ -22,11 +22,11 @@ export class ProfilePageComponent implements OnInit {
   }
 
   private checkAuthenticationAndLoadProfile(): void {
-    // Verificar sesión una sola vez
+    
     this.loginService.checkSession().pipe(take(1)).subscribe({
       next: (isLoggedIn) => {
         if (isLoggedIn) {
-          // Si está logueado, cargar usuario si no existe
+         
           if (!this.loginService.user) {
             this.loginService.getCurrentUser().pipe(take(1)).subscribe({
               next: (user) => {

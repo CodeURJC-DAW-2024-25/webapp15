@@ -1,5 +1,5 @@
 import { Component,OnInit, ViewChild } from '@angular/core';
-import { ShippingFormData } from './shipping-form/shipping-form.component'; // Definiremos esta interfaz
+import { ShippingFormData } from './shipping-form/shipping-form.component';
 import {LoginService} from '../../services/login.service';
 import { CartSummaryComponent } from './cart-summary/cart-summary.component';
 import { OrderShoesDTO } from '../../dtos/ordershoes.dto';
@@ -26,8 +26,8 @@ export class CheckoutComponent implements OnInit {
     this.loginService.reqIsLogged();
     setTimeout(() => {
       if (!this.loginService.user) {
-        alert('Error: no se pudo obtener el usuario. Por favor, vuelve a iniciar sesión.');
-        console.error('Usuario nulo después de intentar login.');
+        alert('Error: can not get user. Please, try again.');
+        console.error('User null');
       }
     }, 500);
   }
@@ -37,11 +37,11 @@ export class CheckoutComponent implements OnInit {
 private getSubtotalWithCoupon(): number {
   if (!this.cartSummary) { return 0; }
 
-  const base = this.cartSummary.displayedSubtotal;   // 120
+  const base = this.cartSummary.displayedSubtotal;   
 
   if (!this.appliedCoupon) { return base; }
 
-  return +(base * (1 - this.appliedCoupon.percent / 100)).toFixed(2);                              // 102.00
+  return +(base * (1 - this.appliedCoupon.percent / 100)).toFixed(2);   
 }
 
 private downloadTicket(orderId: number): void {
@@ -57,26 +57,26 @@ private downloadTicket(orderId: number): void {
 
 /* CheckoutComponent.ts */
  onCouponApplied(ev: { couponDto: CouponDTO; discountPercent: number } | null): void {
-    if (!ev) {                 // cupón NO válido
+    if (!ev) {                 
       this.appliedCoupon = null;
-      this.cartSummary.setDiscount(0); // Reiniciar descuento
+      this.cartSummary.setDiscount(0);
       return;
     }
 
-    /* guardamos dto + porcentaje */
+
     this.appliedCoupon = {
       dto    : ev.couponDto,
       percent: ev.discountPercent
     };
 
-     // Solo guardamos la info del cupón (no aplicamos descuento directo aquí)
+
     if (this.cartSummary?.orderShoe) {
       this.cartSummary.orderShoe.cuponUsed = ev.couponDto.code;
       this.cartSummary.orderShoe.coupon = ev.couponDto;
     }
 
-    this.cartSummary.setDiscount(ev.discountPercent); // Actualizar descuento en resumen
-    // Lock para evitar que se cambie después
+    this.cartSummary.setDiscount(ev.discountPercent); 
+    
     this.cartSummary.lockAfterCoupon();
   }
 
@@ -92,16 +92,13 @@ onSubmit(form: ShippingFormData): void {
   const discountedTotal = +(subtotal * (1 - discount / 100)).toFixed(2);
 
   const dto: OrderShoesDTO = {
-    ...cart,  // usa datos actuales de cart: items, userId...
+    ...cart,  
 
     date    : today,
     state   : 'Processed',
-    summary : this.getSubtotalWithCoupon(), // subtotal con cupón aplicado
-
+    summary : this.getSubtotalWithCoupon(), 
     cuponUsed: this.appliedCoupon?.dto.code ?? '',
     coupon   : this.appliedCoupon?.dto ?? null,
-
-    // Formulario de usuario
     country   : form.country,
     firstName : form.firstName,
     secondName: form.lastName,

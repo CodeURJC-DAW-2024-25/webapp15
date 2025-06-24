@@ -10,7 +10,7 @@ export class ShoeSizeStockService {
   constructor(private http: HttpClient) {}
 
   checkStock(shoeIds: number[], sizes: string[]): Observable<{[key: string]: number}> {
-  const body = { shoeIds, sizes };               // 👈 estructura exacta
+  const body = { shoeIds, sizes };          
   return this.http.post<{[key: string]: number}>(
     '/api/v1/ShoeSizeStocks/Stock',
     body

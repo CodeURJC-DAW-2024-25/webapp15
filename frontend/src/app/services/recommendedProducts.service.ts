@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class RecommendedProductsService {
-  private apiUrl = '/api/v1/index/recommended-products'; // Ajusta según tu endpoint
+  private apiUrl = '/api/v1/index/recommended-products'; 
   private baseUrl = '/api/v1/Shoes';
 
   constructor(private http: HttpClient) { }

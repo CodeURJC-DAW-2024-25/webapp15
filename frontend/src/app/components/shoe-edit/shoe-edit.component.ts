@@ -18,13 +18,13 @@ export class ShoeEditComponent implements OnInit{
     imageFiles: { [key: string]: File } = {};
   
     constructor(
-        private route: ActivatedRoute, // para obtener el id del zapato de la URL
-        private router: Router,         // para redirigir a otra página después de editar
-        private shoeService: ShoeService // servicio para obtener y actualizar los datos del zapato
+        private route: ActivatedRoute, 
+        private router: Router,       
+        private shoeService: ShoeService 
     ){}
     
     ngOnInit(): void {
-        const id = this.route.snapshot.paramMap.get('id'); // obtener el id del zapato de la URL
+        const id = this.route.snapshot.paramMap.get('id'); 
 
         this.shoeService.getShoeById(Number(id)).subscribe({
             next: (shoe) =>{
@@ -50,7 +50,7 @@ export class ShoeEditComponent implements OnInit{
     save(): void {
         this.shoeService.updateShoe(this.shoe.id!,this.shoe).subscribe({
             next: () => {this.uploadImages(this.shoe.id)},
-            error: () => {this.error = 'Unable to update shoe data';} // mostrar error si no se puede actualizar
+            error: () => {this.error = 'Unable to update shoe data';} 
         });
     }
 
@@ -67,21 +67,21 @@ export class ShoeEditComponent implements OnInit{
           return;
         }
       
-        /* ③ enviamos cada POST y contamos cuándo terminan todas */
+       
         let pending = uploads.length;
       
         uploads.forEach(([n, file]) => {
           this.shoeService.updateImage(id, n as 1 | 2 | 3, file).subscribe({
             next: () => {
               pending--;
-              if (pending === 0) {                // último en terminar → navegar
+              if (pending === 0) {               
                 this.router.navigate(['/shop']);
               }
             },
 
-            error: () => {                        // si cualquier subida falla
+            error: () => {                       
               this.error = 'Image upload failed';
-              pending = 0;                        // cancelamos conteo para que no navegue
+              pending = 0;                        
             }
           });
         });
@@ -89,7 +89,7 @@ export class ShoeEditComponent implements OnInit{
       
 
     cancel(): void {
-        this.router.navigate(['/shop']); // redirigir a la página de la tienda si se cancela
+        this.router.navigate(['/shop']); 
     }
 
 }

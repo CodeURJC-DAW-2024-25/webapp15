@@ -19,17 +19,17 @@ interface CartItemView {
 })
 export class CartSummaryComponent implements OnInit {
 
-  displayedSubtotal = 0; // Inicializar con 0 si no hay orden
+  displayedSubtotal = 0;
   discountPercent = 0;
-  orderShoe?: OrderShoesDTO;        // El carrito completo
-  cartItems: CartItemView[] = [];   // Solo los productos
+  orderShoe?: OrderShoesDTO;  
+  cartItems: CartItemView[] = [];
   loading = true;
 
   constructor(
     private orderShoesService: OrderShoesService,
     public shoeService: ShoeService,
     public loginService: LoginService,
-    private shoeSizeStockService: ShoeSizeStockService, // Inyectar el servicio de stock
+    private shoeSizeStockService: ShoeSizeStockService, 
   ) {}
 
   ngOnInit(): void {
@@ -91,11 +91,7 @@ export class CartSummaryComponent implements OnInit {
     this.cartItems = this.cartItems.filter(ci => ci.item.id !== item.id);
     this.recalculateTotal();
   }
-
-  /* cart-summary.component.ts */
   couponLocked = false;
-
-  /* se llama desde CheckoutComponent */
   lockAfterCoupon(): void {
     this.couponLocked = true;
   }
@@ -115,7 +111,7 @@ export class CartSummaryComponent implements OnInit {
           const availableStock = stockMap[key] ?? 0;
 
           if (availableStock === 0) {
-            cart.stockAvailable = false; // ❌ no stock
+            cart.stockAvailable = false; // no stock
           } else if (availableStock < cart.item.quantity) {
             cart.item.quantity = availableStock;
             cart.stockAvailable = true;
@@ -134,7 +130,7 @@ export class CartSummaryComponent implements OnInit {
           .updateOrderShoe(this.orderShoe!.id, dto)
           .subscribe({
             next: updated => {
-              this.orderShoe = updated;          // refresca modelo local
+              this.orderShoe = updated; 
             },
             error: err => console.error('Error al actualizar carrito', err)
           });
@@ -147,11 +143,9 @@ export class CartSummaryComponent implements OnInit {
 
   private buildDtoForUpdate(): OrderShoesDTO {
   return {
-    /* ────────── claves obligatorias ────────── */
+  
     id:        this.orderShoe!.id,
-    userId:    this.orderShoe!.userId,
-
-    /* ────────── campos de pago/envío ───────── */
+    userId:    this.orderShoe!.userId, 
     date:      this.orderShoe!.date,          
     country:   this.orderShoe!.country,
     firstName: this.orderShoe!.firstName,
@@ -159,16 +153,10 @@ export class CartSummaryComponent implements OnInit {
     email:     this.orderShoe!.email,
     address:   this.orderShoe!.address,
     numerPhone:this.orderShoe!.numerPhone,
-
-    /* ────────── resumen & estado ───────────── */
     summary:   this.displayedSubtotal,
     state:     'notFinished',                 
     cuponUsed: this.orderShoe!.cuponUsed,     
-
-    /* ────────── cupón (puede ser null) ─────── */
     coupon:    this.orderShoe!.coupon,
-
-    /* ────────── lista de items ─────────────── */
     orderItems: this.cartItems.map(c => ({
       id:         c.item.id,                  
       orderId:    this.orderShoe!.id,

@@ -17,7 +17,7 @@ interface Product {
   styleUrls: ['../../../assets/css/style.css','../../../assets/css/vendor.css','./featuredProducts.component.css']
 })
 export class FeaturedProductsComponent implements OnInit, AfterViewInit {
-  bestSellingShoes: Product[] = []; // Usamos la interfaz simplificada
+  bestSellingShoes: Product[] = [];
   swiper: Swiper | undefined;
   isLoading: boolean = true;
   errorMessage: string | null = null;
@@ -38,7 +38,7 @@ export class FeaturedProductsComponent implements OnInit, AfterViewInit {
     
     this.featuredProductsService.getBestSellingProducts(10).subscribe({
       next: (response: any) => {
-        // Extraemos solo los datos que necesitamos
+       
         this.bestSellingShoes = response.bestSellingProducts.map((product: any) => ({
           id: product.id,
           name: product.name,
@@ -67,14 +67,14 @@ export class FeaturedProductsComponent implements OnInit, AfterViewInit {
         },
         observer: true,
         observeParents: true,
-        watchOverflow: true, // Añade esto para mejor manejo
-        loop: true, // Opcional: para navegación infinita
+        watchOverflow: true, 
+        loop: true, 
         breakpoints: {
           320: { slidesPerView: 1, spaceBetween: 10 },
           640: { slidesPerView: 2, spaceBetween: 15 },
           768: { slidesPerView: 3, spaceBetween: 15 },
           1024: { slidesPerView: 4, spaceBetween: 20 },
-          1200: { slidesPerView: 5, spaceBetween: 20 } // Cambiado a 5 para pantallas grandes
+          1200: { slidesPerView: 5, spaceBetween: 20 }
         }
       });
     }

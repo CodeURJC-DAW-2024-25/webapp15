@@ -11,6 +11,6 @@ export class AppComponent {
   constructor(private loginService: LoginService) {}
 
   ngOnInit() {
-    this.loginService.reqIsLogged(); // Al iniciar la app, verificamos la sesión
+    this.loginService.reqIsLogged(); 
   }
 }

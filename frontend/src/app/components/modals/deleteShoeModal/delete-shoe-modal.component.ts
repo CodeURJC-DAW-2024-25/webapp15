@@ -13,7 +13,7 @@ export class DeleteShoeModalComponent {
   constructor(public shoeService :ShoeService,public activeModal: NgbActiveModal) {}
 
   confirmDelete() {
-    this.activeModal.close('confirm'); // Devuelve 'confirm' al padre
+    this.activeModal.close('confirm'); 
   }
 
   cancel() {

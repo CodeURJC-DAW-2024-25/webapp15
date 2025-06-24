@@ -14,8 +14,8 @@ export class HeaderComponent {
 
   isAdmin = false;
   isAuthenticated = false;
-  cartItems: any[] = []; // Para almacenar los items del carrito
-  subtotal: number = 0; // Para el total del carrito
+  cartItems: any[] = []; 
+  subtotal: number = 0; 
   isUser = false;
 
   constructor(private http: HttpClient, private modalService: NgbModal,public loginService: LoginService) { }
@@ -23,7 +23,7 @@ export class HeaderComponent {
   ngOnInit(): void {
     this.loginService.reqIsLogged();
     setTimeout(() => {
-      // Ahora los valores deberían estar actualizados
+     
       this.isAuthenticated = this.loginService.logged;
       this.isAdmin = this.loginService.user?.roles.includes('ROLE_ADMIN') ?? false;
       this.isUser = this.loginService.user?.roles.includes('ROLE_USER') ?? false;
