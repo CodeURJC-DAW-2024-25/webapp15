@@ -5,11 +5,9 @@ import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -27,12 +25,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.stepx.stepx.dto.ReviewDTO;
 import com.stepx.stepx.dto.ShoeDTO;
 import com.stepx.stepx.dto.ShoeSizeStockDTO;
 import com.stepx.stepx.dto.UserDTO;
-import com.stepx.stepx.repository.UserRepository;
 import com.stepx.stepx.service.ReviewService;
 import com.stepx.stepx.service.ShoeService;
 import com.stepx.stepx.service.ShoeSizeStockService;
@@ -55,9 +51,6 @@ public class ShoeController {
 
     @Autowired
     private ShoeService shoeService;
-
-    @Autowired
-    private UserRepository userRepository;
 
     public String getMethodName(@RequestParam String param) {
         return new String();
@@ -254,7 +247,6 @@ public class ShoeController {
         }
 
         boolean isAuthenticated = request.getUserPrincipal() != null;
-        // model.addAttribute("isAuthenticated", isAuthenticated);
 
         if (isAuthenticated) {
             String username = request.getUserPrincipal().getName();
@@ -269,7 +261,7 @@ public class ShoeController {
 
         Optional<ShoeDTO> op = shoeService.getShoeById(id);
         int initialReviewsCount = 2;
-        // a dto
+ 
         List<ReviewDTO> reviewsDto = reviewService.getPagedReviewsByShoeId(id, 0, initialReviewsCount);
 
         if (op.isPresent()) {

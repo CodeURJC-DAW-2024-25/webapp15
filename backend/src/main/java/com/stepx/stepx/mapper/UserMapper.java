@@ -7,13 +7,7 @@ import java.util.Base64;
 import com.stepx.stepx.dto.UserDTO;
 
 import com.stepx.stepx.model.User;
-
-import java.util.Collection;
-import java.util.List;
-
 import javax.sql.rowset.serial.SerialBlob;
-
-import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;

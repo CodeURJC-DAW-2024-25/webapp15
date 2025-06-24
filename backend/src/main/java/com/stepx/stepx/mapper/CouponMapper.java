@@ -5,11 +5,8 @@ import com.stepx.stepx.dto.CouponDTO;
 import com.stepx.stepx.model.Coupon;
 import java.util.Collection;
 import java.util.List;
-
-import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel =  "spring")
 public interface CouponMapper {
