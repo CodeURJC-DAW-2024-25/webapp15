@@ -15,7 +15,7 @@ export class ReviewService {
   getReviewsByShoeId(shoeId: number, page: number, size: number = 2): Observable<ReviewDTO[]> {
     console.log(`Getting reviews for shoe ID: ` + this.http.get<ReviewDTO[]>(`${this.baseUrl}/Shoe/${shoeId}`));
     const params = new HttpParams().set('page', page).set('size', size);
-    return this.http.get<ReviewDTO[]>(`${this.baseUrl}/paginated/${shoeId}`, { params });
+    return this.http.get<ReviewDTO[]>(`${this.baseUrl}/pages/${shoeId}`, { params });
   }
   submitReview(review: ReviewDTO) {
     return this.http.post<ReviewDTO>(`${this.baseUrl}`, review);

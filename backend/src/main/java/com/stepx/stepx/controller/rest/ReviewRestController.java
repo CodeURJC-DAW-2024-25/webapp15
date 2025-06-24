@@ -108,7 +108,7 @@ public class ReviewRestController {
     }
 
     // Reviews Paginadas
-    @GetMapping("/paginated/{id}")
+    @GetMapping("/pages/{id}")
     public ResponseEntity<List<ReviewDTO>> getPaginatedReviews(@PathVariable Long id, @RequestParam int page, @RequestParam int size) {
         List<ReviewDTO> reviews = reviewService.getPagedReviewsByShoeId(id, size, page);
         if (reviews==null) {
