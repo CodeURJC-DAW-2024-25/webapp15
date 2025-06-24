@@ -449,6 +449,13 @@ He taked care of:
 
 ## PHASE 3:
 
+Diagram Components
+
+![Angular Diagram](https://github.com/user-attachments/assets/aa66d83e-6249-43fd-8c43-6c3396c10238)
+
+[Link Diagram](https://lucid.app/lucidspark/a5c2f863-d0f2-4f6c-8e01-a6b6af8ae8d7/edit?viewport_loc=-2178%2C1353%2C7386%2C4114%2C0_0&invitationId=inv_19321df2-5013-41ab-83f2-6bc8895a55e1)
+
+
 ### **Ronald Sebastian Silvera Llimpe**
 He taked care of:
 - The creation of everything related to the Shop page
