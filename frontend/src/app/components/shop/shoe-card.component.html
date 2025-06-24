@@ -43,7 +43,7 @@
         <!--cart concern-->
         <div class="card-detail d-flex justify-content-between align-items-center mt-3">
             <h3 class="card-title fs-6 fw-normal m-0">
-              <a href="#">{{shoe.name}}</a>
+              <a [routerLink]="['/shop', 'single-product', shoe.id]">{{shoe.name}}</a>
             </h3>
             <span class="card-price fw-bold">${{shoe.price}}</span>
           </div>

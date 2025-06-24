@@ -76,8 +76,6 @@ export class LoginModalComponent {
               });
 
 
-
-
             } else {
               this.isSuccess = false;
               this.message = response.message || 'Authentication failed. Please check your credentials and try again.';
@@ -98,7 +96,7 @@ export class LoginModalComponent {
 
   navigateToRegister(): void {
     this.closeModal.emit();
-    this.router.navigate(['/']);
+    window.location.href = '/register';
   }
 
   // Método para cerrar el modal
