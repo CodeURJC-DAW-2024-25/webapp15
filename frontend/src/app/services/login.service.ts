@@ -166,27 +166,30 @@ export class LoginService {
   }
 
   logOut(): Observable<void> {
-    return this.http.post<void>(
-      `${this.API_URL}/auth/logout`, 
-      {}, 
-      { withCredentials: true }
-    ).pipe(
-      tap(() => {
+  return this.http.post<void>(
+    `${this.API_URL}/auth/logout`, 
+    {}, 
+    { withCredentials: true }
+  ).pipe(
+    tap(() => {
+      this.logged = false;
+      this.user = null;
 
-        this.logged = false;
-        this.user = null;
-        
-        this.router.navigate(['/']);
-        
-        window.location.reload();
-      }),
-      catchError(error => {
-        console.error('Error durante logout:', error);
-        this.logged = false;
-        this.user = null;
-        this.router.navigate(['/']);
-        return throwError(() => error);
-      })
-    );
-  }
+      // Limpiar localStorage
+      localStorage.removeItem('accessToken');
+
+      // Redirigir
+      this.router.navigate(['/']);
+      window.location.reload();
+    }),
+    catchError(error => {
+      console.error('Error durante logout:', error);
+      this.logged = false;
+      this.user = null;
+      localStorage.removeItem('accessToken');
+      this.router.navigate(['/']);
+      return throwError(() => error);
+    })
+  );
+}
 }

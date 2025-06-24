@@ -64,7 +64,7 @@ export class LoginModalComponent {
 
                     this.loginSuccess.emit();
                     this.closeModal.emit();
-                    window.location.href = '/';
+                    window.location.href = '/new';
 
                   } else {
                     console.error('User ID is undefined or null, cannot set cookie.');
