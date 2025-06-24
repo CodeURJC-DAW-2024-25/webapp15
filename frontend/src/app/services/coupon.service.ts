@@ -24,7 +24,7 @@ export class CouponService {
 
   validateCoupon(userId: number, code: string) {
     return this.http.get<CouponDTO>(
-      `/api/v1/coupon/val`,
+      `/api/v1/coupon/validation`,
       { params: { userId, code } }
     );
   }

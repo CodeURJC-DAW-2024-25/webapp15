@@ -205,7 +205,7 @@ public class OrderShoesRestController {
     }
 
 
-    @GetMapping("/dld/{orderId}")
+    @GetMapping("/ticket/{orderId}")
 public ResponseEntity<byte[]> downloadTicket(@PathVariable Long orderId) {
 
     OrderShoesDTO dto = orderShoesService.getOrderById(orderId)

@@ -127,7 +127,7 @@ public class CouponRestController {
     }
 
     // GET /api/v1/coupon/validate?userId=3&code=SUMMER20
-    @GetMapping("/val")
+    @GetMapping("/validation")
     public ResponseEntity<?> validateCoupon(@RequestParam String code,@RequestParam Long userId) {
 
         return couponService
