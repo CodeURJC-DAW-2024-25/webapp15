@@ -115,11 +115,11 @@ public SecurityFilterChain filterChain(HttpSecurity http, CustomAuthenticationSu
     http
         .authorizeHttpRequests(authorize -> authorize
             // PUBLIC PAGES
-            .requestMatchers("/v3/api-docs/**","/index", "/register-user", "/shop/**", "/partials/**", "/createAccount", "/errorPage").permitAll()
+            .requestMatchers("/index", "/register-user", "/shop/**", "/partials/**", "/createAccount", "/errorPage").permitAll()
             .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
                                 .requestMatchers("/new").permitAll()
                     .requestMatchers("/new/**").permitAll()
-            .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+            .requestMatchers("/v3/api-docs*/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
 
             // PRIVATE PAGES
             .requestMatchers("/profile/orders", "/shop/single-product/loadMoreReviews", "/user/updateInformation", "/profile").hasAnyRole("USER", "ADMIN")
