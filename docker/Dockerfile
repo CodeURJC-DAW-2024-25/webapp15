@@ -20,8 +20,7 @@ RUN npm ci --no-optional --no-audit --progress=false
 COPY frontend/ ./
 
 # # 5. Instalar file-saver y sus tipos
-RUN npm install 
-
+RUN npm install file-saver @types/file-saver --save
 # 6. Modificar angular.json de forma segura
 RUN echo 'Modificando angular.json...' && \
     # Eliminar budgets completamente
