@@ -9,13 +9,8 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import com.stepx.stepx.dto.*;
 import com.stepx.stepx.mapper.CouponMapper;
-import com.stepx.stepx.mapper.ReviewMapper;
 import com.stepx.stepx.model.Coupon;
-import com.stepx.stepx.model.OrderItem;
-import com.stepx.stepx.model.Shoe;
 import com.stepx.stepx.repository.CouponRepository;
-import com.stepx.stepx.repository.ReviewRepository;
-import com.stepx.stepx.repository.UserRepository;
 
 @Service
 public class CouponService {
@@ -62,7 +57,6 @@ public class CouponService {
             return Optional.empty();
         }
         
-        Coupon existingCoupon = existingCouponOptional.get();
         Coupon updatedCoupon = couponMapper.toDomain(couponDTO);
         
         // Preserve the ID

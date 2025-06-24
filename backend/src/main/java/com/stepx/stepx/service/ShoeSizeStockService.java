@@ -8,8 +8,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.stepx.stepx.dto.BasicShoeSizeStockDTO;
 import com.stepx.stepx.dto.ShoeSizeStockDTO;
 import com.stepx.stepx.mapper.ShoeSizeStockMapper;
 import com.stepx.stepx.model.Shoe;
@@ -47,8 +45,8 @@ public class ShoeSizeStockService {
         List<ShoeSizeStock> entities = dtos.stream()
         .map(shoeSizeStockMapper::toDomain)
         .peek(stock -> {
-            stock.setShoe(shoe);      // Relación unidireccional (DB)
-            shoe.addSizeStock(stock); // Relación bidireccional (memoria)
+            stock.setShoe(shoe);      
+            shoe.addSizeStock(stock); 
         })
         .toList();
             shoeSizeStockRepository.saveAll(entities);

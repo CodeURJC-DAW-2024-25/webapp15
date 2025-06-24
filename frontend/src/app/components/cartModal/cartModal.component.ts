@@ -41,8 +41,9 @@ export class CartModalComponent implements OnInit {
     .subscribe({
       next : (cart: OrderShoesDTO)=>{
         this.cartItems = cart.orderItems||[];
-        this.subtotal = cart.summary;
-        console.log('sumatory: ', this.subtotal);
+        this.subtotal = this.cartItems.reduce((total, item) => {
+          return total + (item.price || 0)*(item.quantity || 1);
+        }, 0);
       },
       error : (err)=>{
         console.log("Error fetching cart items: ", err);
@@ -50,7 +51,7 @@ export class CartModalComponent implements OnInit {
     })
   }
   
-  // Método para cerrar el modal
+  
   closeModal() {
     this.activeModal.dismiss();
 
@@ -60,7 +61,7 @@ export class CartModalComponent implements OnInit {
     }
   }
 
-  // Método para proceder al checkout
+  
   proceedToCheckout() {
     this.activeModal.close('checkout');
     this.router.navigate(['/checkout']);

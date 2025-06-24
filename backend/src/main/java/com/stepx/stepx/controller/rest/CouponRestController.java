@@ -4,14 +4,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.mysql.cj.x.protobuf.MysqlxCrud.Order;
+
 import com.stepx.stepx.dto.CouponDTO;
-import com.stepx.stepx.dto.OrderItemDTO;
 import com.stepx.stepx.dto.UserDTO;
-import com.stepx.stepx.model.OrderItem;
 import com.stepx.stepx.service.CouponService;
 import com.stepx.stepx.service.EmailService;
-import com.stepx.stepx.service.OrderItemService;
 import com.stepx.stepx.service.UserService;
 
 import java.net.URI;
@@ -48,7 +45,6 @@ public class CouponRestController {
     @Autowired
     private EmailService emailService;
 
-    // Obtener un cupón por ID
     @GetMapping("/{id}")
     public ResponseEntity<CouponDTO> getById(@PathVariable Long id) {
         CouponDTO coupon = couponService.findById(id);
@@ -87,14 +83,12 @@ public class CouponRestController {
         }
     }
 
-    // Obtener todos los cupones
     @GetMapping
     public ResponseEntity<List<CouponDTO>> getAll() {
         List<CouponDTO> coupons = couponService.findAll();
         return ResponseEntity.ok(coupons);
     }
 
-    // Crear un nuevo cupón
     @PostMapping
     public ResponseEntity<CouponDTO> createCoupon(@RequestBody CouponDTO couponDTO) {
         CouponDTO savedDTO = couponService.save(couponDTO);
@@ -110,7 +104,6 @@ public class CouponRestController {
         return ResponseEntity.created(location).body(savedDTO);
     }
     
-    // Actualizar un cupón
     @PutMapping("/{id}")
     public ResponseEntity<CouponDTO> updateCoupon(@PathVariable Long id, @RequestBody CouponDTO couponDTO) {
         Optional<CouponDTO> updatedCoupon = couponService.updateCoupon(id, couponDTO);
@@ -123,15 +116,14 @@ public class CouponRestController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCoupon(@PathVariable Long id) {
         couponService.deleteCoupon(id);
-        return ResponseEntity.noContent().build(); // 204 No Content
+        return ResponseEntity.noContent().build();
     }
 
-    // GET /api/v1/coupon/validate?userId=3&code=SUMMER20
     @GetMapping("/validation")
     public ResponseEntity<?> validateCoupon(@RequestParam String code,@RequestParam Long userId) {
 
         return couponService
-                .findByCodeAndId(code, userId) // devuelve Optional<CouponDTO>
+                .findByCodeAndId(code, userId)
                 .<ResponseEntity<?>>map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body("Coupon not found for this user"));

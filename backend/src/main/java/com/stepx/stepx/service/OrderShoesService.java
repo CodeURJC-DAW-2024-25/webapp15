@@ -6,23 +6,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import com.mysql.cj.x.protobuf.MysqlxCrud.Order;
 import com.stepx.stepx.dto.*;
 import com.stepx.stepx.mapper.OrderItemMapper;
 import com.stepx.stepx.mapper.OrderShoesMapper;
-import com.stepx.stepx.mapper.UserMapper;
-import com.stepx.stepx.model.Coupon;
 import com.stepx.stepx.model.OrderItem;
 import com.stepx.stepx.model.OrderShoes;
 import com.stepx.stepx.model.Shoe;
@@ -32,8 +25,6 @@ import com.stepx.stepx.repository.OrderItemRepository;
 import com.stepx.stepx.repository.OrderShoesRepository;
 import com.stepx.stepx.repository.ShoeRepository;
 import com.stepx.stepx.repository.UserRepository;
-
-import io.jsonwebtoken.security.Jwks.OP;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -48,8 +39,6 @@ public class OrderShoesService {
 
     @Autowired
     private OrderShoesMapper orderShoesMapper;
-    @Autowired
-    private UserMapper userMapper;
     @Autowired
     private OrderItemMapper orderItemMapper;
     @Autowired
@@ -274,23 +263,14 @@ public class OrderShoesService {
     
         for (OrderItemDTO dto : orderShoesDTO.orderItems()) {
             OrderItem item = orderItemMapper.toDomain(dto);
-            item.setOrderShoes(order); // Setear relación bidireccional
-            order.getOrderItems().add(item); // Agregar a la misma colección
+            item.setOrderShoes(order);
+            order.getOrderItems().add(item);
         }
-        
-         /*    BigDecimal total = order.getOrderItems()
-                    .stream()
-                    .map(i -> i.getPrice().multiply(BigDecimal.valueOf(i.getQuantity())))
-                    .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-            order.setSummary(total);*/
-         // 1️⃣ COPIA el subtotal con descuento
         order.setSummary(orderShoesDTO.summary());
     
         OrderShoes saved = orderShoesRepository.save(order);
         if (goingToProcessed) {
-
-            // Mapa <shoeId, <size, qty>>
             Map<Long, Map<String, Integer>> stockMap = orderShoesDTO.orderItems().stream()
                     .collect(Collectors.groupingBy(
                             OrderItemDTO::shoeId,
@@ -317,24 +297,19 @@ public boolean deleteOrderByUser(Long orderId, Long userId) {
         return false;
     }
 
-    // Romper relaciones por seguridad
+  
     order.getOrderItems().forEach(item -> item.setOrderShoes(null));
     order.getOrderItems().clear();
     order.setUser(null);
     order.setCoupon(null);
     orderShoesRepository.saveAndFlush(order);
 
-    // ⚠️ Eliminar directo por SQL
+    
     orderShoesRepository.forceDeleteById(orderId);
 
     return true;
 }
-
-    
-
-
-//int entero = orderShoesRepository.deleteByIdAndUserId(orderId,userId);    
-
+  
 
     public BigDecimal getTotalPrice(Long orderId) {
         OrderShoes order = orderShoesRepository.findById(orderId)
@@ -387,26 +362,26 @@ public boolean deleteOrderByUser(Long orderId, Long userId) {
     }
 
     public int getLengthOrderShoes(OrderShoesDTO orderShoesDTO) {
-        OrderShoes orderShoes = orderShoesMapper.toDomain(orderShoesDTO); // Convertimos DTO a dominio
-        return orderShoes.getOrderItems().size(); // Calculamos la longitud del carrito en base a los items
+        OrderShoes orderShoes = orderShoesMapper.toDomain(orderShoesDTO); 
+        return orderShoes.getOrderItems().size(); 
     }
 
     public Map<String, Object> getShoeIdsAndSizes(OrderShoesDTO orderShoesDTO) {
-        // Convertimos el DTO a la entidad de dominio
+        
         OrderShoes orderShoes = orderShoesMapper.toDomain(orderShoesDTO);
 
-        // Extraemos los shoeIds y sizes de los OrderItems
+        
         List<Long> shoeIds = orderShoes.getOrderItems().stream()
-                .map(orderItem -> orderItem.getShoe().getId())  // Suponiendo que OrderItem tiene un método getShoe()
+                .map(orderItem -> orderItem.getShoe().getId()) 
                 .distinct()
                 .collect(Collectors.toList());
 
         List<String> sizes = orderShoes.getOrderItems().stream()
-                .map(OrderItem::getSize)  // Suponiendo que OrderItem tiene un método getSize()
+                .map(OrderItem::getSize)  
                 .distinct()
                 .collect(Collectors.toList());
 
-        // Retornamos los resultados en un Map
+       
         Map<String, Object> result = new HashMap<>();
         result.put("shoeIds", shoeIds);
         result.put("sizes", sizes);
@@ -484,7 +459,6 @@ public Map<String, Object> generateMoneyGainedChartData() {
     return chartData;
 }
 
-// In OrderShoesService.java (or you might want to create an AdminService for this)
 
 public Map<String, Object> getAdminDashboardStats() {
     Map<String, Object> stats = new HashMap<>();

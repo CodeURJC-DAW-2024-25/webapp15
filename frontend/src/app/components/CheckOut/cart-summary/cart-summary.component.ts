@@ -64,10 +64,10 @@ export class CartSummaryComponent implements OnInit {
         this.orderShoe = order;
         this.cartItems = (order.orderItems || []).map(item => ({
           item,
-          stockAvailable: true // ✅ por defecto, se asume con stock hasta verificar
+          stockAvailable: true 
         }));
 
-        this.displayedSubtotal = order.summary && order.summary > 0? order.summary: this.calcItemsSubtotal();
+        this.displayedSubtotal = this.calcItemsSubtotal();
         this.loading = false;
       },
       error: (err) => {

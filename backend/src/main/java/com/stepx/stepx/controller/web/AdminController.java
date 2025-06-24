@@ -1,16 +1,12 @@
 package com.stepx.stepx.controller.web;
 
-import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.List;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import com.stepx.stepx.repository.*;
 import com.stepx.stepx.service.OrderShoesService;
 
 import org.springframework.ui.Model;
@@ -20,12 +16,6 @@ public class AdminController {
 
     @Autowired
     private ObjectMapper objectMapper;
-    @Autowired
-    private OrderShoesRepository orderShoesRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private ShoeRepository shoeRepository;
     @Autowired
     private OrderShoesService orderShoesService;
 

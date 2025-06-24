@@ -1,6 +1,5 @@
 package com.stepx.stepx.dto;
 
-import java.sql.Blob;
 import java.util.List;
 
 public record UserDTO(
