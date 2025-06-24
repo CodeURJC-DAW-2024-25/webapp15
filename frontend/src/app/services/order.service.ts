@@ -3,14 +3,14 @@ import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 import { catchError, Observable, throwError } from 'rxjs';
 import { OrderShoesDTO } from '../dtos/ordershoes.dto';
 import { environment } from '../../environments/environment';
-
+import { Router } from '@angular/router';
 @Injectable({
   providedIn: 'root'
 })
 export class OrderService {
   private readonly API_URL = environment.apiUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router:Router) {}
 
   getOrdersByUserId(userId: number, page: number = 0, size: number = 5): Observable<OrderShoesDTO[]> {
     const params = new HttpParams()
@@ -46,6 +46,7 @@ export class OrderService {
   }
 
   downloadTicket(orderId: number): Observable<Blob> {
+    this.router.navigate(['/profilePage']);
     return this.http.get(`${this.API_URL}/OrderShoes/ticket/${orderId}`, {
       responseType: 'blob'
     });
