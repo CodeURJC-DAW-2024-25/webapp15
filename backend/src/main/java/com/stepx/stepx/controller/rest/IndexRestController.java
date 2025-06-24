@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -80,7 +81,32 @@ public class IndexRestController {
 
         Map<String, Object> response = new HashMap<>();
 
-        // Verificamos si el usuario existe en la base de datos
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !(authentication.getPrincipal() instanceof UserDetails)) {
+            response.put("recommendedProducts", "User not authenticated");
+            return ResponseEntity.status(401).body(response);
+        }
+
+        String username = authentication.getName();
+        Optional<UserDTO> authenticatedUser = userService.findUserByUserName(username);
+
+        if (authenticatedUser.isEmpty()) {
+            response.put("recommendedProducts", "Authenticated user not found");
+            return ResponseEntity.status(404).body(response);
+        }
+
+        // ✅ Corregimos: obtenemos bien los roles
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equalsIgnoreCase("ROLE_ADMIN"));
+
+        // ✅ Comparar correctamente el ID
+        if (!isAdmin && !authenticatedUser.get().id().equals(userId)) {
+            response.put("recommendedProducts", "Access denied");
+            return ResponseEntity.status(403).body(response);
+        }
+
+        // 2 Verificamos si el usuario existe en la base de datos
         UserDTO user = userService.findUserById(userId); // Método para encontrar el usuario por su ID
 
         if (user == null) {
