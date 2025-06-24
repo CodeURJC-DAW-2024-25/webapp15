@@ -511,17 +511,18 @@ He taked care of:
 
 ### **Elinee Nathalie Freites Muñoz**
 He taked care of:
-- Responsible for 
-- Responsible for 
-- Responsible for 
-- Responsible for 
-- Responsible for 
-- Responsible for 
+- Comunication between frontend and backend (proxy)
+- Cookies settings
+- Login authentication and logout
+- Order history in profile
+- User Data in profile
+- Responsible for Error page
+- Dockerfile
   
 | Nº    | Commits      | Files      |
 |:------------: |:------------:| :------------:|
-|1| []() | []() | 
-|2| []() | []() |
-|3| []() | []() |
-|4| []() | []() |
-|5| []() | []()|
+|1| [Cookies](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/39447e52a278d016e9afa8740f2431451b9d0fc6) | [LoginController.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/39447e52a278d016e9afa8740f2431451b9d0fc6#diff-99ab1337b55547e14cfbffda8d235d0f145a691a4fe9b3de15afad60cad0a6c8) | 
+|2| [Conection between backend and frontend](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/36b7f3b36e6afabac7e9116a9183596d8a0f11df) | [LoginService.ts](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/36b7f3b36e6afabac7e9116a9183596d8a0f11df#diff-94dfc0a633bdad1414cf46f0636a3fe33dada7e19f1de86e4818938cd5ed3ce4) |
+|3| [DockerFile](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/3790ace7ed477f00029bf0da2a4dd90a3eba537c) | [DockerFile](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/3790ace7ed477f00029bf0da2a4dd90a3eba537c#diff-f34da55ca08f1a30591d8b0b3e885bcc678537b2a9a4aadea4f190806b374ddc) |
+|4| [ProfileData](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/ee2ce725a714d4d64fcde25a13e9e5d374814a1f) | [profile-Data-Componnet](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/ee2ce725a714d4d64fcde25a13e9e5d374814a1f#diff-5dbb71af9c7452db217d1916f71b8cfbbb54ee809ba870ae2e079069d520032b) |
+|5| [OrderHistory component](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/da94f0d6925afe7251d742a71cb96d17e480ed5d) | [order-history-componnet.ts](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/da94f0d6925afe7251d742a71cb96d17e480ed5d#diff-45a01861751c8ac2b7032d49d322db3e106a30d84488c55ff8e315df56a9c02e)|
