@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -91,6 +94,21 @@ public class ReviewRestController {
     // Eliminar una review
     @DeleteMapping("/{id}")
     public ResponseEntity<ReviewDTO> deleteReview(@PathVariable Long id) {
+        // 🔐 Obtener autenticación actual
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !(authentication.getPrincipal() instanceof UserDetails)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // No autenticado
+        }
+
+        // 🔐 Verificar si es admin
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equalsIgnoreCase("ROLE_ADMIN"));
+
+        if (!isAdmin) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // Acceso denegado si no es admin
+        }
+
         Optional<ReviewDTO> deleted = reviewService.deleteReview(id); // Implementa este método en el servicio
 
         return deleted.map(ResponseEntity::ok)
@@ -100,6 +118,22 @@ public class ReviewRestController {
     // update a orderitem
     @PutMapping("/{id}")
     public ResponseEntity<ReviewDTO> updateReview(@PathVariable Long id, @RequestBody ReviewDTO reviewDto) {
+
+        // 🔐 Obtener autenticación actual
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !(authentication.getPrincipal() instanceof UserDetails)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // No autenticado
+        }
+
+        // 🔐 Verificar si es admin
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equalsIgnoreCase("ROLE_ADMIN"));
+
+        if (!isAdmin) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // Acceso denegado si no es admin
+        }
+        
         Optional<ReviewDTO> review = reviewService.updateReview(id, reviewDto);// get the orderitem
         if (review.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -109,9 +143,10 @@ public class ReviewRestController {
 
     // Reviews Paginadas
     @GetMapping("/pages/{id}")
-    public ResponseEntity<List<ReviewDTO>> getPaginatedReviews(@PathVariable Long id, @RequestParam int page, @RequestParam int size) {
+    public ResponseEntity<List<ReviewDTO>> getPaginatedReviews(@PathVariable Long id, @RequestParam int page,
+            @RequestParam int size) {
         List<ReviewDTO> reviews = reviewService.getPagedReviewsByShoeId(id, size, page);
-        if (reviews==null) {
+        if (reviews == null) {
             return ResponseEntity.noContent().build(); // 204 No Content si no hay reseñas
         }
         return ResponseEntity.ok(reviews);
