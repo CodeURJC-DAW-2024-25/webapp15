@@ -336,11 +336,11 @@ Revolutionizes our infrastructure by containerizing our application. The main ad
    ```
 2. Clone the repository to the virtual machine:
    ```sh
-   git clone https://github.com/your-repo/shoe-store-api.git
+   git clone https://github.com/CodeURJC-DAW-2024-25/webapp15
    ```
 3. Navigate to the directory where the `docker-compose.yml` file is located:
    ```sh
-   cd shoe-store-api/backend/docker
+   cd webapp15/docker
    ```
 4. Start the application using Docker Compose:
    ```sh
@@ -348,10 +348,10 @@ Revolutionizes our infrastructure by containerizing our application. The main ad
    ```
 5. You can access the deployed application at:
    ```
-   https://shoestore.dawgis.etsii.urjc.es:8443
+   http://appweb15.dawgis.etsii.urjc.es:8443
    ```
 ---
-## **API Dcoumentation**
+## **API Documentation**
 - To access the documentation, you must first run the application and search for the following path in your browser:
    ```
    https://localhost:8443/swagger-ui/index.html#/
