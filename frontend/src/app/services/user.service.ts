@@ -74,7 +74,7 @@ export class UserService {
   // Subir nueva imagen
   uploadUserImage(userId: number, imageFile: File): Observable<any> {
     const formData = new FormData();
-    formData.append('image', imageFile);
+    formData.append('imageFile', imageFile);
 
     return this.http.put(`${this.API_URL}/${userId}/image`, formData, {
       withCredentials: true,
