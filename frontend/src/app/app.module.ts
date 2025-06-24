@@ -38,6 +38,7 @@ import { RecommendedProductsComponent } from './components/recommendedProducts/r
 import { UserSpendingChartComponent } from './components/profile-data/profile-chart.component';
 import { ImageCollageSmallComponent } from './components/image-collage-small/image-collage-small.component';
 import { MainComponent } from './components/main/main.component';
+import { ErrorComponent } from './components/error/error.component';
 
 
 
@@ -71,7 +72,8 @@ import { MainComponent } from './components/main/main.component';
     CartSummaryComponent,
     UserSpendingChartComponent,
     ImageCollageSmallComponent,
-    MainComponent
+    MainComponent,
+    ErrorComponent
   ],
   imports: [
     HttpClientModule,
