@@ -41,8 +41,8 @@ import com.stepx.stepx.repository.UserRepository;
 @Service
 public class UserService {
     @Autowired
-    private  OrderShoesRepository orderShoesRepository;
-    
+    private OrderShoesRepository orderShoesRepository;
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
@@ -109,7 +109,7 @@ public class UserService {
 
     public List<Map<String, Object>> getMonthlySpendingByUserId(Long userId) {
         User user = userRepository.findById(userId).orElseThrow();
-        if (user == null){
+        if (user == null) {
             throw new NoSuchElementException();
         }
         return orderShoesRepository.getMonthlySpendingByUserId(userId);
@@ -256,13 +256,13 @@ public class UserService {
 
     public Resource getUserImage(long id) throws SQLException {
 
-		User user = userRepository.findById(id).orElseThrow();
-        Blob userImage=user.getImageUser();
-        if(userImage==null){
+        User user = userRepository.findById(id).orElseThrow();
+        Blob userImage = user.getImageUser();
+        if (userImage == null) {
             throw new NoSuchElementException("Image not found");
         }
         return new InputStreamResource(userImage.getBinaryStream());
-	}
+    }
 
     public void createUserImage(long id, URI location, InputStream inputStream, long size) {
 
@@ -298,7 +298,7 @@ public class UserService {
     public UserDTO createUserAPI(UserDTO userDto) {
 
         System.out.println("User created successfully:" + userDto.imageString());
-        
+
         User user = userMapper.toDomain(userDto);
 
         if (userRepository.existsByUsername(userDto.username())) {
@@ -331,8 +331,10 @@ public class UserService {
             user.setImageUser(null);
         }
         user.setImageString("static/images/defaultProfilePicture.jpg");
-        
+
         userRepository.save(user);
+        CouponDTO couponDto = new CouponDTO(null, "STEPXDISCOUNT10", new BigDecimal("0.9"), user.getId());
+        couponService.save(couponDto);
         return userMapper.toDTO(user);
     }
 
@@ -344,19 +346,18 @@ public class UserService {
         userRepository.delete(user);
         return userMapper.toDTO(user);
     }
-    
 
     public UserDTO replaceUser(long id, UserDTO updatedUserDTO) throws SQLException {
         User oldUser = userRepository.findById(id).orElseThrow();
-        
+
         User updatedUser = userMapper.toDomain(updatedUserDTO);
         updatedUser.setId(id);
-        
+
         // Preserva manualmente la imagen si no se envió nueva
-        if(updatedUserDTO.imageString() == null) {
+        if (updatedUserDTO.imageString() == null) {
             updatedUser.setImageUser(oldUser.getImageUser());
         }
-        
+
         userRepository.save(updatedUser);
         return userMapper.toDTO(updatedUser);
     }
