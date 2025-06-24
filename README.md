@@ -494,20 +494,20 @@ He taked care of:
 
 ### **Alexander Pearson Huaycochea**
 He taked care of:
-- Responsible for 
-- Responsible for 
-- Responsible for 
-- Responsible for 
-- Responsible for 
-- Responsible for 
+- Index and its components, including the header component, one of the main components displayed in all views, and features by user type.
+- Components such as best sellers and recommended products.
+- Single product functionality, adding products to cart.
+- Full review functionality, such as displaying, loading more reviews, deleting reviews, creating reviews, etc.
+- Errors in the login service and other components.
+- Fixing endpoints' mapping
   
 | Nº    | Commits      | Files      |
 |:------------: |:------------:| :------------:|
-|1| []() | []() | 
-|2| []() | []() |
-|3| []() | []() |
-|4| []() | []() |
-|5| []() | []()|
+|1| [Recomended Products](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/1902c631db1ff788e80da3551d9e2c22115a173b) | [RecomendedProducts.component](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/1902c631db1ff788e80da3551d9e2c22115a173b#diff-6e351b09f6f5ab3f9f20e415a2f7f1b1979c3c83e9e409c6cde05e44378fb525) | 
+|2| [Single Product](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/8049c69d08b3e251b58332eef8972445f3dfde2e) | [ShoeInfo.component](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/8049c69d08b3e251b58332eef8972445f3dfde2e#diff-2d4bc2fde9025caa266f5b1e06cddc5804a3549d6467fb0d69d6c9cff9a532b6) |
+|3| [Reviews Functionality](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/ec391f229f5aca149eb630ba8a2c74f52f79bbd2) | [Reviews.service](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/ec391f229f5aca149eb630ba8a2c74f52f79bbd2) |
+|4| [Header Component](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/19a5f2122ccb8a9c8f3ba2a1119f28b4be89551c) | [header.component](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/19a5f2122ccb8a9c8f3ba2a1119f28b4be89551c#diff-badd0f47dcf7b8d308e27714682d0cbeb452c04c04feebf01394807f8d5cdd40) |
+|5| [Login Service](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/579c2aff8331e4b911d35d7ed10bb0a9c68db226) | [login.service](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/579c2aff8331e4b911d35d7ed10bb0a9c68db226#diff-94dfc0a633bdad1414cf46f0636a3fe33dada7e19f1de86e4818938cd5ed3ce4)|
 
 ### **Elinee Nathalie Freites Muñoz**
 He taked care of:
