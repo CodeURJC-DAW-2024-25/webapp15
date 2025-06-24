@@ -3,20 +3,14 @@ package com.stepx.stepx.controller.rest;
 import java.io.IOException;
 import java.net.URI;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,16 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stepx.stepx.dto.*;
-import com.stepx.stepx.model.Review;
-import com.stepx.stepx.model.Shoe;
-import com.stepx.stepx.model.User;
-import com.stepx.stepx.repository.*;
 import com.stepx.stepx.service.*;
-import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentRequest;
 
@@ -47,21 +33,8 @@ import static org.springframework.web.servlet.support.ServletUriComponentsBuilde
 public class UserRestController {
 
     @Autowired
-    private ReviewService reviewService;
-    @Autowired
-    private ShoeRepository shoeRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private ShoeService shoeService;
-    @Autowired
     private UserService userService;
-    @Autowired
-    private OrderShoesRepository orderShoesRepository;
 
-    
-@Autowired
-private ObjectMapper objectMapper;
 
     // get all users
     @GetMapping
@@ -123,15 +96,14 @@ public ResponseEntity<Map<String, Object>> getUserMonthlySpendingChart(@PathVari
     @PostMapping
     public ResponseEntity<UserDTO> createUserAPI(@RequestBody UserDTO userDto) {
         UserDTO createdUser = userService.createUserAPI(userDto);
-    
-        // ✅ Construir la URI del nuevo recurso
+  
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(createdUser.id()) // Suponiendo que UserDTO tiene un método getId()
+                .buildAndExpand(createdUser.id())
                 .toUri();
     
-        return ResponseEntity.created(location).body(createdUser); // 201 Created con Location en Headers
+        return ResponseEntity.created(location).body(createdUser);
     }
 
     @DeleteMapping("/{id}")

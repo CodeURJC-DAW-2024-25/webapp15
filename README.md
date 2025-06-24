@@ -424,10 +424,10 @@ He taked care of:
 | Nº    | Commits      | Files      |
 |:------------: |:------------:| :------------:|
 |1| [Admin Rest](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/a50f4cf07ea222fc0b7004aa189c2acee17b6c18) |[AdminRestController.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/blob/main/backend/src/main/java/com/stepx/stepx/controller/rest/AdminRestController.java)  |
-|2| [Docker]((https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/a9069c94df162b1438bf24a5f269b9ab136bfa2a](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/d514d70c881d3440a47535af63ee03a8eaa0830c)) | [docker-compose.yaml]((https://github.com/CodeURJC-DAW-2024-25/webapp15/blob/main/backend/src/main/resources/templates/shop.htm](https://github.com/CodeURJC-DAW-2024-25/webapp15/blob/main/backend/docker-compose.yaml)l) |
-|3| [UserController adaptation](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/87eb6f203f7dc1f14d3b1c178c4e8be4077b2339](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/23b1c07547e607839d68fd5cb6f84ea2e8615225)) | [UserController.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/blob/main/backend/src/main/java/com/stepx/stepx/controller/rest/OrderShoesRestController.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/blob/main/backend/src/main/java/com/stepx/stepx/controller/web/UserController.java)) |
-|4| [Coupon Rest](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/6caf8da69039adbf067ec4d6fa3552ca26487d40) | [CouponRestController.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/58109f9c0cc99c4135d7f01c0540c4ee0ce6716f#diff-c89e201ab52fc99cbc4796098be1d7020c97a677b6106060655b0ee2a9d105f7](https://github.com/CodeURJC-DAW-2024-25/webapp15/blob/main/backend/src/main/java/com/stepx/stepx/controller/rest/CouponRestController.java)) |
-|5| [UserImages](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/b7328af214aa3a1a90069ba7d31430fa118fb11b](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/e14fe0ee7e9bd3ab40900c89d495801444923051)) | [GenearlController.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/blob/main/backend/src/main/java/com/stepx/stepx/service/ShoeService.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/blob/main/backend/src/main/java/com/stepx/stepx/controller/web/GeneralController.java)) |
+|2| [Docker](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/d514d70c881d3440a47535af63ee03a8eaa0830c) | [Dockerfile](https://github.com/CodeURJC-DAW-2024-25/webapp15/blob/main/docker/Dockerfile) |
+|3| [UserController adaptation](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/23b1c07547e607839d68fd5cb6f84ea2e8615225) | [UserController.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/blob/main/backend/src/main/java/com/stepx/stepx/controller/rest/OrderShoesRestController.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/blob/main/backend/src/main/java/com/stepx/stepx/controller/web/UserController.java))|
+|4| [Coupon Rest](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/6caf8da69039adbf067ec4d6fa3552ca26487d40) | [CouponRestController.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/blob/main/backend/src/main/java/com/stepx/stepx/controller/rest/CouponRestController.java) |
+|5| [UserImages](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/e14fe0ee7e9bd3ab40900c89d495801444923051) | [GeneralController.java](https://github.com/CodeURJC-DAW-2024-25/webapp15/blob/main/backend/src/main/java/com/stepx/stepx/controller/web/GeneralController.java) |
 
 ### **Alexander Pearson Huaycochea**
 He taked care of:
@@ -472,6 +472,26 @@ He taked care of:
 |4| [Modals of cart and checkout](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/49a98c441d81e9d150072d5cb704904d2317651c) | [modals](https://github.com/CodeURJC-DAW-2024-25/webapp15/tree/main/frontend/src/app/components/modals) |
 |5| [Shop component with filters](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/dc9213d5b2d82e4b0636f468e5bfd929268bef1a#diff-ecf21346bf8c9ed4864d4e1ed4ea7cbb54a927fac2d52e560c60760321df02ae) | [Shop](https://github.com/CodeURJC-DAW-2024-25/webapp15/tree/main/frontend/src/app/components/shop) |
 
+
+### **Gabriel Miró-Granada Lluch**
+He taked care of:
+- Admin pannel 
+- Docker  
+- Email/Coupon
+- Create Shoe 
+- Create user 
+- Bugs
+- Fixed Cookies 
+  
+| Nº    | Commits      | Files      |
+|:------------: |:------------:| :------------:|
+|1| [Admin pannel](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/91a5c33274fea67d45c8e849fa66facb95d43617) | [admin-dashboard]() | 
+|2| [create shoe](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/d257c82dee80f2a831e04e15280078c7685e03cb) | [create.component](https://github.com/CodeURJC-DAW-2024-25/webapp15/blob/main/frontend/src/app/components/create-shoe/create-shoe.component.ts) |
+|3| [Docker](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/4d694f322b62df58fba6c1f3460492db0e63cffa#diff-803f3533ba215ae763ca82b9f4118f0d2fc2f431747a24ee00512cee0d40c0f7) | [docker-compose](https://github.com/CodeURJC-DAW-2024-25/webapp15/blob/main/docker/docker-compose.yaml) |
+|4| [Email-coupon](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/5911ced2dad6f76296356d30cf29e6f62146e33a) | [coupon.component](https://github.com/CodeURJC-DAW-2024-25/webapp15/blob/main/frontend/src/app/components/coupon/coupon.component.ts) |
+|5| [register](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/c8f724be122c0c552a31cd276498125d6c9d02c1) | [register.component](https://github.com/CodeURJC-DAW-2024-25/webapp15/blob/main/frontend/src/app/components/register/register.component.ts)|
+
+
 ### **Alexander Pearson Huaycochea**
 He taked care of:
 - Responsible for 
@@ -490,23 +510,6 @@ He taked care of:
 |5| []() | []()|
 
 ### **Elinee Nathalie Freites Muñoz**
-He taked care of:
-- Responsible for 
-- Responsible for 
-- Responsible for 
-- Responsible for 
-- Responsible for 
-- Responsible for 
-  
-| Nº    | Commits      | Files      |
-|:------------: |:------------:| :------------:|
-|1| []() | []() | 
-|2| []() | []() |
-|3| []() | []() |
-|4| []() | []() |
-|5| []() | []()|
-
-### **Gabriel Miró-Granada Lluch**
 He taked care of:
 - Responsible for 
 - Responsible for 

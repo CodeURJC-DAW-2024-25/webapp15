@@ -21,11 +21,9 @@ import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Page;
-import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.stepx.stepx.dto.ShoeDTO;
 import com.stepx.stepx.dto.ShoeSizeStockDTO;
 import com.stepx.stepx.mapper.ShoeMapper;
@@ -35,8 +33,6 @@ import com.stepx.stepx.model.Shoe.Brand;
 import com.stepx.stepx.model.Shoe.Category;
 import com.stepx.stepx.model.ShoeSizeStock;
 import com.stepx.stepx.repository.ShoeRepository;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class ShoeService {

@@ -8,9 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import javax.sql.rowset.serial.SerialBlob;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,19 +23,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import com.stepx.stepx.dto.OrderItemDTO;
 import com.stepx.stepx.dto.OrderShoesDTO;
 import com.stepx.stepx.dto.UserDTO;
-import com.stepx.stepx.model.OrderShoes;
-import com.stepx.stepx.model.User;
-import com.stepx.stepx.repository.UserRepository;
 import com.stepx.stepx.security.RepositoryUserDetailsService;
 import com.stepx.stepx.service.EmailService;
 import com.stepx.stepx.service.OrderItemService;
 import com.stepx.stepx.service.OrderShoesService;
 import com.stepx.stepx.service.PdfService;
-import com.stepx.stepx.service.ShoeService;
 import com.stepx.stepx.service.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -62,12 +54,6 @@ public class UserController {
 
     @Autowired
     private EmailService emailService;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private ShoeService shoeService;
 
     @Autowired
     private RepositoryUserDetailsService repositoryUserDetailsService;
@@ -173,7 +159,7 @@ public class UserController {
         return "partials/profileOrderItems";
     }
 
-    @PostMapping("/upload-profile-image")//a dto
+    @PostMapping("/upload-profile-image")
     public String uploadProfilePicture(@RequestParam(required = false) MultipartFile imageUser,HttpServletRequest request, Model model) throws IOException, SQLException {
 
     

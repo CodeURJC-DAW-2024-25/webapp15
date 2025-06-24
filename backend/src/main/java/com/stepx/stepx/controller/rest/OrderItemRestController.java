@@ -3,27 +3,18 @@ package com.stepx.stepx.controller.rest;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import com.mysql.cj.x.protobuf.MysqlxCrud.Order;
 import com.stepx.stepx.dto.OrderItemDTO;
-import com.stepx.stepx.model.OrderItem;
 import com.stepx.stepx.service.OrderItemService;
-
 import jakarta.validation.Valid;
-
-//import java.lang.foreign.Linker.Option;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -88,7 +79,7 @@ public class OrderItemRestController {
     //delete a orderitem
     @DeleteMapping("/{id}")
     public ResponseEntity<OrderItemDTO> deleteOrderItem(@PathVariable Long id) {
-        Optional<OrderItemDTO>deleted=orderItemService.deleteOrderItem(id);//implement function
+        Optional<OrderItemDTO>deleted=orderItemService.deleteOrderItem(id);
         return deleted.map(ResponseEntity::ok)
         .orElseGet(() -> ResponseEntity.notFound().build());
     }

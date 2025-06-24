@@ -1,25 +1,16 @@
 package com.stepx.stepx.controller.rest;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.net.URI;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,19 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.stepx.stepx.dto.ReviewDTO;
 import com.stepx.stepx.dto.ShoeDTO;
-import com.stepx.stepx.dto.ShoeSizeStockDTO;
 import com.stepx.stepx.mapper.ShoeMapper;
-import com.stepx.stepx.repository.UserRepository;
-import com.stepx.stepx.service.OrderItemService;
-import com.stepx.stepx.service.ReviewService;
 import com.stepx.stepx.service.ShoeService;
-import com.stepx.stepx.service.ShoeSizeStockService;
-import com.stepx.stepx.service.UserService;
-
-import elemental2.dom.Response;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 

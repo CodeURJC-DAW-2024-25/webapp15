@@ -5,34 +5,17 @@ import java.math.BigDecimal;
 import java.net.URI;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.stream.Collectors;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.csrf.CsrfToken;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import com.stepx.stepx.dto.CouponDTO;
-import com.stepx.stepx.dto.OrderItemDTO;
 import com.stepx.stepx.dto.OrderShoesDTO;
-import com.stepx.stepx.dto.ShoeDTO;
 import com.stepx.stepx.dto.UserDTO;
-import com.stepx.stepx.model.*;
-import com.stepx.stepx.repository.*;
 import com.stepx.stepx.service.*;
-
 import org.springframework.http.MediaType;
 import org.springframework.http.HttpHeaders;
 
@@ -49,19 +32,8 @@ public class OrderShoesRestController {
     private OrderShoesService orderShoesService;
 
     @Autowired
-    private ShoeService shoeService;
-
-    @Autowired
-    private OrderItemService orderItemService;
-
-    @Autowired
-    private ShoeSizeStockService shoeSizeStockService;
-
-    @Autowired
     private CouponService couponService;
 
-    @Autowired
-    private UserRepository userRepository;
     @Autowired
     private UserService userService;
     
@@ -174,7 +146,6 @@ public class OrderShoesRestController {
             @PathVariable Long userId,
             @RequestParam String couponCode) {
 
-        // 1. Buscar carrito
         Optional<OrderShoesDTO> cartOptional = orderShoesService.getCartById(userId);
 
         if (cartOptional.isEmpty()) {
@@ -182,8 +153,6 @@ public class OrderShoesRestController {
         }
 
         OrderShoesDTO cart = cartOptional.get();
-
-        // 2. Buscar el cupón válido para este usuario
         Optional<CouponDTO> couponOptional = couponService.findByCodeAndId(couponCode, userId);
 
         if (couponOptional.isEmpty()) {
@@ -192,15 +161,12 @@ public class OrderShoesRestController {
 
         CouponDTO coupon = couponOptional.get();
 
-        // 3. Calcular subtotal original
         BigDecimal subtotal = orderShoesService.getTotalPriceExcludingOutOfStock(cart.id());
 
-        // 4. Aplicar descuento
         BigDecimal discountMultiplier = BigDecimal.valueOf(1)
                 .subtract(coupon.discount().divide(BigDecimal.valueOf(100.0)));
         BigDecimal discountedTotal = subtotal.multiply(discountMultiplier);
 
-        // Devolver el nuevo total SIN tocar base de datos
         return ResponseEntity.ok(discountedTotal);
     }
 

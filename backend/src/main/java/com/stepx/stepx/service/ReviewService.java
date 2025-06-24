@@ -12,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.stepx.stepx.dto.ReviewDTO;
-import com.stepx.stepx.model.OrderItem;
 import com.stepx.stepx.model.Review;
 import com.stepx.stepx.mapper.*;
 import com.stepx.stepx.repository.*;

@@ -3,16 +3,9 @@ package com.stepx.stepx.controller.web;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.stream.Collectors;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,8 +15,6 @@ import com.stepx.stepx.dto.CouponDTO;
 import com.stepx.stepx.dto.OrderItemDTO;
 import com.stepx.stepx.dto.OrderShoesDTO;
 import com.stepx.stepx.dto.UserDTO;
-import com.stepx.stepx.model.*;
-import com.stepx.stepx.repository.*;
 import com.stepx.stepx.service.*;
 
 @Controller
@@ -43,16 +34,8 @@ public class CheckoutController {
     private ShoeSizeStockService shoeSizeStockService;
 
     @Autowired
-    private CouponRepository couponRepository;
-
-    @Autowired
-    private PdfService pdfService;
-
-    @Autowired
     private CouponService couponService;
 
-    @Autowired
-    private UserRepository userRepository;
     @Autowired
     private UserService userService;
 

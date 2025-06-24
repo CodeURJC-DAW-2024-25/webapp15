@@ -1,22 +1,12 @@
 
 package com.stepx.stepx.controller.web;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigDecimal;
-import java.sql.Blob;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import javax.sql.rowset.serial.SerialBlob;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,39 +14,24 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stepx.stepx.dto.CouponDTO;
 import com.stepx.stepx.dto.OrderShoesDTO;
 import com.stepx.stepx.dto.ShoeDTO;
 import com.stepx.stepx.dto.UserDTO;
-import com.stepx.stepx.model.Coupon;
-import com.stepx.stepx.model.OrderShoes;
-import com.stepx.stepx.model.Shoe;
-import com.stepx.stepx.model.User;
-import com.stepx.stepx.repository.CouponRepository;
 import com.stepx.stepx.repository.OrderShoesRepository;
-import com.stepx.stepx.repository.UserRepository;
 import com.stepx.stepx.service.CouponService;
 import com.stepx.stepx.service.OrderItemService;
 import com.stepx.stepx.service.OrderShoesService;
 import com.stepx.stepx.service.UserService;
-
 import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 public class GeneralController {
 
     private final CouponService couponService;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private CouponRepository couponRepository;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -72,9 +47,6 @@ public class GeneralController {
 
     @Autowired
     private OrderItemService orderItemService;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     GeneralController(CouponService couponService) {
         this.couponService = couponService;
