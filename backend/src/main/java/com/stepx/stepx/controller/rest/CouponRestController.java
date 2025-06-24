@@ -58,7 +58,7 @@ public class CouponRestController {
         return ResponseEntity.ok(coupon);
     }
     
-    @GetMapping("/send")
+    @GetMapping("/email")
     public ResponseEntity<Map<String, Object>> sendCouponEmailRest(@RequestParam Long userId) {
         Map<String, Object> response = new HashMap<>();
         try {
@@ -127,7 +127,7 @@ public class CouponRestController {
     }
 
     // GET /api/v1/coupon/validate?userId=3&code=SUMMER20
-    @GetMapping("/validate")
+    @GetMapping("/val")
     public ResponseEntity<?> validateCoupon(@RequestParam String code,@RequestParam Long userId) {
 
         return couponService

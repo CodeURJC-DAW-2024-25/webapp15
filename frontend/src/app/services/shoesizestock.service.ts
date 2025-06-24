@@ -12,7 +12,7 @@ export class ShoeSizeStockService {
   checkStock(shoeIds: number[], sizes: string[]): Observable<{[key: string]: number}> {
   const body = { shoeIds, sizes };               // 👈 estructura exacta
   return this.http.post<{[key: string]: number}>(
-    '/api/v1/ShoeSizeStocks/CheckStock',
+    '/api/v1/ShoeSizeStocks/Stock',
     body
   );
 }

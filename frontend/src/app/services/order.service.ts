@@ -46,7 +46,7 @@ export class OrderService {
   }
 
   downloadTicket(orderId: number): Observable<Blob> {
-    return this.http.get(`${this.API_URL}/OrderShoes/download/${orderId}`, {
+    return this.http.get(`${this.API_URL}/OrderShoes/dld/${orderId}`, {
       responseType: 'blob'
     });
   }

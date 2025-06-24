@@ -91,7 +91,7 @@ public class ShoeSizetockRestController {
             .orElseGet(()-> ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/CheckStock")
+    @PostMapping("/Stock")
     public ResponseEntity<?> checkStockAvailability(@RequestBody Map<String, List<?>> body) {
         try {
             

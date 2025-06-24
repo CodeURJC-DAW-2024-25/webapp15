@@ -17,14 +17,14 @@ export class CouponService {
    * @returns Observable with the API response
    */
   sendCoupon(userId: number): Observable<any> {
-    return this.http.get<any>(`${this.API_URL}/coupon/send`, {
+    return this.http.get<any>(`${this.API_URL}/coupon/email`, {
       params: { userId: userId.toString() }
     });
   }
 
   validateCoupon(userId: number, code: string) {
     return this.http.get<CouponDTO>(
-      `/api/v1/coupon/validate`,
+      `/api/v1/coupon/val`,
       { params: { userId, code } }
     );
   }
