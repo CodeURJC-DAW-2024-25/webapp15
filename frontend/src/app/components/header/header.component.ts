@@ -12,15 +12,27 @@ import { LoginService } from '../../services/login.service';
 })
 export class HeaderComponent {
 
-  admin = false;
-  isAuthenticated = true;
+  isAdmin = false;
+  isAuthenticated = false;
   cartItems: any[] = []; // Para almacenar los items del carrito
   subtotal: number = 0; // Para el total del carrito
+  isUser = false;
 
   constructor(private http: HttpClient, private modalService: NgbModal,public loginService: LoginService) { }
 
   ngOnInit(): void {
     this.loginService.reqIsLogged();
+    setTimeout(() => {
+      // Ahora los valores deberían estar actualizados
+      this.isAuthenticated = this.loginService.logged;
+      this.isAdmin = this.loginService.user?.roles.includes('ROLE_ADMIN') ?? false;
+      this.isUser = this.loginService.user?.roles.includes('ROLE_USER') ?? false;
+
+      console.log("prueba de que es admin:", this.isAdmin);
+      console.log("Prueba de que es user:", this.isUser);
+
+    }, 300);
+
   }
   openCartModal() {
     const modalRef = this.modalService.open(CartModalComponent, {
