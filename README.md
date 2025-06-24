@@ -445,3 +445,80 @@ He taked care of:
 |3| [Implementation of JWT and security enhancements]([https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/87eb6f203f7dc1f14d3b1c178c4e8be4077b2339](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/d15352fd9898cbb0f659b8c0bc5f4b38729f295f)) | [webSecurityConfig.java](backend/src/main/java/com/stepx/stepx/security/SecurityConfig.java) [AuthResponse.java](backend/src/main/java/com/stepx/stepx/security/jwt/AuthResponse.java)  |
 |4| [UserRestController working with images](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/59bdf629c45bc290927c57df1a06d0d4e80dc111) | [GlobalExeptionHandler.java](backend/src/main/java/com/stepx/stepx/controller/rest/GlobalExceptionHandler.java) [UserRestController.java](backend/src/main/java/com/stepx/stepx/controller/rest/UserRestController.java) |
 |5| [Review Controller and Data Mapping]([https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/b7328af214aa3a1a90069ba7d31430fa118fb11b](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/7b24dec76bb5c9e75e2fcedd41f4ed46deb8f71a)) | [ReviewRestController.java](backend/src/main/java/com/stepx/stepx/controller/rest/ReviewRestController.java) [ReviewMapper.java](backend/src/main/java/com/stepx/stepx/mapper/ReviewMapper.java)|
+
+
+## PHASE 3:
+
+Diagram Components
+
+![Angular Diagram](https://github.com/user-attachments/assets/aa66d83e-6249-43fd-8c43-6c3396c10238)
+
+[Link Diagram](https://lucid.app/lucidspark/a5c2f863-d0f2-4f6c-8e01-a6b6af8ae8d7/edit?viewport_loc=-2178%2C1353%2C7386%2C4114%2C0_0&invitationId=inv_19321df2-5013-41ab-83f2-6bc8895a55e1)
+
+
+### **Ronald Sebastian Silvera Llimpe**
+He taked care of:
+- The creation of everything related to the Shop page
+- Implementation of the cart and its modal
+- All functionalities related to the Checkout page (recalculations, item removal, validations, etc.)
+- Ticket generation during the Checkout process
+- Modification of the corresponding HTML files and creation of their components, services, dtos, etc.
+  
+| Nº    | Commits      | Files      |
+|:------------: |:------------:| :------------:|
+|1| [All functionalities of checkout page recalculations, validations, ticket generation,etc](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/418fdd3f0aea0c74d54a1a101a617eb078c6a2d7#diff-0361b2c71b36e2d5c6261d328773bfb6bad5d841254e82e179153064a1f28d89) |[checkout.component.ts](https://github.com/CodeURJC-DAW-2024-25/webapp15/blob/main/frontend/src/app/components/CheckOut/checkout.component.ts)  |
+|2| [Add shoe to order by cart modal](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/6ad4b9ebccd23ce0957d4d082464d8f739b5e2e7) | [add to cart modal](https://github.com/CodeURJC-DAW-2024-25/webapp15/tree/main/frontend/src/app/components/modals/addToCartModal) |
+|3| [Proces related with check of stock for checkout](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/a713f13c194d2801f2821852298bda947217898e#diff-0361b2c71b36e2d5c6261d328773bfb6bad5d841254e82e179153064a1f28d89) | [Checkout](https://github.com/CodeURJC-DAW-2024-25/webapp15/tree/main/frontend/src/app/components/CheckOut) |
+|4| [Modals of cart and checkout](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/49a98c441d81e9d150072d5cb704904d2317651c) | [modals](https://github.com/CodeURJC-DAW-2024-25/webapp15/tree/main/frontend/src/app/components/modals) |
+|5| [Shop component with filters](https://github.com/CodeURJC-DAW-2024-25/webapp15/commit/dc9213d5b2d82e4b0636f468e5bfd929268bef1a#diff-ecf21346bf8c9ed4864d4e1ed4ea7cbb54a927fac2d52e560c60760321df02ae) | [Shop](https://github.com/CodeURJC-DAW-2024-25/webapp15/tree/main/frontend/src/app/components/shop) |
+
+### **Alexander Pearson Huaycochea**
+He taked care of:
+- Responsible for 
+- Responsible for 
+- Responsible for 
+- Responsible for 
+- Responsible for 
+- Responsible for 
+  
+| Nº    | Commits      | Files      |
+|:------------: |:------------:| :------------:|
+|1| []() | []() | 
+|2| []() | []() |
+|3| []() | []() |
+|4| []() | []() |
+|5| []() | []()|
+
+### **Elinee Nathalie Freites Muñoz**
+He taked care of:
+- Responsible for 
+- Responsible for 
+- Responsible for 
+- Responsible for 
+- Responsible for 
+- Responsible for 
+  
+| Nº    | Commits      | Files      |
+|:------------: |:------------:| :------------:|
+|1| []() | []() | 
+|2| []() | []() |
+|3| []() | []() |
+|4| []() | []() |
+|5| []() | []()|
+
+### **Gabriel Miró-Granada Lluch**
+He taked care of:
+- Responsible for 
+- Responsible for 
+- Responsible for 
+- Responsible for 
+- Responsible for 
+- Responsible for 
+  
+| Nº    | Commits      | Files      |
+|:------------: |:------------:| :------------:|
+|1| []() | []() | 
+|2| []() | []() |
+|3| []() | []() |
+|4| []() | []() |
+|5| []() | []()|
