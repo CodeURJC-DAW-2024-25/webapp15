@@ -348,7 +348,7 @@ Revolutionizes our infrastructure by containerizing our application. The main ad
    ```
 5. You can access the deployed application at:
    ```
-   http://appweb15.dawgis.etsii.urjc.es:8443
+   https://appweb15.dawgis.etsii.urjc.es:8443
    ```
 ---
 ## **Users**
