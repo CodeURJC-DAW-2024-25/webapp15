@@ -198,6 +198,7 @@ public String applyCoupon(@RequestParam String coupon, HttpServletRequest reques
     /**
      * Method to recalculate cart totals after quantity changes in the cart.
      */
+    @SuppressWarnings("unchecked")
     @PostMapping("/recalculate")
     public String recalculate(
             @RequestParam(required = false) List<Long> ids,
@@ -285,6 +286,7 @@ public String applyCoupon(@RequestParam String coupon, HttpServletRequest reques
     /**
      * Sets common model attributes for displaying cart information.
      */
+    @SuppressWarnings("unchecked")
     private void setModelAttributesForCart(OrderShoesDTO cart, Model model) {
         int cartLength = orderShoesService.getLengthOrderShoes(cart);
 

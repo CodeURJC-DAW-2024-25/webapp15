@@ -1261,7 +1261,6 @@ public class DataInitializer implements CommandLineRunner {
         }
 
         private void createOrdersForUser(User user, int numberOfOrders, String state) {
-                LocalDate startDate = LocalDate.of(2025, 1, 1);
 
                 for (int i = 0; i < numberOfOrders; i++) {
                         OrderShoes order = new OrderShoes(user);
@@ -1328,7 +1327,6 @@ public class DataInitializer implements CommandLineRunner {
                 User gonzalo = user2.get();
 
                 Optional<OrderShoes> order11 = orderShoesRepository.findById(1L); // Gabi
-                Optional<OrderShoes> order2 = orderShoesRepository.findById(10L); // Gonzalo
 
                 OrderShoes order1 = order11.get();
 

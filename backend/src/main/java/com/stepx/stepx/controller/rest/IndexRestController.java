@@ -19,14 +19,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.stepx.stepx.service.*;
 import com.stepx.stepx.dto.ShoeDTO;
 import com.stepx.stepx.dto.UserDTO;
-import com.stepx.stepx.repository.OrderShoesRepository;
 
 @RestController
 @RequestMapping("/api/v1/index")
 public class IndexRestController {
 
-    @Autowired
-    private OrderShoesService orderShoesService;
+   
 
     @Autowired
     private OrderItemService orderItemService;
