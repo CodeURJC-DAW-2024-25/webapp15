@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   app:
-    image: gabim23/prueba37:latest
+    image: gabim23/stepx:latest
     container_name: springboot-app
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/stepxDatabase?useSSL=false&allowPublicKeyRetrieval=true

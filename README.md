@@ -351,6 +351,13 @@ Revolutionizes our infrastructure by containerizing our application. The main ad
    http://appweb15.dawgis.etsii.urjc.es:8443
    ```
 ---
+## **Users**
+- username: Gaby, 
+password: pass
+(ADMIN)
+
+- username: Gonzalo, password: pass (USER)
+
 ## **API Documentation**
 - To access the documentation, you must first run the application and search for the following path in your browser:
    ```
